@@ -45,12 +45,28 @@ IF(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 	LIST(APPEND LIBUSB_CMAKE_ARGS "-DCMAKE_RC_COMPILER=${CMAKE_RC_COMPILER}")
 ENDIF(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 
+#SET(LIBUSB_INCLUDE_DIR C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/install/include/libusb-1.0)
+#SET(LIBUSB_LIBRARIES C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/install/lib/libusb.a) 
+
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/../libusb/libusb-1.0.19/install/include/libusb-1.0)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/../libusb/libusb-1.0.19/install/lib)
+
+SET(LIBUSB_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../libusb/libusb-1.0.19/install/include/libusb-1.0)
+SET(LIBUSB_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/../libusb/libusb-1.0.19/install/lib/libusb.a)
+
+LIST(APPEND LIBUSB_PATHS "${LIBUSB_INCLUDE_DIR}")
+LIST(APPEND LIBUSB_PATHS "${LIBUSB_LIBRARIES}")
+
+
 ExternalProject_Add(TARGET_libftdi
-                    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2
+					DEPENDS TARGET_libusb
+					#download
+					PREFIX ${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2
                     URL ${CMAKE_CURRENT_SOURCE_DIR}/libftdi1-1.2.tar.bz2
-                    PATCH_COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/templates ${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2/src/TARGET_libftdi
-                    CMAKE_ARGS ${LIBFTDI_CMAKE_ARGS}
-                    #INSTALL_COMMAND make install DESTDIR=${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2
+                    #configure 
+					PATCH_COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/templates ${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2/src/TARGET_libftdi
+                    CMAKE_ARGS ${LIBFTDI_CMAKE_ARGS} -DLIBUSB_INCLUDE_DIR=${CMAKE_CURRENT_BINARY_DIR}/../libusb/libusb-1.0.19/install/include/libusb-1.0 -DLIBUSB_LIBRARIES=${CMAKE_CURRENT_BINARY_DIR}/../libusb/libusb-1.0.19/install/lib/libusb.a
+                    INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} install DESTDIR=${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2
 )
 
 # LIBUSB_INCLUDE_DIR needs the path to the libusb header file
@@ -58,13 +74,13 @@ ExternalProject_Add(TARGET_libftdi
 #SET(LIBUSB_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../libusb/lib/libusb-1.0.19/src/TARGET_libusb/libusb)
 #SET(LIBUSB_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/../libusb/lib/libusb-1.0.19/src/TARGET_libusb-build/libusb.a)
 
-SET(LIBUSB_INCLUDE_DIR ${LIBUSB_INCLUDE_DIRECTORIES})
-SET(LIBUSB_LIBRARIES ${LIBUSB_LIBRARY}) 
 
 
 
 # 3) Provide all variables for the build.
  SET(LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/libftdi/install/lib/libftdi1.a)
+ #SET(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19/install/include/libusb-1.0)
+
 
  IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
 	# SET(LDFLAGS "-pthread -lrt -ludev")

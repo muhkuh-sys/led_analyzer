@@ -49,8 +49,10 @@ ExternalProject_Add(TARGET_libusb
                     URL ${CMAKE_CURRENT_SOURCE_DIR}/libusb-1.0.19.tar.bz2
                     PATCH_COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/templates ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19/src/TARGET_libusb
                     CMAKE_ARGS ${LIBUSB_CMAKE_ARGS}
-                    #INSTALL_COMMAND make install DESTDIR=${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19
-)
+                    INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} install DESTDIR=${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19
+					#annahme: mingw oder linux target - im toplevel make.txt das korrekte make kommando ermitteln 
+					# cmake current make executable 
+					)
 
 
 
@@ -62,8 +64,12 @@ ExternalProject_Add(TARGET_libusb
  ENDIF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
 
  SET(DEFINES -DROMLOADER_USB_LIBUSB_VERSION=1)
+ 
  SET(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19/install/include/libusb-1.0)
-
+ SET(LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19/install/lib/libusb.a)
+ 
+ 
+ 
  #SET(LIBUSB_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../libusb/lib/libusb-1.0.19/src/TARGET_libusb/libusb)
  #SET(LIBUSB_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/../libusb/lib/libusb-1.0.19/src/TARGET_libusb-build/libusb.a)
 
