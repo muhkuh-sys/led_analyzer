@@ -1,3 +1,0 @@
-repository='external project URL'
-module='C:/Users/subhan/Desktop/led_analyzer/external/libftdi/libftdi1-1.2.tar.bz2'
-tag=''

@@ -1,3 +1,0 @@
-repository='external project URL'
-module='C:/Users/subhan/Desktop/led_analyzer/external/libusb/libusb-1.0.19.tar.bz2'
-tag=''

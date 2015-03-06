@@ -1,2 +1,0 @@
-C:/Users/subhan/Desktop/led_analyzer/testbin/external/libftdi/CMakeFiles/TARGET_libftdi.dir
-C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/CMakeFiles/TARGET_libusb.dir
