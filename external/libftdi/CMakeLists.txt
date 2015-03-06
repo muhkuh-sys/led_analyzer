@@ -1,244 +1,86 @@
-# Project
-project(libftdi1)
-set(MAJOR_VERSION 1)
-set(MINOR_VERSION 2)
-set(PACKAGE libftdi1)
-set(VERSION_STRING ${MAJOR_VERSION}.${MINOR_VERSION})
-set(VERSION ${VERSION_STRING})
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+cmake_minimum_required(VERSION 2.8)
+#libftdi as external project
 
-# CMake
-if("${CMAKE_BUILD_TYPE}" STREQUAL "")
-   set(CMAKE_BUILD_TYPE     RelWithDebInfo)
-endif("${CMAKE_BUILD_TYPE}" STREQUAL "")
-set(CMAKE_COLOR_MAKEFILE ON)
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+#----------------------------------------------------------------------------
+#
+# This script provides the libusb parts to the build process.
+#
+# 1) It depacks the archiv.
+# 2) Eventually compile the sources.
+# 3) It provides all necessary variables to link the library.
+#
+# The provided variables are:
+#
+#  LIBFTDI_LIBRARIES : The libusb library with the complete path and all
+#                     required system libraries. The list must be separated
+#                     with whitespace.
+#
+#  LIBFTDI_DEFINES : All defines for the libusb library. This should be a
+#                   list of entries starting with "-D".
+#
+#  LIBFTDI_INCLUDE_DIRECTORIES : The include folders for the library headers.
+#                               The list must be separated with whitespace.
+#
 
-add_definitions(-Wall)
+PROJECT("libftdi")
 
-# Debug build
-message("-- Build type: ${CMAKE_BUILD_TYPE}")
-if(${CMAKE_BUILD_TYPE} STREQUAL Debug)
-   add_definitions(-DDEBUG)
-endif(${CMAKE_BUILD_TYPE} STREQUAL Debug)
-
-# find libusb
-find_package ( USB1 REQUIRED )
-include_directories ( ${LIBUSB_INCLUDE_DIR} )
-
-# Find Boost (optional package)
-find_package(Boost)
-
-# Set components
-set(CPACK_COMPONENTS_ALL sharedlibs staticlibs headers)
-set(CPACK_COMPONENT_SHAREDLIBS_DISPLAY_NAME "Shared libraries")
-set(CPACK_COMPONENT_STATICLIBS_DISPLAY_NAME "Static libraries")
-set(CPACK_COMPONENT_HEADERS_DISPLAY_NAME "C++ Headers")
-
-set(CPACK_COMPONENT_SHAREDLIBS_DESCRIPTION
-"Shared library for general use.")
-set(CPACK_COMPONENT_STATICLIBS_DESCRIPTION
-"Static library, good if you want to embed libftdi1 in your application.")
-set(CPACK_COMPONENT_HEADERS_DESCRIPTION
-"C/C++ header files.")
-
-set(CPACK_COMPONENT_SHAREDLIBS_GROUP "Development")
-set(CPACK_COMPONENT_STATICLIBS_GROUP "Development")
-set(CPACK_COMPONENT_HEADERS_GROUP    "Development")
-
-option ( STATICLIBS "Build static libraries" ON )
-
-# guess LIB_SUFFIX, don't take debian multiarch into account 
-if ( NOT DEFINED LIB_SUFFIX )
-  if( CMAKE_SYSTEM_NAME MATCHES "Linux"
-      AND NOT CMAKE_CROSSCOMPILING
-      AND NOT EXISTS "/etc/debian_version"
-      AND NOT EXISTS "/etc/arch-release" )
-    if ( "${CMAKE_SIZEOF_VOID_P}" EQUAL "8" )
-      set ( LIB_SUFFIX 64 )
-    endif ()
-  endif ()
-endif ()
-
-if(NOT APPLE)
-  if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-      SET(PACK_ARCH "")
-    else(CMAKE_SIZEOF_VOID_P EQUAL 8)
-      SET(PACK_ARCH .x86_64)
-  endif(CMAKE_SIZEOF_VOID_P EQUAL 4)
-else(NOT APPLE)
-  SET(PACK_ARCH "")
-endif(NOT APPLE)
-
-# Package information
-set(CPACK_PACKAGE_VERSION              ${VERSION_STRING})
-set(CPACK_PACKAGE_CONTACT              "Intra2net AG <libftdi@developer.intra2net.com>")
-set(CPACK_PACKAGE_DESCRIPTION          "libftdi1 library.")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY  ${CPACK_PACKAGE_DESCRIPTION}
-                                       )
-# Package settings
-if ( UNIX )
-  set(CPACK_GENERATOR                    "DEB;RPM")
-  set(CPACK_CMAKE_GENERATOR              "Unix Makefiles")
-  set(CPACK_PACKAGE_NAME                 ${PROJECT_NAME})
-  set(CPACK_PACKAGE_FILE_NAME            ${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}${PACK_ARCH})
-endif ()
-
-if ( WIN32 )
-  set ( CPACK_GENERATOR                    "NSIS" )
-  set ( CPACK_CMAKE_GENERATOR              "MinGW Makefiles" )
-  set ( CPACK_PACKAGE_NAME                 "${PROJECT_NAME}" )
-  set ( CPACK_PACKAGE_VENDOR               "" )
-  set ( CPACK_PACKAGE_INSTALL_DIRECTORY    "libftdi1" )
-  set ( CPACK_PACKAGE_FILE_NAME            "${PROJECT_NAME}-${VERSION_STRING}-win32")
-  set ( CPACK_NSIS_DISPLAY_NAME            "libftdi1" )
-  set ( CPACK_NSIS_MODIFY_PATH             ON )
-endif ()
-
-set(CPACK_RESOURCE_FILE_LICENSE        ${CMAKE_SOURCE_DIR}/LICENSE)
-
-set(CPACK_SOURCE_GENERATOR             TGZ)
-set(CPACK_SOURCE_IGNORE_FILES          "\\\\.git;~$;build/")
-set(CPACK_SOURCE_PACKAGE_FILE_NAME     ${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION})
-
-# Subdirectories
-if ( UNIX )
-  set ( CPACK_SET_DESTDIR ON )
-endif ()
-
-# "make dist" target
-set(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${VERSION_STRING})
-add_custom_target(dist
-    COMMAND git archive --prefix=${ARCHIVE_NAME}/ HEAD
-            | bzip2 > ${CMAKE_BINARY_DIR}/${ARCHIVE_NAME}.tar.bz2
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-
-# Tests
-option ( BUILD_TESTS "Build unit tests with Boost Unit Test framework" ON )
-
-# Documentation
-option ( DOCUMENTATION "Generate API documentation with Doxygen" ON )
+INCLUDE(ExternalProject)
 
 
-find_package ( Doxygen )
-if ( DOCUMENTATION AND DOXYGEN_FOUND )
-
-   # Find doxy config
-   message(STATUS "Doxygen found.")
-
-   # Copy doxy.config.in
-   set(top_srcdir ${CMAKE_SOURCE_DIR})
-   configure_file(${CMAKE_SOURCE_DIR}/doc/Doxyfile.in ${CMAKE_BINARY_DIR}/Doxyfile )
-   configure_file(${CMAKE_SOURCE_DIR}/doc/Doxyfile.xml.in ${CMAKE_BINARY_DIR}/Doxyfile.xml )
-
-   # Run doxygen
-   add_custom_command(
-    OUTPUT ${CMAKE_BINARY_DIR}/doc/html/index.html
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/doc
-    COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_BINARY_DIR}/Doxyfile
-    DEPENDS ${c_headers};${c_sources};${cpp_sources};${cpp_headers}
-   )
-
-   add_custom_target(docs ALL DEPENDS ${CMAKE_BINARY_DIR}/doc/html/index.html)
-
-   message(STATUS "Generating API documentation with Doxygen")
-else(DOCUMENTATION AND DOXYGEN_FOUND)
-   message(STATUS "Not generating API documentation")
-endif(DOCUMENTATION AND DOXYGEN_FOUND)
-
-add_subdirectory(src)
-add_subdirectory(ftdipp)
-add_subdirectory(python)
-add_subdirectory(ftdi_eeprom)
-add_subdirectory(examples)
-add_subdirectory(packages)
-add_subdirectory(test)
-
-# PkgConfig
-set(prefix      ${CMAKE_INSTALL_PREFIX})
-set(exec_prefix ${CMAKE_INSTALL_PREFIX}/bin)
-set(includedir  ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME})
-
-if(${UNIX})
-   set(libdir      ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX})
-endif(${UNIX})
-if(${WIN32})
-   set(libdir      ${CMAKE_INSTALL_PREFIX}/bin)
-endif(${WIN32})
-
-configure_file(${CMAKE_SOURCE_DIR}/libftdi1.spec.in ${CMAKE_BINARY_DIR}/libftdi1.spec @ONLY)
-configure_file(${CMAKE_SOURCE_DIR}/libftdi1.pc.in ${CMAKE_BINARY_DIR}/libftdi1.pc @ONLY)
-configure_file(${CMAKE_SOURCE_DIR}/libftdipp1.pc.in ${CMAKE_BINARY_DIR}/libftdipp1.pc @ONLY)
-install(FILES ${CMAKE_BINARY_DIR}/libftdi1.pc ${CMAKE_BINARY_DIR}/libftdipp1.pc
-        DESTINATION lib${LIB_SUFFIX}/pkgconfig)
-
-if (UNIX OR MINGW)
-  configure_file ( libftdi1-config.in ${CMAKE_CURRENT_BINARY_DIR}/libftdi1-config @ONLY )
-  install ( PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/libftdi1-config
-            DESTINATION bin )
-endif ()
-
-# config script install path
-if ( NOT DEFINED LIBFTDI_CMAKE_CONFIG_DIR )
-  set ( LIBFTDI_CMAKE_CONFIG_DIR lib${LIB_SUFFIX}/cmake/libftdi1 )
-endif ()
-
-set ( LIBFTDI_INCLUDE_DIR ${includedir} )
-set ( LIBFTDI_INCLUDE_DIRS ${LIBFTDI_INCLUDE_DIR} )
-set ( LIBFTDI_LIBRARY ftdi1 )
-set ( LIBFTDI_LIBRARIES ${LIBFTDI_LIBRARY} )
-list ( APPEND LIBFTDI_LIBRARIES ${LIBUSB_LIBRARIES} )
-set ( LIBFTDI_STATIC_LIBRARY ftdi1.a )
-set ( LIBFTDI_STATIC_LIBRARIES ${LIBFTDI_STATIC_LIBRARY} )
-list ( APPEND LIBFTDI_STATIC_LIBRARIES ${LIBUSB_LIBRARIES} )
-if (FTDI_BUILD_CPP)
-  set ( LIBFTDIPP_LIBRARY ftdipp1 )
-  set ( LIBFTDIPP_LIBRARIES ${LIBFTDIPP_LIBRARY} )
-  list ( APPEND LIBFTDIPP_LIBRARIES ${LIBUSB_LIBRARIES} )
-endif ()
-set ( LIBFTDI_LIBRARY_DIRS ${libdir} )
-set ( LIBFTDI_ROOT_DIR ${prefix} )
-set ( LIBFTDI_VERSION_STRING ${VERSION_STRING} )
-set ( LIBFTDI_VERSION_MAJOR ${MAJOR_VERSION} )
-set ( LIBFTDI_VERSION_MINOR ${MINOR_VERSION} )
-
-set ( LIBFTDI_USE_FILE ${CMAKE_INSTALL_PREFIX}/${LIBFTDI_CMAKE_CONFIG_DIR}/UseLibFTDI1.cmake )
-
-if(CMAKE_VERSION VERSION_LESS 2.8.8) 
-  configure_file ( cmake/LibFTDI1Config.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/LibFTDI1Config.cmake @ONLY )
-  configure_file ( cmake/LibFTDI1ConfigVersion.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/LibFTDI1ConfigVersion.cmake @ONLY )
-else ()
-  include(CMakePackageConfigHelpers)
-
-  configure_package_config_file (
-    cmake/LibFTDI1Config.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/LibFTDI1Config.cmake
-    INSTALL_DESTINATION ${LIBFTDI_CMAKE_CONFIG_DIR}
-    PATH_VARS
-      LIBFTDI_USE_FILE
-      LIBFTDI_ROOT_DIR
-      LIBFTDI_INCLUDE_DIR
-      LIBFTDI_INCLUDE_DIRS
-      LIBFTDI_LIBRARY_DIRS
-    NO_CHECK_REQUIRED_COMPONENTS_MACRO
-  )
-  write_basic_package_version_file (
-    LibFTDI1ConfigVersion.cmake 
-    VERSION ${LIBFTDI_VERSION_STRING} 
-    COMPATIBILITY AnyNewerVersion
-  )
-endif ()
-
-
-install ( FILES 
-            ${CMAKE_CURRENT_BINARY_DIR}/LibFTDI1Config.cmake
-            ${CMAKE_CURRENT_BINARY_DIR}/LibFTDI1ConfigVersion.cmake
-            cmake/UseLibFTDI1.cmake
-
-          DESTINATION ${LIBFTDI_CMAKE_CONFIG_DIR}
-        )
+#----------------------------------------------------------------------------
+#
+# Build the project.
+#
 
 
 
 
-include(CPack)
+#SET(LIBUSB_CMAKE_ARGS "")
+#list baut eine ganze zeile aus den sachen die mit append hinzugefügt wurden 
+LIST(APPEND LIBFTDI_CMAKE_ARGS "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}")
+LIST(APPEND LIBFTDI_CMAKE_ARGS "-DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}")
+LIST(APPEND LIBFTDI_CMAKE_ARGS "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}")
+LIST(APPEND LIBFTDI_CMAKE_ARGS "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}")
+IF(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+	LIST(APPEND LIBUSB_CMAKE_ARGS "-DCMAKE_RC_COMPILER=${CMAKE_RC_COMPILER}")
+ENDIF(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+
+ExternalProject_Add(TARGET_libftdi
+                    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2
+                    URL ${CMAKE_CURRENT_SOURCE_DIR}/libftdi1-1.2.tar.bz2
+                    PATCH_COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/templates ${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2/src/TARGET_libftdi
+                    CMAKE_ARGS ${LIBFTDI_CMAKE_ARGS}
+                    #INSTALL_COMMAND make install DESTDIR=${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2
+)
+
+# LIBUSB_INCLUDE_DIR needs the path to the libusb header file
+# DLIBUSB_LIBRARIES needs the path AND the static library of libusb
+#SET(LIBUSB_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../libusb/lib/libusb-1.0.19/src/TARGET_libusb/libusb)
+#SET(LIBUSB_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/../libusb/lib/libusb-1.0.19/src/TARGET_libusb-build/libusb.a)
+
+SET(LIBUSB_INCLUDE_DIR ${LIBUSB_INCLUDE_DIRECTORIES})
+SET(LIBUSB_LIBRARIES ${LIBUSB_LIBRARY}) 
+
+
+
+# 3) Provide all variables for the build.
+ SET(LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/libftdi/install/lib/libftdi1.a)
+
+ IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+	# SET(LDFLAGS "-pthread -lrt -ludev")
+ ENDIF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+
+ SET(DEFINES -DROMLOADER_USB_LIBFTDI_VERSION=1)
+ 
+ #SET(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2/install/include/libftdi-1.0)
+ #SET(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19/install/include/libusb-1.0)
+
+
+# ----------------------------------------------------------------------------
+
+ # Store all information about the library in the cache.
+
+ #SET(LIBFTDI_LIBRARY              ${LIBRARY}              CACHE INTERNAL "The libftdi library with the complete path.")
+ SET(LIBFTDI_LDFLAGS              ${LDFLAGS}              CACHE INTERNAL "All linker flags required to link the library. The list must be separated with whitespace.")
+ SET(LIBFTDI_DEFINES              ${DEFINES}              CACHE INTERNAL "All defines for the libftdi library. This should be a list of entries starting with -D.")
+ SET(LIBFTDI_INCLUDE_DIRECTORIES  ${INCLUDE_DIRECTORIES}  CACHE INTERNAL "The include folders for the library headers. The list must be separated with whitespace.")

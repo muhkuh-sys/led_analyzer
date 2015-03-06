@@ -1,126 +1,78 @@
 cmake_minimum_required(VERSION 2.8)
-# This cmakelists is going to be configure for libusb1.0.19
-# in order to test this project we first build this cmakeliststxtfile to generate a makefile.
+#libusb cmakelists for the external project for led_analyzer project
+
+#----------------------------------------------------------------------------
+#
+# This script provides the libusb parts to the build process.
+#
+# 1) It depacks the archiv.
+# 2) Eventually compile the sources.
+# 3) It provides all necessary variables to link the library.
+#
+# The provided variables are:
+#
+#  LIBUSB_LIBRARIES : The libusb library with the complete path and all
+#                     required system libraries. The list must be separated
+#                     with whitespace.
+#
+#  LIBUSB_DEFINES : All defines for the libusb library. This should be a
+#                   list of entries starting with "-D".
+#
+#  LIBUSB_INCLUDE_DIRECTORIES : The include folders for the library headers.
+#                               The list must be separated with whitespace.
+#
+
 PROJECT("libusb")
 
-INCLUDE(CheckIncludeFiles)
-INCLUDE(CheckFunctionExists)
-INCLUDE(CheckLibraryExists)
-INCLUDE(CheckTypeSize)
+INCLUDE(ExternalProject)
 
 
 #----------------------------------------------------------------------------
 #
-# Get all defines for the configuration.
-#
-SET(ENABLE_LOGGING 1)
-CHECK_INCLUDE_FILES(dlfcn.h HAVE_DLFCN_H)
-CHECK_FUNCTION_EXISTS(gettimeofday HAVE_GETTIMEOFDAY)
-CHECK_INCLUDE_FILES(inttypes.h HAVE_INTTYPES_H)
-CHECK_LIBRARY_EXISTS(udev udev_new "" HAVE_LIBUDEV)
-CHECK_INCLUDE_FILES(libudev.h HAVE_LIBUDEV_H)
-CHECK_INCLUDE_FILES(memory.h HAVE_MEMORY_H)
-CHECK_INCLUDE_FILES(poll.h HAVE_POLL_H)
-CHECK_INCLUDE_FILES(signal.h HAVE_SIGNAL_H)
-CHECK_INCLUDE_FILES(stdint.h HAVE_STDINT_H)
-CHECK_INCLUDE_FILES(stdlib.h HAVE_STDLIB_H)
-CHECK_INCLUDE_FILES(strings.h HAVE_STRINGS_H)
-CHECK_INCLUDE_FILES(string.h HAVE_STRING_H)
-CHECK_TYPE_SIZE("struct timespec" STRUCT_TIMESPEC)
-CHECK_FUNCTION_EXISTS(syslog HAVE_SYSLOG_FUNC)
-CHECK_INCLUDE_FILES(syslog.h HAVE_SYSLOG_H)
-CHECK_INCLUDE_FILES(sys/stat.h HAVE_SYS_STAT_H)
-CHECK_INCLUDE_FILES(sys/time.h HAVE_SYS_TIME_H)
-CHECK_INCLUDE_FILES(sys/types.h HAVE_SYS_TYPES_H)
-CHECK_INCLUDE_FILES(unistd.h HAVE_UNISTD_H)
-CHECK_INCLUDE_FILES(sys/timerfd.h USBI_TIMERFD_AVAILABLE)
-
-SET(LT_OBJDIR ".libs/")
-
-SET(PACKAGE "libusb")
-SET(PACKAGE_BUGREPORT "libusb-devel@lists.sourceforge.net")
-SET(PACKAGE_NAME "libusb")
-SET(PACKAGE_STRING "libusb 1.0.19")
-SET(PACKAGE_TARNAME "libusb")
-SET(PACKAGE_URL "http://libusb.info")
-SET(PACKAGE_VERSION "1.0.19")
-
-SET(VERSION "1.0.19")
-
-IF(UNIX)
-	SET(OS_LINUX 1)
-	# Use UDEV on linux.
-	SET(USE_UDEV 1)
-	
-	# Use POSIX threads on linux.
-	SET(THREADS_POSIX 1)
-	
-	SET(POLL_NFDS_TYPE nfds_t)
-ELSEIF(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-	SET(OS_WINDOWS 1)
-	
-	SET(POLL_NFDS_TYPE "unsigned int")
-ENDIF(UNIX)
-
-IF(${CMAKE_COMPILER_IS_GNUCC})
-	SET(_GNU_SOURCE 1)
-	SET(DEFAULT_VISIBILITY "__attribute__((visibility(\"default\")))")
-	SET(STDC_HEADERS 1)
-ENDIF(${CMAKE_COMPILER_IS_GNUCC})
-
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config/config.h)
-
-
-#----------------------------------------------------------------------------
-#
-# Compile the sources.
+# Build the project.
 #
 
-IF(UNIX)
-	SET(SOURCES_libusb libusb/core.c
-	                   libusb/descriptor.c
-	                   libusb/io.c
-	                   libusb/strerror.c
-	                   libusb/sync.c
-	                   libusb/hotplug.c
-	                   libusb/os/threads_posix.c
-	                   libusb/os/linux_usbfs.c
-	                   libusb/os/poll_posix.c
-	                   libusb/os/linux_udev.c
-	)
-	
-	add_definitions(-DHAVE_CONFIG_H)
-ELSEIF(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-	SET(SOURCES_libusb libusb/core.c
-	                   libusb/descriptor.c
-	                   libusb/io.c
-	                   libusb/strerror.c
-	                   libusb/sync.c
-	                   libusb/hotplug.c
-	                   libusb/os/threads_windows.c
-	                   libusb/os/poll_windows.c
-	                   libusb/os/windows_usb.c
-	)
-	
-	add_definitions(-DHAVE_CONFIG_H)
-	IF(MSVC)
-		INCLUDE_DIRECTORIES(msvc) # use only with Visual C++, not with MSYS
-	ENDIF(MSVC)
-ENDIF(UNIX)
 
-INCLUDE_DIRECTORIES(libusb ${CMAKE_CURRENT_BINARY_DIR}/config)
 
-ADD_LIBRARY(TARGET_libusb STATIC ${SOURCES_libusb})
 
-# This static library will be linked with a shared object later. Add "-fPIC" on GCC systems or X64 builds break.
-IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-	SET_TARGET_PROPERTIES(TARGET_libusb PROPERTIES COMPILE_FLAGS -fPIC)
-ENDIF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+#SET(LIBUSB_CMAKE_ARGS "")
+LIST(APPEND LIBUSB_CMAKE_ARGS "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}")
+LIST(APPEND LIBUSB_CMAKE_ARGS "-DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}")
+LIST(APPEND LIBUSB_CMAKE_ARGS "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}")
+LIST(APPEND LIBUSB_CMAKE_ARGS "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}")
+IF(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+	LIST(APPEND LIBUSB_CMAKE_ARGS "-DCMAKE_RC_COMPILER=${CMAKE_RC_COMPILER}")
+ENDIF(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 
-# Set the name of the output file to "usb".
-SET_TARGET_PROPERTIES(TARGET_libusb PROPERTIES OUTPUT_NAME "usb")
+ExternalProject_Add(TARGET_libusb
+                    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19
+                    URL ${CMAKE_CURRENT_SOURCE_DIR}/libusb-1.0.19.tar.bz2
+                    PATCH_COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/templates ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19/src/TARGET_libusb
+                    CMAKE_ARGS ${LIBUSB_CMAKE_ARGS}
+                    #INSTALL_COMMAND make install DESTDIR=${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19
+)
 
-SET(CMAKE_INSTALL_PREFIX /install)
-INSTALL(TARGETS TARGET_libusb DESTINATION lib)
-INSTALL(FILES libusb/libusb.h DESTINATION include/libusb-1.0)
 
+
+# 3) Provide all variables for the build.
+ SET(LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19/install/lib/libusb.a)
+
+ IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+	# SET(LDFLAGS "-pthread -lrt -ludev")
+ ENDIF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+
+ SET(DEFINES -DROMLOADER_USB_LIBUSB_VERSION=1)
+ SET(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19/install/include/libusb-1.0)
+
+ #SET(LIBUSB_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../libusb/lib/libusb-1.0.19/src/TARGET_libusb/libusb)
+ #SET(LIBUSB_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/../libusb/lib/libusb-1.0.19/src/TARGET_libusb-build/libusb.a)
+
+ 
+# ----------------------------------------------------------------------------
+
+ # Store all information about the library in the cache.
+
+ SET(LIBUSB_LIBRARY              ${LIBRARY}              CACHE INTERNAL "The libusb library with the complete path.")
+ SET(LIBUSB_LDFLAGS              ${LDFLAGS}              CACHE INTERNAL "All linker flags required to link the library. The list must be separated with whitespace.")
+ SET(LIBUSB_DEFINES              ${DEFINES}              CACHE INTERNAL "All defines for the libusb library. This should be a list of entries starting with -D.")
+ SET(LIBUSB_INCLUDE_DIRECTORIES  ${INCLUDE_DIRECTORIES}  CACHE INTERNAL "The include folders for the library headers. The list must be separated with whitespace.")
