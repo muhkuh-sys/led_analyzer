@@ -1,0 +1,2 @@
+/install/lib/libusb.a
+/install/include/libusb-1.0/libusb.h

@@ -1,0 +1,24 @@
+# The set of languages for which implicit dependencies are needed:
+set(CMAKE_DEPENDS_LANGUAGES
+  "C"
+  )
+# The set of files for implicit dependencies of each language:
+set(CMAKE_DEPENDS_CHECK_C
+  "C:/Users/subhan/Desktop/led_analyzer/testbin/external/libftdi/libftdi1-1.2/src/TARGET_libftdi/src/ftdi.c" "C:/Users/subhan/Desktop/led_analyzer/testbin/external/libftdi/libftdi1-1.2/src/TARGET_libftdi-build/src/CMakeFiles/ftdi1.dir/ftdi.c.obj"
+  "C:/Users/subhan/Desktop/led_analyzer/testbin/external/libftdi/libftdi1-1.2/src/TARGET_libftdi/src/ftdi_stream.c" "C:/Users/subhan/Desktop/led_analyzer/testbin/external/libftdi/libftdi1-1.2/src/TARGET_libftdi-build/src/CMakeFiles/ftdi1.dir/ftdi_stream.c.obj"
+  )
+set(CMAKE_C_COMPILER_ID "GNU")
+
+# Targets to which this target links.
+set(CMAKE_TARGET_LINKED_INFO_FILES
+  )
+
+# The include file search paths:
+set(CMAKE_C_TARGET_INCLUDE_PATH
+  "C:/Users/subhan/Desktop/led_analyzer/testbin/external/libftdi/libftdi1-1.2/src/TARGET_libftdi/src"
+  "src"
+  "C:/Users/subhan/Desktop/led_analyzer/testbin/external/libftdi/../libusb/libusb-1.0.19/install/include/libusb-1.0"
+  )
+set(CMAKE_CXX_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
+set(CMAKE_Fortran_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
+set(CMAKE_ASM_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})

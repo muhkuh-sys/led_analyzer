@@ -1,0 +1,3 @@
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\eeprom.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\eeprom.dir/objects.a @CMakeFiles\eeprom.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -m64 -O2 -g -DNDEBUG    -Wl,--whole-archive CMakeFiles\eeprom.dir/objects.a -Wl,--no-whole-archive  -o eeprom.exe -Wl,--out-implib,libeeprom.dll.a -Wl,--major-image-version,0,--minor-image-version,0  ..\src\libftdi1.dll.a C:\Users\subhan\Desktop\led_analyzer\testbin\external\libftdi\..\libusb\libusb-1.0.19\install\lib\libusb.a -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 

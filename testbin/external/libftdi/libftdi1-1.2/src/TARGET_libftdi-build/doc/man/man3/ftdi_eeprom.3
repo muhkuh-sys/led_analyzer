@@ -1,0 +1,125 @@
+.TH "Ftdi::Eeprom" 3 "Fri Mar 6 2015" "Version 1.2" "libftdi1" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Ftdi::Eeprom \- 
+.PP
+Device EEPROM\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <ftdi\&.hpp>\fP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBPrivate\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBEeprom\fP (\fBContext\fP *parent)"
+.br
+.ti -1c
+.RI "\fB~Eeprom\fP ()"
+.br
+.ti -1c
+.RI "int \fBinit_defaults\fP (char *manufacturer, char *product, char *serial)"
+.br
+.ti -1c
+.RI "int \fBchip_id\fP (unsigned int *chipid)"
+.br
+.ti -1c
+.RI "int \fBbuild\fP (unsigned char *output)"
+.br
+.ti -1c
+.RI "int \fBread\fP (unsigned char *eeprom)"
+.br
+.ti -1c
+.RI "int \fBwrite\fP (unsigned char *eeprom)"
+.br
+.ti -1c
+.RI "int \fBread_location\fP (int eeprom_addr, unsigned short *eeprom_val)"
+.br
+.ti -1c
+.RI "int \fBwrite_location\fP (int eeprom_addr, unsigned short eeprom_val)"
+.br
+.ti -1c
+.RI "int \fBerase\fP ()"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Device EEPROM\&. 
+.PP
+Definition at line 152 of file ftdi\&.hpp\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Ftdi::Eeprom::Eeprom (\fBContext\fP *parent)"
+
+.PP
+Definition at line 409 of file ftdi\&.cpp\&.
+.PP
+References Ftdi::Context::context()\&.
+.SS "Ftdi::Eeprom::~Eeprom ()"
+
+.PP
+Definition at line 415 of file ftdi\&.cpp\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "int Ftdi::Eeprom::init_defaults (char *manufacturer, char *product, char *serial)"
+
+.PP
+Definition at line 419 of file ftdi\&.cpp\&.
+.PP
+References ftdi_eeprom_initdefaults()\&.
+.SS "int Ftdi::Eeprom::chip_id (unsigned int *chipid)"
+
+.PP
+Definition at line 424 of file ftdi\&.cpp\&.
+.PP
+References ftdi_read_chipid()\&.
+.SS "int Ftdi::Eeprom::build (unsigned char *output)"
+
+.PP
+Definition at line 429 of file ftdi\&.cpp\&.
+.PP
+References ftdi_eeprom_build()\&.
+.SS "int Ftdi::Eeprom::read (unsigned char *eeprom)"
+
+.PP
+Definition at line 434 of file ftdi\&.cpp\&.
+.PP
+References ftdi_read_eeprom()\&.
+.SS "int Ftdi::Eeprom::write (unsigned char *eeprom)"
+
+.PP
+Definition at line 439 of file ftdi\&.cpp\&.
+.PP
+References ftdi_write_eeprom()\&.
+.SS "int Ftdi::Eeprom::read_location (inteeprom_addr, unsigned short *eeprom_val)"
+
+.PP
+Definition at line 444 of file ftdi\&.cpp\&.
+.PP
+References ftdi_read_eeprom_location()\&.
+.SS "int Ftdi::Eeprom::write_location (inteeprom_addr, unsigned shorteeprom_val)"
+
+.PP
+Definition at line 449 of file ftdi\&.cpp\&.
+.PP
+References ftdi_write_eeprom_location()\&.
+.SS "int Ftdi::Eeprom::erase ()"
+
+.PP
+Definition at line 454 of file ftdi\&.cpp\&.
+.PP
+References ftdi_erase_eeprom()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libftdi1 from the source code\&.

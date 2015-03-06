@@ -1,0 +1,19 @@
+# Hashes of file build rules.
+4d6ef514d28b1c69014c20f1979e1e1b external/libftdi/CMakeFiles/TARGET_libftdi
+d9ac7ca3b90bfc9acfa08cb938c500ab external/libftdi/CMakeFiles/TARGET_libftdi-complete
+45fa3b37cd268fb0e2c44c434b02f4f5 external/libftdi/libftdi1-1.2/src/TARGET_libftdi-stamp/TARGET_libftdi-build
+5e0c6e18eeef93518883d813ff72ea75 external/libftdi/libftdi1-1.2/src/TARGET_libftdi-stamp/TARGET_libftdi-configure
+5098d7b84e181f595e1b89b5acc73197 external/libftdi/libftdi1-1.2/src/TARGET_libftdi-stamp/TARGET_libftdi-download
+4bcdfd28ac50a909e1ceb7d8914993a4 external/libftdi/libftdi1-1.2/src/TARGET_libftdi-stamp/TARGET_libftdi-install
+7e099dceb63774e80f09bd5889cb31d3 external/libftdi/libftdi1-1.2/src/TARGET_libftdi-stamp/TARGET_libftdi-mkdir
+d3bdcce087ddcfd010dd2e4ec51b7f98 external/libftdi/libftdi1-1.2/src/TARGET_libftdi-stamp/TARGET_libftdi-patch
+0bdba2fc4a49cf56eb193f2db00e2827 external/libftdi/libftdi1-1.2/src/TARGET_libftdi-stamp/TARGET_libftdi-update
+c9b46767434273572fecf11e82454d38 external/libusb/CMakeFiles/TARGET_libusb
+55123b490debc803850994c7c91b1afb external/libusb/CMakeFiles/TARGET_libusb-complete
+1d8d9bf6192af43af1bec435f5eaab1b external/libusb/libusb-1.0.19/src/TARGET_libusb-stamp/TARGET_libusb-build
+1e82dfca2a2f17f83e0aaa2c36b2f11b external/libusb/libusb-1.0.19/src/TARGET_libusb-stamp/TARGET_libusb-configure
+634df1089c11db0861aa98cd9d52749a external/libusb/libusb-1.0.19/src/TARGET_libusb-stamp/TARGET_libusb-download
+d1117f9c56b130682293692c56727582 external/libusb/libusb-1.0.19/src/TARGET_libusb-stamp/TARGET_libusb-install
+7cc5b209138234c1357a078a1aad2fb7 external/libusb/libusb-1.0.19/src/TARGET_libusb-stamp/TARGET_libusb-mkdir
+4b94bc8e0c998a17a034ee3df782c7c0 external/libusb/libusb-1.0.19/src/TARGET_libusb-stamp/TARGET_libusb-patch
+edcfd8ef76fcdbe9d5bfa551fe70a5b4 external/libusb/libusb-1.0.19/src/TARGET_libusb-stamp/TARGET_libusb-update

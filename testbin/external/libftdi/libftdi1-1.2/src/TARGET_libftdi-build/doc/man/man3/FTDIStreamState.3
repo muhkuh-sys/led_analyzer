@@ -1,0 +1,73 @@
+.TH "FTDIStreamState" 3 "Fri Mar 6 2015" "Version 1.2" "libftdi1" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+FTDIStreamState \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBFTDIStreamCallback\fP * \fBcallback\fP"
+.br
+.ti -1c
+.RI "void * \fBuserdata\fP"
+.br
+.ti -1c
+.RI "int \fBpacketsize\fP"
+.br
+.ti -1c
+.RI "int \fBactivity\fP"
+.br
+.ti -1c
+.RI "int \fBresult\fP"
+.br
+.ti -1c
+.RI "\fBFTDIProgressInfo\fP \fBprogress\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 48 of file ftdi_stream\&.c\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBFTDIStreamCallback\fP* FTDIStreamState::callback"
+
+.PP
+Definition at line 50 of file ftdi_stream\&.c\&.
+.PP
+Referenced by ftdi_readstream()\&.
+.SS "void* FTDIStreamState::userdata"
+
+.PP
+Definition at line 51 of file ftdi_stream\&.c\&.
+.PP
+Referenced by ftdi_readstream()\&.
+.SS "int FTDIStreamState::packetsize"
+
+.PP
+Definition at line 52 of file ftdi_stream\&.c\&.
+.SS "int FTDIStreamState::activity"
+
+.PP
+Definition at line 53 of file ftdi_stream\&.c\&.
+.PP
+Referenced by ftdi_readstream()\&.
+.SS "int FTDIStreamState::result"
+
+.PP
+Definition at line 54 of file ftdi_stream\&.c\&.
+.PP
+Referenced by ftdi_readstream()\&.
+.SS "\fBFTDIProgressInfo\fP FTDIStreamState::progress"
+
+.PP
+Definition at line 55 of file ftdi_stream\&.c\&.
+.PP
+Referenced by ftdi_readstream()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libftdi1 from the source code\&.

@@ -45,14 +45,7 @@ IF(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 	LIST(APPEND LIBUSB_CMAKE_ARGS "-DCMAKE_RC_COMPILER=${CMAKE_RC_COMPILER}")
 ENDIF(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 
-#SET(LIBUSB_INCLUDE_DIR C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/install/include/libusb-1.0)
-#SET(LIBUSB_LIBRARIES C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/install/lib/libusb.a) 
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR}/../libusb/libusb-1.0.19/install/include/libusb-1.0)
-include_directories(${CMAKE_CURRENT_BINARY_DIR}/../libusb/libusb-1.0.19/install/lib)
-
-SET(LIBUSB_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../libusb/libusb-1.0.19/install/include/libusb-1.0)
-SET(LIBUSB_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/../libusb/libusb-1.0.19/install/lib/libusb.a)
 
 LIST(APPEND LIBUSB_PATHS "${LIBUSB_INCLUDE_DIR}")
 LIST(APPEND LIBUSB_PATHS "${LIBUSB_LIBRARIES}")
@@ -79,7 +72,7 @@ ExternalProject_Add(TARGET_libftdi
 
 # 3) Provide all variables for the build.
  SET(LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/libftdi/install/lib/libftdi1.a)
- #SET(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19/install/include/libusb-1.0)
+ SET(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19/install/include/libusb-1.0)
 
 
  IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
@@ -96,7 +89,7 @@ ExternalProject_Add(TARGET_libftdi
 
  # Store all information about the library in the cache.
 
- #SET(LIBFTDI_LIBRARY              ${LIBRARY}              CACHE INTERNAL "The libftdi library with the complete path.")
+ SET(LIBFTDI_LIBRARY              ${LIBRARY}              CACHE INTERNAL "The libftdi library with the complete path.")
  SET(LIBFTDI_LDFLAGS              ${LDFLAGS}              CACHE INTERNAL "All linker flags required to link the library. The list must be separated with whitespace.")
  SET(LIBFTDI_DEFINES              ${DEFINES}              CACHE INTERNAL "All defines for the libftdi library. This should be a list of entries starting with -D.")
  SET(LIBFTDI_INCLUDE_DIRECTORIES  ${INCLUDE_DIRECTORIES}  CACHE INTERNAL "The include folders for the library headers. The list must be separated with whitespace.")

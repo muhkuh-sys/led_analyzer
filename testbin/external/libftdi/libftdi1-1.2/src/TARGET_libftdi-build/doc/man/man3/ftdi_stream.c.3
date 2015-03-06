@@ -1,0 +1,61 @@
+.TH "ftdi_stream.c" 3 "Fri Mar 6 2015" "Version 1.2" "libftdi1" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ftdi_stream.c \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include <stdio\&.h>\fP
+.br
+\fC#include <libusb\&.h>\fP
+.br
+\fC#include 'ftdi\&.h'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBFTDIStreamState\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBftdi_readstream\fP (struct \fBftdi_context\fP *ftdi, \fBFTDIStreamCallback\fP *callback, void *userdata, int packetsPerTransfer, int numTransfers)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "int ftdi_readstream (struct \fBftdi_context\fP *ftdi, \fBFTDIStreamCallback\fP *callback, void *userdata, intpacketsPerTransfer, intnumTransfers)"
+Streaming reading of data from the device
+.PP
+Use asynchronous transfers in libusb-1\&.0 for high-performance streaming of data from a device interface back to the PC\&. This function continuously transfers data until either an error occurs or the callback returns a nonzero value\&. This function returns a libusb error code or the callback's return value\&.
+.PP
+For every contiguous block of received data, the callback will be invoked\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIcallback\fP to user supplied function for one block of data 
+.br
+\fIuserdata\fP 
+.br
+\fIpacketsPerTransfer\fP number of packets per transfer 
+.br
+\fInumTransfers\fP Number of transfers per callback 
+.RE
+.PP
+
+.PP
+Definition at line 147 of file ftdi_stream\&.c\&.
+.PP
+References FTDIStreamState::activity, BITMODE_RESET, BITMODE_SYNCFF, FTDIStreamState::callback, FTDIProgressInfo::current, FTDIProgressInfo::currentRate, FTDIProgressInfo::first, ftdi_get_error_string(), ftdi_set_bitmode(), ftdi_usb_purge_buffers(), ftdi_context::max_packet_size, ftdi_context::out_ep, FTDIProgressInfo::prev, FTDIStreamState::progress, FTDIStreamState::result, size_and_time::time, size_and_time::totalBytes, FTDIProgressInfo::totalRate, FTDIProgressInfo::totalTime, ftdi_context::type, TYPE_2232H, TYPE_232H, ftdi_context::usb_ctx, ftdi_context::usb_dev, ftdi_context::usb_read_timeout, and FTDIStreamState::userdata\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libftdi1 from the source code\&.

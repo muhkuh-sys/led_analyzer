@@ -1,0 +1,343 @@
+.TH "Ftdi::List" 3 "Fri Mar 6 2015" "Version 1.2" "libftdi1" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Ftdi::List \- 
+.PP
+Device list\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <ftdi\&.hpp>\fP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBPrivate\fP"
+.br
+.in -1c
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "typedef std::list< \fBContext\fP > \fBListType\fP"
+.br
+.RI "\fI\fBList\fP type storing 'Context' objects\&. \fP"
+.ti -1c
+.RI "typedef ListType::iterator \fBiterator\fP"
+.br
+.RI "\fIIterator type for the container\&. \fP"
+.ti -1c
+.RI "typedef ListType::const_iterator \fBconst_iterator\fP"
+.br
+.RI "\fIConst iterator type for the container\&. \fP"
+.ti -1c
+.RI "typedef ListType::reverse_iterator \fBreverse_iterator\fP"
+.br
+.RI "\fIReverse iterator type for the container\&. \fP"
+.ti -1c
+.RI "typedef 
+.br
+ListType::const_reverse_iterator \fBconst_reverse_iterator\fP"
+.br
+.RI "\fIConst reverse iterator type for the container\&. \fP"
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBList\fP (struct \fBftdi_device_list\fP *devlist=0)"
+.br
+.ti -1c
+.RI "\fB~List\fP ()"
+.br
+.ti -1c
+.RI "\fBiterator\fP \fBbegin\fP ()"
+.br
+.ti -1c
+.RI "\fBiterator\fP \fBend\fP ()"
+.br
+.ti -1c
+.RI "\fBconst_iterator\fP \fBbegin\fP () const "
+.br
+.ti -1c
+.RI "\fBconst_iterator\fP \fBend\fP () const "
+.br
+.ti -1c
+.RI "\fBreverse_iterator\fP \fBrbegin\fP ()"
+.br
+.ti -1c
+.RI "\fBreverse_iterator\fP \fBrend\fP ()"
+.br
+.ti -1c
+.RI "\fBconst_reverse_iterator\fP \fBrbegin\fP () const "
+.br
+.ti -1c
+.RI "\fBconst_reverse_iterator\fP \fBrend\fP () const "
+.br
+.ti -1c
+.RI "ListType::size_type \fBsize\fP () const "
+.br
+.ti -1c
+.RI "bool \fBempty\fP () const "
+.br
+.ti -1c
+.RI "void \fBclear\fP ()"
+.br
+.ti -1c
+.RI "void \fBpush_back\fP (const \fBContext\fP &element)"
+.br
+.ti -1c
+.RI "void \fBpush_front\fP (const \fBContext\fP &element)"
+.br
+.ti -1c
+.RI "\fBiterator\fP \fBerase\fP (\fBiterator\fP pos)"
+.br
+.ti -1c
+.RI "\fBiterator\fP \fBerase\fP (\fBiterator\fP beg, \fBiterator\fP \fBend\fP)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBList\fP * \fBfind_all\fP (\fBContext\fP &context, int vendor, int product)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Device list\&. 
+.PP
+Definition at line 175 of file ftdi\&.hpp\&.
+.SH "Member Typedef Documentation"
+.PP 
+.SS "typedef std::list<\fBContext\fP> \fBFtdi::List::ListType\fP"
+
+.PP
+\fBList\fP type storing 'Context' objects\&. 
+.PP
+Definition at line 184 of file ftdi\&.hpp\&.
+.SS "typedef ListType::iterator \fBFtdi::List::iterator\fP"
+
+.PP
+Iterator type for the container\&. 
+.PP
+Definition at line 186 of file ftdi\&.hpp\&.
+.SS "typedef ListType::const_iterator \fBFtdi::List::const_iterator\fP"
+
+.PP
+Const iterator type for the container\&. 
+.PP
+Definition at line 188 of file ftdi\&.hpp\&.
+.SS "typedef ListType::reverse_iterator \fBFtdi::List::reverse_iterator\fP"
+
+.PP
+Reverse iterator type for the container\&. 
+.PP
+Definition at line 190 of file ftdi\&.hpp\&.
+.SS "typedef ListType::const_reverse_iterator \fBFtdi::List::const_reverse_iterator\fP"
+
+.PP
+Const reverse iterator type for the container\&. 
+.PP
+Definition at line 192 of file ftdi\&.hpp\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Ftdi::List::List (struct \fBftdi_device_list\fP *devlist = \fC0\fP)"
+
+.PP
+Definition at line 476 of file ftdi\&.cpp\&.
+.PP
+References ftdi_device_list::dev, Ftdi::Context::get_strings(), ftdi_device_list::next, and Ftdi::Context::set_usb_device()\&.
+.PP
+Referenced by find_all()\&.
+.SS "Ftdi::List::~List ()"
+
+.PP
+Definition at line 492 of file ftdi\&.cpp\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBList\fP * Ftdi::List::find_all (\fBContext\fP &context, intvendor, intproduct)\fC [static]\fP"
+
+.PP
+Definition at line 643 of file ftdi\&.cpp\&.
+.PP
+References Ftdi::Context::context(), ftdi_usb_find_all(), and List()\&.
+.SS "\fBList::iterator\fP Ftdi::List::begin ()"
+Return begin iterator for accessing the contained list elements 
+.PP
+\fBReturns:\fP
+.RS 4
+Iterator 
+.RE
+.PP
+
+.PP
+Definition at line 500 of file ftdi\&.cpp\&.
+.SS "\fBList::iterator\fP Ftdi::List::end ()"
+Return end iterator for accessing the contained list elements 
+.PP
+\fBReturns:\fP
+.RS 4
+Iterator 
+.RE
+.PP
+
+.PP
+Definition at line 509 of file ftdi\&.cpp\&.
+.SS "\fBList::const_iterator\fP Ftdi::List::begin () const"
+Return begin iterator for accessing the contained list elements 
+.PP
+\fBReturns:\fP
+.RS 4
+Const iterator 
+.RE
+.PP
+
+.PP
+Definition at line 518 of file ftdi\&.cpp\&.
+.SS "\fBList::const_iterator\fP Ftdi::List::end () const"
+Return end iterator for accessing the contained list elements 
+.PP
+\fBReturns:\fP
+.RS 4
+Const iterator 
+.RE
+.PP
+
+.PP
+Definition at line 527 of file ftdi\&.cpp\&.
+.SS "\fBList::reverse_iterator\fP Ftdi::List::rbegin ()"
+Return begin reverse iterator for accessing the contained list elements 
+.PP
+\fBReturns:\fP
+.RS 4
+Reverse iterator 
+.RE
+.PP
+
+.PP
+Definition at line 536 of file ftdi\&.cpp\&.
+.SS "\fBList::reverse_iterator\fP Ftdi::List::rend ()"
+Return end reverse iterator for accessing the contained list elements 
+.PP
+\fBReturns:\fP
+.RS 4
+Reverse iterator 
+.RE
+.PP
+
+.PP
+Definition at line 545 of file ftdi\&.cpp\&.
+.SS "\fBList::const_reverse_iterator\fP Ftdi::List::rbegin () const"
+Return begin reverse iterator for accessing the contained list elements 
+.PP
+\fBReturns:\fP
+.RS 4
+Const reverse iterator 
+.RE
+.PP
+
+.PP
+Definition at line 554 of file ftdi\&.cpp\&.
+.SS "\fBList::const_reverse_iterator\fP Ftdi::List::rend () const"
+Return end reverse iterator for accessing the contained list elements 
+.PP
+\fBReturns:\fP
+.RS 4
+Const reverse iterator 
+.RE
+.PP
+
+.PP
+Definition at line 563 of file ftdi\&.cpp\&.
+.SS "List::ListType::size_type Ftdi::List::size () const"
+Get number of elements stored in the list 
+.PP
+\fBReturns:\fP
+.RS 4
+Number of elements 
+.RE
+.PP
+
+.PP
+Definition at line 573 of file ftdi\&.cpp\&.
+.SS "bool Ftdi::List::empty () const"
+Check if list is empty 
+.PP
+\fBReturns:\fP
+.RS 4
+True if empty, false otherwise 
+.RE
+.PP
+
+.PP
+Definition at line 582 of file ftdi\&.cpp\&.
+.SS "void Ftdi::List::clear ()"
+Removes all elements\&. Invalidates all iterators\&. Do it in a non-throwing way and also make sure we really free the allocated memory\&. 
+.PP
+Definition at line 592 of file ftdi\&.cpp\&.
+.PP
+References ftdi_list_free()\&.
+.SS "void Ftdi::List::push_back (const \fBContext\fP &element)"
+Appends a copy of the element as the new last element\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIelement\fP Value to copy and append 
+.RE
+.PP
+
+.PP
+Definition at line 608 of file ftdi\&.cpp\&.
+.SS "void Ftdi::List::push_front (const \fBContext\fP &element)"
+Adds a copy of the element as the new first element\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIelement\fP Value to copy and add 
+.RE
+.PP
+
+.PP
+Definition at line 617 of file ftdi\&.cpp\&.
+.SS "\fBList::iterator\fP Ftdi::List::erase (\fBiterator\fPpos)"
+Erase one element pointed by iterator 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpos\fP Element to erase 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Position of the following element (or \fBend()\fP) 
+.RE
+.PP
+
+.PP
+Definition at line 627 of file ftdi\&.cpp\&.
+.SS "\fBList::iterator\fP Ftdi::List::erase (\fBiterator\fPbeg, \fBiterator\fPend)"
+Erase a range of elements 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIbeg\fP Begin of range 
+.br
+\fIend\fP End of range 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Position of the element after the erased range (or \fBend()\fP) 
+.RE
+.PP
+
+.PP
+Definition at line 638 of file ftdi\&.cpp\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libftdi1 from the source code\&.

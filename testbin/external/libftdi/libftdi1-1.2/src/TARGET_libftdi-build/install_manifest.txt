@@ -1,0 +1,10 @@
+/Program Files (x86)/libftdi1/lib/pkgconfig/libftdi1.pc
+/Program Files (x86)/libftdi1/lib/pkgconfig/libftdipp1.pc
+/Program Files (x86)/libftdi1/bin/libftdi1-config
+/Program Files (x86)/libftdi1/lib/cmake/libftdi1/LibFTDI1Config.cmake
+/Program Files (x86)/libftdi1/lib/cmake/libftdi1/LibFTDI1ConfigVersion.cmake
+/Program Files (x86)/libftdi1/lib/cmake/libftdi1/UseLibFTDI1.cmake
+/Program Files (x86)/libftdi1/lib/libftdi1.dll.a
+/Program Files (x86)/libftdi1/bin/libftdi1.dll
+/Program Files (x86)/libftdi1/lib/libftdi1.a
+/Program Files (x86)/libftdi1/include/libftdi1/ftdi.h

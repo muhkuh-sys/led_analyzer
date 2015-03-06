@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/subhan/Desktop/led_analyzer/testbin/external/libftdi/libftdi1-1.2/src/TARGET_libftdi/examples/stream_test.c
+stdio.h
+-
+stdlib.h
+-
+stdint.h
+-
+string.h
+-
+unistd.h
+-
+getopt.h
+-
+signal.h
+-
+errno.h
+-
+ftdi.h
+-
+
+C:/Users/subhan/Desktop/led_analyzer/testbin/external/libftdi/libftdi1-1.2/src/TARGET_libftdi/src/ftdi.h
+stdint.h
+-
+sys/time.h
+-
+windows.h
+-
+

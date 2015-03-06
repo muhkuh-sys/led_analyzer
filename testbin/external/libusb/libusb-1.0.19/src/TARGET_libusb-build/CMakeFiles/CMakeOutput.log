@@ -1,0 +1,607 @@
+The target system is: Windows -  - 
+The host system is: Windows - 6.1 - AMD64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: C:/TDM-GCC-64/bin/gcc.exe 
+Build flags: -m64
+Id flags: 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.exe"
+
+The C compiler identification is GNU, found in "C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/3.0.1/CompilerIdC/a.exe"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: C:/TDM-GCC-64/bin/g++.exe 
+Build flags: 
+Id flags: 
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.exe"
+
+The CXX compiler identification is GNU, found in "C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/3.0.1/CompilerIdCXX/a.exe"
+
+Determining if the C compiler works passed with the following output:
+Change Dir: C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/TDM-GCC-64/bin/mingw32-make.exe" "cmTryCompileExec3918779994/fast"
+mingw32-make.exe[3]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec3918779994.dir\build.make CMakeFiles/cmTryCompileExec3918779994.dir/build
+mingw32-make.exe[4]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_progress_report C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3918779994.dir/testCCompiler.c.obj
+C:\TDM-GCC-64\bin\gcc.exe   -m64    -o CMakeFiles\cmTryCompileExec3918779994.dir\testCCompiler.c.obj   -c C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\testCCompiler.c
+Linking C executable cmTryCompileExec3918779994.exe
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec3918779994.dir\link.txt --verbose=1
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\cmTryCompileExec3918779994.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTryCompileExec3918779994.dir/objects.a @CMakeFiles\cmTryCompileExec3918779994.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -m64     -Wl,--whole-archive CMakeFiles\cmTryCompileExec3918779994.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec3918779994.exe -Wl,--out-implib,libcmTryCompileExec3918779994.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+mingw32-make.exe[4]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+mingw32-make.exe[3]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/TDM-GCC-64/bin/mingw32-make.exe" "cmTryCompileExec3483546628/fast"
+mingw32-make.exe[3]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec3483546628.dir\build.make CMakeFiles/cmTryCompileExec3483546628.dir/build
+mingw32-make.exe[4]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_progress_report C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3483546628.dir/CMakeCCompilerABI.c.obj
+C:\TDM-GCC-64\bin\gcc.exe   -m64    -o CMakeFiles\cmTryCompileExec3483546628.dir\CMakeCCompilerABI.c.obj   -c "C:\Program Files (x86)\CMake\share\cmake-3.0\Modules\CMakeCCompilerABI.c"
+Linking C executable cmTryCompileExec3483546628.exe
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec3483546628.dir\link.txt --verbose=1
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\cmTryCompileExec3483546628.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTryCompileExec3483546628.dir/objects.a @CMakeFiles\cmTryCompileExec3483546628.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -m64   -v -Wl,--whole-archive CMakeFiles\cmTryCompileExec3483546628.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec3483546628.exe -Wl,--out-implib,libcmTryCompileExec3483546628.dll.a -Wl,--major-image-version,0,--minor-image-version,0   
+Using built-in specs.
+COLLECT_GCC=C:\TDM-GCC-64\bin\gcc.exe
+COLLECT_LTO_WRAPPER=C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper.exe
+Target: x86_64-w64-mingw32
+Configured with: ../../../src/gcc-4.9.2/configure --build=x86_64-w64-mingw32 --enable-targets=all --enable-languages=ada,c,c++,fortran,lto,objc,obj-c++ --enable-libgomp --enable-lto --enable-graphite --enable-cxx-flags=-DWINPTHREAD_STATIC --disable-build-with-cxx --disable-build-poststage1-with-cxx --enable-libstdcxx-debug --enable-threads=posix --enable-version-specific-runtime-libs --enable-fully-dynamic-string --enable-libstdcxx-threads --enable-libstdcxx-time --with-gnu-ld --disable-werror --disable-nls --disable-win32-registry --prefix=/mingw64tdm --with-local-prefix=/mingw64tdm --with-pkgversion=tdm64-1 --with-bugurl=http://tdm-gcc.tdragon.net/bugs
+Thread model: posix
+gcc version 4.9.2 (tdm64-1) 
+COMPILER_PATH=C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/;C:/TDM-GCC-64/bin/../libexec/gcc/;C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/bin/
+LIBRARY_PATH=C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/;C:/TDM-GCC-64/bin/../lib/gcc/;C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/;C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../lib/;C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/;C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../
+COLLECT_GCC_OPTIONS='-m64' '-v' '-o' 'cmTryCompileExec3483546628.exe' '-mtune=generic' '-march=x86-64'
+ C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/collect2.exe -plugin C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/liblto_plugin-0.dll -plugin-opt=C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper.exe -plugin-opt=-fresolution=C:\Users\subhan\AppData\Local\Temp\ccRnjpNe.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -m i386pep --exclude-libs=libpthread.a -Bdynamic -o cmTryCompileExec3483546628.exe C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crt2.o C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtbegin.o -LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2 -LC:/TDM-GCC-64/bin/../lib/gcc -LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib -LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../lib -LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib -LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../.. --whole-archive CMakeFiles\cmTryCompileExec3483546628.dir/objects.a --no-whole-archive --out-implib libcmTryCompileExec3483546628.dll.a --major-image-version 0 --minor-image-version 0 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtend.o
+mingw32-make.exe[4]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+mingw32-make.exe[3]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld\.exe|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"C:/TDM-GCC-64/bin/mingw32-make.exe" "cmTryCompileExec3483546628/fast"]
+  ignore line: [mingw32-make.exe[3]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp']
+  ignore line: [C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec3483546628.dir\build.make CMakeFiles/cmTryCompileExec3483546628.dir/build]
+  ignore line: [mingw32-make.exe[4]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp']
+  ignore line: ["C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_progress_report C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CMakeFiles 1]
+  ignore line: [Building C object CMakeFiles/cmTryCompileExec3483546628.dir/CMakeCCompilerABI.c.obj]
+  ignore line: [C:\TDM-GCC-64\bin\gcc.exe   -m64    -o CMakeFiles\cmTryCompileExec3483546628.dir\CMakeCCompilerABI.c.obj   -c "C:\Program Files (x86)\CMake\share\cmake-3.0\Modules\CMakeCCompilerABI.c"]
+  ignore line: [Linking C executable cmTryCompileExec3483546628.exe]
+  ignore line: ["C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec3483546628.dir\link.txt --verbose=1]
+  ignore line: ["C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\cmTryCompileExec3483546628.dir/objects.a]
+  ignore line: [C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTryCompileExec3483546628.dir/objects.a @CMakeFiles\cmTryCompileExec3483546628.dir\objects1.rsp]
+  ignore line: [C:\TDM-GCC-64\bin\gcc.exe  -m64   -v -Wl,--whole-archive CMakeFiles\cmTryCompileExec3483546628.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec3483546628.exe -Wl,--out-implib,libcmTryCompileExec3483546628.dll.a -Wl,--major-image-version,0,--minor-image-version,0   ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=C:\TDM-GCC-64\bin\gcc.exe]
+  ignore line: [COLLECT_LTO_WRAPPER=C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper.exe]
+  ignore line: [Target: x86_64-w64-mingw32]
+  ignore line: [Configured with: ../../../src/gcc-4.9.2/configure --build=x86_64-w64-mingw32 --enable-targets=all --enable-languages=ada,c,c++,fortran,lto,objc,obj-c++ --enable-libgomp --enable-lto --enable-graphite --enable-cxx-flags=-DWINPTHREAD_STATIC --disable-build-with-cxx --disable-build-poststage1-with-cxx --enable-libstdcxx-debug --enable-threads=posix --enable-version-specific-runtime-libs --enable-fully-dynamic-string --enable-libstdcxx-threads --enable-libstdcxx-time --with-gnu-ld --disable-werror --disable-nls --disable-win32-registry --prefix=/mingw64tdm --with-local-prefix=/mingw64tdm --with-pkgversion=tdm64-1 --with-bugurl=http://tdm-gcc.tdragon.net/bugs]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 4.9.2 (tdm64-1) ]
+  ignore line: [COMPILER_PATH=C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/]
+  ignore line: [C:/TDM-GCC-64/bin/../libexec/gcc/]
+  ignore line: [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/bin/]
+  ignore line: [LIBRARY_PATH=C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/]
+  ignore line: [C:/TDM-GCC-64/bin/../lib/gcc/]
+  ignore line: [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/]
+  ignore line: [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../lib/]
+  ignore line: [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/]
+  ignore line: [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../]
+  ignore line: [COLLECT_GCC_OPTIONS='-m64' '-v' '-o' 'cmTryCompileExec3483546628.exe' '-mtune=generic' '-march=x86-64']
+  link line: [ C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/collect2.exe -plugin C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/liblto_plugin-0.dll -plugin-opt=C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper.exe -plugin-opt=-fresolution=C:\Users\subhan\AppData\Local\Temp\ccRnjpNe.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -m i386pep --exclude-libs=libpthread.a -Bdynamic -o cmTryCompileExec3483546628.exe C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crt2.o C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtbegin.o -LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2 -LC:/TDM-GCC-64/bin/../lib/gcc -LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib -LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../lib -LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib -LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../.. --whole-archive CMakeFiles\cmTryCompileExec3483546628.dir/objects.a --no-whole-archive --out-implib libcmTryCompileExec3483546628.dll.a --major-image-version 0 --minor-image-version 0 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtend.o]
+    arg [C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/collect2.exe] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/liblto_plugin-0.dll] ==> ignore
+    arg [-plugin-opt=C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper.exe] ==> ignore
+    arg [-plugin-opt=-fresolution=C:\Users\subhan\AppData\Local\Temp\ccRnjpNe.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingw32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmoldname] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingwex] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmsvcrt] ==> ignore
+    arg [-plugin-opt=-pass-through=-lpthread] ==> ignore
+    arg [-plugin-opt=-pass-through=-ladvapi32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lshell32] ==> ignore
+    arg [-plugin-opt=-pass-through=-luser32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lkernel32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingw32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmoldname] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingwex] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmsvcrt] ==> ignore
+    arg [-m] ==> ignore
+    arg [i386pep] ==> ignore
+    arg [--exclude-libs=libpthread.a] ==> ignore
+    arg [-Bdynamic] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTryCompileExec3483546628.exe] ==> ignore
+    arg [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crt2.o] ==> ignore
+    arg [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtbegin.o] ==> ignore
+    arg [-LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2] ==> dir [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2]
+    arg [-LC:/TDM-GCC-64/bin/../lib/gcc] ==> dir [C:/TDM-GCC-64/bin/../lib/gcc]
+    arg [-LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib] ==> dir [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib]
+    arg [-LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../lib] ==> dir [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../lib]
+    arg [-LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib] ==> dir [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib]
+    arg [-LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../..] ==> dir [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../..]
+    arg [--whole-archive] ==> ignore
+    arg [CMakeFiles\cmTryCompileExec3483546628.dir/objects.a] ==> ignore
+    arg [--no-whole-archive] ==> ignore
+    arg [--out-implib] ==> ignore
+    arg [libcmTryCompileExec3483546628.dll.a] ==> ignore
+    arg [--major-image-version] ==> ignore
+    arg [0] ==> ignore
+    arg [--minor-image-version] ==> ignore
+    arg [0] ==> ignore
+    arg [-lmingw32] ==> lib [mingw32]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lmoldname] ==> lib [moldname]
+    arg [-lmingwex] ==> lib [mingwex]
+    arg [-lmsvcrt] ==> lib [msvcrt]
+    arg [-lpthread] ==> lib [pthread]
+    arg [-ladvapi32] ==> lib [advapi32]
+    arg [-lshell32] ==> lib [shell32]
+    arg [-luser32] ==> lib [user32]
+    arg [-lkernel32] ==> lib [kernel32]
+    arg [-lmingw32] ==> lib [mingw32]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lmoldname] ==> lib [moldname]
+    arg [-lmingwex] ==> lib [mingwex]
+    arg [-lmsvcrt] ==> lib [msvcrt]
+    arg [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtend.o] ==> ignore
+  remove lib [gcc]
+  remove lib [gcc]
+  collapse library dir [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2] ==> [C:/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/4.9.2]
+  collapse library dir [C:/TDM-GCC-64/bin/../lib/gcc] ==> [C:/TDM-GCC-64/lib/gcc]
+  collapse library dir [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib] ==> [C:/TDM-GCC-64/x86_64-w64-mingw32/lib]
+  collapse library dir [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../lib] ==> [C:/TDM-GCC-64/lib]
+  collapse library dir [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib] ==> [C:/TDM-GCC-64/x86_64-w64-mingw32/lib]
+  collapse library dir [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../..] ==> [C:/TDM-GCC-64/lib]
+  implicit libs: [mingw32;moldname;mingwex;msvcrt;pthread;advapi32;shell32;user32;kernel32;mingw32;moldname;mingwex;msvcrt]
+  implicit dirs: [C:/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/4.9.2;C:/TDM-GCC-64/lib/gcc;C:/TDM-GCC-64/x86_64-w64-mingw32/lib;C:/TDM-GCC-64/lib]
+  implicit fwks: []
+
+
+Determining if the CXX compiler works passed with the following output:
+Change Dir: C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/TDM-GCC-64/bin/mingw32-make.exe" "cmTryCompileExec2145667407/fast"
+mingw32-make.exe[3]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec2145667407.dir\build.make CMakeFiles/cmTryCompileExec2145667407.dir/build
+mingw32-make.exe[4]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_progress_report C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec2145667407.dir/testCXXCompiler.cxx.obj
+C:\TDM-GCC-64\bin\g++.exe     -o CMakeFiles\cmTryCompileExec2145667407.dir\testCXXCompiler.cxx.obj -c C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\testCXXCompiler.cxx
+Linking CXX executable cmTryCompileExec2145667407.exe
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec2145667407.dir\link.txt --verbose=1
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\cmTryCompileExec2145667407.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTryCompileExec2145667407.dir/objects.a @CMakeFiles\cmTryCompileExec2145667407.dir\objects1.rsp
+C:\TDM-GCC-64\bin\g++.exe       -Wl,--whole-archive CMakeFiles\cmTryCompileExec2145667407.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec2145667407.exe -Wl,--out-implib,libcmTryCompileExec2145667407.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+mingw32-make.exe[4]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+mingw32-make.exe[3]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/TDM-GCC-64/bin/mingw32-make.exe" "cmTryCompileExec1366187189/fast"
+mingw32-make.exe[3]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec1366187189.dir\build.make CMakeFiles/cmTryCompileExec1366187189.dir/build
+mingw32-make.exe[4]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_progress_report C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec1366187189.dir/CMakeCXXCompilerABI.cpp.obj
+C:\TDM-GCC-64\bin\g++.exe     -o CMakeFiles\cmTryCompileExec1366187189.dir\CMakeCXXCompilerABI.cpp.obj -c "C:\Program Files (x86)\CMake\share\cmake-3.0\Modules\CMakeCXXCompilerABI.cpp"
+Linking CXX executable cmTryCompileExec1366187189.exe
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec1366187189.dir\link.txt --verbose=1
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\cmTryCompileExec1366187189.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTryCompileExec1366187189.dir/objects.a @CMakeFiles\cmTryCompileExec1366187189.dir\objects1.rsp
+C:\TDM-GCC-64\bin\g++.exe     -v -Wl,--whole-archive CMakeFiles\cmTryCompileExec1366187189.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec1366187189.exe -Wl,--out-implib,libcmTryCompileExec1366187189.dll.a -Wl,--major-image-version,0,--minor-image-version,0   
+Using built-in specs.
+COLLECT_GCC=C:\TDM-GCC-64\bin\g++.exe
+COLLECT_LTO_WRAPPER=C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper.exe
+Target: x86_64-w64-mingw32
+Configured with: ../../../src/gcc-4.9.2/configure --build=x86_64-w64-mingw32 --enable-targets=all --enable-languages=ada,c,c++,fortran,lto,objc,obj-c++ --enable-libgomp --enable-lto --enable-graphite --enable-cxx-flags=-DWINPTHREAD_STATIC --disable-build-with-cxx --disable-build-poststage1-with-cxx --enable-libstdcxx-debug --enable-threads=posix --enable-version-specific-runtime-libs --enable-fully-dynamic-string --enable-libstdcxx-threads --enable-libstdcxx-time --with-gnu-ld --disable-werror --disable-nls --disable-win32-registry --prefix=/mingw64tdm --with-local-prefix=/mingw64tdm --with-pkgversion=tdm64-1 --with-bugurl=http://tdm-gcc.tdragon.net/bugs
+Thread model: posix
+gcc version 4.9.2 (tdm64-1) 
+COMPILER_PATH=C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/;C:/TDM-GCC-64/bin/../libexec/gcc/;C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/bin/
+LIBRARY_PATH=C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/;C:/TDM-GCC-64/bin/../lib/gcc/;C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/;C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../lib/;C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/;C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTryCompileExec1366187189.exe' '-mtune=generic' '-march=x86-64'
+ C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/collect2.exe -plugin C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/liblto_plugin-0.dll -plugin-opt=C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper.exe -plugin-opt=-fresolution=C:\Users\subhan\AppData\Local\Temp\ccvhVkaH.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -m i386pep --exclude-libs=libpthread.a -Bdynamic -o cmTryCompileExec1366187189.exe C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crt2.o C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtbegin.o -LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2 -LC:/TDM-GCC-64/bin/../lib/gcc -LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib -LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../lib -LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib -LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../.. --whole-archive CMakeFiles\cmTryCompileExec1366187189.dir/objects.a --no-whole-archive --out-implib libcmTryCompileExec1366187189.dll.a --major-image-version 0 --minor-image-version 0 -Bstatic -lstdc++ -Bdynamic -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtend.o
+mingw32-make.exe[4]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+mingw32-make.exe[3]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld\.exe|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"C:/TDM-GCC-64/bin/mingw32-make.exe" "cmTryCompileExec1366187189/fast"]
+  ignore line: [mingw32-make.exe[3]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp']
+  ignore line: [C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec1366187189.dir\build.make CMakeFiles/cmTryCompileExec1366187189.dir/build]
+  ignore line: [mingw32-make.exe[4]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp']
+  ignore line: ["C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_progress_report C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CMakeFiles 1]
+  ignore line: [Building CXX object CMakeFiles/cmTryCompileExec1366187189.dir/CMakeCXXCompilerABI.cpp.obj]
+  ignore line: [C:\TDM-GCC-64\bin\g++.exe     -o CMakeFiles\cmTryCompileExec1366187189.dir\CMakeCXXCompilerABI.cpp.obj -c "C:\Program Files (x86)\CMake\share\cmake-3.0\Modules\CMakeCXXCompilerABI.cpp"]
+  ignore line: [Linking CXX executable cmTryCompileExec1366187189.exe]
+  ignore line: ["C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec1366187189.dir\link.txt --verbose=1]
+  ignore line: ["C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\cmTryCompileExec1366187189.dir/objects.a]
+  ignore line: [C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTryCompileExec1366187189.dir/objects.a @CMakeFiles\cmTryCompileExec1366187189.dir\objects1.rsp]
+  ignore line: [C:\TDM-GCC-64\bin\g++.exe     -v -Wl,--whole-archive CMakeFiles\cmTryCompileExec1366187189.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec1366187189.exe -Wl,--out-implib,libcmTryCompileExec1366187189.dll.a -Wl,--major-image-version,0,--minor-image-version,0   ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=C:\TDM-GCC-64\bin\g++.exe]
+  ignore line: [COLLECT_LTO_WRAPPER=C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper.exe]
+  ignore line: [Target: x86_64-w64-mingw32]
+  ignore line: [Configured with: ../../../src/gcc-4.9.2/configure --build=x86_64-w64-mingw32 --enable-targets=all --enable-languages=ada,c,c++,fortran,lto,objc,obj-c++ --enable-libgomp --enable-lto --enable-graphite --enable-cxx-flags=-DWINPTHREAD_STATIC --disable-build-with-cxx --disable-build-poststage1-with-cxx --enable-libstdcxx-debug --enable-threads=posix --enable-version-specific-runtime-libs --enable-fully-dynamic-string --enable-libstdcxx-threads --enable-libstdcxx-time --with-gnu-ld --disable-werror --disable-nls --disable-win32-registry --prefix=/mingw64tdm --with-local-prefix=/mingw64tdm --with-pkgversion=tdm64-1 --with-bugurl=http://tdm-gcc.tdragon.net/bugs]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 4.9.2 (tdm64-1) ]
+  ignore line: [COMPILER_PATH=C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/]
+  ignore line: [C:/TDM-GCC-64/bin/../libexec/gcc/]
+  ignore line: [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/bin/]
+  ignore line: [LIBRARY_PATH=C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/]
+  ignore line: [C:/TDM-GCC-64/bin/../lib/gcc/]
+  ignore line: [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/]
+  ignore line: [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../lib/]
+  ignore line: [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/]
+  ignore line: [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTryCompileExec1366187189.exe' '-mtune=generic' '-march=x86-64']
+  link line: [ C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/collect2.exe -plugin C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/liblto_plugin-0.dll -plugin-opt=C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper.exe -plugin-opt=-fresolution=C:\Users\subhan\AppData\Local\Temp\ccvhVkaH.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -m i386pep --exclude-libs=libpthread.a -Bdynamic -o cmTryCompileExec1366187189.exe C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crt2.o C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtbegin.o -LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2 -LC:/TDM-GCC-64/bin/../lib/gcc -LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib -LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../lib -LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib -LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../.. --whole-archive CMakeFiles\cmTryCompileExec1366187189.dir/objects.a --no-whole-archive --out-implib libcmTryCompileExec1366187189.dll.a --major-image-version 0 --minor-image-version 0 -Bstatic -lstdc++ -Bdynamic -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtend.o]
+    arg [C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/collect2.exe] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/liblto_plugin-0.dll] ==> ignore
+    arg [-plugin-opt=C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/4.9.2/lto-wrapper.exe] ==> ignore
+    arg [-plugin-opt=-fresolution=C:\Users\subhan\AppData\Local\Temp\ccvhVkaH.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingw32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmoldname] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingwex] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmsvcrt] ==> ignore
+    arg [-plugin-opt=-pass-through=-lpthread] ==> ignore
+    arg [-plugin-opt=-pass-through=-ladvapi32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lshell32] ==> ignore
+    arg [-plugin-opt=-pass-through=-luser32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lkernel32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingw32] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmoldname] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmingwex] ==> ignore
+    arg [-plugin-opt=-pass-through=-lmsvcrt] ==> ignore
+    arg [-m] ==> ignore
+    arg [i386pep] ==> ignore
+    arg [--exclude-libs=libpthread.a] ==> ignore
+    arg [-Bdynamic] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTryCompileExec1366187189.exe] ==> ignore
+    arg [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crt2.o] ==> ignore
+    arg [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtbegin.o] ==> ignore
+    arg [-LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2] ==> dir [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2]
+    arg [-LC:/TDM-GCC-64/bin/../lib/gcc] ==> dir [C:/TDM-GCC-64/bin/../lib/gcc]
+    arg [-LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib] ==> dir [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib]
+    arg [-LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../lib] ==> dir [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../lib]
+    arg [-LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib] ==> dir [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib]
+    arg [-LC:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../..] ==> dir [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../..]
+    arg [--whole-archive] ==> ignore
+    arg [CMakeFiles\cmTryCompileExec1366187189.dir/objects.a] ==> ignore
+    arg [--no-whole-archive] ==> ignore
+    arg [--out-implib] ==> ignore
+    arg [libcmTryCompileExec1366187189.dll.a] ==> ignore
+    arg [--major-image-version] ==> ignore
+    arg [0] ==> ignore
+    arg [--minor-image-version] ==> ignore
+    arg [0] ==> ignore
+    arg [-Bstatic] ==> ignore
+    arg [-lstdc++] ==> lib [stdc++]
+    arg [-Bdynamic] ==> ignore
+    arg [-lmingw32] ==> lib [mingw32]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lmoldname] ==> lib [moldname]
+    arg [-lmingwex] ==> lib [mingwex]
+    arg [-lmsvcrt] ==> lib [msvcrt]
+    arg [-lpthread] ==> lib [pthread]
+    arg [-ladvapi32] ==> lib [advapi32]
+    arg [-lshell32] ==> lib [shell32]
+    arg [-luser32] ==> lib [user32]
+    arg [-lkernel32] ==> lib [kernel32]
+    arg [-lmingw32] ==> lib [mingw32]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lmoldname] ==> lib [moldname]
+    arg [-lmingwex] ==> lib [mingwex]
+    arg [-lmsvcrt] ==> lib [msvcrt]
+    arg [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib/crtend.o] ==> ignore
+  remove lib [gcc]
+  remove lib [gcc]
+  collapse library dir [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2] ==> [C:/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/4.9.2]
+  collapse library dir [C:/TDM-GCC-64/bin/../lib/gcc] ==> [C:/TDM-GCC-64/lib/gcc]
+  collapse library dir [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib/../lib] ==> [C:/TDM-GCC-64/x86_64-w64-mingw32/lib]
+  collapse library dir [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../lib] ==> [C:/TDM-GCC-64/lib]
+  collapse library dir [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../../../x86_64-w64-mingw32/lib] ==> [C:/TDM-GCC-64/x86_64-w64-mingw32/lib]
+  collapse library dir [C:/TDM-GCC-64/bin/../lib/gcc/x86_64-w64-mingw32/4.9.2/../../..] ==> [C:/TDM-GCC-64/lib]
+  implicit libs: [stdc++;mingw32;moldname;mingwex;msvcrt;pthread;advapi32;shell32;user32;kernel32;mingw32;moldname;mingwex;msvcrt]
+  implicit dirs: [C:/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/4.9.2;C:/TDM-GCC-64/lib/gcc;C:/TDM-GCC-64/x86_64-w64-mingw32/lib;C:/TDM-GCC-64/lib]
+  implicit fwks: []
+
+
+Determining if the function gettimeofday exists passed with the following output:
+Change Dir: C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/TDM-GCC-64/bin/mingw32-make.exe" "cmTryCompileExec1025868330/fast"
+mingw32-make.exe[3]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec1025868330.dir\build.make CMakeFiles/cmTryCompileExec1025868330.dir/build
+mingw32-make.exe[4]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_progress_report C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec1025868330.dir/CheckFunctionExists.c.obj
+C:\TDM-GCC-64\bin\gcc.exe   -m64 -DCHECK_FUNCTION_EXISTS=gettimeofday   -o CMakeFiles\cmTryCompileExec1025868330.dir\CheckFunctionExists.c.obj   -c "C:\Program Files (x86)\CMake\share\cmake-3.0\Modules\CheckFunctionExists.c"
+Linking C executable cmTryCompileExec1025868330.exe
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec1025868330.dir\link.txt --verbose=1
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\cmTryCompileExec1025868330.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTryCompileExec1025868330.dir/objects.a @CMakeFiles\cmTryCompileExec1025868330.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -m64 -DCHECK_FUNCTION_EXISTS=gettimeofday    -Wl,--whole-archive CMakeFiles\cmTryCompileExec1025868330.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec1025868330.exe -Wl,--out-implib,libcmTryCompileExec1025868330.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+mingw32-make.exe[4]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+mingw32-make.exe[3]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+
+
+Determining if files inttypes.h exist passed with the following output:
+Change Dir: C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/TDM-GCC-64/bin/mingw32-make.exe" "cmTryCompileExec3943682307/fast"
+mingw32-make.exe[3]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec3943682307.dir\build.make CMakeFiles/cmTryCompileExec3943682307.dir/build
+mingw32-make.exe[4]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_progress_report C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3943682307.dir/CheckIncludeFiles.c.obj
+C:\TDM-GCC-64\bin\gcc.exe   -m64    -o CMakeFiles\cmTryCompileExec3943682307.dir\CheckIncludeFiles.c.obj   -c C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CheckIncludeFiles.c
+Linking C executable cmTryCompileExec3943682307.exe
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec3943682307.dir\link.txt --verbose=1
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\cmTryCompileExec3943682307.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTryCompileExec3943682307.dir/objects.a @CMakeFiles\cmTryCompileExec3943682307.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -m64     -Wl,--whole-archive CMakeFiles\cmTryCompileExec3943682307.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec3943682307.exe -Wl,--out-implib,libcmTryCompileExec3943682307.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+mingw32-make.exe[4]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+mingw32-make.exe[3]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+
+
+Determining if files memory.h exist passed with the following output:
+Change Dir: C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/TDM-GCC-64/bin/mingw32-make.exe" "cmTryCompileExec3588276830/fast"
+mingw32-make.exe[3]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec3588276830.dir\build.make CMakeFiles/cmTryCompileExec3588276830.dir/build
+mingw32-make.exe[4]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_progress_report C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3588276830.dir/CheckIncludeFiles.c.obj
+C:\TDM-GCC-64\bin\gcc.exe   -m64    -o CMakeFiles\cmTryCompileExec3588276830.dir\CheckIncludeFiles.c.obj   -c C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CheckIncludeFiles.c
+Linking C executable cmTryCompileExec3588276830.exe
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec3588276830.dir\link.txt --verbose=1
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\cmTryCompileExec3588276830.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTryCompileExec3588276830.dir/objects.a @CMakeFiles\cmTryCompileExec3588276830.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -m64     -Wl,--whole-archive CMakeFiles\cmTryCompileExec3588276830.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec3588276830.exe -Wl,--out-implib,libcmTryCompileExec3588276830.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+mingw32-make.exe[4]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+mingw32-make.exe[3]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+
+
+Determining if files signal.h exist passed with the following output:
+Change Dir: C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/TDM-GCC-64/bin/mingw32-make.exe" "cmTryCompileExec359320912/fast"
+mingw32-make.exe[3]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec359320912.dir\build.make CMakeFiles/cmTryCompileExec359320912.dir/build
+mingw32-make.exe[4]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_progress_report C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec359320912.dir/CheckIncludeFiles.c.obj
+C:\TDM-GCC-64\bin\gcc.exe   -m64    -o CMakeFiles\cmTryCompileExec359320912.dir\CheckIncludeFiles.c.obj   -c C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CheckIncludeFiles.c
+Linking C executable cmTryCompileExec359320912.exe
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec359320912.dir\link.txt --verbose=1
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\cmTryCompileExec359320912.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTryCompileExec359320912.dir/objects.a @CMakeFiles\cmTryCompileExec359320912.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -m64     -Wl,--whole-archive CMakeFiles\cmTryCompileExec359320912.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec359320912.exe -Wl,--out-implib,libcmTryCompileExec359320912.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+mingw32-make.exe[4]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+mingw32-make.exe[3]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+
+
+Determining if files stdint.h exist passed with the following output:
+Change Dir: C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/TDM-GCC-64/bin/mingw32-make.exe" "cmTryCompileExec329011999/fast"
+mingw32-make.exe[3]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec329011999.dir\build.make CMakeFiles/cmTryCompileExec329011999.dir/build
+mingw32-make.exe[4]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_progress_report C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec329011999.dir/CheckIncludeFiles.c.obj
+C:\TDM-GCC-64\bin\gcc.exe   -m64    -o CMakeFiles\cmTryCompileExec329011999.dir\CheckIncludeFiles.c.obj   -c C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CheckIncludeFiles.c
+Linking C executable cmTryCompileExec329011999.exe
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec329011999.dir\link.txt --verbose=1
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\cmTryCompileExec329011999.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTryCompileExec329011999.dir/objects.a @CMakeFiles\cmTryCompileExec329011999.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -m64     -Wl,--whole-archive CMakeFiles\cmTryCompileExec329011999.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec329011999.exe -Wl,--out-implib,libcmTryCompileExec329011999.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+mingw32-make.exe[4]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+mingw32-make.exe[3]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+
+
+Determining if files stdlib.h exist passed with the following output:
+Change Dir: C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/TDM-GCC-64/bin/mingw32-make.exe" "cmTryCompileExec1225892579/fast"
+mingw32-make.exe[3]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec1225892579.dir\build.make CMakeFiles/cmTryCompileExec1225892579.dir/build
+mingw32-make.exe[4]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_progress_report C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec1225892579.dir/CheckIncludeFiles.c.obj
+C:\TDM-GCC-64\bin\gcc.exe   -m64    -o CMakeFiles\cmTryCompileExec1225892579.dir\CheckIncludeFiles.c.obj   -c C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CheckIncludeFiles.c
+Linking C executable cmTryCompileExec1225892579.exe
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec1225892579.dir\link.txt --verbose=1
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\cmTryCompileExec1225892579.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTryCompileExec1225892579.dir/objects.a @CMakeFiles\cmTryCompileExec1225892579.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -m64     -Wl,--whole-archive CMakeFiles\cmTryCompileExec1225892579.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec1225892579.exe -Wl,--out-implib,libcmTryCompileExec1225892579.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+mingw32-make.exe[4]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+mingw32-make.exe[3]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+
+
+Determining if files strings.h exist passed with the following output:
+Change Dir: C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/TDM-GCC-64/bin/mingw32-make.exe" "cmTryCompileExec1224810320/fast"
+mingw32-make.exe[3]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec1224810320.dir\build.make CMakeFiles/cmTryCompileExec1224810320.dir/build
+mingw32-make.exe[4]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_progress_report C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec1224810320.dir/CheckIncludeFiles.c.obj
+C:\TDM-GCC-64\bin\gcc.exe   -m64    -o CMakeFiles\cmTryCompileExec1224810320.dir\CheckIncludeFiles.c.obj   -c C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CheckIncludeFiles.c
+Linking C executable cmTryCompileExec1224810320.exe
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec1224810320.dir\link.txt --verbose=1
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\cmTryCompileExec1224810320.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTryCompileExec1224810320.dir/objects.a @CMakeFiles\cmTryCompileExec1224810320.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -m64     -Wl,--whole-archive CMakeFiles\cmTryCompileExec1224810320.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec1224810320.exe -Wl,--out-implib,libcmTryCompileExec1224810320.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+mingw32-make.exe[4]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+mingw32-make.exe[3]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+
+
+Determining if files string.h exist passed with the following output:
+Change Dir: C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/TDM-GCC-64/bin/mingw32-make.exe" "cmTryCompileExec3903045028/fast"
+mingw32-make.exe[3]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec3903045028.dir\build.make CMakeFiles/cmTryCompileExec3903045028.dir/build
+mingw32-make.exe[4]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_progress_report C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3903045028.dir/CheckIncludeFiles.c.obj
+C:\TDM-GCC-64\bin\gcc.exe   -m64    -o CMakeFiles\cmTryCompileExec3903045028.dir\CheckIncludeFiles.c.obj   -c C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CheckIncludeFiles.c
+Linking C executable cmTryCompileExec3903045028.exe
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec3903045028.dir\link.txt --verbose=1
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\cmTryCompileExec3903045028.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTryCompileExec3903045028.dir/objects.a @CMakeFiles\cmTryCompileExec3903045028.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -m64     -Wl,--whole-archive CMakeFiles\cmTryCompileExec3903045028.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec3903045028.exe -Wl,--out-implib,libcmTryCompileExec3903045028.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+mingw32-make.exe[4]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+mingw32-make.exe[3]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file sys/types.h exists passed with the following output:
+Change Dir: C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/TDM-GCC-64/bin/mingw32-make.exe" "cmTryCompileExec619306541/fast"
+mingw32-make.exe[3]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec619306541.dir\build.make CMakeFiles/cmTryCompileExec619306541.dir/build
+mingw32-make.exe[4]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_progress_report C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec619306541.dir/CheckIncludeFile.c.obj
+C:\TDM-GCC-64\bin\gcc.exe   -m64    -o CMakeFiles\cmTryCompileExec619306541.dir\CheckIncludeFile.c.obj   -c C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CheckIncludeFile.c
+Linking C executable cmTryCompileExec619306541.exe
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec619306541.dir\link.txt --verbose=1
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\cmTryCompileExec619306541.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTryCompileExec619306541.dir/objects.a @CMakeFiles\cmTryCompileExec619306541.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -m64     -Wl,--whole-archive CMakeFiles\cmTryCompileExec619306541.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec619306541.exe -Wl,--out-implib,libcmTryCompileExec619306541.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+mingw32-make.exe[4]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+mingw32-make.exe[3]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file stddef.h exists passed with the following output:
+Change Dir: C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/TDM-GCC-64/bin/mingw32-make.exe" "cmTryCompileExec2129546917/fast"
+mingw32-make.exe[3]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec2129546917.dir\build.make CMakeFiles/cmTryCompileExec2129546917.dir/build
+mingw32-make.exe[4]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_progress_report C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec2129546917.dir/CheckIncludeFile.c.obj
+C:\TDM-GCC-64\bin\gcc.exe   -m64    -o CMakeFiles\cmTryCompileExec2129546917.dir\CheckIncludeFile.c.obj   -c C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CheckIncludeFile.c
+Linking C executable cmTryCompileExec2129546917.exe
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec2129546917.dir\link.txt --verbose=1
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\cmTryCompileExec2129546917.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTryCompileExec2129546917.dir/objects.a @CMakeFiles\cmTryCompileExec2129546917.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -m64     -Wl,--whole-archive CMakeFiles\cmTryCompileExec2129546917.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec2129546917.exe -Wl,--out-implib,libcmTryCompileExec2129546917.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+mingw32-make.exe[4]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+mingw32-make.exe[3]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+
+
+Determining size of struct timespec passed with the following output:
+Change Dir: C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/TDM-GCC-64/bin/mingw32-make.exe" "cmTryCompileExec123109208/fast"
+mingw32-make.exe[3]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec123109208.dir\build.make CMakeFiles/cmTryCompileExec123109208.dir/build
+mingw32-make.exe[4]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_progress_report C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec123109208.dir/STRUCT_TIMESPEC.c.obj
+C:\TDM-GCC-64\bin\gcc.exe   -m64    -o CMakeFiles\cmTryCompileExec123109208.dir\STRUCT_TIMESPEC.c.obj   -c C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CheckTypeSize\STRUCT_TIMESPEC.c
+Linking C executable cmTryCompileExec123109208.exe
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec123109208.dir\link.txt --verbose=1
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\cmTryCompileExec123109208.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTryCompileExec123109208.dir/objects.a @CMakeFiles\cmTryCompileExec123109208.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -m64     -Wl,--whole-archive CMakeFiles\cmTryCompileExec123109208.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec123109208.exe -Wl,--out-implib,libcmTryCompileExec123109208.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+mingw32-make.exe[4]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+mingw32-make.exe[3]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+
+
+Determining if files sys/stat.h exist passed with the following output:
+Change Dir: C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/TDM-GCC-64/bin/mingw32-make.exe" "cmTryCompileExec1537660976/fast"
+mingw32-make.exe[3]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec1537660976.dir\build.make CMakeFiles/cmTryCompileExec1537660976.dir/build
+mingw32-make.exe[4]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_progress_report C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec1537660976.dir/CheckIncludeFiles.c.obj
+C:\TDM-GCC-64\bin\gcc.exe   -m64    -o CMakeFiles\cmTryCompileExec1537660976.dir\CheckIncludeFiles.c.obj   -c C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CheckIncludeFiles.c
+Linking C executable cmTryCompileExec1537660976.exe
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec1537660976.dir\link.txt --verbose=1
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\cmTryCompileExec1537660976.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTryCompileExec1537660976.dir/objects.a @CMakeFiles\cmTryCompileExec1537660976.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -m64     -Wl,--whole-archive CMakeFiles\cmTryCompileExec1537660976.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec1537660976.exe -Wl,--out-implib,libcmTryCompileExec1537660976.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+mingw32-make.exe[4]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+mingw32-make.exe[3]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+
+
+Determining if files sys/time.h exist passed with the following output:
+Change Dir: C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/TDM-GCC-64/bin/mingw32-make.exe" "cmTryCompileExec2876483010/fast"
+mingw32-make.exe[3]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec2876483010.dir\build.make CMakeFiles/cmTryCompileExec2876483010.dir/build
+mingw32-make.exe[4]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_progress_report C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec2876483010.dir/CheckIncludeFiles.c.obj
+C:\TDM-GCC-64\bin\gcc.exe   -m64    -o CMakeFiles\cmTryCompileExec2876483010.dir\CheckIncludeFiles.c.obj   -c C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CheckIncludeFiles.c
+Linking C executable cmTryCompileExec2876483010.exe
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec2876483010.dir\link.txt --verbose=1
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\cmTryCompileExec2876483010.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTryCompileExec2876483010.dir/objects.a @CMakeFiles\cmTryCompileExec2876483010.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -m64     -Wl,--whole-archive CMakeFiles\cmTryCompileExec2876483010.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec2876483010.exe -Wl,--out-implib,libcmTryCompileExec2876483010.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+mingw32-make.exe[4]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+mingw32-make.exe[3]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+
+
+Determining if files unistd.h exist passed with the following output:
+Change Dir: C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/TDM-GCC-64/bin/mingw32-make.exe" "cmTryCompileExec3306480391/fast"
+mingw32-make.exe[3]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+C:/TDM-GCC-64/bin/mingw32-make.exe -f CMakeFiles\cmTryCompileExec3306480391.dir\build.make CMakeFiles/cmTryCompileExec3306480391.dir/build
+mingw32-make.exe[4]: Entering directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_progress_report C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3306480391.dir/CheckIncludeFiles.c.obj
+C:\TDM-GCC-64\bin\gcc.exe   -m64    -o CMakeFiles\cmTryCompileExec3306480391.dir\CheckIncludeFiles.c.obj   -c C:\Users\subhan\Desktop\led_analyzer\testbin\external\libusb\libusb-1.0.19\src\TARGET_libusb-build\CMakeFiles\CMakeTmp\CheckIncludeFiles.c
+Linking C executable cmTryCompileExec3306480391.exe
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTryCompileExec3306480391.dir\link.txt --verbose=1
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E remove -f CMakeFiles\cmTryCompileExec3306480391.dir/objects.a
+C:\TDM-GCC-64\bin\ar.exe cr CMakeFiles\cmTryCompileExec3306480391.dir/objects.a @CMakeFiles\cmTryCompileExec3306480391.dir\objects1.rsp
+C:\TDM-GCC-64\bin\gcc.exe  -m64     -Wl,--whole-archive CMakeFiles\cmTryCompileExec3306480391.dir/objects.a -Wl,--no-whole-archive  -o cmTryCompileExec3306480391.exe -Wl,--out-implib,libcmTryCompileExec3306480391.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+mingw32-make.exe[4]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+mingw32-make.exe[3]: Leaving directory 'C:/Users/subhan/Desktop/led_analyzer/testbin/external/libusb/libusb-1.0.19/src/TARGET_libusb-build/CMakeFiles/CMakeTmp'
+
+

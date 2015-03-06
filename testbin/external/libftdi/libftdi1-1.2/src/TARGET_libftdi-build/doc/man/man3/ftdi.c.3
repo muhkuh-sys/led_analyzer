@@ -1,0 +1,245 @@
+.TH "ftdi.c" 3 "Fri Mar 6 2015" "Version 1.2" "libftdi1" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ftdi.c \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <libusb\&.h>\fP
+.br
+\fC#include <string\&.h>\fP
+.br
+\fC#include <errno\&.h>\fP
+.br
+\fC#include <stdio\&.h>\fP
+.br
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include 'ftdi_i\&.h'\fP
+.br
+\fC#include 'ftdi\&.h'\fP
+.br
+\fC#include 'ftdi_version_i\&.h'\fP
+.br
+
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBftdi_error_return\fP(code, str)"
+.br
+.ti -1c
+.RI "#define \fBftdi_error_return_free_device_list\fP(code, str, devs)"
+.br
+.ti -1c
+.RI "#define \fBH_CLK\fP   120000000"
+.br
+.ti -1c
+.RI "#define \fBC_CLK\fP   48000000"
+.br
+.ti -1c
+.RI "#define \fBMAGIC\fP   0x55aa"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBftdi_init\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "struct \fBftdi_context\fP * \fBftdi_new\fP (void)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_interface\fP (struct \fBftdi_context\fP *ftdi, enum \fBftdi_interface\fP interface)"
+.br
+.ti -1c
+.RI "void \fBftdi_deinit\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "void \fBftdi_free\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "void \fBftdi_set_usbdev\fP (struct \fBftdi_context\fP *ftdi, libusb_device_handle *usb)"
+.br
+.ti -1c
+.RI "struct \fBftdi_version_info\fP \fBftdi_get_library_version\fP (void)"
+.br
+.RI "\fIGet libftdi library version\&. \fP"
+.ti -1c
+.RI "int \fBftdi_usb_find_all\fP (struct \fBftdi_context\fP *ftdi, struct \fBftdi_device_list\fP **devlist, int vendor, int product)"
+.br
+.ti -1c
+.RI "void \fBftdi_list_free\fP (struct \fBftdi_device_list\fP **devlist)"
+.br
+.ti -1c
+.RI "void \fBftdi_list_free2\fP (struct \fBftdi_device_list\fP *devlist)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_get_strings\fP (struct \fBftdi_context\fP *ftdi, struct libusb_device *dev, char *manufacturer, int mnf_len, char *description, int desc_len, char *serial, int serial_len)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_open_dev\fP (struct \fBftdi_context\fP *ftdi, libusb_device *dev)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_open\fP (struct \fBftdi_context\fP *ftdi, int vendor, int product)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_open_desc\fP (struct \fBftdi_context\fP *ftdi, int vendor, int product, const char *description, const char *serial)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_open_desc_index\fP (struct \fBftdi_context\fP *ftdi, int vendor, int product, const char *description, const char *serial, unsigned int index)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_open_string\fP (struct \fBftdi_context\fP *ftdi, const char *description)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_reset\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_purge_rx_buffer\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_purge_tx_buffer\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_purge_buffers\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_close\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBconvert_baudrate_UT_export\fP (int baudrate, struct \fBftdi_context\fP *ftdi, unsigned short *value, unsigned short *index)"
+.br
+.RI "\fIWrapper function to export ftdi_convert_baudrate() to the unit test Do not use, it's only for the unit test framework\&. \fP"
+.ti -1c
+.RI "int \fBftdi_set_baudrate\fP (struct \fBftdi_context\fP *ftdi, int baudrate)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_line_property\fP (struct \fBftdi_context\fP *ftdi, enum \fBftdi_bits_type\fP bits, enum \fBftdi_stopbits_type\fP sbit, enum \fBftdi_parity_type\fP parity)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_line_property2\fP (struct \fBftdi_context\fP *ftdi, enum \fBftdi_bits_type\fP bits, enum \fBftdi_stopbits_type\fP sbit, enum \fBftdi_parity_type\fP parity, enum \fBftdi_break_type\fP break_type)"
+.br
+.ti -1c
+.RI "int \fBftdi_write_data\fP (struct \fBftdi_context\fP *ftdi, const unsigned char *buf, int size)"
+.br
+.ti -1c
+.RI "struct \fBftdi_transfer_control\fP * \fBftdi_write_data_submit\fP (struct \fBftdi_context\fP *ftdi, unsigned char *buf, int size)"
+.br
+.ti -1c
+.RI "struct \fBftdi_transfer_control\fP * \fBftdi_read_data_submit\fP (struct \fBftdi_context\fP *ftdi, unsigned char *buf, int size)"
+.br
+.ti -1c
+.RI "int \fBftdi_transfer_data_done\fP (struct \fBftdi_transfer_control\fP *tc)"
+.br
+.ti -1c
+.RI "int \fBftdi_write_data_set_chunksize\fP (struct \fBftdi_context\fP *ftdi, unsigned int chunksize)"
+.br
+.ti -1c
+.RI "int \fBftdi_write_data_get_chunksize\fP (struct \fBftdi_context\fP *ftdi, unsigned int *chunksize)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_data\fP (struct \fBftdi_context\fP *ftdi, unsigned char *buf, int size)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_data_set_chunksize\fP (struct \fBftdi_context\fP *ftdi, unsigned int chunksize)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_data_get_chunksize\fP (struct \fBftdi_context\fP *ftdi, unsigned int *chunksize)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_bitmode\fP (struct \fBftdi_context\fP *ftdi, unsigned char bitmask, unsigned char mode)"
+.br
+.ti -1c
+.RI "int \fBftdi_disable_bitbang\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_pins\fP (struct \fBftdi_context\fP *ftdi, unsigned char *pins)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_latency_timer\fP (struct \fBftdi_context\fP *ftdi, unsigned char latency)"
+.br
+.ti -1c
+.RI "int \fBftdi_get_latency_timer\fP (struct \fBftdi_context\fP *ftdi, unsigned char *latency)"
+.br
+.ti -1c
+.RI "int \fBftdi_poll_modem_status\fP (struct \fBftdi_context\fP *ftdi, unsigned short *status)"
+.br
+.ti -1c
+.RI "int \fBftdi_setflowctrl\fP (struct \fBftdi_context\fP *ftdi, int flowctrl)"
+.br
+.ti -1c
+.RI "int \fBftdi_setdtr\fP (struct \fBftdi_context\fP *ftdi, int state)"
+.br
+.ti -1c
+.RI "int \fBftdi_setrts\fP (struct \fBftdi_context\fP *ftdi, int state)"
+.br
+.ti -1c
+.RI "int \fBftdi_setdtr_rts\fP (struct \fBftdi_context\fP *ftdi, int dtr, int rts)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_event_char\fP (struct \fBftdi_context\fP *ftdi, unsigned char eventch, unsigned char enable)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_error_char\fP (struct \fBftdi_context\fP *ftdi, unsigned char errorch, unsigned char enable)"
+.br
+.ti -1c
+.RI "int \fBftdi_eeprom_initdefaults\fP (struct \fBftdi_context\fP *ftdi, char *manufacturer, char *product, char *serial)"
+.br
+.ti -1c
+.RI "int \fBftdi_eeprom_set_strings\fP (struct \fBftdi_context\fP *ftdi, char *manufacturer, char *product, char *serial)"
+.br
+.ti -1c
+.RI "void \fBset_ft232h_cbus\fP (struct \fBftdi_eeprom\fP *eeprom, unsigned char *output)"
+.br
+.ti -1c
+.RI "int \fBftdi_eeprom_build\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_eeprom_decode\fP (struct \fBftdi_context\fP *ftdi, int verbose)"
+.br
+.ti -1c
+.RI "int \fBftdi_get_eeprom_value\fP (struct \fBftdi_context\fP *ftdi, enum \fBftdi_eeprom_value\fP value_name, int *value)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_eeprom_value\fP (struct \fBftdi_context\fP *ftdi, enum \fBftdi_eeprom_value\fP value_name, int value)"
+.br
+.ti -1c
+.RI "int \fBftdi_get_eeprom_buf\fP (struct \fBftdi_context\fP *ftdi, unsigned char *buf, int size)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_eeprom_buf\fP (struct \fBftdi_context\fP *ftdi, const unsigned char *buf, int size)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_eeprom_location\fP (struct \fBftdi_context\fP *ftdi, int eeprom_addr, unsigned short *eeprom_val)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_eeprom\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_chipid\fP (struct \fBftdi_context\fP *ftdi, unsigned int *chipid)"
+.br
+.ti -1c
+.RI "int \fBftdi_write_eeprom_location\fP (struct \fBftdi_context\fP *ftdi, int eeprom_addr, unsigned short eeprom_val)"
+.br
+.ti -1c
+.RI "int \fBftdi_write_eeprom\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_erase_eeprom\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "char * \fBftdi_get_error_string\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define H_CLK   120000000"
+
+.SS "#define C_CLK   48000000"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libftdi1 from the source code\&.

@@ -1,0 +1,2 @@
+C:\TDM-GCC-64\bin\ar.exe cr libftdi1.a  CMakeFiles/ftdi1-static.dir/ftdi.c.obj CMakeFiles/ftdi1-static.dir/ftdi_stream.c.obj
+C:\TDM-GCC-64\bin\ranlib.exe libftdi1.a

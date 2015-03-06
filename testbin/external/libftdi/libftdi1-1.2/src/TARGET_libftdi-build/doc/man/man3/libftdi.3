@@ -1,0 +1,1925 @@
+.TH "Libftdi" 3 "Fri Mar 6 2015" "Version 1.2" "libftdi1" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Libftdi \- 
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBftdi_error_return\fP(code, str)"
+.br
+.ti -1c
+.RI "#define \fBftdi_error_return_free_device_list\fP(code, str, devs)"
+.br
+.ti -1c
+.RI "#define \fBMAGIC\fP   0x55aa"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBftdi_init\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "struct \fBftdi_context\fP * \fBftdi_new\fP (void)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_interface\fP (struct \fBftdi_context\fP *ftdi, enum \fBftdi_interface\fP interface)"
+.br
+.ti -1c
+.RI "void \fBftdi_deinit\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "void \fBftdi_free\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "void \fBftdi_set_usbdev\fP (struct \fBftdi_context\fP *ftdi, libusb_device_handle *usb)"
+.br
+.ti -1c
+.RI "struct \fBftdi_version_info\fP \fBftdi_get_library_version\fP (void)"
+.br
+.RI "\fIGet libftdi library version\&. \fP"
+.ti -1c
+.RI "int \fBftdi_usb_find_all\fP (struct \fBftdi_context\fP *ftdi, struct \fBftdi_device_list\fP **devlist, int vendor, int product)"
+.br
+.ti -1c
+.RI "void \fBftdi_list_free\fP (struct \fBftdi_device_list\fP **devlist)"
+.br
+.ti -1c
+.RI "void \fBftdi_list_free2\fP (struct \fBftdi_device_list\fP *devlist)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_get_strings\fP (struct \fBftdi_context\fP *ftdi, struct libusb_device *dev, char *manufacturer, int mnf_len, char *description, int desc_len, char *serial, int serial_len)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_open_dev\fP (struct \fBftdi_context\fP *ftdi, libusb_device *dev)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_open\fP (struct \fBftdi_context\fP *ftdi, int vendor, int product)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_open_desc\fP (struct \fBftdi_context\fP *ftdi, int vendor, int product, const char *description, const char *serial)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_open_desc_index\fP (struct \fBftdi_context\fP *ftdi, int vendor, int product, const char *description, const char *serial, unsigned int index)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_open_string\fP (struct \fBftdi_context\fP *ftdi, const char *description)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_reset\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_purge_rx_buffer\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_purge_tx_buffer\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_purge_buffers\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_close\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBconvert_baudrate_UT_export\fP (int baudrate, struct \fBftdi_context\fP *ftdi, unsigned short *value, unsigned short *index)"
+.br
+.RI "\fIWrapper function to export ftdi_convert_baudrate() to the unit test Do not use, it's only for the unit test framework\&. \fP"
+.ti -1c
+.RI "int \fBftdi_set_baudrate\fP (struct \fBftdi_context\fP *ftdi, int baudrate)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_line_property\fP (struct \fBftdi_context\fP *ftdi, enum \fBftdi_bits_type\fP bits, enum \fBftdi_stopbits_type\fP sbit, enum \fBftdi_parity_type\fP parity)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_line_property2\fP (struct \fBftdi_context\fP *ftdi, enum \fBftdi_bits_type\fP bits, enum \fBftdi_stopbits_type\fP sbit, enum \fBftdi_parity_type\fP parity, enum \fBftdi_break_type\fP break_type)"
+.br
+.ti -1c
+.RI "int \fBftdi_write_data\fP (struct \fBftdi_context\fP *ftdi, const unsigned char *buf, int size)"
+.br
+.ti -1c
+.RI "struct \fBftdi_transfer_control\fP * \fBftdi_write_data_submit\fP (struct \fBftdi_context\fP *ftdi, unsigned char *buf, int size)"
+.br
+.ti -1c
+.RI "struct \fBftdi_transfer_control\fP * \fBftdi_read_data_submit\fP (struct \fBftdi_context\fP *ftdi, unsigned char *buf, int size)"
+.br
+.ti -1c
+.RI "int \fBftdi_transfer_data_done\fP (struct \fBftdi_transfer_control\fP *tc)"
+.br
+.ti -1c
+.RI "int \fBftdi_write_data_set_chunksize\fP (struct \fBftdi_context\fP *ftdi, unsigned int chunksize)"
+.br
+.ti -1c
+.RI "int \fBftdi_write_data_get_chunksize\fP (struct \fBftdi_context\fP *ftdi, unsigned int *chunksize)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_data\fP (struct \fBftdi_context\fP *ftdi, unsigned char *buf, int size)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_data_set_chunksize\fP (struct \fBftdi_context\fP *ftdi, unsigned int chunksize)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_data_get_chunksize\fP (struct \fBftdi_context\fP *ftdi, unsigned int *chunksize)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_bitmode\fP (struct \fBftdi_context\fP *ftdi, unsigned char bitmask, unsigned char mode)"
+.br
+.ti -1c
+.RI "int \fBftdi_disable_bitbang\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_pins\fP (struct \fBftdi_context\fP *ftdi, unsigned char *pins)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_latency_timer\fP (struct \fBftdi_context\fP *ftdi, unsigned char latency)"
+.br
+.ti -1c
+.RI "int \fBftdi_get_latency_timer\fP (struct \fBftdi_context\fP *ftdi, unsigned char *latency)"
+.br
+.ti -1c
+.RI "int \fBftdi_poll_modem_status\fP (struct \fBftdi_context\fP *ftdi, unsigned short *status)"
+.br
+.ti -1c
+.RI "int \fBftdi_setflowctrl\fP (struct \fBftdi_context\fP *ftdi, int flowctrl)"
+.br
+.ti -1c
+.RI "int \fBftdi_setdtr\fP (struct \fBftdi_context\fP *ftdi, int state)"
+.br
+.ti -1c
+.RI "int \fBftdi_setrts\fP (struct \fBftdi_context\fP *ftdi, int state)"
+.br
+.ti -1c
+.RI "int \fBftdi_setdtr_rts\fP (struct \fBftdi_context\fP *ftdi, int dtr, int rts)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_event_char\fP (struct \fBftdi_context\fP *ftdi, unsigned char eventch, unsigned char enable)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_error_char\fP (struct \fBftdi_context\fP *ftdi, unsigned char errorch, unsigned char enable)"
+.br
+.ti -1c
+.RI "int \fBftdi_eeprom_initdefaults\fP (struct \fBftdi_context\fP *ftdi, char *manufacturer, char *product, char *serial)"
+.br
+.ti -1c
+.RI "int \fBftdi_eeprom_set_strings\fP (struct \fBftdi_context\fP *ftdi, char *manufacturer, char *product, char *serial)"
+.br
+.ti -1c
+.RI "void \fBset_ft232h_cbus\fP (struct \fBftdi_eeprom\fP *eeprom, unsigned char *output)"
+.br
+.ti -1c
+.RI "int \fBftdi_eeprom_build\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_eeprom_decode\fP (struct \fBftdi_context\fP *ftdi, int verbose)"
+.br
+.ti -1c
+.RI "int \fBftdi_get_eeprom_value\fP (struct \fBftdi_context\fP *ftdi, enum \fBftdi_eeprom_value\fP value_name, int *value)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_eeprom_value\fP (struct \fBftdi_context\fP *ftdi, enum \fBftdi_eeprom_value\fP value_name, int value)"
+.br
+.ti -1c
+.RI "int \fBftdi_get_eeprom_buf\fP (struct \fBftdi_context\fP *ftdi, unsigned char *buf, int size)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_eeprom_buf\fP (struct \fBftdi_context\fP *ftdi, const unsigned char *buf, int size)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_eeprom_location\fP (struct \fBftdi_context\fP *ftdi, int eeprom_addr, unsigned short *eeprom_val)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_eeprom\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_chipid\fP (struct \fBftdi_context\fP *ftdi, unsigned int *chipid)"
+.br
+.ti -1c
+.RI "int \fBftdi_write_eeprom_location\fP (struct \fBftdi_context\fP *ftdi, int eeprom_addr, unsigned short eeprom_val)"
+.br
+.ti -1c
+.RI "int \fBftdi_write_eeprom\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_erase_eeprom\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "char * \fBftdi_get_error_string\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define ftdi_error_return(code, str)"
+\fBValue:\fP
+.PP
+.nf
+do {  \
+        if ( ftdi )                        \
+            ftdi->error_str = str;         \
+        else                               \
+            fprintf(stderr, str);          \
+        return code;                       \
+   } while(0);
+.fi
+.PP
+Definition at line 41 of file ftdi\&.c\&.
+.PP
+Referenced by ftdi_disable_bitbang(), ftdi_eeprom_build(), ftdi_eeprom_decode(), ftdi_eeprom_initdefaults(), ftdi_eeprom_set_strings(), ftdi_erase_eeprom(), ftdi_get_eeprom_buf(), ftdi_get_eeprom_value(), ftdi_get_latency_timer(), ftdi_init(), ftdi_poll_modem_status(), ftdi_read_chipid(), ftdi_read_data(), ftdi_read_data_get_chunksize(), ftdi_read_data_set_chunksize(), ftdi_read_eeprom(), ftdi_read_eeprom_location(), ftdi_read_pins(), ftdi_set_baudrate(), ftdi_set_bitmode(), ftdi_set_eeprom_buf(), ftdi_set_eeprom_value(), ftdi_set_error_char(), ftdi_set_event_char(), ftdi_set_interface(), ftdi_set_latency_timer(), ftdi_set_line_property2(), ftdi_setdtr(), ftdi_setdtr_rts(), ftdi_setflowctrl(), ftdi_setrts(), ftdi_usb_close(), ftdi_usb_find_all(), ftdi_usb_get_strings(), ftdi_usb_open_desc_index(), ftdi_usb_open_dev(), ftdi_usb_open_string(), ftdi_usb_purge_buffers(), ftdi_usb_purge_rx_buffer(), ftdi_usb_purge_tx_buffer(), ftdi_usb_reset(), ftdi_write_data(), ftdi_write_data_get_chunksize(), ftdi_write_data_set_chunksize(), ftdi_write_eeprom(), and ftdi_write_eeprom_location()\&.
+.SS "#define ftdi_error_return_free_device_list(code, str, devs)"
+\fBValue:\fP
+.PP
+.nf
+do {    \
+        libusb_free_device_list(devs,1);   \
+        ftdi->error_str = str;             \
+        return code;                       \
+   } while(0);
+.fi
+.PP
+Definition at line 49 of file ftdi\&.c\&.
+.PP
+Referenced by ftdi_usb_find_all(), ftdi_usb_open_desc_index(), and ftdi_usb_open_string()\&.
+.SS "#define MAGIC   0x55aa"
+Erase eeprom
+.PP
+This is not supported on FT232R/FT245R according to the MProg manual from FTDI\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP erase failed 
+.br
+\fI-2\fP USB device unavailable 
+.br
+\fI-3\fP Writing magic failed 
+.br
+\fI-4\fP Read EEPROM failed 
+.br
+\fI-5\fP Unexpected EEPROM value 
+.RE
+.PP
+
+.PP
+Definition at line 4239 of file ftdi\&.c\&.
+.PP
+Referenced by ftdi_erase_eeprom()\&.
+.SH "Function Documentation"
+.PP 
+.SS "int ftdi_init (struct \fBftdi_context\fP *ftdi)"
+Initializes a \fBftdi_context\fP\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP couldn't allocate read buffer 
+.br
+\fI-2\fP couldn't allocate struct buffer 
+.br
+\fI-3\fP libusb_init() failed
+.RE
+.PP
+\fBRemarks:\fP
+.RS 4
+This should be called before all functions 
+.RE
+.PP
+
+.PP
+Definition at line 88 of file ftdi\&.c\&.
+.PP
+References AUTO_DETACH_SIO_MODULE, ftdi_context::baudrate, ftdi_context::bitbang_enabled, ftdi_context::bitbang_mode, ftdi_context::eeprom, ftdi_context::error_str, ftdi_error_return, ftdi_read_data_set_chunksize(), ftdi_set_interface(), INTERFACE_ANY, ftdi_context::max_packet_size, ftdi_context::module_detach_mode, ftdi_context::readbuffer, ftdi_context::readbuffer_offset, ftdi_context::readbuffer_remaining, ftdi_context::type, TYPE_BM, ftdi_context::usb_ctx, ftdi_context::usb_dev, ftdi_context::usb_read_timeout, ftdi_context::usb_write_timeout, and ftdi_context::writebuffer_chunksize\&.
+.PP
+Referenced by ftdi_new()\&.
+.SS "struct \fBftdi_context\fP* ftdi_new (void)"
+Allocate and initialize a new \fBftdi_context\fP
+.PP
+\fBReturns:\fP
+.RS 4
+a pointer to a new \fBftdi_context\fP, or NULL on failure 
+.RE
+.PP
+
+.PP
+Definition at line 128 of file ftdi\&.c\&.
+.PP
+References ftdi_init()\&.
+.PP
+Referenced by Ftdi::Context::Private::Private()\&.
+.SS "int ftdi_set_interface (struct \fBftdi_context\fP *ftdi, enum \fBftdi_interface\fPinterface)"
+Open selected channels on a chip, otherwise use first channel\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIinterface\fP Interface to use for FT2232C/2232H/4232H chips\&.
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP unknown interface 
+.br
+\fI-2\fP USB device unavailable 
+.br
+\fI-3\fP Device already open, interface can't be set in that state 
+.RE
+.PP
+
+.PP
+Definition at line 157 of file ftdi\&.c\&.
+.PP
+References ftdi_error_return, ftdi_context::in_ep, ftdi_context::index, ftdi_context::interface, INTERFACE_A, INTERFACE_ANY, INTERFACE_B, INTERFACE_C, INTERFACE_D, ftdi_context::out_ep, and ftdi_context::usb_dev\&.
+.PP
+Referenced by ftdi_init(), and Ftdi::Context::set_interface()\&.
+.SS "void ftdi_deinit (struct \fBftdi_context\fP *ftdi)"
+Deinitializes a \fBftdi_context\fP\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.RE
+.PP
+
+.PP
+Definition at line 210 of file ftdi\&.c\&.
+.PP
+References ftdi_context::eeprom, ftdi_eeprom::manufacturer, ftdi_eeprom::product, ftdi_context::readbuffer, ftdi_eeprom::serial, and ftdi_context::usb_ctx\&.
+.PP
+Referenced by ftdi_free()\&.
+.SS "void ftdi_free (struct \fBftdi_context\fP *ftdi)"
+Deinitialize and free an \fBftdi_context\fP\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.RE
+.PP
+
+.PP
+Definition at line 256 of file ftdi\&.c\&.
+.PP
+References ftdi_deinit()\&.
+.PP
+Referenced by Ftdi::Context::set_context(), and Ftdi::Context::Private::~Private()\&.
+.SS "void ftdi_set_usbdev (struct \fBftdi_context\fP *ftdi, libusb_device_handle *usb)"
+Use an already open libusb device\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIusb\fP libusb libusb_device_handle to use 
+.RE
+.PP
+
+.PP
+Definition at line 268 of file ftdi\&.c\&.
+.PP
+References ftdi_context::usb_dev\&.
+.PP
+Referenced by Ftdi::Context::set_usb_device()\&.
+.SS "struct \fBftdi_version_info\fP ftdi_get_library_version (void)"
+
+.PP
+Get libftdi library version\&. 
+.PP
+\fBReturns:\fP
+.RS 4
+\fBftdi_version_info\fP Library version information 
+.RE
+.PP
+
+.PP
+Definition at line 281 of file ftdi\&.c\&.
+.PP
+References ftdi_version_info::major, ftdi_version_info::micro, ftdi_version_info::minor, ftdi_version_info::snapshot_str, and ftdi_version_info::version_str\&.
+.SS "int ftdi_usb_find_all (struct \fBftdi_context\fP *ftdi, struct \fBftdi_device_list\fP **devlist, intvendor, intproduct)"
+Finds all ftdi devices with given VID:PID on the usb bus\&. Creates a new \fBftdi_device_list\fP which needs to be deallocated by \fBftdi_list_free()\fP after use\&. With VID:PID 0:0, search for the default devices (0x403:0x6001, 0x403:0x6010, 0x403:0x6011, 0x403:0x6014, 0x403:0x6015)
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIdevlist\fP Pointer where to store list of found devices 
+.br
+\fIvendor\fP Vendor ID to search for 
+.br
+\fIproduct\fP Product ID to search for
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI>0\fP number of devices found 
+.br
+\fI-3\fP out of memory 
+.br
+\fI-5\fP libusb_get_device_list() failed 
+.br
+\fI-6\fP libusb_get_device_descriptor() failed 
+.RE
+.PP
+
+.PP
+Definition at line 310 of file ftdi\&.c\&.
+.PP
+References ftdi_device_list::dev, ftdi_error_return, ftdi_error_return_free_device_list, ftdi_device_list::next, and ftdi_context::usb_ctx\&.
+.PP
+Referenced by Ftdi::List::find_all()\&.
+.SS "void ftdi_list_free (struct \fBftdi_device_list\fP **devlist)"
+Frees a usb device list\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdevlist\fP USB device list created by \fBftdi_usb_find_all()\fP 
+.RE
+.PP
+
+.PP
+Definition at line 358 of file ftdi\&.c\&.
+.PP
+References ftdi_device_list::dev, and ftdi_device_list::next\&.
+.PP
+Referenced by Ftdi::List::clear(), ftdi_list_free2(), and Ftdi::List::Private::~Private()\&.
+.SS "void ftdi_list_free2 (struct \fBftdi_device_list\fP *devlist)"
+Frees a usb device list\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdevlist\fP USB device list created by \fBftdi_usb_find_all()\fP 
+.RE
+.PP
+
+.PP
+Definition at line 378 of file ftdi\&.c\&.
+.PP
+References ftdi_list_free()\&.
+.SS "int ftdi_usb_get_strings (struct \fBftdi_context\fP *ftdi, struct libusb_device *dev, char *manufacturer, intmnf_len, char *description, intdesc_len, char *serial, intserial_len)"
+Return device ID strings from the usb device\&.
+.PP
+The parameters manufacturer, description and serial may be NULL or pointer to buffers to store the fetched strings\&.
+.PP
+\fBNote:\fP
+.RS 4
+Use this function only in combination with \fBftdi_usb_find_all()\fP as it closes the internal 'usb_dev' after use\&.
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIdev\fP libusb usb_dev to use 
+.br
+\fImanufacturer\fP Store manufacturer string here if not NULL 
+.br
+\fImnf_len\fP Buffer size of manufacturer string 
+.br
+\fIdescription\fP Store product description string here if not NULL 
+.br
+\fIdesc_len\fP Buffer size of product description string 
+.br
+\fIserial\fP Store serial string here if not NULL 
+.br
+\fIserial_len\fP Buffer size of serial string
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP wrong arguments 
+.br
+\fI-4\fP unable to open device 
+.br
+\fI-7\fP get product manufacturer failed 
+.br
+\fI-8\fP get product description failed 
+.br
+\fI-9\fP get serial number failed 
+.br
+\fI-11\fP libusb_get_device_descriptor() failed 
+.RE
+.PP
+
+.PP
+Definition at line 409 of file ftdi\&.c\&.
+.PP
+References ftdi_error_return, and ftdi_context::usb_dev\&.
+.PP
+Referenced by Ftdi::Context::get_strings()\&.
+.SS "int ftdi_usb_open_dev (struct \fBftdi_context\fP *ftdi, libusb_device *dev)"
+Opens a ftdi device given by an usb_device\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIdev\fP libusb usb_dev to use
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-3\fP unable to config device 
+.br
+\fI-4\fP unable to open device 
+.br
+\fI-5\fP unable to claim device 
+.br
+\fI-6\fP reset failed 
+.br
+\fI-7\fP set baudrate failed 
+.br
+\fI-8\fP ftdi context invalid 
+.br
+\fI-9\fP libusb_get_device_descriptor() failed 
+.br
+\fI-10\fP libusb_get_config_descriptor() failed 
+.br
+\fI-11\fP libusb_detach_kernel_driver() failed 
+.br
+\fI-12\fP libusb_get_configuration() failed 
+.RE
+.PP
+
+.PP
+Definition at line 523 of file ftdi\&.c\&.
+.PP
+References AUTO_DETACH_SIO_MODULE, ftdi_error_return, ftdi_set_baudrate(), ftdi_usb_reset(), ftdi_context::interface, ftdi_context::max_packet_size, ftdi_context::module_detach_mode, ftdi_context::type, TYPE_2232C, TYPE_2232H, TYPE_230X, TYPE_232H, TYPE_4232H, TYPE_AM, TYPE_BM, TYPE_R, and ftdi_context::usb_dev\&.
+.PP
+Referenced by ftdi_usb_open_desc_index(), ftdi_usb_open_string(), and Ftdi::Context::get_strings_and_reopen()\&.
+.SS "int ftdi_usb_open (struct \fBftdi_context\fP *ftdi, intvendor, intproduct)"
+Opens the first device with a given vendor and product ids\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIvendor\fP Vendor ID 
+.br
+\fIproduct\fP Product ID
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fIsame\fP as \fBftdi_usb_open_desc()\fP 
+.RE
+.PP
+
+.PP
+Definition at line 636 of file ftdi\&.c\&.
+.PP
+References ftdi_usb_open_desc()\&.
+.PP
+Referenced by Ftdi::Context::open()\&.
+.SS "int ftdi_usb_open_desc (struct \fBftdi_context\fP *ftdi, intvendor, intproduct, const char *description, const char *serial)"
+Opens the first device with a given, vendor id, product id, description and serial\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIvendor\fP Vendor ID 
+.br
+\fIproduct\fP Product ID 
+.br
+\fIdescription\fP Description to search for\&. Use NULL if not needed\&. 
+.br
+\fIserial\fP Serial to search for\&. Use NULL if not needed\&.
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-3\fP usb device not found 
+.br
+\fI-4\fP unable to open device 
+.br
+\fI-5\fP unable to claim device 
+.br
+\fI-6\fP reset failed 
+.br
+\fI-7\fP set baudrate failed 
+.br
+\fI-8\fP get product description failed 
+.br
+\fI-9\fP get serial number failed 
+.br
+\fI-12\fP libusb_get_device_list() failed 
+.br
+\fI-13\fP libusb_get_device_descriptor() failed 
+.RE
+.PP
+
+.PP
+Definition at line 662 of file ftdi\&.c\&.
+.PP
+References ftdi_usb_open_desc_index()\&.
+.PP
+Referenced by ftdi_usb_open()\&.
+.SS "int ftdi_usb_open_desc_index (struct \fBftdi_context\fP *ftdi, intvendor, intproduct, const char *description, const char *serial, unsigned intindex)"
+Opens the index-th device with a given, vendor id, product id, description and serial\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIvendor\fP Vendor ID 
+.br
+\fIproduct\fP Product ID 
+.br
+\fIdescription\fP Description to search for\&. Use NULL if not needed\&. 
+.br
+\fIserial\fP Serial to search for\&. Use NULL if not needed\&. 
+.br
+\fIindex\fP Number of matching device to open if there are more than one, starts with 0\&.
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP usb_find_busses() failed 
+.br
+\fI-2\fP usb_find_devices() failed 
+.br
+\fI-3\fP usb device not found 
+.br
+\fI-4\fP unable to open device 
+.br
+\fI-5\fP unable to claim device 
+.br
+\fI-6\fP reset failed 
+.br
+\fI-7\fP set baudrate failed 
+.br
+\fI-8\fP get product description failed 
+.br
+\fI-9\fP get serial number failed 
+.br
+\fI-10\fP unable to close device 
+.br
+\fI-11\fP ftdi context invalid 
+.RE
+.PP
+
+.PP
+Definition at line 692 of file ftdi\&.c\&.
+.PP
+References ftdi_error_return, ftdi_error_return_free_device_list, ftdi_usb_open_dev(), ftdi_context::usb_ctx, and ftdi_context::usb_dev\&.
+.PP
+Referenced by ftdi_usb_open_desc(), ftdi_usb_open_string(), and Ftdi::Context::open()\&.
+.SS "int ftdi_usb_open_string (struct \fBftdi_context\fP *ftdi, const char *description)"
+Opens the ftdi-device described by a description-string\&. Intended to be used for parsing a device-description given as commandline argument\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIdescription\fP NULL-terminated description-string, using this format: 
+.PD 0
+
+.IP "\(bu" 2
+\fCd:<devicenode>\fP path of bus and device-node (e\&.g\&. '003/001') within usb device tree (usually at /proc/bus/usb/) 
+.IP "\(bu" 2
+\fCi:<vendor>:<product>\fP first device with given vendor and product id, ids can be decimal, octal (preceded by '0') or hex (preceded by '0x') 
+.IP "\(bu" 2
+\fCi:<vendor>:<product>:<index>\fP as above with index being the number of the device (starting with 0) if there are more than one 
+.IP "\(bu" 2
+\fCs:<vendor>:<product>:<serial>\fP first device with given vendor id, product id and serial string
+.PP
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+The description format may be extended in later versions\&.
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-2\fP libusb_get_device_list() failed 
+.br
+\fI-3\fP usb device not found 
+.br
+\fI-4\fP unable to open device 
+.br
+\fI-5\fP unable to claim device 
+.br
+\fI-6\fP reset failed 
+.br
+\fI-7\fP set baudrate failed 
+.br
+\fI-8\fP get product description failed 
+.br
+\fI-9\fP get serial number failed 
+.br
+\fI-10\fP unable to close device 
+.br
+\fI-11\fP illegal description format 
+.br
+\fI-12\fP ftdi context invalid 
+.RE
+.PP
+
+.PP
+Definition at line 790 of file ftdi\&.c\&.
+.PP
+References ftdi_error_return, ftdi_error_return_free_device_list, ftdi_usb_open_desc_index(), ftdi_usb_open_dev(), and ftdi_context::usb_ctx\&.
+.PP
+Referenced by Ftdi::Context::open()\&.
+.SS "int ftdi_usb_reset (struct \fBftdi_context\fP *ftdi)"
+Resets the ftdi device\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP FTDI reset failed 
+.br
+\fI-2\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 883 of file ftdi\&.c\&.
+.PP
+References FTDI_DEVICE_OUT_REQTYPE, ftdi_error_return, ftdi_context::index, ftdi_context::readbuffer_offset, ftdi_context::readbuffer_remaining, SIO_RESET_REQUEST, SIO_RESET_SIO, ftdi_context::usb_dev, and ftdi_context::usb_write_timeout\&.
+.PP
+Referenced by ftdi_usb_open_dev(), ftdi_write_eeprom(), and Ftdi::Context::reset()\&.
+.SS "int ftdi_usb_purge_rx_buffer (struct \fBftdi_context\fP *ftdi)"
+Clears the read buffer on the chip and the internal read buffer\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP read buffer purge failed 
+.br
+\fI-2\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 909 of file ftdi\&.c\&.
+.PP
+References FTDI_DEVICE_OUT_REQTYPE, ftdi_error_return, ftdi_context::index, ftdi_context::readbuffer_offset, ftdi_context::readbuffer_remaining, SIO_RESET_PURGE_RX, SIO_RESET_REQUEST, ftdi_context::usb_dev, and ftdi_context::usb_write_timeout\&.
+.PP
+Referenced by Ftdi::Context::flush(), and ftdi_usb_purge_buffers()\&.
+.SS "int ftdi_usb_purge_tx_buffer (struct \fBftdi_context\fP *ftdi)"
+Clears the write buffer on the chip\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP write buffer purge failed 
+.br
+\fI-2\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 935 of file ftdi\&.c\&.
+.PP
+References FTDI_DEVICE_OUT_REQTYPE, ftdi_error_return, ftdi_context::index, SIO_RESET_PURGE_TX, SIO_RESET_REQUEST, ftdi_context::usb_dev, and ftdi_context::usb_write_timeout\&.
+.PP
+Referenced by Ftdi::Context::flush(), and ftdi_usb_purge_buffers()\&.
+.SS "int ftdi_usb_purge_buffers (struct \fBftdi_context\fP *ftdi)"
+Clears the buffers on the chip and the internal read buffer\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP read buffer purge failed 
+.br
+\fI-2\fP write buffer purge failed 
+.br
+\fI-3\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 958 of file ftdi\&.c\&.
+.PP
+References ftdi_error_return, ftdi_usb_purge_rx_buffer(), ftdi_usb_purge_tx_buffer(), and ftdi_context::usb_dev\&.
+.PP
+Referenced by ftdi_readstream()\&.
+.SS "int ftdi_usb_close (struct \fBftdi_context\fP *ftdi)"
+Closes the ftdi device\&. Call \fBftdi_deinit()\fP if you're cleaning up\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP usb_release failed 
+.br
+\fI-3\fP ftdi context invalid 
+.RE
+.PP
+
+.PP
+Definition at line 987 of file ftdi\&.c\&.
+.PP
+References ftdi_error_return, ftdi_context::interface, and ftdi_context::usb_dev\&.
+.PP
+Referenced by Ftdi::Context::close(), and Ftdi::Context::Private::~Private()\&.
+.SS "int convert_baudrate_UT_export (intbaudrate, struct \fBftdi_context\fP *ftdi, unsigned short *value, unsigned short *index)"
+
+.PP
+Wrapper function to export ftdi_convert_baudrate() to the unit test Do not use, it's only for the unit test framework\&. 
+.PP
+Definition at line 1221 of file ftdi\&.c\&.
+.SS "int ftdi_set_baudrate (struct \fBftdi_context\fP *ftdi, intbaudrate)"
+Sets the chip baud rate
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIbaudrate\fP baud rate to set
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP invalid baudrate 
+.br
+\fI-2\fP setting baudrate failed 
+.br
+\fI-3\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 1238 of file ftdi\&.c\&.
+.PP
+References ftdi_context::baudrate, ftdi_context::bitbang_enabled, FTDI_DEVICE_OUT_REQTYPE, ftdi_error_return, SIO_SET_BAUDRATE_REQUEST, ftdi_context::usb_dev, and ftdi_context::usb_write_timeout\&.
+.PP
+Referenced by ftdi_usb_open_dev(), and Ftdi::Context::set_baud_rate()\&.
+.SS "int ftdi_set_line_property (struct \fBftdi_context\fP *ftdi, enum \fBftdi_bits_type\fPbits, enum \fBftdi_stopbits_type\fPsbit, enum \fBftdi_parity_type\fPparity)"
+Set (RS232) line characteristics\&. The break type can only be set via \fBftdi_set_line_property2()\fP and defaults to 'off'\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIbits\fP Number of bits 
+.br
+\fIsbit\fP Number of stop bits 
+.br
+\fIparity\fP Parity mode
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP Setting line property failed 
+.RE
+.PP
+
+.PP
+Definition at line 1284 of file ftdi\&.c\&.
+.PP
+References BREAK_OFF, and ftdi_set_line_property2()\&.
+.PP
+Referenced by Ftdi::Context::set_line_property()\&.
+.SS "int ftdi_set_line_property2 (struct \fBftdi_context\fP *ftdi, enum \fBftdi_bits_type\fPbits, enum \fBftdi_stopbits_type\fPsbit, enum \fBftdi_parity_type\fPparity, enum \fBftdi_break_type\fPbreak_type)"
+Set (RS232) line characteristics
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIbits\fP Number of bits 
+.br
+\fIsbit\fP Number of stop bits 
+.br
+\fIparity\fP Parity mode 
+.br
+\fIbreak_type\fP Break type
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP Setting line property failed 
+.br
+\fI-2\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 1303 of file ftdi\&.c\&.
+.PP
+References BREAK_OFF, BREAK_ON, EVEN, FTDI_DEVICE_OUT_REQTYPE, ftdi_error_return, ftdi_context::index, MARK, NONE, ODD, SIO_SET_DATA_REQUEST, SPACE, STOP_BIT_1, STOP_BIT_15, STOP_BIT_2, ftdi_context::usb_dev, and ftdi_context::usb_write_timeout\&.
+.PP
+Referenced by ftdi_set_line_property(), and Ftdi::Context::set_line_property()\&.
+.SS "int ftdi_write_data (struct \fBftdi_context\fP *ftdi, const unsigned char *buf, intsize)"
+Writes data in chunks (see \fBftdi_write_data_set_chunksize()\fP) to the chip
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIbuf\fP Buffer with the data 
+.br
+\fIsize\fP Size of the buffer
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI-666\fP USB device unavailable 
+.br
+\fI<0\fP error code from usb_bulk_write() 
+.br
+\fI>0\fP number of bytes written 
+.RE
+.PP
+
+.PP
+Definition at line 1373 of file ftdi\&.c\&.
+.PP
+References ftdi_error_return, ftdi_context::in_ep, ftdi_context::usb_dev, ftdi_context::usb_write_timeout, and ftdi_context::writebuffer_chunksize\&.
+.PP
+Referenced by Ftdi::Context::write()\&.
+.SS "struct \fBftdi_transfer_control\fP* ftdi_write_data_submit (struct \fBftdi_context\fP *ftdi, unsigned char *buf, intsize)"
+Writes data to the chip\&. Does not wait for completion of the transfer nor does it make sure that the transfer was successful\&.
+.PP
+Use libusb 1\&.0 asynchronous API\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIbuf\fP Buffer with the data 
+.br
+\fIsize\fP Size of the buffer
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fINULL\fP Some error happens when submit transfer 
+.br
+\fI!NULL\fP Pointer to a \fBftdi_transfer_control\fP 
+.RE
+.PP
+
+.PP
+Definition at line 1521 of file ftdi\&.c\&.
+.PP
+References ftdi_transfer_control::buf, ftdi_transfer_control::completed, ftdi_transfer_control::ftdi, ftdi_context::in_ep, ftdi_transfer_control::offset, ftdi_transfer_control::size, ftdi_transfer_control::transfer, ftdi_context::usb_dev, ftdi_context::usb_write_timeout, and ftdi_context::writebuffer_chunksize\&.
+.SS "struct \fBftdi_transfer_control\fP* ftdi_read_data_submit (struct \fBftdi_context\fP *ftdi, unsigned char *buf, intsize)"
+Reads data from the chip\&. Does not wait for completion of the transfer nor does it make sure that the transfer was successful\&.
+.PP
+Use libusb 1\&.0 asynchronous API\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIbuf\fP Buffer with the data 
+.br
+\fIsize\fP Size of the buffer
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fINULL\fP Some error happens when submit transfer 
+.br
+\fI!NULL\fP Pointer to a \fBftdi_transfer_control\fP 
+.RE
+.PP
+
+.PP
+Definition at line 1583 of file ftdi\&.c\&.
+.PP
+References ftdi_transfer_control::buf, ftdi_transfer_control::completed, ftdi_transfer_control::ftdi, ftdi_transfer_control::offset, ftdi_context::out_ep, ftdi_context::readbuffer, ftdi_context::readbuffer_chunksize, ftdi_context::readbuffer_offset, ftdi_context::readbuffer_remaining, ftdi_transfer_control::size, ftdi_transfer_control::transfer, ftdi_context::usb_dev, and ftdi_context::usb_read_timeout\&.
+.SS "int ftdi_transfer_data_done (struct \fBftdi_transfer_control\fP *tc)"
+Wait for completion of the transfer\&.
+.PP
+Use libusb 1\&.0 asynchronous API\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fItc\fP pointer to \fBftdi_transfer_control\fP
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI<\fP 0: Some error happens 
+.br
+\fI>=\fP 0: Data size transferred 
+.RE
+.PP
+tc->transfer could be NULL if '(size <= ftdi->readbuffer_remaining)' at \fBftdi_read_data_submit()\fP\&. Therefore, we need to check it here\&.
+.PP
+Definition at line 1662 of file ftdi\&.c\&.
+.PP
+References ftdi_transfer_control::completed, ftdi_transfer_control::ftdi, ftdi_transfer_control::offset, ftdi_transfer_control::transfer, and ftdi_context::usb_ctx\&.
+.SS "int ftdi_write_data_set_chunksize (struct \fBftdi_context\fP *ftdi, unsigned intchunksize)"
+Configure write buffer chunk size\&. Default is 4096\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIchunksize\fP Chunk size
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP ftdi context invalid 
+.RE
+.PP
+
+.PP
+Definition at line 1708 of file ftdi\&.c\&.
+.PP
+References ftdi_error_return, and ftdi_context::writebuffer_chunksize\&.
+.PP
+Referenced by Ftdi::Context::set_write_chunk_size()\&.
+.SS "int ftdi_write_data_get_chunksize (struct \fBftdi_context\fP *ftdi, unsigned int *chunksize)"
+Get write buffer chunk size\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIchunksize\fP Pointer to store chunk size in
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP ftdi context invalid 
+.RE
+.PP
+
+.PP
+Definition at line 1726 of file ftdi\&.c\&.
+.PP
+References ftdi_error_return, and ftdi_context::writebuffer_chunksize\&.
+.PP
+Referenced by Ftdi::Context::write_chunk_size()\&.
+.SS "int ftdi_read_data (struct \fBftdi_context\fP *ftdi, unsigned char *buf, intsize)"
+Reads data in chunks (see \fBftdi_read_data_set_chunksize()\fP) from the chip\&.
+.PP
+Automatically strips the two modem status bytes transfered during every read\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIbuf\fP Buffer to store data in 
+.br
+\fIsize\fP Size of the buffer
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI-666\fP USB device unavailable 
+.br
+\fI<0\fP error code from libusb_bulk_transfer() 
+.br
+\fI0\fP no data was available 
+.br
+\fI>0\fP number of bytes read 
+.RE
+.PP
+
+.PP
+Definition at line 1750 of file ftdi\&.c\&.
+.PP
+References ftdi_error_return, ftdi_context::max_packet_size, ftdi_transfer_control::offset, ftdi_context::out_ep, ftdi_context::readbuffer, ftdi_context::readbuffer_chunksize, ftdi_context::readbuffer_offset, ftdi_context::readbuffer_remaining, ftdi_transfer_control::size, ftdi_context::usb_dev, and ftdi_context::usb_read_timeout\&.
+.PP
+Referenced by Ftdi::Context::read()\&.
+.SS "int ftdi_read_data_set_chunksize (struct \fBftdi_context\fP *ftdi, unsigned intchunksize)"
+Configure read buffer chunk size\&. Default is 4096\&.
+.PP
+Automatically reallocates the buffer\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIchunksize\fP Chunk size
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP ftdi context invalid 
+.RE
+.PP
+
+.PP
+Definition at line 1875 of file ftdi\&.c\&.
+.PP
+References ftdi_error_return, ftdi_context::readbuffer, ftdi_context::readbuffer_chunksize, ftdi_context::readbuffer_offset, and ftdi_context::readbuffer_remaining\&.
+.PP
+Referenced by ftdi_init(), and Ftdi::Context::set_read_chunk_size()\&.
+.SS "int ftdi_read_data_get_chunksize (struct \fBftdi_context\fP *ftdi, unsigned int *chunksize)"
+Get read buffer chunk size\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIchunksize\fP Pointer to store chunk size in
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP FTDI context invalid 
+.RE
+.PP
+
+.PP
+Definition at line 1912 of file ftdi\&.c\&.
+.PP
+References ftdi_error_return, and ftdi_context::readbuffer_chunksize\&.
+.PP
+Referenced by Ftdi::Context::read_chunk_size()\&.
+.SS "int ftdi_set_bitmode (struct \fBftdi_context\fP *ftdi, unsigned charbitmask, unsigned charmode)"
+Enable/disable bitbang modes\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIbitmask\fP Bitmask to configure lines\&. HIGH/ON value configures a line as output\&. 
+.br
+\fImode\fP Bitbang mode: use the values defined in \fBftdi_mpsse_mode\fP
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP can't enable bitbang mode 
+.br
+\fI-2\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 1933 of file ftdi\&.c\&.
+.PP
+References ftdi_context::bitbang_enabled, ftdi_context::bitbang_mode, BITMODE_RESET, FTDI_DEVICE_OUT_REQTYPE, ftdi_error_return, ftdi_context::index, SIO_SET_BITMODE_REQUEST, ftdi_context::usb_dev, and ftdi_context::usb_write_timeout\&.
+.PP
+Referenced by ftdi_readstream(), and Ftdi::Context::set_bitmode()\&.
+.SS "int ftdi_disable_bitbang (struct \fBftdi_context\fP *ftdi)"
+Disable bitbang mode\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP can't disable bitbang mode 
+.br
+\fI-2\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 1959 of file ftdi\&.c\&.
+.PP
+References ftdi_context::bitbang_enabled, FTDI_DEVICE_OUT_REQTYPE, ftdi_error_return, ftdi_context::index, SIO_SET_BITMODE_REQUEST, ftdi_context::usb_dev, and ftdi_context::usb_write_timeout\&.
+.PP
+Referenced by Ftdi::Context::bitbang_disable()\&.
+.SS "int ftdi_read_pins (struct \fBftdi_context\fP *ftdi, unsigned char *pins)"
+Directly read pin state, circumventing the read buffer\&. Useful for bitbang mode\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIpins\fP Pointer to store pins into
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP read pins failed 
+.br
+\fI-2\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 1982 of file ftdi\&.c\&.
+.PP
+References FTDI_DEVICE_IN_REQTYPE, ftdi_error_return, ftdi_context::index, SIO_READ_PINS_REQUEST, ftdi_context::usb_dev, and ftdi_context::usb_read_timeout\&.
+.PP
+Referenced by Ftdi::Context::read_pins()\&.
+.SS "int ftdi_set_latency_timer (struct \fBftdi_context\fP *ftdi, unsigned charlatency)"
+Set latency timer
+.PP
+The FTDI chip keeps data in the internal buffer for a specific amount of time if the buffer is not full yet to decrease load on the usb bus\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIlatency\fP Value between 1 and 255
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP latency out of range 
+.br
+\fI-2\fP unable to set latency timer 
+.br
+\fI-3\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 2008 of file ftdi\&.c\&.
+.PP
+References FTDI_DEVICE_OUT_REQTYPE, ftdi_error_return, ftdi_context::index, SIO_SET_LATENCY_TIMER_REQUEST, ftdi_context::usb_dev, and ftdi_context::usb_write_timeout\&.
+.PP
+Referenced by ftdi_write_eeprom(), and Ftdi::Context::set_latency()\&.
+.SS "int ftdi_get_latency_timer (struct \fBftdi_context\fP *ftdi, unsigned char *latency)"
+Get latency timer
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIlatency\fP Pointer to store latency value in
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP unable to get latency timer 
+.br
+\fI-2\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 2035 of file ftdi\&.c\&.
+.PP
+References FTDI_DEVICE_IN_REQTYPE, ftdi_error_return, ftdi_context::index, SIO_GET_LATENCY_TIMER_REQUEST, ftdi_context::usb_dev, and ftdi_context::usb_read_timeout\&.
+.PP
+Referenced by Ftdi::Context::latency()\&.
+.SS "int ftdi_poll_modem_status (struct \fBftdi_context\fP *ftdi, unsigned short *status)"
+Poll modem status information
+.PP
+This function allows the retrieve the two status bytes of the device\&. The device sends these bytes also as a header for each read access where they are discarded by \fBftdi_read_data()\fP\&. The chip generates the two stripped status bytes in the absence of data every 40 ms\&.
+.PP
+Layout of the first byte:
+.IP "\(bu" 2
+B0\&.\&.B3 - must be 0
+.IP "\(bu" 2
+B4 Clear to send (CTS) 0 = inactive 1 = active
+.IP "\(bu" 2
+B5 Data set ready (DTS) 0 = inactive 1 = active
+.IP "\(bu" 2
+B6 Ring indicator (RI) 0 = inactive 1 = active
+.IP "\(bu" 2
+B7 Receive line signal detect (RLSD) 0 = inactive 1 = active
+.PP
+.PP
+Layout of the second byte:
+.IP "\(bu" 2
+B0 Data ready (DR)
+.IP "\(bu" 2
+B1 Overrun error (OE)
+.IP "\(bu" 2
+B2 Parity error (PE)
+.IP "\(bu" 2
+B3 Framing error (FE)
+.IP "\(bu" 2
+B4 Break interrupt (BI)
+.IP "\(bu" 2
+B5 Transmitter holding register (THRE)
+.IP "\(bu" 2
+B6 Transmitter empty (TEMT)
+.IP "\(bu" 2
+B7 Error in RCVR FIFO
+.PP
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIstatus\fP Pointer to store status information in\&. Must be two bytes\&.
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP unable to retrieve status information 
+.br
+\fI-2\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 2089 of file ftdi\&.c\&.
+.PP
+References FTDI_DEVICE_IN_REQTYPE, ftdi_error_return, ftdi_context::index, SIO_POLL_MODEM_STATUS_REQUEST, ftdi_context::usb_dev, and ftdi_context::usb_read_timeout\&.
+.PP
+Referenced by ftdi_write_eeprom(), and Ftdi::Context::poll_modem_status()\&.
+.SS "int ftdi_setflowctrl (struct \fBftdi_context\fP *ftdi, intflowctrl)"
+Set flowcontrol for ftdi chip
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIflowctrl\fP flow control to use\&. should be SIO_DISABLE_FLOW_CTRL, SIO_RTS_CTS_HS, SIO_DTR_DSR_HS or SIO_XON_XOFF_HS
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP set flow control failed 
+.br
+\fI-2\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 2115 of file ftdi\&.c\&.
+.PP
+References FTDI_DEVICE_OUT_REQTYPE, ftdi_error_return, ftdi_context::index, SIO_SET_FLOW_CTRL_REQUEST, ftdi_context::usb_dev, and ftdi_context::usb_write_timeout\&.
+.PP
+Referenced by Ftdi::Context::set_flow_control()\&.
+.SS "int ftdi_setdtr (struct \fBftdi_context\fP *ftdi, intstate)"
+Set dtr line
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIstate\fP state to set line to (1 or 0)
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP set dtr failed 
+.br
+\fI-2\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 2138 of file ftdi\&.c\&.
+.PP
+References FTDI_DEVICE_OUT_REQTYPE, ftdi_error_return, ftdi_context::index, SIO_SET_DTR_HIGH, SIO_SET_DTR_LOW, SIO_SET_MODEM_CTRL_REQUEST, ftdi_context::usb_dev, and ftdi_context::usb_write_timeout\&.
+.PP
+Referenced by Ftdi::Context::set_dtr()\&.
+.SS "int ftdi_setrts (struct \fBftdi_context\fP *ftdi, intstate)"
+Set rts line
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIstate\fP state to set line to (1 or 0)
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP set rts failed 
+.br
+\fI-2\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 2168 of file ftdi\&.c\&.
+.PP
+References FTDI_DEVICE_OUT_REQTYPE, ftdi_error_return, ftdi_context::index, SIO_SET_MODEM_CTRL_REQUEST, SIO_SET_RTS_HIGH, SIO_SET_RTS_LOW, ftdi_context::usb_dev, and ftdi_context::usb_write_timeout\&.
+.PP
+Referenced by Ftdi::Context::set_rts()\&.
+.SS "int ftdi_setdtr_rts (struct \fBftdi_context\fP *ftdi, intdtr, intrts)"
+Set dtr and rts line in one pass
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIdtr\fP DTR state to set line to (1 or 0) 
+.br
+\fIrts\fP RTS state to set line to (1 or 0)
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP set dtr/rts failed 
+.br
+\fI-2\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 2199 of file ftdi\&.c\&.
+.PP
+References FTDI_DEVICE_OUT_REQTYPE, ftdi_error_return, ftdi_context::index, SIO_SET_DTR_HIGH, SIO_SET_DTR_LOW, SIO_SET_MODEM_CTRL_REQUEST, SIO_SET_RTS_HIGH, SIO_SET_RTS_LOW, ftdi_context::usb_dev, and ftdi_context::usb_write_timeout\&.
+.PP
+Referenced by Ftdi::Context::set_modem_control()\&.
+.SS "int ftdi_set_event_char (struct \fBftdi_context\fP *ftdi, unsigned chareventch, unsigned charenable)"
+Set the special event character
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIeventch\fP Event character 
+.br
+\fIenable\fP 0 to disable the event character, non-zero otherwise
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP unable to set event character 
+.br
+\fI-2\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 2235 of file ftdi\&.c\&.
+.PP
+References FTDI_DEVICE_OUT_REQTYPE, ftdi_error_return, ftdi_context::index, SIO_SET_EVENT_CHAR_REQUEST, ftdi_context::usb_dev, and ftdi_context::usb_write_timeout\&.
+.PP
+Referenced by Ftdi::Context::set_event_char()\&.
+.SS "int ftdi_set_error_char (struct \fBftdi_context\fP *ftdi, unsigned charerrorch, unsigned charenable)"
+Set error character
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIerrorch\fP Error character 
+.br
+\fIenable\fP 0 to disable the error character, non-zero otherwise
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP unable to set error character 
+.br
+\fI-2\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 2264 of file ftdi\&.c\&.
+.PP
+References FTDI_DEVICE_OUT_REQTYPE, ftdi_error_return, ftdi_context::index, SIO_SET_ERROR_CHAR_REQUEST, ftdi_context::usb_dev, and ftdi_context::usb_write_timeout\&.
+.PP
+Referenced by Ftdi::Context::set_error_char()\&.
+.SS "int ftdi_eeprom_initdefaults (struct \fBftdi_context\fP *ftdi, char *manufacturer, char *product, char *serial)"
+Init eeprom with default values for the connected device 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fImanufacturer\fP String to use as Manufacturer 
+.br
+\fIproduct\fP String to use as Product description 
+.br
+\fIserial\fP String to use as Serial number description
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP No struct \fBftdi_context\fP 
+.br
+\fI-2\fP No struct \fBftdi_eeprom\fP 
+.br
+\fI-3\fP No connected device or device not yet opened 
+.RE
+.PP
+
+.PP
+Definition at line 2294 of file ftdi\&.c\&.
+.PP
+References ftdi_eeprom::cbus_function, CBUS_PWREN, CBUS_RXLED, CBUS_SLEEP, CBUS_TXDEN, CBUS_TXLED, CBUSH_RXLED, CBUSH_SLEEP, CBUSH_TRISTATE, CBUSH_TXDEN, CBUSH_TXLED, ftdi_context::eeprom, ftdi_error_return, ftdi_eeprom::manufacturer, ftdi_eeprom::max_power, ftdi_eeprom::product, ftdi_eeprom::product_id, ftdi_eeprom::release_number, ftdi_eeprom::serial, ftdi_eeprom::size, ftdi_context::type, TYPE_2232C, TYPE_2232H, TYPE_230X, TYPE_232H, TYPE_4232H, TYPE_AM, TYPE_BM, TYPE_R, ftdi_context::usb_dev, ftdi_eeprom::usb_version, ftdi_eeprom::use_serial, and ftdi_eeprom::vendor_id\&.
+.PP
+Referenced by Ftdi::Eeprom::init_defaults()\&.
+.SS "int ftdi_eeprom_set_strings (struct \fBftdi_context\fP *ftdi, char *manufacturer, char *product, char *serial)"
+
+.PP
+Definition at line 2442 of file ftdi\&.c\&.
+.PP
+References ftdi_context::eeprom, ftdi_error_return, ftdi_eeprom::manufacturer, ftdi_eeprom::product, ftdi_eeprom::serial, ftdi_context::usb_dev, and ftdi_eeprom::use_serial\&.
+.SS "void set_ft232h_cbus (struct \fBftdi_eeprom\fP *eeprom, unsigned char *output)"
+
+.PP
+Definition at line 2492 of file ftdi\&.c\&.
+.PP
+References ftdi_eeprom::cbus_function, CBUSH_CLK7_5, and CBUSH_TRISTATE\&.
+.PP
+Referenced by ftdi_eeprom_build()\&.
+.SS "int ftdi_eeprom_build (struct \fBftdi_context\fP *ftdi)"
+Build binary buffer from \fBftdi_eeprom\fP structure\&. Output is suitable for \fBftdi_write_eeprom()\fP\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI>=0\fP size of eeprom user area in bytes 
+.br
+\fI-1\fP eeprom size (128 bytes) exceeded by custom strings 
+.br
+\fI-2\fP Invalid eeprom or ftdi pointer 
+.br
+\fI-3\fP Invalid cbus function setting (FIXME: Not in the code?) 
+.br
+\fI-4\fP Chip doesn't support invert (FIXME: Not in the code?) 
+.br
+\fI-5\fP Chip doesn't support high current drive (FIXME: Not in the code?) 
+.br
+\fI-6\fP No connected EEPROM or EEPROM Type unknown 
+.RE
+.PP
+
+.PP
+Definition at line 2561 of file ftdi\&.c\&.
+.PP
+References ftdi_eeprom::buf, CBUS_BB, CBUS_CLK6, ftdi_eeprom::cbus_function, CBUS_PWREN, CBUS_RXLED, CBUS_SLEEP, CBUS_TXDEN, CBUS_TXLED, ftdi_eeprom::channel_a_driver, ftdi_eeprom::channel_a_rs485enable, ftdi_eeprom::channel_a_type, ftdi_eeprom::channel_b_driver, ftdi_eeprom::channel_b_rs485enable, ftdi_eeprom::channel_b_type, ftdi_eeprom::channel_c_driver, ftdi_eeprom::channel_c_rs485enable, ftdi_eeprom::channel_d_driver, ftdi_eeprom::channel_d_rs485enable, CHANNEL_IS_RS485, ftdi_eeprom::chip, ftdi_eeprom::clock_polarity, ftdi_eeprom::data_order, DRIVE_16MA, DRIVER_VCP, DRIVER_VCPH, ftdi_context::eeprom, ftdi_eeprom::flow_control, FT1284_CLK_IDLE_STATE, FT1284_DATA_LSB, FT1284_FLOW_CONTROL, ftdi_error_return, FTDI_MAX_EEPROM_SIZE, ftdi_read_eeprom_location(), ftdi_eeprom::group0_drive, ftdi_eeprom::group0_schmitt, ftdi_eeprom::group0_slew, ftdi_eeprom::group1_drive, ftdi_eeprom::group1_schmitt, ftdi_eeprom::group1_slew, ftdi_eeprom::group2_drive, ftdi_eeprom::group2_schmitt, ftdi_eeprom::group2_slew, ftdi_eeprom::group3_drive, ftdi_eeprom::group3_schmitt, ftdi_eeprom::group3_slew, ftdi_eeprom::high_current, ftdi_eeprom::high_current_a, ftdi_eeprom::high_current_b, HIGH_CURRENT_DRIVE, HIGH_CURRENT_DRIVE_R, ftdi_eeprom::in_is_isochronous, ftdi_eeprom::initialized_for_connected_device, ftdi_eeprom::invert, ftdi_eeprom::is_not_pnp, IS_SCHMITT, ftdi_eeprom::manufacturer, ftdi_eeprom::max_power, MAX_POWER_MILLIAMP_PER_UNIT, ftdi_eeprom::out_is_isochronous, POWER_SAVE_DISABLE_H, ftdi_eeprom::powersave, ftdi_eeprom::product, ftdi_eeprom::product_id, ftdi_eeprom::release_number, ftdi_eeprom::remote_wakeup, ftdi_eeprom::self_powered, ftdi_eeprom::serial, set_ft232h_cbus(), ftdi_eeprom::size, SLOW_SLEW, ftdi_eeprom::suspend_dbus7, SUSPEND_DBUS7_BIT, ftdi_eeprom::suspend_pull_downs, ftdi_context::type, TYPE_2232C, TYPE_2232H, TYPE_230X, TYPE_232H, TYPE_4232H, TYPE_AM, TYPE_BM, TYPE_R, ftdi_eeprom::usb_version, ftdi_eeprom::use_serial, USE_SERIAL_NUM, ftdi_eeprom::use_usb_version, USE_USB_VERSION_BIT, and ftdi_eeprom::vendor_id\&.
+.PP
+Referenced by Ftdi::Eeprom::build()\&.
+.SS "int ftdi_eeprom_decode (struct \fBftdi_context\fP *ftdi, intverbose)"
+Decode binary EEPROM image into an \fBftdi_eeprom\fP structure\&.
+.PP
+For FT-X devices use AN_201 FT-X MTP memory Configuration to decode\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIverbose\fP Decode EEPROM on stdout
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP something went wrong
+.RE
+.PP
+FIXME: How to pass size? How to handle size field in \fBftdi_eeprom\fP? FIXME: Strings are malloc'ed here and should be freed somewhere 
+.PP
+Definition at line 3154 of file ftdi\&.c\&.
+.PP
+References ftdi_eeprom::buf, CBUS_BB, ftdi_eeprom::cbus_function, CBUSH_AWAKE, CBUSH_CLK7_5, ftdi_eeprom::channel_a_driver, ftdi_eeprom::channel_a_rs485enable, ftdi_eeprom::channel_a_type, ftdi_eeprom::channel_b_driver, ftdi_eeprom::channel_b_rs485enable, ftdi_eeprom::channel_b_type, ftdi_eeprom::channel_c_driver, ftdi_eeprom::channel_c_rs485enable, ftdi_eeprom::channel_d_driver, ftdi_eeprom::channel_d_rs485enable, CHANNEL_IS_RS485, ftdi_eeprom::chip, ftdi_eeprom::clock_polarity, ftdi_eeprom::data_order, DRIVE_16MA, DRIVER_VCP, DRIVER_VCPH, ftdi_context::eeprom, ftdi_eeprom::flow_control, FT1284_CLK_IDLE_STATE, FT1284_DATA_LSB, FT1284_FLOW_CONTROL, ftdi_error_return, ftdi_eeprom::group0_drive, ftdi_eeprom::group0_schmitt, ftdi_eeprom::group0_slew, ftdi_eeprom::group1_drive, ftdi_eeprom::group1_schmitt, ftdi_eeprom::group1_slew, ftdi_eeprom::group2_drive, ftdi_eeprom::group2_schmitt, ftdi_eeprom::group2_slew, ftdi_eeprom::group3_drive, ftdi_eeprom::group3_schmitt, ftdi_eeprom::group3_slew, ftdi_eeprom::high_current, ftdi_eeprom::high_current_a, ftdi_eeprom::high_current_b, HIGH_CURRENT_DRIVE, HIGH_CURRENT_DRIVE_R, ftdi_eeprom::in_is_isochronous, ftdi_eeprom::invert, ftdi_eeprom::is_not_pnp, IS_SCHMITT, ftdi_eeprom::manufacturer, ftdi_eeprom::max_power, MAX_POWER_MILLIAMP_PER_UNIT, ftdi_eeprom::out_is_isochronous, POWER_SAVE_DISABLE_H, ftdi_eeprom::powersave, ftdi_eeprom::product, ftdi_eeprom::product_id, ftdi_eeprom::release_number, ftdi_eeprom::remote_wakeup, ftdi_eeprom::self_powered, ftdi_eeprom::serial, ftdi_eeprom::size, SLOW_SLEW, ftdi_eeprom::suspend_dbus7, SUSPEND_DBUS7_BIT, ftdi_eeprom::suspend_pull_downs, ftdi_context::type, TYPE_2232C, TYPE_2232H, TYPE_230X, TYPE_232H, TYPE_4232H, TYPE_AM, TYPE_BM, TYPE_R, ftdi_eeprom::usb_version, ftdi_eeprom::use_serial, USE_SERIAL_NUM, ftdi_eeprom::use_usb_version, USE_USB_VERSION_BIT, and ftdi_eeprom::vendor_id\&.
+.SS "int ftdi_get_eeprom_value (struct \fBftdi_context\fP *ftdi, enum \fBftdi_eeprom_value\fPvalue_name, int *value)"
+Get a value from the decoded EEPROM structure
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIvalue_name\fP Enum of the value to query 
+.br
+\fIvalue\fP Pointer to store read value
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP Value doesn't exist 
+.RE
+.PP
+
+.PP
+Definition at line 3581 of file ftdi\&.c\&.
+.PP
+References ftdi_eeprom::cbus_function, CBUS_FUNCTION_0, CBUS_FUNCTION_1, CBUS_FUNCTION_2, CBUS_FUNCTION_3, CBUS_FUNCTION_4, CBUS_FUNCTION_5, CBUS_FUNCTION_6, CBUS_FUNCTION_7, CBUS_FUNCTION_8, CBUS_FUNCTION_9, ftdi_eeprom::channel_a_driver, CHANNEL_A_DRIVER, CHANNEL_A_RS485, ftdi_eeprom::channel_a_rs485enable, ftdi_eeprom::channel_a_type, CHANNEL_A_TYPE, ftdi_eeprom::channel_b_driver, CHANNEL_B_DRIVER, CHANNEL_B_RS485, ftdi_eeprom::channel_b_rs485enable, ftdi_eeprom::channel_b_type, CHANNEL_B_TYPE, ftdi_eeprom::channel_c_driver, CHANNEL_C_DRIVER, CHANNEL_C_RS485, ftdi_eeprom::channel_c_rs485enable, ftdi_eeprom::channel_d_driver, CHANNEL_D_DRIVER, CHANNEL_D_RS485, ftdi_eeprom::channel_d_rs485enable, ftdi_eeprom::chip, CHIP_SIZE, CHIP_TYPE, ftdi_eeprom::clock_polarity, CLOCK_POLARITY, ftdi_eeprom::data_order, DATA_ORDER, ftdi_context::eeprom, ftdi_eeprom::flow_control, FLOW_CONTROL, ftdi_error_return, ftdi_eeprom::group0_drive, GROUP0_DRIVE, ftdi_eeprom::group0_schmitt, GROUP0_SCHMITT, ftdi_eeprom::group0_slew, GROUP0_SLEW, ftdi_eeprom::group1_drive, GROUP1_DRIVE, ftdi_eeprom::group1_schmitt, GROUP1_SCHMITT, ftdi_eeprom::group1_slew, GROUP1_SLEW, ftdi_eeprom::group2_drive, GROUP2_DRIVE, ftdi_eeprom::group2_schmitt, GROUP2_SCHMITT, ftdi_eeprom::group2_slew, GROUP2_SLEW, ftdi_eeprom::group3_drive, GROUP3_DRIVE, ftdi_eeprom::group3_schmitt, GROUP3_SCHMITT, ftdi_eeprom::group3_slew, GROUP3_SLEW, ftdi_eeprom::high_current, HIGH_CURRENT, ftdi_eeprom::high_current_a, HIGH_CURRENT_A, ftdi_eeprom::high_current_b, HIGH_CURRENT_B, ftdi_eeprom::in_is_isochronous, IN_IS_ISOCHRONOUS, ftdi_eeprom::invert, INVERT, ftdi_eeprom::is_not_pnp, IS_NOT_PNP, ftdi_eeprom::max_power, MAX_POWER, ftdi_eeprom::out_is_isochronous, OUT_IS_ISOCHRONOUS, POWER_SAVE, ftdi_eeprom::powersave, ftdi_eeprom::product_id, PRODUCT_ID, ftdi_eeprom::release_number, RELEASE_NUMBER, ftdi_eeprom::remote_wakeup, REMOTE_WAKEUP, ftdi_eeprom::self_powered, SELF_POWERED, ftdi_eeprom::size, ftdi_eeprom::suspend_dbus7, SUSPEND_DBUS7, ftdi_eeprom::suspend_pull_downs, SUSPEND_PULL_DOWNS, ftdi_eeprom::usb_version, USB_VERSION, ftdi_eeprom::use_serial, USE_SERIAL, ftdi_eeprom::use_usb_version, USE_USB_VERSION, ftdi_eeprom::vendor_id, and VENDOR_ID\&.
+.SS "int ftdi_set_eeprom_value (struct \fBftdi_context\fP *ftdi, enum \fBftdi_eeprom_value\fPvalue_name, intvalue)"
+Set a value in the decoded EEPROM Structure No parameter checking is performed
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIvalue_name\fP Enum of the value to set 
+.br
+\fIvalue\fP to set
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP Value doesn't exist 
+.br
+\fI-2\fP Value not user settable 
+.RE
+.PP
+
+.PP
+Definition at line 3771 of file ftdi\&.c\&.
+.PP
+References ftdi_eeprom::cbus_function, CBUS_FUNCTION_0, CBUS_FUNCTION_1, CBUS_FUNCTION_2, CBUS_FUNCTION_3, CBUS_FUNCTION_4, CBUS_FUNCTION_5, CBUS_FUNCTION_6, CBUS_FUNCTION_7, CBUS_FUNCTION_8, CBUS_FUNCTION_9, ftdi_eeprom::channel_a_driver, CHANNEL_A_DRIVER, CHANNEL_A_RS485, ftdi_eeprom::channel_a_rs485enable, ftdi_eeprom::channel_a_type, CHANNEL_A_TYPE, ftdi_eeprom::channel_b_driver, CHANNEL_B_DRIVER, CHANNEL_B_RS485, ftdi_eeprom::channel_b_rs485enable, ftdi_eeprom::channel_b_type, CHANNEL_B_TYPE, ftdi_eeprom::channel_c_driver, CHANNEL_C_DRIVER, CHANNEL_C_RS485, ftdi_eeprom::channel_c_rs485enable, ftdi_eeprom::channel_d_driver, CHANNEL_D_DRIVER, CHANNEL_D_RS485, ftdi_eeprom::channel_d_rs485enable, ftdi_eeprom::chip, CHIP_SIZE, CHIP_TYPE, ftdi_eeprom::clock_polarity, CLOCK_POLARITY, ftdi_eeprom::data_order, DATA_ORDER, ftdi_context::eeprom, ftdi_eeprom::flow_control, FLOW_CONTROL, ftdi_error_return, ftdi_eeprom::group0_drive, GROUP0_DRIVE, ftdi_eeprom::group0_schmitt, GROUP0_SCHMITT, ftdi_eeprom::group0_slew, GROUP0_SLEW, ftdi_eeprom::group1_drive, GROUP1_DRIVE, ftdi_eeprom::group1_schmitt, GROUP1_SCHMITT, ftdi_eeprom::group1_slew, GROUP1_SLEW, ftdi_eeprom::group2_drive, GROUP2_DRIVE, ftdi_eeprom::group2_schmitt, GROUP2_SCHMITT, ftdi_eeprom::group2_slew, GROUP2_SLEW, ftdi_eeprom::group3_drive, GROUP3_DRIVE, ftdi_eeprom::group3_schmitt, GROUP3_SCHMITT, ftdi_eeprom::group3_slew, GROUP3_SLEW, ftdi_eeprom::high_current, HIGH_CURRENT, ftdi_eeprom::high_current_a, HIGH_CURRENT_A, ftdi_eeprom::high_current_b, HIGH_CURRENT_B, ftdi_eeprom::in_is_isochronous, IN_IS_ISOCHRONOUS, ftdi_eeprom::initialized_for_connected_device, ftdi_eeprom::invert, INVERT, ftdi_eeprom::is_not_pnp, IS_NOT_PNP, ftdi_eeprom::max_power, MAX_POWER, ftdi_eeprom::out_is_isochronous, OUT_IS_ISOCHRONOUS, POWER_SAVE, ftdi_eeprom::powersave, ftdi_eeprom::product_id, PRODUCT_ID, ftdi_eeprom::release_number, RELEASE_NUMBER, ftdi_eeprom::remote_wakeup, REMOTE_WAKEUP, ftdi_eeprom::self_powered, SELF_POWERED, ftdi_eeprom::suspend_dbus7, SUSPEND_DBUS7, ftdi_eeprom::suspend_pull_downs, SUSPEND_PULL_DOWNS, ftdi_eeprom::usb_version, USB_VERSION, ftdi_eeprom::use_serial, USE_SERIAL, ftdi_eeprom::use_usb_version, USE_USB_VERSION, ftdi_eeprom::vendor_id, and VENDOR_ID\&.
+.SS "int ftdi_get_eeprom_buf (struct \fBftdi_context\fP *ftdi, unsigned char *buf, intsize)"
+Get the read-only buffer to the binary EEPROM content
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIbuf\fP buffer to receive EEPROM content 
+.br
+\fIsize\fP Size of receiving buffer
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP All fine 
+.br
+\fI-1\fP struct ftdi_contxt or \fBftdi_eeprom\fP missing 
+.br
+\fI-2\fP Not enough room to store eeprom 
+.RE
+.PP
+
+.PP
+Definition at line 3961 of file ftdi\&.c\&.
+.PP
+References ftdi_eeprom::buf, ftdi_context::eeprom, ftdi_error_return, and FTDI_MAX_EEPROM_SIZE\&.
+.SS "int ftdi_set_eeprom_buf (struct \fBftdi_context\fP *ftdi, const unsigned char *buf, intsize)"
+Set the EEPROM content from the user-supplied prefilled buffer
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIbuf\fP buffer to read EEPROM content 
+.br
+\fIsize\fP Size of buffer
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP All fine 
+.br
+\fI-1\fP struct ftdi_contxt or \fBftdi_eeprom\fP of buf missing 
+.RE
+.PP
+
+.PP
+Definition at line 3987 of file ftdi\&.c\&.
+.PP
+References ftdi_eeprom::buf, ftdi_context::eeprom, ftdi_error_return, and FTDI_MAX_EEPROM_SIZE\&.
+.SS "int ftdi_read_eeprom_location (struct \fBftdi_context\fP *ftdi, inteeprom_addr, unsigned short *eeprom_val)"
+Read eeprom location
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIeeprom_addr\fP Address of eeprom location to be read 
+.br
+\fIeeprom_val\fP Pointer to store read eeprom location
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP read failed 
+.br
+\fI-2\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 4012 of file ftdi\&.c\&.
+.PP
+References FTDI_DEVICE_IN_REQTYPE, ftdi_error_return, SIO_READ_EEPROM_REQUEST, ftdi_context::usb_dev, and ftdi_context::usb_read_timeout\&.
+.PP
+Referenced by ftdi_eeprom_build(), ftdi_erase_eeprom(), ftdi_write_eeprom_location(), and Ftdi::Eeprom::read_location()\&.
+.SS "int ftdi_read_eeprom (struct \fBftdi_context\fP *ftdi)"
+Read eeprom
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP read failed 
+.br
+\fI-2\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 4032 of file ftdi\&.c\&.
+.PP
+References ftdi_eeprom::buf, ftdi_context::eeprom, FTDI_DEVICE_IN_REQTYPE, ftdi_error_return, FTDI_MAX_EEPROM_SIZE, SIO_READ_EEPROM_REQUEST, ftdi_eeprom::size, ftdi_context::type, TYPE_R, ftdi_context::usb_dev, and ftdi_context::usb_read_timeout\&.
+.PP
+Referenced by Ftdi::Eeprom::read()\&.
+.SS "int ftdi_read_chipid (struct \fBftdi_context\fP *ftdi, unsigned int *chipid)"
+Read the FTDIChip-ID from R-type devices
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIchipid\fP Pointer to store FTDIChip-ID
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP read failed 
+.br
+\fI-2\fP USB device unavailable 
+.RE
+.PP
+
+.PP
+Definition at line 4091 of file ftdi\&.c\&.
+.PP
+References FTDI_DEVICE_IN_REQTYPE, ftdi_error_return, SIO_READ_EEPROM_REQUEST, ftdi_context::usb_dev, and ftdi_context::usb_read_timeout\&.
+.PP
+Referenced by Ftdi::Eeprom::chip_id()\&.
+.SS "int ftdi_write_eeprom_location (struct \fBftdi_context\fP *ftdi, inteeprom_addr, unsigned shorteeprom_val)"
+Write eeprom location
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIeeprom_addr\fP Address of eeprom location to be written 
+.br
+\fIeeprom_val\fP Value to be written
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP write failed 
+.br
+\fI-2\fP USB device unavailable 
+.br
+\fI-3\fP Invalid access to checksum protected area below 0x80 
+.br
+\fI-4\fP Device can't access unprotected area 
+.br
+\fI-5\fP Reading chip type failed 
+.RE
+.PP
+
+.PP
+Definition at line 4129 of file ftdi\&.c\&.
+.PP
+References FTDI_DEVICE_OUT_REQTYPE, ftdi_error_return, ftdi_read_eeprom_location(), SIO_WRITE_EEPROM_REQUEST, ftdi_context::type, TYPE_2232C, TYPE_2232H, TYPE_232H, TYPE_4232H, TYPE_BM, ftdi_context::usb_dev, and ftdi_context::usb_write_timeout\&.
+.PP
+Referenced by Ftdi::Eeprom::write_location()\&.
+.SS "int ftdi_write_eeprom (struct \fBftdi_context\fP *ftdi)"
+Write eeprom
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fI0\fP all fine 
+.br
+\fI-1\fP read failed 
+.br
+\fI-2\fP USB device unavailable 
+.br
+\fI-3\fP EEPROM not initialized for the connected device; 
+.RE
+.PP
+
+.PP
+Definition at line 4185 of file ftdi\&.c\&.
+.PP
+References ftdi_eeprom::buf, ftdi_context::eeprom, FTDI_DEVICE_OUT_REQTYPE, ftdi_error_return, ftdi_poll_modem_status(), ftdi_set_latency_timer(), ftdi_usb_reset(), ftdi_eeprom::initialized_for_connected_device, SIO_WRITE_EEPROM_REQUEST, ftdi_eeprom::size, ftdi_context::type, TYPE_230X, ftdi_context::usb_dev, and ftdi_context::usb_write_timeout\&.
+.PP
+Referenced by Ftdi::Eeprom::write()\&.
+.SS "int ftdi_erase_eeprom (struct \fBftdi_context\fP *ftdi)"
+
+.PP
+Definition at line 4240 of file ftdi\&.c\&.
+.PP
+References ftdi_eeprom::chip, ftdi_context::eeprom, FTDI_DEVICE_OUT_REQTYPE, ftdi_error_return, ftdi_read_eeprom_location(), MAGIC, SIO_ERASE_EEPROM_REQUEST, SIO_WRITE_EEPROM_REQUEST, ftdi_context::type, TYPE_230X, TYPE_R, ftdi_context::usb_dev, and ftdi_context::usb_write_timeout\&.
+.PP
+Referenced by Ftdi::Eeprom::erase()\&.
+.SS "char* ftdi_get_error_string (struct \fBftdi_context\fP *ftdi)"
+Get string representation for last error code
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP
+.RE
+.PP
+\fBReturn values:\fP
+.RS 4
+\fIPointer\fP to error string 
+.RE
+.PP
+
+.PP
+Definition at line 4302 of file ftdi\&.c\&.
+.PP
+References ftdi_context::error_str\&.
+.PP
+Referenced by Ftdi::Context::error_string(), and ftdi_readstream()\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libftdi1 from the source code\&.

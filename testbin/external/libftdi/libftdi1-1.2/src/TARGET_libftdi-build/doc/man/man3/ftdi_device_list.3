@@ -1,0 +1,46 @@
+.TH "ftdi_device_list" 3 "Fri Mar 6 2015" "Version 1.2" "libftdi1" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ftdi_device_list \- 
+.PP
+list of usb devices created by \fBftdi_usb_find_all()\fP  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <ftdi\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBftdi_device_list\fP * \fBnext\fP"
+.br
+.ti -1c
+.RI "struct libusb_device * \fBdev\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+list of usb devices created by \fBftdi_usb_find_all()\fP 
+.PP
+Definition at line 340 of file ftdi\&.h\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "struct \fBftdi_device_list\fP* ftdi_device_list::next"
+pointer to next entry 
+.PP
+Definition at line 343 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_list_free(), ftdi_usb_find_all(), and Ftdi::List::List()\&.
+.SS "struct libusb_device* ftdi_device_list::dev"
+pointer to libusb's usb_device 
+.PP
+Definition at line 345 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_list_free(), ftdi_usb_find_all(), and Ftdi::List::List()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libftdi1 from the source code\&.

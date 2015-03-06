@@ -1,0 +1,1462 @@
+.TH "ftdi.h" 3 "Fri Mar 6 2015" "Version 1.2" "libftdi1" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ftdi.h \- 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <stdint\&.h>\fP
+.br
+\fC#include <sys/time\&.h>\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBftdi_transfer_control\fP"
+.br
+.ti -1c
+.RI "struct \fBftdi_context\fP"
+.br
+.RI "\fIMain context structure for all libftdi functions\&. \fP"
+.ti -1c
+.RI "struct \fBftdi_device_list\fP"
+.br
+.RI "\fIlist of usb devices created by \fBftdi_usb_find_all()\fP \fP"
+.ti -1c
+.RI "struct \fBsize_and_time\fP"
+.br
+.RI "\fIProgress Info for streaming read\&. \fP"
+.ti -1c
+.RI "struct \fBFTDIProgressInfo\fP"
+.br
+.ti -1c
+.RI "struct \fBftdi_version_info\fP"
+.br
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBMPSSE_WRITE_NEG\fP   0x01   /* Write TDI/DO on negative TCK/SK edge*/"
+.br
+.ti -1c
+.RI "#define \fBMPSSE_BITMODE\fP   0x02   /* Write bits, not bytes */"
+.br
+.ti -1c
+.RI "#define \fBMPSSE_READ_NEG\fP   0x04   /* Sample TDO/DI on negative TCK/SK edge */"
+.br
+.ti -1c
+.RI "#define \fBMPSSE_LSB\fP   0x08   /* LSB first */"
+.br
+.ti -1c
+.RI "#define \fBMPSSE_DO_WRITE\fP   0x10   /* Write TDI/DO */"
+.br
+.ti -1c
+.RI "#define \fBMPSSE_DO_READ\fP   0x20   /* Read TDO/DI */"
+.br
+.ti -1c
+.RI "#define \fBMPSSE_WRITE_TMS\fP   0x40   /* Write TMS/CS */"
+.br
+.ti -1c
+.RI "#define \fBSET_BITS_LOW\fP   0x80"
+.br
+.ti -1c
+.RI "#define \fBSET_BITS_HIGH\fP   0x82"
+.br
+.ti -1c
+.RI "#define \fBGET_BITS_LOW\fP   0x81"
+.br
+.ti -1c
+.RI "#define \fBGET_BITS_HIGH\fP   0x83"
+.br
+.ti -1c
+.RI "#define \fBLOOPBACK_START\fP   0x84"
+.br
+.ti -1c
+.RI "#define \fBLOOPBACK_END\fP   0x85"
+.br
+.ti -1c
+.RI "#define \fBTCK_DIVISOR\fP   0x86"
+.br
+.ti -1c
+.RI "#define \fBDIS_DIV_5\fP   0x8a"
+.br
+.ti -1c
+.RI "#define \fBEN_DIV_5\fP   0x8b"
+.br
+.ti -1c
+.RI "#define \fBEN_3_PHASE\fP   0x8c"
+.br
+.ti -1c
+.RI "#define \fBDIS_3_PHASE\fP   0x8d"
+.br
+.ti -1c
+.RI "#define \fBCLK_BITS\fP   0x8e"
+.br
+.ti -1c
+.RI "#define \fBCLK_BYTES\fP   0x8f"
+.br
+.ti -1c
+.RI "#define \fBCLK_WAIT_HIGH\fP   0x94"
+.br
+.ti -1c
+.RI "#define \fBCLK_WAIT_LOW\fP   0x95"
+.br
+.ti -1c
+.RI "#define \fBEN_ADAPTIVE\fP   0x96"
+.br
+.ti -1c
+.RI "#define \fBDIS_ADAPTIVE\fP   0x97"
+.br
+.ti -1c
+.RI "#define \fBCLK_BYTES_OR_HIGH\fP   0x9c"
+.br
+.ti -1c
+.RI "#define \fBCLK_BYTES_OR_LOW\fP   0x9d"
+.br
+.ti -1c
+.RI "#define \fBDRIVE_OPEN_COLLECTOR\fP   0x9e"
+.br
+.ti -1c
+.RI "#define \fBDIV_VALUE\fP(rate)   (rate > 6000000)?0:((6000000/rate -1) > 0xffff)? 0xffff: (6000000/rate -1)"
+.br
+.ti -1c
+.RI "#define \fBSEND_IMMEDIATE\fP   0x87"
+.br
+.ti -1c
+.RI "#define \fBWAIT_ON_HIGH\fP   0x88"
+.br
+.ti -1c
+.RI "#define \fBWAIT_ON_LOW\fP   0x89"
+.br
+.ti -1c
+.RI "#define \fBREAD_SHORT\fP   0x90"
+.br
+.ti -1c
+.RI "#define \fBREAD_EXTENDED\fP   0x91"
+.br
+.ti -1c
+.RI "#define \fBWRITE_SHORT\fP   0x92"
+.br
+.ti -1c
+.RI "#define \fBWRITE_EXTENDED\fP   0x93"
+.br
+.ti -1c
+.RI "#define \fBSIO_RESET\fP   0 /* Reset the port */"
+.br
+.ti -1c
+.RI "#define \fBSIO_MODEM_CTRL\fP   1 /* Set the modem control register */"
+.br
+.ti -1c
+.RI "#define \fBSIO_SET_FLOW_CTRL\fP   2 /* Set flow control register */"
+.br
+.ti -1c
+.RI "#define \fBSIO_SET_BAUD_RATE\fP   3 /* Set baud rate */"
+.br
+.ti -1c
+.RI "#define \fBSIO_SET_DATA\fP   4 /* Set the data characteristics of the port */"
+.br
+.ti -1c
+.RI "#define \fBFTDI_DEVICE_OUT_REQTYPE\fP   (LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_OUT)"
+.br
+.ti -1c
+.RI "#define \fBFTDI_DEVICE_IN_REQTYPE\fP   (LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN)"
+.br
+.ti -1c
+.RI "#define \fBSIO_RESET_REQUEST\fP   \fBSIO_RESET\fP"
+.br
+.ti -1c
+.RI "#define \fBSIO_SET_BAUDRATE_REQUEST\fP   \fBSIO_SET_BAUD_RATE\fP"
+.br
+.ti -1c
+.RI "#define \fBSIO_SET_DATA_REQUEST\fP   \fBSIO_SET_DATA\fP"
+.br
+.ti -1c
+.RI "#define \fBSIO_SET_FLOW_CTRL_REQUEST\fP   \fBSIO_SET_FLOW_CTRL\fP"
+.br
+.ti -1c
+.RI "#define \fBSIO_SET_MODEM_CTRL_REQUEST\fP   \fBSIO_MODEM_CTRL\fP"
+.br
+.ti -1c
+.RI "#define \fBSIO_POLL_MODEM_STATUS_REQUEST\fP   0x05"
+.br
+.ti -1c
+.RI "#define \fBSIO_SET_EVENT_CHAR_REQUEST\fP   0x06"
+.br
+.ti -1c
+.RI "#define \fBSIO_SET_ERROR_CHAR_REQUEST\fP   0x07"
+.br
+.ti -1c
+.RI "#define \fBSIO_SET_LATENCY_TIMER_REQUEST\fP   0x09"
+.br
+.ti -1c
+.RI "#define \fBSIO_GET_LATENCY_TIMER_REQUEST\fP   0x0A"
+.br
+.ti -1c
+.RI "#define \fBSIO_SET_BITMODE_REQUEST\fP   0x0B"
+.br
+.ti -1c
+.RI "#define \fBSIO_READ_PINS_REQUEST\fP   0x0C"
+.br
+.ti -1c
+.RI "#define \fBSIO_READ_EEPROM_REQUEST\fP   0x90"
+.br
+.ti -1c
+.RI "#define \fBSIO_WRITE_EEPROM_REQUEST\fP   0x91"
+.br
+.ti -1c
+.RI "#define \fBSIO_ERASE_EEPROM_REQUEST\fP   0x92"
+.br
+.ti -1c
+.RI "#define \fBSIO_RESET_SIO\fP   0"
+.br
+.ti -1c
+.RI "#define \fBSIO_RESET_PURGE_RX\fP   1"
+.br
+.ti -1c
+.RI "#define \fBSIO_RESET_PURGE_TX\fP   2"
+.br
+.ti -1c
+.RI "#define \fBSIO_DISABLE_FLOW_CTRL\fP   0x0"
+.br
+.ti -1c
+.RI "#define \fBSIO_RTS_CTS_HS\fP   (0x1 << 8)"
+.br
+.ti -1c
+.RI "#define \fBSIO_DTR_DSR_HS\fP   (0x2 << 8)"
+.br
+.ti -1c
+.RI "#define \fBSIO_XON_XOFF_HS\fP   (0x4 << 8)"
+.br
+.ti -1c
+.RI "#define \fBSIO_SET_DTR_MASK\fP   0x1"
+.br
+.ti -1c
+.RI "#define \fBSIO_SET_DTR_HIGH\fP   ( 1 | ( \fBSIO_SET_DTR_MASK\fP  << 8))"
+.br
+.ti -1c
+.RI "#define \fBSIO_SET_DTR_LOW\fP   ( 0 | ( \fBSIO_SET_DTR_MASK\fP  << 8))"
+.br
+.ti -1c
+.RI "#define \fBSIO_SET_RTS_MASK\fP   0x2"
+.br
+.ti -1c
+.RI "#define \fBSIO_SET_RTS_HIGH\fP   ( 2 | ( \fBSIO_SET_RTS_MASK\fP << 8 ))"
+.br
+.ti -1c
+.RI "#define \fBSIO_SET_RTS_LOW\fP   ( 0 | ( \fBSIO_SET_RTS_MASK\fP << 8 ))"
+.br
+.ti -1c
+.RI "#define \fBSIO_RTS_CTS_HS\fP   (0x1 << 8)"
+.br
+.ti -1c
+.RI "#define \fBFTDI_URB_USERCONTEXT_COOKIE\fP   ((void *)0x1)"
+.br
+.ti -1c
+.RI "#define \fBDEPRECATED\fP(func)   func"
+.br
+.ti -1c
+.RI "#define \fBFT1284_CLK_IDLE_STATE\fP   0x01"
+.br
+.ti -1c
+.RI "#define \fBFT1284_DATA_LSB\fP   0x02 /* DS_FT232H 1\&.3 amd ftd2xx\&.h 1\&.0\&.4 disagree here*/"
+.br
+.ti -1c
+.RI "#define \fBFT1284_FLOW_CONTROL\fP   0x04"
+.br
+.ti -1c
+.RI "#define \fBPOWER_SAVE_DISABLE_H\fP   0x80"
+.br
+.ti -1c
+.RI "#define \fBUSE_SERIAL_NUM\fP   0x08"
+.br
+.ti -1c
+.RI "#define \fBINVERT_TXD\fP   0x01"
+.br
+.ti -1c
+.RI "#define \fBINVERT_RXD\fP   0x02"
+.br
+.ti -1c
+.RI "#define \fBINVERT_RTS\fP   0x04"
+.br
+.ti -1c
+.RI "#define \fBINVERT_CTS\fP   0x08"
+.br
+.ti -1c
+.RI "#define \fBINVERT_DTR\fP   0x10"
+.br
+.ti -1c
+.RI "#define \fBINVERT_DSR\fP   0x20"
+.br
+.ti -1c
+.RI "#define \fBINVERT_DCD\fP   0x40"
+.br
+.ti -1c
+.RI "#define \fBINVERT_RI\fP   0x80"
+.br
+.ti -1c
+.RI "#define \fBCHANNEL_IS_UART\fP   0x0"
+.br
+.ti -1c
+.RI "#define \fBCHANNEL_IS_FIFO\fP   0x1"
+.br
+.ti -1c
+.RI "#define \fBCHANNEL_IS_OPTO\fP   0x2"
+.br
+.ti -1c
+.RI "#define \fBCHANNEL_IS_CPU\fP   0x4"
+.br
+.ti -1c
+.RI "#define \fBCHANNEL_IS_FT1284\fP   0x8"
+.br
+.ti -1c
+.RI "#define \fBCHANNEL_IS_RS485\fP   0x10"
+.br
+.ti -1c
+.RI "#define \fBDRIVE_4MA\fP   0"
+.br
+.ti -1c
+.RI "#define \fBDRIVE_8MA\fP   1"
+.br
+.ti -1c
+.RI "#define \fBDRIVE_12MA\fP   2"
+.br
+.ti -1c
+.RI "#define \fBDRIVE_16MA\fP   3"
+.br
+.ti -1c
+.RI "#define \fBSLOW_SLEW\fP   4"
+.br
+.ti -1c
+.RI "#define \fBIS_SCHMITT\fP   8"
+.br
+.ti -1c
+.RI "#define \fBDRIVER_VCP\fP   0x08"
+.br
+.ti -1c
+.RI "#define \fBDRIVER_VCPH\fP   0x10 /* FT232H has moved the VCP bit */"
+.br
+.ti -1c
+.RI "#define \fBUSE_USB_VERSION_BIT\fP   0x10"
+.br
+.ti -1c
+.RI "#define \fBSUSPEND_DBUS7_BIT\fP   0x80"
+.br
+.ti -1c
+.RI "#define \fBHIGH_CURRENT_DRIVE\fP   0x10"
+.br
+.ti -1c
+.RI "#define \fBHIGH_CURRENT_DRIVE_R\fP   0x04"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef int( \fBFTDIStreamCallback\fP )(uint8_t *buffer, int length, \fBFTDIProgressInfo\fP *progress, void *userdata)"
+.br
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBftdi_chip_type\fP { \fBTYPE_AM\fP =0, \fBTYPE_BM\fP =1, \fBTYPE_2232C\fP =2, \fBTYPE_R\fP =3, \fBTYPE_2232H\fP =4, \fBTYPE_4232H\fP =5, \fBTYPE_232H\fP =6, \fBTYPE_230X\fP =7 }"
+.br
+.ti -1c
+.RI "enum \fBftdi_parity_type\fP { \fBNONE\fP =0, \fBODD\fP =1, \fBEVEN\fP =2, \fBMARK\fP =3, \fBSPACE\fP =4 }"
+.br
+.ti -1c
+.RI "enum \fBftdi_stopbits_type\fP { \fBSTOP_BIT_1\fP =0, \fBSTOP_BIT_15\fP =1, \fBSTOP_BIT_2\fP =2 }"
+.br
+.ti -1c
+.RI "enum \fBftdi_bits_type\fP { \fBBITS_7\fP =7, \fBBITS_8\fP =8 }"
+.br
+.ti -1c
+.RI "enum \fBftdi_break_type\fP { \fBBREAK_OFF\fP =0, \fBBREAK_ON\fP =1 }"
+.br
+.ti -1c
+.RI "enum \fBftdi_mpsse_mode\fP { \fBBITMODE_RESET\fP = 0x00, \fBBITMODE_BITBANG\fP = 0x01, \fBBITMODE_MPSSE\fP = 0x02, \fBBITMODE_SYNCBB\fP = 0x04, \fBBITMODE_MCU\fP = 0x08, \fBBITMODE_OPTO\fP = 0x10, \fBBITMODE_CBUS\fP = 0x20, \fBBITMODE_SYNCFF\fP = 0x40, \fBBITMODE_FT1284\fP = 0x80 }"
+.br
+.ti -1c
+.RI "enum \fBftdi_interface\fP { \fBINTERFACE_ANY\fP = 0, \fBINTERFACE_A\fP = 1, \fBINTERFACE_B\fP = 2, \fBINTERFACE_C\fP = 3, \fBINTERFACE_D\fP = 4 }"
+.br
+.ti -1c
+.RI "enum \fBftdi_module_detach_mode\fP { \fBAUTO_DETACH_SIO_MODULE\fP = 0, \fBDONT_DETACH_SIO_MODULE\fP = 1 }"
+.br
+.ti -1c
+.RI "enum \fBftdi_eeprom_value\fP { \fBVENDOR_ID\fP = 0, \fBPRODUCT_ID\fP = 1, \fBSELF_POWERED\fP = 2, \fBREMOTE_WAKEUP\fP = 3, \fBIS_NOT_PNP\fP = 4, \fBSUSPEND_DBUS7\fP = 5, \fBIN_IS_ISOCHRONOUS\fP = 6, \fBOUT_IS_ISOCHRONOUS\fP = 7, \fBSUSPEND_PULL_DOWNS\fP = 8, \fBUSE_SERIAL\fP = 9, \fBUSB_VERSION\fP = 10, \fBUSE_USB_VERSION\fP = 11, \fBMAX_POWER\fP = 12, \fBCHANNEL_A_TYPE\fP = 13, \fBCHANNEL_B_TYPE\fP = 14, \fBCHANNEL_A_DRIVER\fP = 15, \fBCHANNEL_B_DRIVER\fP = 16, \fBCBUS_FUNCTION_0\fP = 17, \fBCBUS_FUNCTION_1\fP = 18, \fBCBUS_FUNCTION_2\fP = 19, \fBCBUS_FUNCTION_3\fP = 20, \fBCBUS_FUNCTION_4\fP = 21, \fBCBUS_FUNCTION_5\fP = 22, \fBCBUS_FUNCTION_6\fP = 23, \fBCBUS_FUNCTION_7\fP = 24, \fBCBUS_FUNCTION_8\fP = 25, \fBCBUS_FUNCTION_9\fP = 26, \fBHIGH_CURRENT\fP = 27, \fBHIGH_CURRENT_A\fP = 28, \fBHIGH_CURRENT_B\fP = 29, \fBINVERT\fP = 30, \fBGROUP0_DRIVE\fP = 31, \fBGROUP0_SCHMITT\fP = 32, \fBGROUP0_SLEW\fP = 33, \fBGROUP1_DRIVE\fP = 34, \fBGROUP1_SCHMITT\fP = 35, \fBGROUP1_SLEW\fP = 36, \fBGROUP2_DRIVE\fP = 37, \fBGROUP2_SCHMITT\fP = 38, \fBGROUP2_SLEW\fP = 39, \fBGROUP3_DRIVE\fP = 40, \fBGROUP3_SCHMITT\fP = 41, \fBGROUP3_SLEW\fP = 42, \fBCHIP_SIZE\fP = 43, \fBCHIP_TYPE\fP = 44, \fBPOWER_SAVE\fP = 45, \fBCLOCK_POLARITY\fP = 46, \fBDATA_ORDER\fP = 47, \fBFLOW_CONTROL\fP = 48, \fBCHANNEL_C_DRIVER\fP = 49, \fBCHANNEL_D_DRIVER\fP = 50, \fBCHANNEL_A_RS485\fP = 51, \fBCHANNEL_B_RS485\fP = 52, \fBCHANNEL_C_RS485\fP = 53, \fBCHANNEL_D_RS485\fP = 54, \fBRELEASE_NUMBER\fP = 55 }"
+.br
+.ti -1c
+.RI "enum \fBftdi_cbus_func\fP { \fBCBUS_TXDEN\fP = 0, \fBCBUS_PWREN\fP = 1, \fBCBUS_RXLED\fP = 2, \fBCBUS_TXLED\fP = 3, \fBCBUS_TXRXLED\fP = 4, \fBCBUS_SLEEP\fP = 5, \fBCBUS_CLK48\fP = 6, \fBCBUS_CLK24\fP = 7, \fBCBUS_CLK12\fP = 8, \fBCBUS_CLK6\fP = 9, \fBCBUS_IOMODE\fP = 0xa, \fBCBUS_BB_WR\fP = 0xb, \fBCBUS_BB_RD\fP = 0xc, \fBCBUS_BB\fP = 0xd }"
+.br
+.ti -1c
+.RI "enum \fBftdi_cbush_func\fP { \fBCBUSH_TRISTATE\fP = 0, \fBCBUSH_RXLED\fP = 1, \fBCBUSH_TXLED\fP = 2, \fBCBUSH_TXRXLED\fP = 3, \fBCBUSH_PWREN\fP = 4, \fBCBUSH_SLEEP\fP = 5, \fBCBUSH_DRIVE_0\fP = 6, \fBCBUSG_DRIVE1\fP = 7, \fBCBUSH_IOMODE\fP = 8, \fBCBUSH_TXDEN\fP = 9, \fBCBUSH_CLK30\fP = 10, \fBCBUSH_CLK15\fP = 11, \fBCBUSH_CLK7_5\fP = 12, \fBCBUSH_BAT_DETECT\fP = 13, \fBCBUSH_BAT_DETECT_NEG\fP = 14, \fBCBUSH_I2C_TXE\fP = 15, \fBCBUSH_I2C_RXF\fP = 16, \fBCBUSH_VBUS_SENSE\fP = 17, \fBCBUSH_BB_WR\fP = 18, \fBCBUSH_BB_RD\fP = 19, \fBCBUSH_TIME_STAMP\fP = 20, \fBCBUSH_AWAKE\fP = 21 }"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBftdi_init\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "struct \fBftdi_context\fP * \fBftdi_new\fP (void)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_interface\fP (struct \fBftdi_context\fP *ftdi, enum \fBftdi_interface\fP interface)"
+.br
+.ti -1c
+.RI "void \fBftdi_deinit\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "void \fBftdi_free\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "void \fBftdi_set_usbdev\fP (struct \fBftdi_context\fP *ftdi, struct libusb_device_handle *usbdev)"
+.br
+.ti -1c
+.RI "struct \fBftdi_version_info\fP \fBftdi_get_library_version\fP (void)"
+.br
+.RI "\fIGet libftdi library version\&. \fP"
+.ti -1c
+.RI "int \fBftdi_usb_find_all\fP (struct \fBftdi_context\fP *ftdi, struct \fBftdi_device_list\fP **devlist, int vendor, int product)"
+.br
+.ti -1c
+.RI "void \fBftdi_list_free\fP (struct \fBftdi_device_list\fP **devlist)"
+.br
+.ti -1c
+.RI "void \fBftdi_list_free2\fP (struct \fBftdi_device_list\fP *devlist)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_get_strings\fP (struct \fBftdi_context\fP *ftdi, struct libusb_device *dev, char *manufacturer, int mnf_len, char *description, int desc_len, char *serial, int serial_len)"
+.br
+.ti -1c
+.RI "int \fBftdi_eeprom_set_strings\fP (struct \fBftdi_context\fP *ftdi, char *manufacturer, char *product, char *serial)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_open\fP (struct \fBftdi_context\fP *ftdi, int vendor, int product)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_open_desc\fP (struct \fBftdi_context\fP *ftdi, int vendor, int product, const char *description, const char *serial)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_open_desc_index\fP (struct \fBftdi_context\fP *ftdi, int vendor, int product, const char *description, const char *serial, unsigned int index)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_open_dev\fP (struct \fBftdi_context\fP *ftdi, struct libusb_device *dev)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_open_string\fP (struct \fBftdi_context\fP *ftdi, const char *description)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_close\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_reset\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_purge_rx_buffer\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_purge_tx_buffer\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_usb_purge_buffers\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_baudrate\fP (struct \fBftdi_context\fP *ftdi, int baudrate)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_line_property\fP (struct \fBftdi_context\fP *ftdi, enum \fBftdi_bits_type\fP bits, enum \fBftdi_stopbits_type\fP sbit, enum \fBftdi_parity_type\fP parity)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_line_property2\fP (struct \fBftdi_context\fP *ftdi, enum \fBftdi_bits_type\fP bits, enum \fBftdi_stopbits_type\fP sbit, enum \fBftdi_parity_type\fP parity, enum \fBftdi_break_type\fP break_type)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_data\fP (struct \fBftdi_context\fP *ftdi, unsigned char *buf, int size)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_data_set_chunksize\fP (struct \fBftdi_context\fP *ftdi, unsigned int chunksize)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_data_get_chunksize\fP (struct \fBftdi_context\fP *ftdi, unsigned int *chunksize)"
+.br
+.ti -1c
+.RI "int \fBftdi_write_data\fP (struct \fBftdi_context\fP *ftdi, const unsigned char *buf, int size)"
+.br
+.ti -1c
+.RI "int \fBftdi_write_data_set_chunksize\fP (struct \fBftdi_context\fP *ftdi, unsigned int chunksize)"
+.br
+.ti -1c
+.RI "int \fBftdi_write_data_get_chunksize\fP (struct \fBftdi_context\fP *ftdi, unsigned int *chunksize)"
+.br
+.ti -1c
+.RI "int \fBftdi_readstream\fP (struct \fBftdi_context\fP *ftdi, \fBFTDIStreamCallback\fP *callback, void *userdata, int packetsPerTransfer, int numTransfers)"
+.br
+.ti -1c
+.RI "struct \fBftdi_transfer_control\fP * \fBftdi_write_data_submit\fP (struct \fBftdi_context\fP *ftdi, unsigned char *buf, int size)"
+.br
+.ti -1c
+.RI "struct \fBftdi_transfer_control\fP * \fBftdi_read_data_submit\fP (struct \fBftdi_context\fP *ftdi, unsigned char *buf, int size)"
+.br
+.ti -1c
+.RI "int \fBftdi_transfer_data_done\fP (struct \fBftdi_transfer_control\fP *tc)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_bitmode\fP (struct \fBftdi_context\fP *ftdi, unsigned char bitmask, unsigned char mode)"
+.br
+.ti -1c
+.RI "int \fBftdi_disable_bitbang\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_pins\fP (struct \fBftdi_context\fP *ftdi, unsigned char *pins)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_latency_timer\fP (struct \fBftdi_context\fP *ftdi, unsigned char latency)"
+.br
+.ti -1c
+.RI "int \fBftdi_get_latency_timer\fP (struct \fBftdi_context\fP *ftdi, unsigned char *latency)"
+.br
+.ti -1c
+.RI "int \fBftdi_poll_modem_status\fP (struct \fBftdi_context\fP *ftdi, unsigned short *status)"
+.br
+.ti -1c
+.RI "int \fBftdi_setflowctrl\fP (struct \fBftdi_context\fP *ftdi, int flowctrl)"
+.br
+.ti -1c
+.RI "int \fBftdi_setdtr_rts\fP (struct \fBftdi_context\fP *ftdi, int dtr, int rts)"
+.br
+.ti -1c
+.RI "int \fBftdi_setdtr\fP (struct \fBftdi_context\fP *ftdi, int state)"
+.br
+.ti -1c
+.RI "int \fBftdi_setrts\fP (struct \fBftdi_context\fP *ftdi, int state)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_event_char\fP (struct \fBftdi_context\fP *ftdi, unsigned char eventch, unsigned char enable)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_error_char\fP (struct \fBftdi_context\fP *ftdi, unsigned char errorch, unsigned char enable)"
+.br
+.ti -1c
+.RI "int \fBftdi_eeprom_initdefaults\fP (struct \fBftdi_context\fP *ftdi, char *manufacturer, char *product, char *serial)"
+.br
+.ti -1c
+.RI "int \fBftdi_eeprom_build\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_eeprom_decode\fP (struct \fBftdi_context\fP *ftdi, int verbose)"
+.br
+.ti -1c
+.RI "int \fBftdi_get_eeprom_value\fP (struct \fBftdi_context\fP *ftdi, enum \fBftdi_eeprom_value\fP value_name, int *value)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_eeprom_value\fP (struct \fBftdi_context\fP *ftdi, enum \fBftdi_eeprom_value\fP value_name, int value)"
+.br
+.ti -1c
+.RI "int \fBftdi_get_eeprom_buf\fP (struct \fBftdi_context\fP *ftdi, unsigned char *buf, int size)"
+.br
+.ti -1c
+.RI "int \fBftdi_set_eeprom_buf\fP (struct \fBftdi_context\fP *ftdi, const unsigned char *buf, int size)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_eeprom\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_chipid\fP (struct \fBftdi_context\fP *ftdi, unsigned int *chipid)"
+.br
+.ti -1c
+.RI "int \fBftdi_write_eeprom\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_erase_eeprom\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.ti -1c
+.RI "int \fBftdi_read_eeprom_location\fP (struct \fBftdi_context\fP *ftdi, int eeprom_addr, unsigned short *eeprom_val)"
+.br
+.ti -1c
+.RI "int \fBftdi_write_eeprom_location\fP (struct \fBftdi_context\fP *ftdi, int eeprom_addr, unsigned short eeprom_val)"
+.br
+.ti -1c
+.RI "char * \fBftdi_get_error_string\fP (struct \fBftdi_context\fP *ftdi)"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define MPSSE_WRITE_NEG   0x01   /* Write TDI/DO on negative TCK/SK edge*/"
+
+.PP
+Definition at line 89 of file ftdi\&.h\&.
+.SS "#define MPSSE_BITMODE   0x02   /* Write bits, not bytes */"
+
+.PP
+Definition at line 90 of file ftdi\&.h\&.
+.SS "#define MPSSE_READ_NEG   0x04   /* Sample TDO/DI on negative TCK/SK edge */"
+
+.PP
+Definition at line 91 of file ftdi\&.h\&.
+.SS "#define MPSSE_LSB   0x08   /* LSB first */"
+
+.PP
+Definition at line 92 of file ftdi\&.h\&.
+.SS "#define MPSSE_DO_WRITE   0x10   /* Write TDI/DO */"
+
+.PP
+Definition at line 93 of file ftdi\&.h\&.
+.SS "#define MPSSE_DO_READ   0x20   /* Read TDO/DI */"
+
+.PP
+Definition at line 94 of file ftdi\&.h\&.
+.SS "#define MPSSE_WRITE_TMS   0x40   /* Write TMS/CS */"
+
+.PP
+Definition at line 95 of file ftdi\&.h\&.
+.SS "#define SET_BITS_LOW   0x80"
+
+.PP
+Definition at line 98 of file ftdi\&.h\&.
+.SS "#define SET_BITS_HIGH   0x82"
+
+.PP
+Definition at line 101 of file ftdi\&.h\&.
+.SS "#define GET_BITS_LOW   0x81"
+
+.PP
+Definition at line 104 of file ftdi\&.h\&.
+.SS "#define GET_BITS_HIGH   0x83"
+
+.PP
+Definition at line 105 of file ftdi\&.h\&.
+.SS "#define LOOPBACK_START   0x84"
+
+.PP
+Definition at line 106 of file ftdi\&.h\&.
+.SS "#define LOOPBACK_END   0x85"
+
+.PP
+Definition at line 107 of file ftdi\&.h\&.
+.SS "#define TCK_DIVISOR   0x86"
+
+.PP
+Definition at line 108 of file ftdi\&.h\&.
+.SS "#define DIS_DIV_5   0x8a"
+
+.PP
+Definition at line 110 of file ftdi\&.h\&.
+.SS "#define EN_DIV_5   0x8b"
+
+.PP
+Definition at line 111 of file ftdi\&.h\&.
+.SS "#define EN_3_PHASE   0x8c"
+
+.PP
+Definition at line 112 of file ftdi\&.h\&.
+.SS "#define DIS_3_PHASE   0x8d"
+
+.PP
+Definition at line 113 of file ftdi\&.h\&.
+.SS "#define CLK_BITS   0x8e"
+
+.PP
+Definition at line 114 of file ftdi\&.h\&.
+.SS "#define CLK_BYTES   0x8f"
+
+.PP
+Definition at line 115 of file ftdi\&.h\&.
+.SS "#define CLK_WAIT_HIGH   0x94"
+
+.PP
+Definition at line 116 of file ftdi\&.h\&.
+.SS "#define CLK_WAIT_LOW   0x95"
+
+.PP
+Definition at line 117 of file ftdi\&.h\&.
+.SS "#define EN_ADAPTIVE   0x96"
+
+.PP
+Definition at line 118 of file ftdi\&.h\&.
+.SS "#define DIS_ADAPTIVE   0x97"
+
+.PP
+Definition at line 119 of file ftdi\&.h\&.
+.SS "#define CLK_BYTES_OR_HIGH   0x9c"
+
+.PP
+Definition at line 120 of file ftdi\&.h\&.
+.SS "#define CLK_BYTES_OR_LOW   0x9d"
+
+.PP
+Definition at line 121 of file ftdi\&.h\&.
+.SS "#define DRIVE_OPEN_COLLECTOR   0x9e"
+
+.PP
+Definition at line 123 of file ftdi\&.h\&.
+.SS "#define DIV_VALUE(rate)   (rate > 6000000)?0:((6000000/rate -1) > 0xffff)? 0xffff: (6000000/rate -1)"
+
+.PP
+Definition at line 126 of file ftdi\&.h\&.
+.SS "#define SEND_IMMEDIATE   0x87"
+
+.PP
+Definition at line 129 of file ftdi\&.h\&.
+.SS "#define WAIT_ON_HIGH   0x88"
+
+.PP
+Definition at line 130 of file ftdi\&.h\&.
+.SS "#define WAIT_ON_LOW   0x89"
+
+.PP
+Definition at line 131 of file ftdi\&.h\&.
+.SS "#define READ_SHORT   0x90"
+
+.PP
+Definition at line 134 of file ftdi\&.h\&.
+.SS "#define READ_EXTENDED   0x91"
+
+.PP
+Definition at line 136 of file ftdi\&.h\&.
+.SS "#define WRITE_SHORT   0x92"
+
+.PP
+Definition at line 139 of file ftdi\&.h\&.
+.SS "#define WRITE_EXTENDED   0x93"
+
+.PP
+Definition at line 141 of file ftdi\&.h\&.
+.SS "#define SIO_RESET   0 /* Reset the port */"
+
+.PP
+Definition at line 146 of file ftdi\&.h\&.
+.SS "#define SIO_MODEM_CTRL   1 /* Set the modem control register */"
+
+.PP
+Definition at line 147 of file ftdi\&.h\&.
+.SS "#define SIO_SET_FLOW_CTRL   2 /* Set flow control register */"
+
+.PP
+Definition at line 148 of file ftdi\&.h\&.
+.SS "#define SIO_SET_BAUD_RATE   3 /* Set baud rate */"
+
+.PP
+Definition at line 149 of file ftdi\&.h\&.
+.SS "#define SIO_SET_DATA   4 /* Set the data characteristics of the port */"
+
+.PP
+Definition at line 150 of file ftdi\&.h\&.
+.SS "#define FTDI_DEVICE_OUT_REQTYPE   (LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_OUT)"
+
+.PP
+Definition at line 152 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_disable_bitbang(), ftdi_erase_eeprom(), ftdi_set_baudrate(), ftdi_set_bitmode(), ftdi_set_error_char(), ftdi_set_event_char(), ftdi_set_latency_timer(), ftdi_set_line_property2(), ftdi_setdtr(), ftdi_setdtr_rts(), ftdi_setflowctrl(), ftdi_setrts(), ftdi_usb_purge_rx_buffer(), ftdi_usb_purge_tx_buffer(), ftdi_usb_reset(), ftdi_write_eeprom(), and ftdi_write_eeprom_location()\&.
+.SS "#define FTDI_DEVICE_IN_REQTYPE   (LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN)"
+
+.PP
+Definition at line 153 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_get_latency_timer(), ftdi_poll_modem_status(), ftdi_read_chipid(), ftdi_read_eeprom(), ftdi_read_eeprom_location(), and ftdi_read_pins()\&.
+.SS "#define SIO_RESET_REQUEST   \fBSIO_RESET\fP"
+
+.PP
+Definition at line 156 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_usb_purge_rx_buffer(), ftdi_usb_purge_tx_buffer(), and ftdi_usb_reset()\&.
+.SS "#define SIO_SET_BAUDRATE_REQUEST   \fBSIO_SET_BAUD_RATE\fP"
+
+.PP
+Definition at line 157 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_set_baudrate()\&.
+.SS "#define SIO_SET_DATA_REQUEST   \fBSIO_SET_DATA\fP"
+
+.PP
+Definition at line 158 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_set_line_property2()\&.
+.SS "#define SIO_SET_FLOW_CTRL_REQUEST   \fBSIO_SET_FLOW_CTRL\fP"
+
+.PP
+Definition at line 159 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_setflowctrl()\&.
+.SS "#define SIO_SET_MODEM_CTRL_REQUEST   \fBSIO_MODEM_CTRL\fP"
+
+.PP
+Definition at line 160 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_setdtr(), ftdi_setdtr_rts(), and ftdi_setrts()\&.
+.SS "#define SIO_POLL_MODEM_STATUS_REQUEST   0x05"
+
+.PP
+Definition at line 161 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_poll_modem_status()\&.
+.SS "#define SIO_SET_EVENT_CHAR_REQUEST   0x06"
+
+.PP
+Definition at line 162 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_set_event_char()\&.
+.SS "#define SIO_SET_ERROR_CHAR_REQUEST   0x07"
+
+.PP
+Definition at line 163 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_set_error_char()\&.
+.SS "#define SIO_SET_LATENCY_TIMER_REQUEST   0x09"
+
+.PP
+Definition at line 164 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_set_latency_timer()\&.
+.SS "#define SIO_GET_LATENCY_TIMER_REQUEST   0x0A"
+
+.PP
+Definition at line 165 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_get_latency_timer()\&.
+.SS "#define SIO_SET_BITMODE_REQUEST   0x0B"
+
+.PP
+Definition at line 166 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_disable_bitbang(), and ftdi_set_bitmode()\&.
+.SS "#define SIO_READ_PINS_REQUEST   0x0C"
+
+.PP
+Definition at line 167 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_read_pins()\&.
+.SS "#define SIO_READ_EEPROM_REQUEST   0x90"
+
+.PP
+Definition at line 168 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_read_chipid(), ftdi_read_eeprom(), and ftdi_read_eeprom_location()\&.
+.SS "#define SIO_WRITE_EEPROM_REQUEST   0x91"
+
+.PP
+Definition at line 169 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_erase_eeprom(), ftdi_write_eeprom(), and ftdi_write_eeprom_location()\&.
+.SS "#define SIO_ERASE_EEPROM_REQUEST   0x92"
+
+.PP
+Definition at line 170 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_erase_eeprom()\&.
+.SS "#define SIO_RESET_SIO   0"
+
+.PP
+Definition at line 173 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_usb_reset()\&.
+.SS "#define SIO_RESET_PURGE_RX   1"
+
+.PP
+Definition at line 174 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_usb_purge_rx_buffer()\&.
+.SS "#define SIO_RESET_PURGE_TX   2"
+
+.PP
+Definition at line 175 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_usb_purge_tx_buffer()\&.
+.SS "#define SIO_DISABLE_FLOW_CTRL   0x0"
+
+.PP
+Definition at line 177 of file ftdi\&.h\&.
+.SS "#define SIO_RTS_CTS_HS   (0x1 << 8)"
+
+.PP
+Definition at line 189 of file ftdi\&.h\&.
+.SS "#define SIO_DTR_DSR_HS   (0x2 << 8)"
+
+.PP
+Definition at line 179 of file ftdi\&.h\&.
+.SS "#define SIO_XON_XOFF_HS   (0x4 << 8)"
+
+.PP
+Definition at line 180 of file ftdi\&.h\&.
+.SS "#define SIO_SET_DTR_MASK   0x1"
+
+.PP
+Definition at line 182 of file ftdi\&.h\&.
+.SS "#define SIO_SET_DTR_HIGH   ( 1 | ( \fBSIO_SET_DTR_MASK\fP  << 8))"
+
+.PP
+Definition at line 183 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_setdtr(), and ftdi_setdtr_rts()\&.
+.SS "#define SIO_SET_DTR_LOW   ( 0 | ( \fBSIO_SET_DTR_MASK\fP  << 8))"
+
+.PP
+Definition at line 184 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_setdtr(), and ftdi_setdtr_rts()\&.
+.SS "#define SIO_SET_RTS_MASK   0x2"
+
+.PP
+Definition at line 185 of file ftdi\&.h\&.
+.SS "#define SIO_SET_RTS_HIGH   ( 2 | ( \fBSIO_SET_RTS_MASK\fP << 8 ))"
+
+.PP
+Definition at line 186 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_setdtr_rts(), and ftdi_setrts()\&.
+.SS "#define SIO_SET_RTS_LOW   ( 0 | ( \fBSIO_SET_RTS_MASK\fP << 8 ))"
+
+.PP
+Definition at line 187 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_setdtr_rts(), and ftdi_setrts()\&.
+.SS "#define SIO_RTS_CTS_HS   (0x1 << 8)"
+
+.PP
+Definition at line 189 of file ftdi\&.h\&.
+.SS "#define FTDI_URB_USERCONTEXT_COOKIE   ((void *)0x1)"
+
+.PP
+Definition at line 193 of file ftdi\&.h\&.
+.SS "#define DEPRECATED(func)   func"
+
+.PP
+Definition at line 201 of file ftdi\&.h\&.
+.SS "#define FT1284_CLK_IDLE_STATE   0x01"
+
+.PP
+Definition at line 347 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_eeprom_build(), and ftdi_eeprom_decode()\&.
+.SS "#define FT1284_DATA_LSB   0x02 /* DS_FT232H 1\&.3 amd ftd2xx\&.h 1\&.0\&.4 disagree here*/"
+
+.PP
+Definition at line 348 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_eeprom_build(), and ftdi_eeprom_decode()\&.
+.SS "#define FT1284_FLOW_CONTROL   0x04"
+
+.PP
+Definition at line 349 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_eeprom_build(), and ftdi_eeprom_decode()\&.
+.SS "#define POWER_SAVE_DISABLE_H   0x80"
+
+.PP
+Definition at line 350 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_eeprom_build(), and ftdi_eeprom_decode()\&.
+.SS "#define USE_SERIAL_NUM   0x08"
+
+.PP
+Definition at line 352 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_eeprom_build(), and ftdi_eeprom_decode()\&.
+.SS "#define INVERT_TXD   0x01"
+Invert TXD# 
+.PP
+Definition at line 370 of file ftdi\&.h\&.
+.SS "#define INVERT_RXD   0x02"
+Invert RXD# 
+.PP
+Definition at line 372 of file ftdi\&.h\&.
+.SS "#define INVERT_RTS   0x04"
+Invert RTS# 
+.PP
+Definition at line 374 of file ftdi\&.h\&.
+.SS "#define INVERT_CTS   0x08"
+Invert CTS# 
+.PP
+Definition at line 376 of file ftdi\&.h\&.
+.SS "#define INVERT_DTR   0x10"
+Invert DTR# 
+.PP
+Definition at line 378 of file ftdi\&.h\&.
+.SS "#define INVERT_DSR   0x20"
+Invert DSR# 
+.PP
+Definition at line 380 of file ftdi\&.h\&.
+.SS "#define INVERT_DCD   0x40"
+Invert DCD# 
+.PP
+Definition at line 382 of file ftdi\&.h\&.
+.SS "#define INVERT_RI   0x80"
+Invert RI# 
+.PP
+Definition at line 384 of file ftdi\&.h\&.
+.SS "#define CHANNEL_IS_UART   0x0"
+Interface Mode\&. 
+.PP
+Definition at line 387 of file ftdi\&.h\&.
+.SS "#define CHANNEL_IS_FIFO   0x1"
+
+.PP
+Definition at line 388 of file ftdi\&.h\&.
+.SS "#define CHANNEL_IS_OPTO   0x2"
+
+.PP
+Definition at line 389 of file ftdi\&.h\&.
+.SS "#define CHANNEL_IS_CPU   0x4"
+
+.PP
+Definition at line 390 of file ftdi\&.h\&.
+.SS "#define CHANNEL_IS_FT1284   0x8"
+
+.PP
+Definition at line 391 of file ftdi\&.h\&.
+.SS "#define CHANNEL_IS_RS485   0x10"
+
+.PP
+Definition at line 393 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_eeprom_build(), and ftdi_eeprom_decode()\&.
+.SS "#define DRIVE_4MA   0"
+
+.PP
+Definition at line 395 of file ftdi\&.h\&.
+.SS "#define DRIVE_8MA   1"
+
+.PP
+Definition at line 396 of file ftdi\&.h\&.
+.SS "#define DRIVE_12MA   2"
+
+.PP
+Definition at line 397 of file ftdi\&.h\&.
+.SS "#define DRIVE_16MA   3"
+
+.PP
+Definition at line 398 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_eeprom_build(), and ftdi_eeprom_decode()\&.
+.SS "#define SLOW_SLEW   4"
+
+.PP
+Definition at line 399 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_eeprom_build(), and ftdi_eeprom_decode()\&.
+.SS "#define IS_SCHMITT   8"
+
+.PP
+Definition at line 400 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_eeprom_build(), and ftdi_eeprom_decode()\&.
+.SS "#define DRIVER_VCP   0x08"
+Driver Type\&. 
+.PP
+Definition at line 403 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_eeprom_build(), and ftdi_eeprom_decode()\&.
+.SS "#define DRIVER_VCPH   0x10 /* FT232H has moved the VCP bit */"
+
+.PP
+Definition at line 404 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_eeprom_build(), and ftdi_eeprom_decode()\&.
+.SS "#define USE_USB_VERSION_BIT   0x10"
+
+.PP
+Definition at line 406 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_eeprom_build(), and ftdi_eeprom_decode()\&.
+.SS "#define SUSPEND_DBUS7_BIT   0x80"
+
+.PP
+Definition at line 408 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_eeprom_build(), and ftdi_eeprom_decode()\&.
+.SS "#define HIGH_CURRENT_DRIVE   0x10"
+High current drive\&. 
+.PP
+Definition at line 411 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_eeprom_build(), and ftdi_eeprom_decode()\&.
+.SS "#define HIGH_CURRENT_DRIVE_R   0x04"
+
+.PP
+Definition at line 412 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_eeprom_build(), and ftdi_eeprom_decode()\&.
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef int( FTDIStreamCallback)(uint8_t *buffer, int length, \fBFTDIProgressInfo\fP *progress, void *userdata)"
+
+.PP
+Definition at line 433 of file ftdi\&.h\&.
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBftdi_chip_type\fP"
+FTDI chip type 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fITYPE_AM \fP\fP
+.TP
+\fB\fITYPE_BM \fP\fP
+.TP
+\fB\fITYPE_2232C \fP\fP
+.TP
+\fB\fITYPE_R \fP\fP
+.TP
+\fB\fITYPE_2232H \fP\fP
+.TP
+\fB\fITYPE_4232H \fP\fP
+.TP
+\fB\fITYPE_232H \fP\fP
+.TP
+\fB\fITYPE_230X \fP\fP
+.PP
+Definition at line 36 of file ftdi\&.h\&.
+.SS "enum \fBftdi_parity_type\fP"
+Parity mode for \fBftdi_set_line_property()\fP 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fINONE \fP\fP
+.TP
+\fB\fIODD \fP\fP
+.TP
+\fB\fIEVEN \fP\fP
+.TP
+\fB\fIMARK \fP\fP
+.TP
+\fB\fISPACE \fP\fP
+.PP
+Definition at line 48 of file ftdi\&.h\&.
+.SS "enum \fBftdi_stopbits_type\fP"
+Number of stop bits for \fBftdi_set_line_property()\fP 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fISTOP_BIT_1 \fP\fP
+.TP
+\fB\fISTOP_BIT_15 \fP\fP
+.TP
+\fB\fISTOP_BIT_2 \fP\fP
+.PP
+Definition at line 50 of file ftdi\&.h\&.
+.SS "enum \fBftdi_bits_type\fP"
+Number of bits for \fBftdi_set_line_property()\fP 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIBITS_7 \fP\fP
+.TP
+\fB\fIBITS_8 \fP\fP
+.PP
+Definition at line 52 of file ftdi\&.h\&.
+.SS "enum \fBftdi_break_type\fP"
+Break type for \fBftdi_set_line_property2()\fP 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIBREAK_OFF \fP\fP
+.TP
+\fB\fIBREAK_ON \fP\fP
+.PP
+Definition at line 54 of file ftdi\&.h\&.
+.SS "enum \fBftdi_mpsse_mode\fP"
+MPSSE bitbang modes 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIBITMODE_RESET \fP\fP
+switch off bitbang mode, back to regular serial/FIFO 
+.TP
+\fB\fIBITMODE_BITBANG \fP\fP
+classical asynchronous bitbang mode, introduced with B-type chips 
+.TP
+\fB\fIBITMODE_MPSSE \fP\fP
+MPSSE mode, available on 2232x chips 
+.TP
+\fB\fIBITMODE_SYNCBB \fP\fP
+synchronous bitbang mode, available on 2232x and R-type chips 
+.TP
+\fB\fIBITMODE_MCU \fP\fP
+MCU Host Bus Emulation mode, available on 2232x chips 
+.TP
+\fB\fIBITMODE_OPTO \fP\fP
+Fast Opto-Isolated Serial Interface Mode, available on 2232x chips 
+.TP
+\fB\fIBITMODE_CBUS \fP\fP
+Bitbang on CBUS pins of R-type chips, configure in EEPROM before 
+.TP
+\fB\fIBITMODE_SYNCFF \fP\fP
+Single Channel Synchronous FIFO mode, available on 2232H chips 
+.TP
+\fB\fIBITMODE_FT1284 \fP\fP
+FT1284 mode, available on 232H chips 
+.PP
+Definition at line 57 of file ftdi\&.h\&.
+.SS "enum \fBftdi_interface\fP"
+Port interface for chips with multiple interfaces 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIINTERFACE_ANY \fP\fP
+.TP
+\fB\fIINTERFACE_A \fP\fP
+.TP
+\fB\fIINTERFACE_B \fP\fP
+.TP
+\fB\fIINTERFACE_C \fP\fP
+.TP
+\fB\fIINTERFACE_D \fP\fP
+.PP
+Definition at line 72 of file ftdi\&.h\&.
+.SS "enum \fBftdi_module_detach_mode\fP"
+Automatic loading / unloading of kernel modules 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIAUTO_DETACH_SIO_MODULE \fP\fP
+.TP
+\fB\fIDONT_DETACH_SIO_MODULE \fP\fP
+.PP
+Definition at line 82 of file ftdi\&.h\&.
+.SS "enum \fBftdi_eeprom_value\fP"
+List all handled EEPROM values\&. Append future new values only at the end to provide API/ABI stability 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIVENDOR_ID \fP\fP
+.TP
+\fB\fIPRODUCT_ID \fP\fP
+.TP
+\fB\fISELF_POWERED \fP\fP
+.TP
+\fB\fIREMOTE_WAKEUP \fP\fP
+.TP
+\fB\fIIS_NOT_PNP \fP\fP
+.TP
+\fB\fISUSPEND_DBUS7 \fP\fP
+.TP
+\fB\fIIN_IS_ISOCHRONOUS \fP\fP
+.TP
+\fB\fIOUT_IS_ISOCHRONOUS \fP\fP
+.TP
+\fB\fISUSPEND_PULL_DOWNS \fP\fP
+.TP
+\fB\fIUSE_SERIAL \fP\fP
+.TP
+\fB\fIUSB_VERSION \fP\fP
+.TP
+\fB\fIUSE_USB_VERSION \fP\fP
+.TP
+\fB\fIMAX_POWER \fP\fP
+.TP
+\fB\fICHANNEL_A_TYPE \fP\fP
+.TP
+\fB\fICHANNEL_B_TYPE \fP\fP
+.TP
+\fB\fICHANNEL_A_DRIVER \fP\fP
+.TP
+\fB\fICHANNEL_B_DRIVER \fP\fP
+.TP
+\fB\fICBUS_FUNCTION_0 \fP\fP
+.TP
+\fB\fICBUS_FUNCTION_1 \fP\fP
+.TP
+\fB\fICBUS_FUNCTION_2 \fP\fP
+.TP
+\fB\fICBUS_FUNCTION_3 \fP\fP
+.TP
+\fB\fICBUS_FUNCTION_4 \fP\fP
+.TP
+\fB\fICBUS_FUNCTION_5 \fP\fP
+.TP
+\fB\fICBUS_FUNCTION_6 \fP\fP
+.TP
+\fB\fICBUS_FUNCTION_7 \fP\fP
+.TP
+\fB\fICBUS_FUNCTION_8 \fP\fP
+.TP
+\fB\fICBUS_FUNCTION_9 \fP\fP
+.TP
+\fB\fIHIGH_CURRENT \fP\fP
+.TP
+\fB\fIHIGH_CURRENT_A \fP\fP
+.TP
+\fB\fIHIGH_CURRENT_B \fP\fP
+.TP
+\fB\fIINVERT \fP\fP
+.TP
+\fB\fIGROUP0_DRIVE \fP\fP
+.TP
+\fB\fIGROUP0_SCHMITT \fP\fP
+.TP
+\fB\fIGROUP0_SLEW \fP\fP
+.TP
+\fB\fIGROUP1_DRIVE \fP\fP
+.TP
+\fB\fIGROUP1_SCHMITT \fP\fP
+.TP
+\fB\fIGROUP1_SLEW \fP\fP
+.TP
+\fB\fIGROUP2_DRIVE \fP\fP
+.TP
+\fB\fIGROUP2_SCHMITT \fP\fP
+.TP
+\fB\fIGROUP2_SLEW \fP\fP
+.TP
+\fB\fIGROUP3_DRIVE \fP\fP
+.TP
+\fB\fIGROUP3_SCHMITT \fP\fP
+.TP
+\fB\fIGROUP3_SLEW \fP\fP
+.TP
+\fB\fICHIP_SIZE \fP\fP
+.TP
+\fB\fICHIP_TYPE \fP\fP
+.TP
+\fB\fIPOWER_SAVE \fP\fP
+.TP
+\fB\fICLOCK_POLARITY \fP\fP
+.TP
+\fB\fIDATA_ORDER \fP\fP
+.TP
+\fB\fIFLOW_CONTROL \fP\fP
+.TP
+\fB\fICHANNEL_C_DRIVER \fP\fP
+.TP
+\fB\fICHANNEL_D_DRIVER \fP\fP
+.TP
+\fB\fICHANNEL_A_RS485 \fP\fP
+.TP
+\fB\fICHANNEL_B_RS485 \fP\fP
+.TP
+\fB\fICHANNEL_C_RS485 \fP\fP
+.TP
+\fB\fICHANNEL_D_RS485 \fP\fP
+.TP
+\fB\fIRELEASE_NUMBER \fP\fP
+.PP
+Definition at line 277 of file ftdi\&.h\&.
+.SS "enum \fBftdi_cbus_func\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fICBUS_TXDEN \fP\fP
+.TP
+\fB\fICBUS_PWREN \fP\fP
+.TP
+\fB\fICBUS_RXLED \fP\fP
+.TP
+\fB\fICBUS_TXLED \fP\fP
+.TP
+\fB\fICBUS_TXRXLED \fP\fP
+.TP
+\fB\fICBUS_SLEEP \fP\fP
+.TP
+\fB\fICBUS_CLK48 \fP\fP
+.TP
+\fB\fICBUS_CLK24 \fP\fP
+.TP
+\fB\fICBUS_CLK12 \fP\fP
+.TP
+\fB\fICBUS_CLK6 \fP\fP
+.TP
+\fB\fICBUS_IOMODE \fP\fP
+.TP
+\fB\fICBUS_BB_WR \fP\fP
+.TP
+\fB\fICBUS_BB_RD \fP\fP
+.TP
+\fB\fICBUS_BB \fP\fP
+.PP
+Definition at line 353 of file ftdi\&.h\&.
+.SS "enum \fBftdi_cbush_func\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fICBUSH_TRISTATE \fP\fP
+.TP
+\fB\fICBUSH_RXLED \fP\fP
+.TP
+\fB\fICBUSH_TXLED \fP\fP
+.TP
+\fB\fICBUSH_TXRXLED \fP\fP
+.TP
+\fB\fICBUSH_PWREN \fP\fP
+.TP
+\fB\fICBUSH_SLEEP \fP\fP
+.TP
+\fB\fICBUSH_DRIVE_0 \fP\fP
+.TP
+\fB\fICBUSG_DRIVE1 \fP\fP
+.TP
+\fB\fICBUSH_IOMODE \fP\fP
+.TP
+\fB\fICBUSH_TXDEN \fP\fP
+.TP
+\fB\fICBUSH_CLK30 \fP\fP
+.TP
+\fB\fICBUSH_CLK15 \fP\fP
+.TP
+\fB\fICBUSH_CLK7_5 \fP\fP
+.TP
+\fB\fICBUSH_BAT_DETECT \fP\fP
+.TP
+\fB\fICBUSH_BAT_DETECT_NEG \fP\fP
+.TP
+\fB\fICBUSH_I2C_TXE \fP\fP
+.TP
+\fB\fICBUSH_I2C_RXF \fP\fP
+.TP
+\fB\fICBUSH_VBUS_SENSE \fP\fP
+.TP
+\fB\fICBUSH_BB_WR \fP\fP
+.TP
+\fB\fICBUSH_BB_RD \fP\fP
+.TP
+\fB\fICBUSH_TIME_STAMP \fP\fP
+.TP
+\fB\fICBUSH_AWAKE \fP\fP
+.PP
+Definition at line 360 of file ftdi\&.h\&.
+.SH "Function Documentation"
+.PP 
+.SS "int ftdi_readstream (struct \fBftdi_context\fP *ftdi, \fBFTDIStreamCallback\fP *callback, void *userdata, intpacketsPerTransfer, intnumTransfers)"
+Streaming reading of data from the device
+.PP
+Use asynchronous transfers in libusb-1\&.0 for high-performance streaming of data from a device interface back to the PC\&. This function continuously transfers data until either an error occurs or the callback returns a nonzero value\&. This function returns a libusb error code or the callback's return value\&.
+.PP
+For every contiguous block of received data, the callback will be invoked\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIftdi\fP pointer to \fBftdi_context\fP 
+.br
+\fIcallback\fP to user supplied function for one block of data 
+.br
+\fIuserdata\fP 
+.br
+\fIpacketsPerTransfer\fP number of packets per transfer 
+.br
+\fInumTransfers\fP Number of transfers per callback 
+.RE
+.PP
+
+.PP
+Definition at line 147 of file ftdi_stream\&.c\&.
+.PP
+References FTDIStreamState::activity, BITMODE_RESET, BITMODE_SYNCFF, FTDIStreamState::callback, FTDIProgressInfo::current, FTDIProgressInfo::currentRate, FTDIProgressInfo::first, ftdi_get_error_string(), ftdi_set_bitmode(), ftdi_usb_purge_buffers(), ftdi_context::max_packet_size, ftdi_context::out_ep, FTDIProgressInfo::prev, FTDIStreamState::progress, FTDIStreamState::result, size_and_time::time, size_and_time::totalBytes, FTDIProgressInfo::totalRate, FTDIProgressInfo::totalTime, ftdi_context::type, TYPE_2232H, TYPE_232H, ftdi_context::usb_ctx, ftdi_context::usb_dev, ftdi_context::usb_read_timeout, and FTDIStreamState::userdata\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libftdi1 from the source code\&.

@@ -1,0 +1,70 @@
+.TH "ftdi_version_info" 3 "Fri Mar 6 2015" "Version 1.2" "libftdi1" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ftdi_version_info \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <ftdi\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBmajor\fP"
+.br
+.ti -1c
+.RI "int \fBminor\fP"
+.br
+.ti -1c
+.RI "int \fBmicro\fP"
+.br
+.ti -1c
+.RI "const char * \fBversion_str\fP"
+.br
+.ti -1c
+.RI "const char * \fBsnapshot_str\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Provide libftdi version information major: Library major version minor: Library minor version micro: Currently unused, ight get used for hotfixes\&. version_str: Version as (static) string snapshot_str: Git snapshot version if known\&. Otherwise 'unknown' or empty string\&. 
+.PP
+Definition at line 444 of file ftdi\&.h\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "int ftdi_version_info::major"
+
+.PP
+Definition at line 446 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_get_library_version()\&.
+.SS "int ftdi_version_info::minor"
+
+.PP
+Definition at line 447 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_get_library_version()\&.
+.SS "int ftdi_version_info::micro"
+
+.PP
+Definition at line 448 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_get_library_version()\&.
+.SS "const char* ftdi_version_info::version_str"
+
+.PP
+Definition at line 449 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_get_library_version()\&.
+.SS "const char* ftdi_version_info::snapshot_str"
+
+.PP
+Definition at line 450 of file ftdi\&.h\&.
+.PP
+Referenced by ftdi_get_library_version()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libftdi1 from the source code\&.
