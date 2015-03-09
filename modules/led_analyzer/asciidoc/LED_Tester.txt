@@ -1,0 +1,132 @@
+Project LED Tester 
+===================
+
+Subhan Waizi + 
+<swaizi@hilscher.com> + 
+
+[[About, About]]
+== About
+
+This document describes the LED Tester project which uses TCS3472 color sensors from AMS. The LED Tester tests LEDs for their dominant wavelength,
+a parameter which can be found in the datasheet of the LED to be tested. General goal was to have an automated test where you provide dominant 
+wavelength and saturation as an input and OK or NOT OK as result. 
+
+The hardware needed for this project consists of one or more ftdi-device(s) [ft2232h] and 16 of AMS TCS3472 color sensors per device. It is recommended to use
+fibre optics to directly connect sensor and the LED under test to avoid errors invoked by external light.     
+
+
+
+[[Software, Software]]
+== Software 
+With help of libftdi and libusb we provide an interface to talk to the ftdi-devices. During development libftdi v1.1 and libusb v1.0.18 were used to write
+the software i2c needed for addressing 16 I2C sensors with same addresses. These functions were wrapped using swigtest and made ready for use under LUA. LUA itself controls the color related calculations and thus the final validation
+of the LED color. 
+
+- color_conversions.lua:
+  * This script implements the color conversions between different color spaces. As TCS3472 provides 4 x 16Bit values, Clear, Red, Green and Blue we need to convert to different 
+  color spaces in order to calculate a dominant wavelength at the end. The Conversions implemented right now are RGB-->XYZ (using sRGB) --> xyY --> Dominant Wavelength. 
+  For test purposes different XYZ conversion matrices were used depeneding on the source RGB space we set as our base. sRGB base seems to provide the best test results and is therefore currently used.
+  The Yxy --> dominant wavelength algorithm will be introduced in the chapter <<Wavelength_calculation>>.
+  
+- testerboard.lua:
+  * This is a configuration file which will later be unique for each hardware under test. It provides a table tTest which will have entries for each ftdi-device and 16 sensor entries under each ftdi-device.
+  For example tTest[1][3] means third color sensor connected to the first ftdi-device. Each sensor can have several attributes, depending on the data provided by the LED datasheet. In case of color specification datasheets either
+  provide a dominant wavelength (more frequent) or a bin which is an area in the CIE Yxy graph where the LED x/y chromaticity pair can be found. 
+  [horizontal]
+	name::   		Name of the LED under test, for example PHY0 LED 
+	
+	dWavelength::	The dominant wavelength of the LED which can be found in the datasheet. Dominant wavelength gives information about the LEDs emitted colour.
+					Unit: nanometer (nm)
+					
+	tol_nm:: 		The tolerance value which the measured wavelength can have in order to still be recognized. It is DELTA, thus wavelengths which lie in
+					[dWavelength - tol_nm ... dWavelength + tol_nm] are valid. 
+					
+	sat::			The color's saturation. Must be measured by the program for on state and then filled in aftwards. It's mostly around 90-100 for bright LEDs, around 40 for very
+					LEDs, ... 
+	tol_sat::		tolerance the sat value can have in order for the LED to be found valid. Tolerance given in percent of the saturation value. For example a tol_sat = 5 would mean 
+					5% tolerance for the saturation value (Unlike the tol_nm value which is given in absolute difference value)
+	
+	x/y::			If the datasheet provides a bin / xyPair instead of dominant wavelength, you can use this pair as an input. The software will then check if 
+					the x/y value provided by the sensor lies within a circle (center: x/y from datasheet) with tol_xy as its radius. If so, the LED is recognized, thus valid. 
+  
+	tol_xy::		The tolerance the xy-value of the sensor may have in order to be found valid by the software. Imagine a circle with the datasheet's x/y pair as centerpoint and tol_xy as radius.
+					If point given by the sensor lies within this circle area, we have a valid LED.
+					
+	LED_State::		This gives information about the state of the LED. For now we can have 3 different values in LED, initially 0 and if the desired LED color is not recognized it will remain 0.
+					1 if all goes well and we recognized the wavelength and saturation we are looking for. Finally 2 if we recognized the wavelength, but the saturation doesn't lie within the tolerance range.
+					
+- color_validation.lua:
+  * This script is used to compare input dominant wavelength (found in a datasheet) and saturation with the dominant wavelength and saturation calculated with help of the sensor values.
+  A configuration script testerboard.lua which contains the dominant wavelengths and saturations looked for for each sensor will be used here. Each sensor has an attribute called LED_State which is initially
+  on 0, and will be put to 1 if dominant wavelength and purity are recognized, to 2 if only dominant wavelength but not the purity is recognized and will remain 0 if the wavelength looked for and current wavelength given by the sensor
+  differ. 
+  If the test runs well and all LEDs are recognized in the end, all LED_State values must be 1. 
+
+- tcsChromaTable.lua:
+  * This script provides the data for the final wavelength calculation containing a table tTCS_chromaticity which holds the spectral responsitivity of the AMS TCS3472 light-to-digital sensor.
+  TCS3472 Spectral Responsitivity.xls was used as a basis for this table. This .xls file which provided the spectral responsitivity of our sensor can be requested from AMS. It contains the spectral responsitivity in RGB / C space.
+  For our purposes the RGB space was converted into XYZ and afterwards into Yxy. At last the data, which had 5nm stepsize, was interpolated using a combination of linear and spline interpolation. Current wavelength stepsize is 0.3125nm, an acceptable granulation
+  for this application. All calculations resulting in this table were done in Matlab. 
+  
+- runme.lua:
+  * This is the main script which calls the wrapped functions from the files listed above. It creates a table containing the device handles (Note: 2 handles per 1 ftdi-device, as each Channel gets its own handle) and tables containing Red, Green, Blue and Clear Colors. +
+  Program flow: + 
+  Detect all devices --> iterate over all devices and --> +Initialize Sensors+ --> +Read out colors+ --> +Check Colors for validity+ --> Convert into desired color spaces --> Validate LEDs + 
+  First we initialize the sensors by turning them on, setting gain and integration time. Reading colors will first check if sensors respond by checking their IDs and if so read out the colors. If needed we wait for the conversions to be completed and then read out the colors. 
+  By checking specific contents of the sensor's registers we can find out if given datasets are valid or environment light is too bright, in which case we would need to turn down the gain. In case any of these +functions+ fail we have a maximum of +INIT_MAXERROR+, +READ_MAXERROR+ and +VALID_MAXERROR+ retries before aborting the test.
+  
+  
+   																			 
+[[Test_description,Test description]]
+== Test description
+For testing a specific board you have to fill in the input data of the configuration file testerboard.lua. As described in this chapter <<Software>> you can either fill in a combination of [wavelength / saturation] or [x / y]. If both pairs are given, the program will prefer wavelength / saturation. 
+For high accuracy and solid wavelength detection all wavelengths under 405nm and above 660nm were cut out leaving a range of [450 ... 660 nm], all wavelengths under 450 and above 660 will be set to these boundaries. Nevertheless this range is sufficient for most LEDs under test. 
+Two <<Parameters>> gain and integration time can be set in the lua script, which are currently set to +gain = 4+ and +integration time = 100ms+, proven as good values for both dark and bright LEDs. Running the runme.lua script will return either TEST_RESULT_SUCCESS or TEST_RESULT_FAILED_LED / TEST_RESULT_FAILED_SENSORS. 
+For best test results one should provide a constant distance between fibre optics and LED under test and additionally protect the sensor itself against disturbing environmental lighting. Following these suggestions an accuracy of +/- 2nm can be achieved.
+
+TEST_RESULT_SUCCESS:: All LEDs found by our sensors are valid, the test was successful.
+
+TEST_RESULT_FAILED_SENSORS:: Problems occurred with the sensors. This could be the result of invalid RGBC datasets, maximum clear level exceedings, identification problems, incomplete conversions or general problems with libusb.
+
+TEST_RESULT_FAILED_LED:: One or more LEDs from the testboard couldn't be found. In this case the LEDs which are invalid will be printed. 
+
+
+
+[[Parameters, Parameters]]
+== Parameters
+
+There is the possibility of gain and integration time configuration. Dark environments require a longer integration time and / or higher gain factors. Longer integration time will slow the sensor and therefore the program down, 
+thus we have to make a good compromise for this parameter. Note that the LED Analyzer should be able to detect both bright LEDs and darker LEDs (for example RDY/RUN LEDs on NXHX boards), thus a range in between both integration time boundaries (2.4ms / 700ms) might be a good choice.
+
+gain:: can be set to 1X, 4X, 16X and 60X 
+
+integrationtime:: adjustable in 2.4ms steps from 2.4ms to 700ms. Refer to sensor's datasheet for calculation the content of the register. 
+
+
+[[Wavelength_calculation, Wavelength calculation]]  
+== Wavelength calculation
+
+As most datasheets provide dominant wavelength for color specification, a main goal of this project was to calculate a wavelength as close to LED datasheet's wavelength as possible. The algorithm to calculate the dominant wavelength is implemented in color_conversions.lua <<software>>.
+After some conversions the sensor provides a  x/y chromaticity pair which can be marked as a point on following image: 
+
+.TCS3472 spectral sensitivity
+image:images/spectral_line.jpg[
+"TCS3472 spectral sensitivity", width=256, 
+link="images/spectral_line.jpg"]
+
+We calculate our direction vectors from reference white point (D65) to each wavelength x/y pair (marked as o) on the spectral line. Afterwards we calculate Whitepoint to current sensor x/y point direction vector. By calculating the smallest angle between current and table direction vector we can find out to which wavelength point on 
+the spectral line our current direction vector is pointing to. That is the wavelength. As we use the TCS3472 sensor we have to approach its spectral responsitivity, which was done as described in tcsChromaTable.lua under <<software>>.
+If we had an ideal sensor we would have used following spectral line curve (1931 CIE Yxy):
+
+.1931 CIE Chromaticity Diagram
+image:images/chroma_diag.jpg[
+"1931 CIE Chromaticity Diagram", width=256, 
+link="images/chroma_diag.jpg"]
+
+  
+  
+TIP: As the configuration file testerboard.lua is the main source for user input, data in this table should be consistent. Especially tolerances might be hard to find out, as too big ones detect great ranges of wavelengths, too small ones might result in no LED detection at all.
+An idea here (for example tol_nm) is to start with a tolerance of around 5nm, perform measurements and print these out. If you see the tolerance can be decreased, just lower it. Repeat this procedure until you have the smallest tolerance value possible for which the LED can still be recognized safely. Same procedure can be adapted for tol_sat and tol_xy. 
+
+
+

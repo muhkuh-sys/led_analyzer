@@ -1,0 +1,30 @@
+runme_doc:
+
+--tTest[x][y]:
+--		x = 1 .. number of detected ftdi devices 
+--		y = 1 .. 16 sensors per device 
+-- for example tTest[1] can contain 16 datasets
+-- and 		   tTest[2] can contain 8 datasets
+-- this would meen we test a board with 24 different LEDs
+
+Example:
+tTest = 
+{
+-- maximum of 16 entries per device 
+[1] = { 
+        [1] = {name = "TESTBOARD_LED_Rot", dWavelength = 615 , tol_nm = 8, sat = 60,  tol_sat = 2, 
+										   x = 0.3, y = 0.2, tol_xy = 0.05, LED_State = 0},
+	...
+
+}
+}
+
+tTest[1][1] can contain either dominant wavelength and saturation (dWavelength, sat) with their tolerances (tol_nm, tol_sat) or a x/y-pair (x, y) with its
+tolerance (tol_xy).
+If dominant wavelength and saturation are given (preferred) the software will check if the wavelength and purity calculated by the sensor lie within that tolerance
+range. If so, the LED_State entry will be put to 1. If only the color (wavelength) lies within the tolerance range the LED_State will be put to 2. If the LED searched for
+isn't found at all, LED_State will remain 0.
+
+If a x/y-pair and the tolerance for x/y are given we check if the x/y point calculated by the sensor lies within the circle which is defined by
+tTest[1][1].x and tTest[1][1].y as centerpoint and tol_xy as radius. If so, LED_State will become 1, else it will remain 0.
+
