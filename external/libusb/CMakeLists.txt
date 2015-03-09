@@ -58,6 +58,8 @@ ExternalProject_Add(TARGET_libusb
 
 # 3) Provide all variables for the build.
  SET(LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19/install/lib/libusb.a)
+ SET(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19/install/include/libusb-1.0)
+
 
  IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
 	# SET(LDFLAGS "-pthread -lrt -ludev")
@@ -65,8 +67,8 @@ ExternalProject_Add(TARGET_libusb
 
  SET(DEFINES -DROMLOADER_USB_LIBUSB_VERSION=1)
  
- SET(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19/install/include/libusb-1.0)
- SET(LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19/install/lib/libusb.a)
+
+ 
  
  
  

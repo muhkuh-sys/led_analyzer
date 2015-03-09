@@ -5,7 +5,7 @@ PROJECT("led_analyzer")
 
 
 # Swig is required to generate the bindings.
-FIND_PACKAGE(SWIG REQUIRED)
+#FIND_PACKAGE(SWIG REQUIRED)
 
 
 
@@ -42,8 +42,8 @@ SET(USE_SYSTEM_LUA FALSE)
 # Include the projects in the subdirectories.
 
 add_subdirectory(external)
-#add_subdirectory(lua)
-#add_subdirectory(modules)
+add_subdirectory(lua)
+add_subdirectory(modules)
 
 
 #----------------------------------------------------------------------------

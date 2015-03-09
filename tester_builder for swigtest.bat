@@ -5,7 +5,6 @@ cmake -G "MinGW Makefiles" -DSWIG_EXECUTABLE=C:/Users/subhan/Desktop/swigwin-3.0
 PAUSE	
 
 
-cd testfolder 
 c:\TDM-GCC-64\bin\mingw32-make.exe
 
 PAUSE

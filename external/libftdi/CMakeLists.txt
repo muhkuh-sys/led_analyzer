@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 
 #----------------------------------------------------------------------------
 #
-# This script provides the libusb parts to the build process.
+# This script provides the libftdi parts to the build process.
 #
 # 1) It depacks the archiv.
 # 2) Eventually compile the sources.
@@ -11,11 +11,11 @@ cmake_minimum_required(VERSION 2.8)
 #
 # The provided variables are:
 #
-#  LIBFTDI_LIBRARIES : The libusb library with the complete path and all
+#  LIBFTDI_LIBRARIES : The libftdi library with the complete path and all
 #                     required system libraries. The list must be separated
 #                     with whitespace.
 #
-#  LIBFTDI_DEFINES : All defines for the libusb library. This should be a
+#  LIBFTDI_DEFINES : All defines for the libftdi library. This should be a
 #                   list of entries starting with "-D".
 #
 #  LIBFTDI_INCLUDE_DIRECTORIES : The include folders for the library headers.
@@ -35,20 +35,17 @@ INCLUDE(ExternalProject)
 
 
 
-#SET(LIBUSB_CMAKE_ARGS "")
+#SET(LIBFTDI_CMAKE_ARGS "")
 #list baut eine ganze zeile aus den sachen die mit append hinzugefügt wurden 
 LIST(APPEND LIBFTDI_CMAKE_ARGS "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}")
 LIST(APPEND LIBFTDI_CMAKE_ARGS "-DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}")
 LIST(APPEND LIBFTDI_CMAKE_ARGS "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}")
 LIST(APPEND LIBFTDI_CMAKE_ARGS "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}")
+LIST(APPEND LIBFTDI_CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2")
 IF(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-	LIST(APPEND LIBUSB_CMAKE_ARGS "-DCMAKE_RC_COMPILER=${CMAKE_RC_COMPILER}")
+	LIST(APPEND LIBFTDI_CMAKE_ARGS "-DCMAKE_RC_COMPILER=${CMAKE_RC_COMPILER}")
 ENDIF(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 
-
-
-LIST(APPEND LIBUSB_PATHS "${LIBUSB_INCLUDE_DIR}")
-LIST(APPEND LIBUSB_PATHS "${LIBUSB_LIBRARIES}")
 
 
 ExternalProject_Add(TARGET_libftdi
@@ -59,20 +56,16 @@ ExternalProject_Add(TARGET_libftdi
                     #configure 
 					PATCH_COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/templates ${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2/src/TARGET_libftdi
                     CMAKE_ARGS ${LIBFTDI_CMAKE_ARGS} -DLIBUSB_INCLUDE_DIR=${CMAKE_CURRENT_BINARY_DIR}/../libusb/libusb-1.0.19/install/include/libusb-1.0 -DLIBUSB_LIBRARIES=${CMAKE_CURRENT_BINARY_DIR}/../libusb/libusb-1.0.19/install/lib/libusb.a
-                    INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} install DESTDIR=${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2
+                    INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} install
+					
+
 )
 
-# LIBUSB_INCLUDE_DIR needs the path to the libusb header file
-# DLIBUSB_LIBRARIES needs the path AND the static library of libusb
-#SET(LIBUSB_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../libusb/lib/libusb-1.0.19/src/TARGET_libusb/libusb)
-#SET(LIBUSB_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/../libusb/lib/libusb-1.0.19/src/TARGET_libusb-build/libusb.a)
-
-
-
+ 
 
 # 3) Provide all variables for the build.
- SET(LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/libftdi/install/lib/libftdi1.a)
- SET(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19/install/include/libusb-1.0)
+ SET(LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2/lib/libftdi1.a)
+ SET(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2/include/libftdi1/libftdi1.a)
 
 
  IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
@@ -81,10 +74,7 @@ ExternalProject_Add(TARGET_libftdi
 
  SET(DEFINES -DROMLOADER_USB_LIBFTDI_VERSION=1)
  
- #SET(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2/install/include/libftdi-1.0)
- #SET(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19/install/include/libusb-1.0)
-
-
+ 
 # ----------------------------------------------------------------------------
 
  # Store all information about the library in the cache.
