@@ -59,7 +59,7 @@ int detect_devices(void** apHandles, int apHlength)
 			return -1;
 		}
 		
-	numbOfDevs = ftdi_usb_find_all(ftdi, &devlist, 0x403, 0x6010);
+	numbOfDevs = ftdi_usb_find_all(ftdi, &devlist, VID, PID);
 		
 	if(numbOfDevs == 0)
 		{
@@ -105,6 +105,8 @@ int detect_devices(void** apHandles, int apHlength)
 
 	while(devCounter < numbOfDevs)
 	{
+		
+	
 		if(iArrayPos+2 <= apHlength)
 		{
 			/* Ch A */
@@ -122,7 +124,7 @@ int detect_devices(void** apHandles, int apHlength)
 					return -1;
 				}
 				
-			if((f = ftdi_usb_open(apHandles[iArrayPos], VID, PID)<0))
+			if((f = ftdi_usb_open_desc_index(apHandles[iArrayPos], VID, PID, NULL, NULL, devCounter)<0))
 				{
 					fprintf(stderr, "unable to open dev %d interface A: %d (%s)\n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_deinit(apHandles[iArrayPos]);
@@ -156,7 +158,7 @@ int detect_devices(void** apHandles, int apHlength)
 					return -1;
 				}
 				
-			if((f = ftdi_usb_open(apHandles[iArrayPos], VID, PID)<0))
+			if((f = ftdi_usb_open_desc_index(apHandles[iArrayPos],VID, PID, NULL, NULL, devCounter)<0))
 				{
 					fprintf(stderr, "unable to open dev %d interface B: %d (%s)\n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_deinit(apHandles[iArrayPos]);
@@ -179,6 +181,8 @@ int detect_devices(void** apHandles, int apHlength)
 		}
 		/* Go to the next device found */
 		devCounter ++;
+		
+		
 	}
 	
 	
@@ -198,6 +202,8 @@ int get_handleLength(void ** apHandles)
 		{
 			iCounter++;
 		}
+		
+	
 	return iCounter;
 }
 
@@ -209,6 +215,7 @@ int init_sensors(void** apHandles, int devIndex, unsigned long integrationtime, 
 	int iResult = 0;
 	/* 2 handles per device, dev 0 has handles 0,1 .. dev 1 has handles 2,3 and so on*/
 	int handleIndex = devIndex * 2;
+	
 	int iHandleLength = get_handleLength(apHandles);
 	
 	printf("Initializing on devIndex: %d\n", devIndex);
@@ -247,7 +254,7 @@ int init_sensors(void** apHandles, int devIndex, unsigned long integrationtime, 
 			
 	tcs_waitIntegrationtime(integrationtime, waitAdjust);
 	
-	printf("initializing successful\n", devIndex);
+	printf("initializing successful on devIndex: %d\n", devIndex);
 	return iResult;
 }
 
@@ -259,10 +266,9 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	int iResult = 0;
 	int iHandleLength = get_handleLength(apHandles);
 	unsigned char aucTempbuffer[16];
-	int handleIndex = 0;
+	int handleIndex = devIndex * 2;
 	
 	// Transform device index into handle index, as each device has two handles */
-	handleIndex = devIndex*2;
 	printf("Reading colors on devIndex: %d\n", devIndex);
 	
 	if(handleIndex >= iHandleLength)
@@ -286,10 +292,11 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 		}
 		
 	
-	tcs_readColour(apHandles[devIndex], apHandles[devIndex+1], ausClear, CLEAR);
-	tcs_readColour(apHandles[devIndex], apHandles[devIndex+1], ausRed, RED);
-	tcs_readColour(apHandles[devIndex], apHandles[devIndex+1], ausGreen, GREEN);
-	tcs_readColour(apHandles[devIndex], apHandles[devIndex+1], ausBlue, BLUE);
+	tcs_readColour(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, CLEAR);
+	tcs_readColour(apHandles[handleIndex], apHandles[handleIndex+1], ausRed, RED);
+	tcs_readColour(apHandles[handleIndex], apHandles[handleIndex+1], ausGreen, GREEN);
+	tcs_readColour(apHandles[handleIndex], apHandles[handleIndex+1], ausBlue, BLUE);
+
 
 	printf("reading colors successful\n");
 	return iResult;
@@ -333,6 +340,7 @@ int free_devices(void** apHandles)
 	int index = 0;
 	int iHandleLength = get_handleLength(apHandles);
 	
+	printf("Number of handles to delete: %d\n", iHandleLength);
 	while(index < iHandleLength)
 	{
 		ftdi_usb_close(apHandles[index]);

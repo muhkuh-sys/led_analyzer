@@ -19,11 +19,13 @@ find_library(LIBUSB_LIBRARY  NAMES libusb   HINTS . )
 
 SET_SOURCE_FILES_PROPERTIES(led_analyzer.i PROPERTIES CPLUSPLUS OFF)
 SET_SOURCE_FILES_PROPERTIES(led_analyzer.i PROPERTIES SWIG_FLAGS "")
+
 SWIG_ADD_MODULE(TARGET_led_analyzer lua led_analyzer.i led_analyzer.c i2c_routines.c io_operations.c tcs3472.c)
 SWIG_LINK_LIBRARIES(TARGET_led_analyzer ${LUA_LIBRARIES} ${LIBFTDI_LIBRARY} ${LIBUSB_LIBRARY})
 
 # Set the name of the output file to "led_analyzer".
 SET_TARGET_PROPERTIES(TARGET_led_analyzer PROPERTIES PREFIX "" OUTPUT_NAME "led_analyzer")
+
 
 # On mingw link all compiler libraries static.
 IF((${CMAKE_SYSTEM_NAME} STREQUAL "Windows") AND (${CMAKE_COMPILER_IS_GNUCC}))

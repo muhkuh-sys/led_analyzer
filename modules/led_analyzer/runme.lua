@@ -1,7 +1,7 @@
 ---- importing ----
 require("color_conversions") -- Convert between color spaces 
 require("color_validation")	 -- Validate your colors, contains helper to print your colors and store your colors in adequate arrays
-require("bit")				 -- should be renamed soon, contains the libusb, libftdi, tcs ... files 
+require("led_analyzer")				 -- should be renamed soon, contains the libusb, libftdi, tcs ... files 
 require("testBoard")		 -- board to be tested, containing dom. wavelengths and/or x/y pairs
 
 TEST_RESULT_OK = 0 
@@ -28,17 +28,17 @@ TCS3471_INTEGRATION_154ms 		= 0xC0
 TCS3471_INTEGRATION_700ms       = 0x00
 
 -- Colors from the TCS3472 will be stored in following arrays -- 
-ausClear  = bit.new_ushort(MAXSENSORS)
-ausRed    = bit.new_ushort(MAXSENSORS)
-ausGreen  = bit.new_ushort(MAXSENSORS)
-ausBlue   = bit.new_ushort(MAXSENSORS)
+ausClear  = led_analyzer.new_ushort(MAXSENSORS)
+ausRed    = led_analyzer.new_ushort(MAXSENSORS)
+ausGreen  = led_analyzer.new_ushort(MAXSENSORS)
+ausBlue   = led_analyzer.new_ushort(MAXSENSORS)
 
 -- array of void pointers which will contain struct_ftdi_context* elements -- 
-apHandles = bit.new_apvoid(MAXSENSORS)
+apHandles = led_analyzer.new_apvoid(MAXSENSORS)
 
 -- Detects the ftdi devices and returns the number of devices found 
 -- #1 => 1 ftdi device found => two handles saved in apHandles, second param: number of max handles
-numberOfDevices = bit.detect_devices(apHandles, MAXHANDLES)
+numberOfDevices = led_analyzer.detect_devices(apHandles, 10)
 
 
 local error_counter = 0 
@@ -64,7 +64,7 @@ else
 		-- Init: apHandles, devIndex, integrationtime, gain, -waittime 
 		
 		while(error_counter < INIT_MAXERROR) do
-			ret = bit.init_sensors(apHandles, devIndex, TCS3471_INTEGRATION_200ms, TCS3471_GAIN_4X, 20)
+			ret = led_analyzer.init_sensors(apHandles, devIndex, TCS3471_INTEGRATION_200ms, TCS3471_GAIN_4X, 20)
 			if ret ~= 0 then
 				error_counter = error_counter + 1 
 			else
@@ -72,7 +72,7 @@ else
 			end  
 		end 
 		if error_counter == INIT_MAXERROR then
-			print(string.format("%d initialization errors in a row, test aborting ..."))
+			print(string.format("%d initialization errors in a row, test aborting ...", error_counter))
 			return TEST_RESULT_SENSORS_FAILED
 		else 
 			error_counter = 0 
@@ -80,7 +80,7 @@ else
 		
 		
 		while(error_counter < READ_MAXERROR) do		
-			ret = bit.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue)
+			ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue)
 			if ret ~= 0 then
 				error_counter = error_counter + 1
 			else
@@ -88,14 +88,14 @@ else
 			end 
 		end 
 		if error_counter == READ_MAXERROR then
-			print(string.format("%d color reading errors in a row, test aborting ..."))
+			print(string.format("%d color reading errors in a row, test aborting ...", error_counter))
 			return TEST_RESULT_SENSORS_FAILED  
 		else 
 			error_counter = 0
 		end 
 		
 		while(error_counter < VALID_MAXERROR) do 
-			ret = bit.check_validity(apHandles, devIndex, ausClear, TCS3471_INTEGRATION_100ms)
+			ret = led_analyzer.check_validity(apHandles, devIndex, ausClear, TCS3471_INTEGRATION_100ms)
 			if ret ~= 0 then 
 				error_counter = error_counter + 1 
 			else 
@@ -103,7 +103,7 @@ else
 			end 
 		end 
 		if error_counter == VALID_MAXERROR then 
-			print(string.format("%d invalid datasets in a row, test aborting ..."))
+			print(string.format("%d invalid datasets in a row, test aborting ...", error_counter))
 			return TEST_RESULT_SENSORS_FAILED 
 		else 
 			error_counter = 0 
@@ -150,15 +150,15 @@ else
 	-- end 
 	
 
-	ret = bit.free_devices(apHandles)
+	ret = led_analyzer.free_devices(apHandles)
 	
 
-	bit.delete_ushort(ausClear)
-	bit.delete_ushort(ausRed)
-	bit.delete_ushort(ausGreen)
-	bit.delete_ushort(ausBlue)
+	led_analyzer.delete_ushort(ausClear)
+	led_analyzer.delete_ushort(ausRed)
+	led_analyzer.delete_ushort(ausGreen)
+	led_analyzer.delete_ushort(ausBlue)
 
-	bit.delete_apvoid(apHandles)
+	led_analyzer.delete_apvoid(apHandles)
 
 	if flag == 0 then 
 		print("All LEDs found") 

@@ -79,7 +79,7 @@ add_library(lualib SHARED ${lua_lib_lua_SOURCES})
 
 add_executable(luaexe src/lua.c)
 target_link_libraries(luaexe lualib ${lua_libs})
-set_target_properties(luaexe PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
+#set_target_properties(luaexe PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 
 set_target_properties(lualib PROPERTIES OUTPUT_NAME lua)
 set_target_properties(luaexe PROPERTIES OUTPUT_NAME lua)

@@ -79,15 +79,15 @@ function aus_to_table(devIndex, clear, red, green, blue, length)
 	-- Lua starting index (1) differs from C index (0)
 	for i = 0, length-1 do
 		-- table containing sensorindices with R, G, B values 
-		tRGB[devIndex+1][i+1] = {	clear = bit.ushort_getitem(clear, i),
-								red   = bit.ushort_getitem(red, i),
-								green = bit.ushort_getitem(green, i),
-								blue  = bit.ushort_getitem(blue, i)}
+		tRGB[devIndex+1][i+1] = {	clear = led_analyzer.ushort_getitem(clear, i),
+								red   = led_analyzer.ushort_getitem(red, i),
+								green = led_analyzer.ushort_getitem(green, i),
+								blue  = led_analyzer.ushort_getitem(blue, i)}
 		
 		-- table containing sensorindices with X,Y,Z  values
-		local r_n = bit.ushort_getitem(red, i)/bit.ushort_getitem(clear, i)
-		local g_n = bit.ushort_getitem(green, i)/bit.ushort_getitem(clear, i)
-		local b_n = bit.ushort_getitem(blue, i)/bit.ushort_getitem(clear, i)
+		local r_n = led_analyzer.ushort_getitem(red, i)/led_analyzer.ushort_getitem(clear, i)
+		local g_n = led_analyzer.ushort_getitem(green, i)/led_analyzer.ushort_getitem(clear, i)
+		local b_n = led_analyzer.ushort_getitem(blue, i)/led_analyzer.ushort_getitem(clear, i)
 		
 		
 		-- testing E 
