@@ -69,6 +69,8 @@ int detect_devices(void** apHandles, int apHlength)
 			return -1;
 		}
 	
+	
+
 	printf("Number of device(s) found: %d\n", numbOfDevs);
 	
 	/* This ftdi_specific function was only needed in order to detect the number of devices */
