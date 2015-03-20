@@ -45,7 +45,7 @@ int detect_devices(void** apHandles, int apHlength)
 	int i, f;
 	int numbOfDevs = 0;
 	int devCounter = 0;
-	char manufacturer[128], description[128];
+	char manufacturer[128], description[128], serial[10][128];
 	struct ftdi_device_list *devlist, *curdev;
 	struct ftdi_context *pHandle, *ftdi;
 	//struct ftdi_context *ftdiA, *ftdiB;
@@ -59,6 +59,8 @@ int detect_devices(void** apHandles, int apHlength)
 			return -1;
 		}
 		
+	
+	
 	numbOfDevs = ftdi_usb_find_all(ftdi, &devlist, VID, PID);
 		
 	if(numbOfDevs == 0)
@@ -78,14 +80,14 @@ int detect_devices(void** apHandles, int apHlength)
 	for (curdev = devlist; curdev != NULL; i++)
     {
         printf("Checking device: %d\n", i);
-        if ((f = ftdi_usb_get_strings(ftdi, curdev->dev, manufacturer, 128, description, 128, NULL, 0)) < 0)
+        if ((f = ftdi_usb_get_strings(ftdi, curdev->dev, manufacturer, 128, description, 128, serial[i], 128)) < 0)
         {
             fprintf(stderr, "ftdi_usb_get_strings failed: %d (%s)\n", f, ftdi_get_error_string(ftdi));
             ftdi_list_free(&devlist);
 			ftdi_free(ftdi);
 			return -1;
         }
-        printf("Manufacturer: %s, Description: %s\n\n", manufacturer, description);
+        printf("Manufacturer: %s, Description: %s, Serial: %s\n\n", manufacturer, description, serial[i]);
         curdev = curdev->next;
     }
 	
@@ -126,7 +128,8 @@ int detect_devices(void** apHandles, int apHlength)
 					return -1;
 				}
 				
-			if((f = ftdi_usb_open_desc_index(apHandles[iArrayPos], VID, PID, NULL, NULL, devCounter)<0))
+			//if((f = ftdi_usb_open_desc_index(apHandles[iArrayPos], VID, PID, NULL, NULL, devCounter)<0))
+			if((f = ftdi_usb_open_desc(apHandles[iArrayPos], VID, PID, NULL, serial[devCounter])<0))
 				{
 					fprintf(stderr, "unable to open dev %d interface A: %d (%s)\n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_deinit(apHandles[iArrayPos]);
@@ -160,7 +163,8 @@ int detect_devices(void** apHandles, int apHlength)
 					return -1;
 				}
 				
-			if((f = ftdi_usb_open_desc_index(apHandles[iArrayPos],VID, PID, NULL, NULL, devCounter)<0))
+			//if((f = ftdi_usb_open_desc_index(apHandles[iArrayPos],VID, PID, NULL, NULL, devCounter)<0))
+			if((f = ftdi_usb_open_desc(apHandles[iArrayPos],VID, PID, NULL, serial[devCounter])<0))	
 				{
 					fprintf(stderr, "unable to open dev %d interface B: %d (%s)\n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_deinit(apHandles[iArrayPos]);
