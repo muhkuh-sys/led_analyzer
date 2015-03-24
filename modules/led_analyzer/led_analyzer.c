@@ -225,7 +225,7 @@ int get_handleLength(void ** apHandles)
 /* Initialize the sensors under a certain device# and handle#
 	Initializing a sensor, sets up its gain and integration time, clears any priorly generated interrupt, turns the sensor on, and waits 
 	an integration time cycle, so that data is already ready for the next color reading */
-int init_sensors(void** apHandles, int devIndex, unsigned long integrationtime, unsigned long gain, unsigned int waitAdjust)
+int init_sensors(void** apHandles, int devIndex, unsigned long integrationtime, unsigned long gain)
 {
 	int iResult = 0;
 	/* 2 handles per device, dev 0 has handles 0,1 .. dev 1 has handles 2,3 and so on*/
@@ -267,7 +267,7 @@ int init_sensors(void** apHandles, int devIndex, unsigned long integrationtime, 
 		return 4;
 	}
 			
-	tcs_waitIntegrationtime(integrationtime, waitAdjust);
+	tcs_waitIntegrationtime(integrationtime);
 	
 	printf("initializing successful on devIndex: %d\n", devIndex);
 	return iResult;
@@ -299,13 +299,13 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	
 	if((errorcode = tcs_identify(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer)) != 0)
 		{
-			printf(" errorcode: %d \n", errorcode);
+			printf(" errorcode identification: %d \n", errorcode);
 			
 		}
 	
-	if(tcs_waitForData(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer) != 0)
+	if((errorcode = tcs_waitForData(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer)) != 0)
 		{
-			//
+			printf(" errorcode incomplete conversion: %d \n", errorcode);
 			return 0;
 		}
 		
@@ -327,11 +327,14 @@ Colors are not valid if the gain/integration time setting was too high, which co
 or the color sets are not valid due to any other reason */
 int check_validity(void** apHandles, int devIndex, unsigned short* ausClear, unsigned long integrationtime)
 {
-	int iResult;
+	int iResult = 0;
 	int iHandleLength = get_handleLength(apHandles);
 	int handleIndex = devIndex * 2;
 	unsigned char aucReadbuffer[16];
 
+	unsigned short int errorcode = 0;
+	
+	
 	if(handleIndex >= iHandleLength)
 	{
 		printf("Exceeded maximum amount of handles ... \n");
@@ -340,13 +343,13 @@ int check_validity(void** apHandles, int devIndex, unsigned short* ausClear, uns
 	}
 	
 	
-	if(tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, integrationtime) != 0)
+	if((errorcode = tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, integrationtime)) != 0)
 	{
-		// return 1;
+		printf(" errorcode exceeded clear: %d \n", errorcode);
 	}
-	if(tcs_rgbcInvalid(apHandles[handleIndex], apHandles[handleIndex+1], aucReadbuffer) == 1)
+	if((errorcode = tcs_rgbcInvalid(apHandles[handleIndex], apHandles[handleIndex+1], aucReadbuffer)) != 0)
 	{
-		// return 1;
+		printf(" errorcode invalid rgbc: %d \n", errorcode);
 		
 	}
 	

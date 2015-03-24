@@ -36,7 +36,7 @@ int 		  detect_devices(void** apHandles, int apHlength);
 int 		  read_colors(void** apHandles, int devIndex, unsigned short *ausClear, unsigned short* ausRed,
 			  unsigned short *ausGreen, unsigned short* ausBlue);
 			  /* used to set gain and integrationtime and to turn sensor on, last argument is used for the wait directive after tcs_on, normalle 100ms - waitAdjust */						   
-int 		  init_sensors(void** apHandles, int devIndex, unsigned long integrationtime, unsigned long gain, unsigned int waitAdjust);
+int 		  init_sensors(void** apHandles, int devIndex, unsigned long integrationtime, unsigned long gain);
 		      /* Returns number of handles in apHandles (1device = 2 handles) Note: May only be called after detect_devices has been called, otherwise apHandles will be empty */
 int 		  get_handleLength(void ** apHandles);
 			  /* Frees all devices and closes the usb connection */

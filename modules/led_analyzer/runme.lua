@@ -64,7 +64,7 @@ else
 		-- Init: apHandles, devIndex, integrationtime, gain, -waittime 
 		
 		while(error_counter < INIT_MAXERROR) do
-			ret = led_analyzer.init_sensors(apHandles, devIndex, TCS3471_INTEGRATION_200ms, TCS3471_GAIN_4X, 20)
+			ret = led_analyzer.init_sensors(apHandles, devIndex, TCS3471_INTEGRATION_200ms, TCS3471_GAIN_4X)
 			if ret ~= 0 then
 				error_counter = error_counter + 1 
 			else

@@ -51,12 +51,8 @@ unsigned short int tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context*
         }
         printf("\n");
         
-		/* -------------------------- ATTENTION -- REPLACE THIS IF THE HARDWARE HAS FINALLY ARRIVED */
+		return usErrorMask;
 		
-		return 0;
-		//return usErrorMask;
-		
-		/* -------------------------- ATTENTION -- REPLACE THIS IF THE HARDWARE HAS FINALLY ARRIVED */
 }
 
 
@@ -135,13 +131,10 @@ unsigned short int tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_conte
             if(aucErrorbuffer[i] != 0xFF) printf("%d ", aucErrorbuffer[i]);
         }
         printf("\n");
-       	
-		/* -------------------------- ATTENTION -- REPLACE THIS IF THE HARDWARE HAS FINALLY ARRIVED */
+       			
 		
-		return 0;
-		//return usErrorMask;
+		return usErrorMask;
 		
-		/* -------------------------- ATTENTION -- REPLACE THIS IF THE HARDWARE HAS FINALLY ARRIVED */
 }
 
 
@@ -181,13 +174,9 @@ unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_conte
             if(aucErrorbuffer[i] != 0xFF) printf("%d ", aucErrorbuffer[i]);
         }
         printf("\n");
-       	
-		/* -------------------------- ATTENTION -- REPLACE THIS IF THE HARDWARE HAS FINALLY ARRIVED */
+       			
+		return usErrorMask;
 		
-		return 0;
-		//return usErrorMask;
-		
-		/* -------------------------- ATTENTION -- REPLACE THIS IF THE HARDWARE HAS FINALLY ARRIVED */
 }
 
 
@@ -254,6 +243,9 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
 	
     for(i=0; i<16; i++)
     {
+		
+	//TODO: pass an integration time parameter which contains 16 different integration times
+	// so each sensor can be checked for itself, as each sensor can have different integration time settings
         switch(uiIntegrationtime)
         {
             case TCS3471_INTEGRATION_2_4ms:
@@ -306,8 +298,8 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
                 {
                     aucErrorbuffer[i] = i+1;
 					usErrorMask |= (1<<i);
-                }
-                else uiSuccesscounter++;
+                }               
+			    else uiSuccesscounter++;
                 break;
         }
 
@@ -326,15 +318,10 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
     {
        if(aucErrorbuffer[i] != 0xFF) printf("%d ", aucErrorbuffer[i]);
     }
-    printf("\n");
-    
-		/* -------------------------- ATTENTION -- REPLACE THIS IF THE HARDWARE HAS FINALLY ARRIVED */
+    printf("\n");		
 		
-		return 0;
-		//return usErrorMask;
+	return usErrorMask;
 		
-		/* -------------------------- ATTENTION -- REPLACE THIS IF THE HARDWARE HAS FINALLY ARRIVED */
-
 }
 
 unsigned short int tcs_clearInt(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
@@ -346,7 +333,7 @@ unsigned short int tcs_clearInt(struct ftdi_context* ftdiA, struct ftdi_context*
 
 }
 
-void tcs_waitIntegrationtime(tcs3471Integration_t uiIntegrationtime, unsigned int uiShorter)
+void tcs_waitIntegrationtime(tcs3471Integration_t uiIntegrationtime)
 {
         switch(uiIntegrationtime)
         {
@@ -355,30 +342,25 @@ void tcs_waitIntegrationtime(tcs3471Integration_t uiIntegrationtime, unsigned in
                 break;
 
             case TCS3471_INTEGRATION_24ms:
-                if(uiShorter <= 12) Sleep(24-uiShorter);
-                else Sleep(24);
+                Sleep(24);
                 break;
 
             case TCS3471_INTEGRATION_100ms:
-                if(uiShorter <= 50) Sleep(100-uiShorter);
-                else Sleep(100);
+               Sleep(100);
                 break;
 
             case TCS3471_INTEGRATION_154ms:
-                if(uiShorter <= 70) Sleep(154-uiShorter);
-                else Sleep(154);
+                Sleep(154);
                 break;
 
 
             case TCS3471_INTEGRATION_200ms:
-                if(uiShorter <= 80) Sleep(200-uiShorter);
-                else Sleep(200);
+                Sleep(200);
                 break;
 
 
             case TCS3471_INTEGRATION_700ms:
-                if(uiShorter <= 200) Sleep(700-uiShorter);
-                else Sleep(700);
+                Sleep(700);
                 break;
 
 

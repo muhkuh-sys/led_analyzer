@@ -92,7 +92,7 @@ unsigned short int tcs_wakeUp(struct ftdi_context* ftdiA, struct ftdi_context* f
 unsigned short int tcs_ON(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
 unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* usClear, unsigned int uiIntegrationtime);
 unsigned short int tcs_clearInt(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
-void          tcs_waitIntegrationtime(tcs3471Integration_t uiIntegrationtime, unsigned int uiShorter);
+void               tcs_waitIntegrationtime(tcs3471Integration_t uiIntegrationtime);
 
 
 
