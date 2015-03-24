@@ -3,7 +3,7 @@
 #include "i2c_routines.h"
 
 
-
+/* This function needs to be implemented */
 int i2c_setSpeed(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned int uiSpeedkHz)
 {
     return 0;
