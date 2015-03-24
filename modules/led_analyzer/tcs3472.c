@@ -1,16 +1,21 @@
 
 #include "tcs3472.h"
-#define MAXERROR 50
-
 
 
 /* This function dentifies the 16 sensors of a device 
-   It will return the index of the snesor(s) that could not be identified
-*/
-unsigned char tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer)
+   It will return an errormask which provides information about the sensors that failed
+   
+   return value ==0: everything ok 
+   return value > 0: if bit0 is high -> first sensor identification failure 
+					 if bit1 is high -> second sensor identification failure
+					 and so on
+					 */
+
+unsigned short int tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer)
 {
     unsigned int uiErrorcounter = 0;
     unsigned int uiSuccesscounter = 0;
+	unsigned short int usErrorMask = 0;
 
     int i = 0;
 
@@ -25,9 +30,9 @@ unsigned char tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context* ftdi
 				/* 0x14 = ID for tcs3471        0x44 = ID for tcs3472 */
                if(aucReadbuffer[i] != (0x14) && aucReadbuffer[i] != 0x44)
                {
-				  
-                    aucErrorbuffer[i] = i;
+                    aucErrorbuffer[i] = i+1;
                     uiErrorcounter ++;
+					usErrorMask |= (1<<i);
                }
 
                else uiSuccesscounter ++;
@@ -38,19 +43,26 @@ unsigned char tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context* ftdi
                    return 0; // SUCCESFULL IDENTFICATION OF ALL SENSORS
                }
             }
-        printf("Identification errors with following sensorindices ...\n");
+			
+        printf("Identification errors with following Sensors ...\n");
         for(i = 0; i<16; i++)
         {
             if(aucErrorbuffer[i] != 0xFF) printf("%d ", aucErrorbuffer[i]);
         }
         printf("\n");
-        return 1;
+        
+		/* -------------------------- ATTENTION -- REPLACE THIS IF THE HARDWARE HAS FINALLY ARRIVED */
+		
+		return 0;
+		//return usErrorMask;
+		
+		/* -------------------------- ATTENTION -- REPLACE THIS IF THE HARDWARE HAS FINALLY ARRIVED */
 }
 
 
 /* This function turns the tcs3472 sensor on, in case it was sent to sleep before
    If function is called without the sensor being priorily sent to sleep this function does nothing */
-unsigned char tcs_ON(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
+unsigned short int tcs_ON(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
    unsigned char aucTempbuffer[3] = {(0x29<<1), TCS3471_ENABLE_REG | TCS3471_COMMAND_BIT, TCS3471_AIEN_BIT | TCS3471_AEN_BIT
                                     | TCS3471_PON_BIT };
@@ -65,7 +77,7 @@ unsigned char tcs_ON(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 
 /* This function sets the integration time of the sensor, darker leds need longer integration times.
 whereas brighter leds need shorter integration times */
-unsigned char tcs_setIntegrationTime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Integration_t uiIntegrationtime)
+unsigned short int tcs_setIntegrationTime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Integration_t uiIntegrationtime)
 {
     unsigned char aucTempbuffer[3] = {(0x29<<1), TCS3471_ATIME_REG | TCS3471_COMMAND_BIT, uiIntegrationtime};
     if(i2c_write8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer)) <0) return 1;
@@ -75,7 +87,7 @@ unsigned char tcs_setIntegrationTime(struct ftdi_context* ftdiA, struct ftdi_con
 /* this function sets the gain of the sensor
 just like the integration time, darker leds need a higher gain setting and brighter leds can have a lower gain setting
 */
-unsigned char tcs_setGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Gain_t gain)
+unsigned short int tcs_setGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Gain_t gain)
 {
     unsigned char aucTempbuffer[3] = {(0x29<<1), TCS3471_CONTROL_REG | TCS3471_COMMAND_BIT, gain};
 
@@ -88,10 +100,12 @@ unsigned char tcs_setGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB
 
 
 
-unsigned char tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer)
+unsigned short int tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer)
 {
     unsigned int uiErrorcounter = 0;
     unsigned int uiSuccesscounter = 0;
+	
+	unsigned short int usErrorMask = 0;
     int i = 0;
 
     unsigned char aucTempbuffer[2] = {(0x29<<1), TCS3471_STATUS_REG | TCS3471_COMMAND_BIT};
@@ -103,8 +117,9 @@ unsigned char tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_context* f
             {
                if((aucReadbuffer[i]&TCS3471_AVALID_BIT) != TCS3471_AVALID_BIT)
                {
-                    aucErrorbuffer[i] = i;
+                    aucErrorbuffer[i] = i+1;
                     uiErrorcounter ++;
+					usErrorMask |= (1<<i);
                }
                else uiSuccesscounter ++;
 
@@ -114,20 +129,28 @@ unsigned char tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_context* f
                    return 0; // Valid RGBC data from all sensors
                }
             }
-        printf("Invalid RGBC data with following sensorindices ...\n");
+        printf("Invalid RGBC data with following Sensors ...\n");
         for(i = 0; i<16; i++)
         {
             if(aucErrorbuffer[i] != 0xFF) printf("%d ", aucErrorbuffer[i]);
         }
         printf("\n");
-        return 1;
+       	
+		/* -------------------------- ATTENTION -- REPLACE THIS IF THE HARDWARE HAS FINALLY ARRIVED */
+		
+		return 0;
+		//return usErrorMask;
+		
+		/* -------------------------- ATTENTION -- REPLACE THIS IF THE HARDWARE HAS FINALLY ARRIVED */
 }
 
 
-unsigned char tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer)
+unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer)
 {
     unsigned int uiErrorcounter = 0;
     unsigned int uiSuccesscounter = 0;
+	
+	unsigned short int usErrorMask = 0;
     int i = 0;
 
     unsigned char aucTempbuffer[2] = {(0x29<<1), TCS3471_STATUS_REG | TCS3471_COMMAND_BIT};
@@ -139,7 +162,8 @@ unsigned char tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_context* f
             {
                if((aucReadbuffer[i]&TCS3471_AINT_BIT) != TCS3471_AINT_BIT)
                {
-                    aucErrorbuffer[i] = i;
+                    aucErrorbuffer[i] = i+1;
+					usErrorMask  |= (1<<i);
                     uiErrorcounter ++;
                }
                else uiSuccesscounter ++;
@@ -151,17 +175,23 @@ unsigned char tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_context* f
                }
             }
 
-        printf("Incomplete conversions with following sensorindices ...\n");
+        printf("Incomplete conversions with following Sensors ...\n");
         for(i = 0; i<16; i++)
         {
             if(aucErrorbuffer[i] != 0xFF) printf("%d ", aucErrorbuffer[i]);
         }
         printf("\n");
-        return 1;
+       	
+		/* -------------------------- ATTENTION -- REPLACE THIS IF THE HARDWARE HAS FINALLY ARRIVED */
+		
+		return 0;
+		//return usErrorMask;
+		
+		/* -------------------------- ATTENTION -- REPLACE THIS IF THE HARDWARE HAS FINALLY ARRIVED */
 }
 
 
-unsigned char tcs_readColour(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausColorArray, enum tcs_color_t color)
+unsigned short int tcs_readColour(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausColorArray, enum tcs_color_t color)
 {
     unsigned char aucTempbuffer[2] = {(0x29<<1), TCS3471_AUTOINCR_BIT | TCS3471_COMMAND_BIT};
 
@@ -191,7 +221,7 @@ unsigned char tcs_readColour(struct ftdi_context* ftdiA, struct ftdi_context* ft
 
 
 
-unsigned char tcs_sleep(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
+unsigned short int tcs_sleep(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
     unsigned char aucReadbuffer[16];
     unsigned char aucTempbuffer[2]  = {(0x29<<1), TCS3471_COMMAND_BIT | TCS3471_ENABLE_REG};
@@ -202,7 +232,7 @@ unsigned char tcs_sleep(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
     return 0;
 }
 
-unsigned char tcs_wakeUp(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
+unsigned short int tcs_wakeUp(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
     unsigned char aucReadbuffer[16];
     unsigned char aucTempbuffer[2]  = {(0x29<<1), TCS3471_COMMAND_BIT | TCS3471_ENABLE_REG};
@@ -213,12 +243,15 @@ unsigned char tcs_wakeUp(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
     return 0;
 }
 
-unsigned char tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned int uiIntegrationtime)
+unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned int uiIntegrationtime)
 {
     int i= 0;
     unsigned int uiSuccesscounter = 0;
     unsigned char aucErrorbuffer[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
+	unsigned short int usErrorMask = 0;
+	
+	
     for(i=0; i<16; i++)
     {
         switch(uiIntegrationtime)
@@ -226,7 +259,8 @@ unsigned char tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB
             case TCS3471_INTEGRATION_2_4ms:
                 if(ausClear[i] >= 1024)
                 {
-                    aucErrorbuffer[i] = i;
+                    aucErrorbuffer[i] = i+1;
+					usErrorMask |= (1<<i);
                 }
                 else uiSuccesscounter++;
                 break;
@@ -234,7 +268,8 @@ unsigned char tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB
             case TCS3471_INTEGRATION_24ms:
                 if(ausClear[i] >= 10240)
                 {
-                    aucErrorbuffer[i] = i;
+                    aucErrorbuffer[i] = i+1;
+					usErrorMask |= (1<<i);
                 }
                 else uiSuccesscounter++;
                 break;
@@ -242,7 +277,8 @@ unsigned char tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB
             case TCS3471_INTEGRATION_100ms:
                 if(ausClear[i] >= 43007)
                 {
-                    aucErrorbuffer[i] = i;
+                    aucErrorbuffer[i] = i+1;
+					usErrorMask |= (1<<i);
                 }
                 else uiSuccesscounter++;
                 break;
@@ -250,7 +286,8 @@ unsigned char tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB
             case TCS3471_INTEGRATION_154ms:
                 if(ausClear[i] >= 65535)
                 {
-                    aucErrorbuffer[i] = i;
+                    aucErrorbuffer[i] = i+1;
+					usErrorMask |= (1<<i);
                 }
                 else uiSuccesscounter++;
                 break;
@@ -258,7 +295,8 @@ unsigned char tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB
             case TCS3471_INTEGRATION_200ms:
                 if(ausClear[i] >= 65535)
                 {
-                    aucErrorbuffer[i] = i;
+                    aucErrorbuffer[i] = i+1;
+					usErrorMask |= (1<<i);
                 }
                 else uiSuccesscounter++;
                 break;
@@ -266,7 +304,8 @@ unsigned char tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB
             case TCS3471_INTEGRATION_700ms:
                 if(ausClear[i] >= 65535)
                 {
-                    aucErrorbuffer[i] = i;
+                    aucErrorbuffer[i] = i+1;
+					usErrorMask |= (1<<i);
                 }
                 else uiSuccesscounter++;
                 break;
@@ -277,21 +316,28 @@ unsigned char tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB
             printf("All gain settings ok - no clear level exceedings.\n");
             return 0;
         }
+		
 
     }
 
     i = 0;
-    printf("Turn down gain for following sensorindices ...\n");
+    printf("Turn down gain for following Sensors ...\n");
     for(i; i<16; i++)
     {
        if(aucErrorbuffer[i] != 0xFF) printf("%d ", aucErrorbuffer[i]);
     }
     printf("\n");
-    return 1;
+    
+		/* -------------------------- ATTENTION -- REPLACE THIS IF THE HARDWARE HAS FINALLY ARRIVED */
+		
+		return 0;
+		//return usErrorMask;
+		
+		/* -------------------------- ATTENTION -- REPLACE THIS IF THE HARDWARE HAS FINALLY ARRIVED */
 
 }
 
-unsigned char tcs_clearInt(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
+unsigned short int tcs_clearInt(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
     unsigned char aucTempbuffer[2]  = {(0x29<<1), TCS3471_COMMAND_BIT | TCS3471_SPECIAL_BIT | TCS3471_INTCLEAR_BIT};
 

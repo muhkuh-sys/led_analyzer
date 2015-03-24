@@ -60,6 +60,8 @@ int detect_devices(void** apHandles, int apHlength)
 		}
 		
 	
+		
+	
 	
 	numbOfDevs = ftdi_usb_find_all(ftdi, &devlist, VID, PID);
 		
@@ -73,7 +75,7 @@ int detect_devices(void** apHandles, int apHlength)
 	
 	
 
-	printf("Number of device(s) found: %d\n", numbOfDevs);
+	printf("Number of device(s) found: %d\n\n", numbOfDevs);
 	
 	/* This ftdi_specific function was only needed in order to detect the number of devices */
 	i = 0;
@@ -106,6 +108,11 @@ int detect_devices(void** apHandles, int apHlength)
 	memset(apHandles, 0, sizeof(void*) * apHlength);
 	/* Erstes Handle an Offset 0 im Array. */
 	iArrayPos = 0;
+	
+	
+			printf("---------------------------------------------------------------------\n");
+			printf("USB - FUNCTIONS\n");
+			printf("---------------------------------------------------------------------\n");
 
 	while(devCounter < numbOfDevs)
 	{
@@ -115,6 +122,8 @@ int detect_devices(void** apHandles, int apHlength)
 		{
 			/* Ch A */
 			
+
+
 		    if ((apHandles[iArrayPos] = ftdi_new()) == 0)
 				{
 					fprintf(stderr, "ftdi_new failed!\n");
@@ -191,7 +200,7 @@ int detect_devices(void** apHandles, int apHlength)
 		
 	}
 	
-	
+	printf("\n\n");
 	return numbOfDevs;
 }
 
@@ -234,25 +243,25 @@ int init_sensors(void** apHandles, int devIndex, unsigned long integrationtime, 
 	}
 	
 
-	if(tcs_setIntegrationTime(apHandles[handleIndex], apHandles[handleIndex+1], integrationtime) == 1)
+	if(tcs_setIntegrationTime(apHandles[handleIndex], apHandles[handleIndex+1], integrationtime) != 0)
 	{
 		printf("failed to set integration time on dev %d ...\n", devIndex);
 		return 1;
 	}
 			
-	if(tcs_setGain(apHandles[handleIndex], apHandles[handleIndex+1], gain) == 1)
+	if(tcs_setGain(apHandles[handleIndex], apHandles[handleIndex+1], gain) != 0)
 	{
 		printf("failed to set integration time on dev %d...\n", devIndex);
 		return 2;
 	}
 			
-	if(tcs_clearInt(apHandles[handleIndex], apHandles[handleIndex+1]) == 1)
+	if(tcs_clearInt(apHandles[handleIndex], apHandles[handleIndex+1]) != 0)
 	{
 		printf("failed to clear interrupt channel on dev %d...\n", devIndex);
 		return 3;
 	}
 			
-	if(tcs_ON(apHandles[handleIndex], apHandles[handleIndex+1]) == 1)
+	if(tcs_ON(apHandles[handleIndex], apHandles[handleIndex+1]) != 0)
 	{
 		printf("failed to turn the sensors on on dev %d...\n", devIndex);
 		return 4;
@@ -274,6 +283,8 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	unsigned char aucTempbuffer[16];
 	int handleIndex = devIndex * 2;
 	
+	unsigned short int errorcode = 0;
+	
 	// Transform device index into handle index, as each device has two handles */
 	printf("Reading colors on devIndex: %d\n", devIndex);
 	
@@ -286,15 +297,16 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	
 	// First perform the functions needed for assertion of correct color values */
 	
-	if(tcs_identify(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer) == 1)
+	if((errorcode = tcs_identify(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer)) != 0)
 		{
-			//return 1;
+			printf(" errorcode: %d \n", errorcode);
+			
 		}
 	
-	if(tcs_waitForData(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer) == 1)
+	if(tcs_waitForData(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer) != 0)
 		{
 			//
-			return 1;
+			return 0;
 		}
 		
 	
@@ -328,13 +340,14 @@ int check_validity(void** apHandles, int devIndex, unsigned short* ausClear, uns
 	}
 	
 	
-	if(tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, integrationtime) == 1)
+	if(tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, integrationtime) != 0)
 	{
 		// return 1;
 	}
 	if(tcs_rgbcInvalid(apHandles[handleIndex], apHandles[handleIndex+1], aucReadbuffer) == 1)
 	{
 		// return 1;
+		
 	}
 	
 	return iResult;

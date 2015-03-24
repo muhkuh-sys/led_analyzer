@@ -11,35 +11,44 @@ int i2c_setSpeed(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
 
 
 /* Send a start condition */
-int i2c_startCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
+void i2c_startCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
-    int retval = 0;
-    retval = process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, (!SCL) | SDA_0_OUTPUT | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT);
-    retval = process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SCL | SDA_0_OUTPUT | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT);
-    retval = process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SCL | !SDA_0_OUTPUT | !SDA_1_OUTPUT | !SDA_2_OUTPUT | !SDA_3_OUTPUT);
-    retval = process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, (!SCL) | !SDA_0_OUTPUT | !SDA_1_OUTPUT | !SDA_2_OUTPUT | !SDA_3_OUTPUT);
+    
+	/* Set clocklines low, datalines high */
+    process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, (!SCL) | SDA_0_OUTPUT | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT);
+    /* Set clocklines high, datalines high */
+	process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SCL | SDA_0_OUTPUT | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT);
+    /* Set clocklines high, datalines low */
+	process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SCL | !SDA_0_OUTPUT | !SDA_1_OUTPUT | !SDA_2_OUTPUT | !SDA_3_OUTPUT);
+    /* Set clocklines low, datalines low */
+	process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, (!SCL) | !SDA_0_OUTPUT | !SDA_1_OUTPUT | !SDA_2_OUTPUT | !SDA_3_OUTPUT);
 
-    return retval;
+    
 }
 
 
 
 
-int i2c_stopCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB )
+void i2c_stopCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB )
 {
-    int retval = 0;
+    
+    /* Set all lines low */
+    process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, 0);
+    /* Set clocklines high, datalines low */
+	process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SCL | !SDA_0_OUTPUT | !SDA_1_OUTPUT | !SDA_2_OUTPUT | !SDA_3_OUTPUT);
+    /* Set clocklines high, datalines high */
+	process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL);
 
-    /* Set clock High */
-    retval = process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, 0);
-    retval = process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SCL | !SDA_0_OUTPUT | !SDA_1_OUTPUT | !SDA_2_OUTPUT | !SDA_3_OUTPUT);
-    retval = process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL);
-
-    return retval;
 }
 
 
-/* Adresse R/W - ack - register - ack - data */
+/* Adresse R/W - ack - register - ack - data
+aucSendbuffer contains: Address, Register to write to, content that will be written to the register 
 
+retVal  >0 : everything ok 
+retVal ==0 : something failed, as retVal represents the number of bytes read back from the usb-device, always more then 0 bytes expected
+retval <0  : libusb functions failed (for example writing to channel A/B, reading from Channel A/B) 
+*/
 int i2c_write8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength)
 {
     unsigned int uiBufferIndex = 0;
@@ -110,6 +119,14 @@ int i2c_write8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
 
 }
 
+/* aucSendbuffer contains adress, register to read from 
+aucRecBuffer will hold 16 unsigned char values 
+Reads back 16 unsigned char values 
+
+retVal  >0 : everything ok 
+retVal ==0 : something failed, as retVal represents the number of bytes read back from the usb-device, always more then 0 bytes expected
+retval <0  : libusb functions failed (for example writing to channel A/B, reading from Channel A/B) 
+*/
 
 int i2c_read8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength,
               unsigned char* aucRecBuffer, unsigned char ucRecLength)
@@ -222,6 +239,15 @@ int i2c_read8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned c
     return iRetval;
 
 }
+
+/* aucSendbuffer contains adress, register to read from 
+ausReadBuffer will hold 16 unsigned short values 
+Reads back 16 unsigned char values 
+
+retVal  >0 : everything ok 
+retVal ==0 : something failed, as retVal represents the number of bytes read back from the usb-device, always more then 0 bytes expected
+retval <0  : libusb functions failed (for example writing to channel A/B, reading from Channel A/B) 
+*/
 
 int i2c_read16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength,
               unsigned short* ausReadBuffer, unsigned char ucReadBufferLength)
@@ -337,6 +363,8 @@ int i2c_read16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
 
 }
 
+
+/* Trigger a clock cycle on the clock lines while Sending out data on the data lines*/
 void i2c_clock(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend)
 {
       process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SCL | ulDataToSend);
@@ -344,21 +372,21 @@ void i2c_clock(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
 }
 
 
-
+/* Trigger a clock cycle on the clock lines while expecting data from the slave on the data lines */
 void i2c_clockInput(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend)
 {
       process_pins_databack(ftdiA, ftdiB, SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, SCL | ulDataToSend);
       process_pins_databack(ftdiA, ftdiB, SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, !SCL | ulDataToSend);
 }
 
-
+/* master gives an acknowledge bit */
 void i2c_giveAck(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
       process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_READ );process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, 0);
       i2c_clock(ftdiA, ftdiB, 0);
 }
 
-
+/* Trigger a clock cycles on the clock lines while expecting an acknowledge on the data lines */
 void i2c_clock_forACK(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend)
 {
       process_pins_databack(ftdiA, ftdiB, SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, SCL | ulDataToSend);
@@ -366,8 +394,10 @@ void i2c_clock_forACK(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, un
 
 }
 
+/* Let your slave give its acknowledge bit */
 void i2c_getAck(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
+
     process_pins(ftdiA, ftdiB, SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, 0);
     i2c_clock_forACK(ftdiA, ftdiB, 0);
 }

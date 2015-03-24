@@ -1,8 +1,9 @@
-#define W_LOWBYTE 0x80   //LOWBYTE IS AD
-#define W_HIGHBYTE 0x82  // HIGHBYTE IS AC
+#define W_LOWBYTE 0x80   // Channel AD and BD
+#define W_HIGHBYTE 0x82  // Channel AC and BC
 
-#define R_LOWBYTE 0x81
-#define R_HIGHBYTE 0x83
+#define R_LOWBYTE 0x81   // Channel AD and BD
+#define R_HIGHBYTE 0x83   // Channel AC and BC3
+
 
 
 
@@ -27,7 +28,10 @@ unsigned int readIndexB = 0;
 unsigned char aucBufferA[4096];
 unsigned char aucBufferB[4096];
 
-
+/* Testfunction
+Writes the content of aucSendbuffer to a single channel of a ftdi Chip (A or B) 
+the Lowbyte is used as default 
+*/ 
 int io_write(struct ftdi_context* ftdi, unsigned char* aucSendbuffer, unsigned char ucSizeSendbuffer)
 {
     int uiWritten;
@@ -44,6 +48,11 @@ int io_write(struct ftdi_context* ftdi, unsigned char* aucSendbuffer, unsigned c
 
 
 
+/* Writes an unsigned long variable ulOutput to both channels of a ftdi chip 
+	ulOutput is split into two 16 bit words
+	the upper word is assigned to ftdiB
+	the lower word is assigned to ftdiA
+*/
 int writeOutputs(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, const unsigned long ulOutput)
 {
 
@@ -87,7 +96,7 @@ int writeOutputs(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, const u
 }
 
 
-
+/* Reads input of both Channels of a ftdi chip and prints it */
 int readInputs(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, const unsigned char* readBack)
 {
      int uiRead;
@@ -156,6 +165,9 @@ int readInputs(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, const uns
     return uiRead;
 }
 
+/* This function gets called repeatedly by i2c functions. It stores the commands in global Buffers
+(aucBufferA and aucBufferB). The commands consist of a mask which determines which pins are configured as output and input
+plus the actual output value to be written to the pins */
 int process_pins(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned long ulIOMask, unsigned long ulOutput)
 {
 
@@ -179,7 +191,10 @@ int process_pins(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigne
 
 }
 
-
+/* This function gets called repeatedly by i2c functions. It stores the commands in glbal Buffers
+(aucBufferA and aucBufferB). The commands consist of a mask which determines which pins are set as input and output and and output value
+which will be written to the pins set as output. 
+*/
 int process_pins_databack(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned long ulIOMask, unsigned long ulOutput)
 {
 
@@ -208,6 +223,9 @@ int process_pins_databack(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB
     return 0;
 }
 
+/* This function sends the content of the global Buffers aucBufferA and aucBufferB to the ftdi chip 
+Furthermore it reads back the data of pins which were configured as input. In case of i2c these read back pins
+can be acknowledes send back by the device. */
 
 int send_package_write8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB)
 {
@@ -257,6 +275,9 @@ int send_package_write8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB)
 
 }
 
+/* This function sends the content of the global Buffers aucBufferA and aucBufferB to the ftdi chip. 
+Furthermore it reads back the data of pins which were configured as input. The function returns a value which equals the amount of read back bytes.
+The parameter aucReadbuffer will be used for storing 16 read back unsigned char values of 16 sensors  */
 
 int send_package_read8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned char* aucReadBuffer, unsigned char ucReadBufferLength)
 {

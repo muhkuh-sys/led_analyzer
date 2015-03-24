@@ -81,17 +81,17 @@ enum tcs_color_t
 }
 colors;
 
-unsigned char tcs_setIntegrationTime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Integration_t integration);
-unsigned char tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer);
-unsigned char tcs_setGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Gain_t gain);
-unsigned char tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer);
-unsigned char tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer);
-unsigned char tcs_readColour(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausColourArray, enum tcs_color_t colour);
-unsigned char tcs_sleep(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
-unsigned char tcs_wakeUp(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
-unsigned char tcs_ON(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
-unsigned char tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* usClear, unsigned int uiIntegrationtime);
-unsigned char tcs_clearInt(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
+unsigned short int tcs_setIntegrationTime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Integration_t integration);
+unsigned short int tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer);
+unsigned short int tcs_setGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Gain_t gain);
+unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer);
+unsigned short int tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer);
+unsigned short int tcs_readColour(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausColourArray, enum tcs_color_t colour);
+unsigned short int tcs_sleep(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
+unsigned short int tcs_wakeUp(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
+unsigned short int tcs_ON(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
+unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* usClear, unsigned int uiIntegrationtime);
+unsigned short int tcs_clearInt(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
 void          tcs_waitIntegrationtime(tcs3471Integration_t uiIntegrationtime, unsigned int uiShorter);
 
 

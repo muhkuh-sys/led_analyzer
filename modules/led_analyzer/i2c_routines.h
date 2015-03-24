@@ -66,16 +66,16 @@
 #define SDA_0WRITE 0x00
 #define SDA_0READ  0x00000055
 
-int i2c_setSpeed(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned int uiSpeedkHz);
-int i2c_startCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
-int i2c_stopCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB );
+int  i2c_setSpeed(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned int uiSpeedkHz);
+void i2c_startCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
+void i2c_stopCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB );
 void i2c_clock(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend);
 void i2c_clockInput(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend);
 void i2c_giveAck(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
 void i2c_clock_forACK(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend);
 void i2c_getAck(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
-int i2c_read16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength,
+int  i2c_read16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength,
               unsigned short* ausReadBuffer, unsigned char ucReadBufferLength);
-int i2c_read8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength,
+int  i2c_read8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength,
               unsigned char* aucRecBuffer, unsigned char ucRecLength);
-int i2c_write8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength);
+int  i2c_write8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength);
