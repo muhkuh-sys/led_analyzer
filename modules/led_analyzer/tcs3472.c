@@ -2,7 +2,7 @@
 #include "tcs3472.h"
 
 
-/* This function dentifies the 16 sensors of a device 
+/* This function identifies the 16 sensors of a device 
    It will return an errormask which provides information about the sensors that failed
    
    return value ==0: everything ok 
@@ -95,7 +95,14 @@ unsigned short int tcs_setGain(struct ftdi_context* ftdiA, struct ftdi_context* 
 
 
 
-
+/* This function checks the color validity of the 16 sensors per device
+   It will return an errormask which provides information about the sensors that failed
+   
+   return value ==0: everything ok 
+   return value > 0: if bit0 is high -> first sensor rgbc dataset failure 
+					 if bit1 is high -> second sensor rgbc dataset failure
+					 and so on
+					 */
 unsigned short int tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer)
 {
     unsigned int uiErrorcounter = 0;
@@ -353,16 +360,13 @@ void tcs_waitIntegrationtime(tcs3471Integration_t uiIntegrationtime)
                 Sleep(154);
                 break;
 
-
             case TCS3471_INTEGRATION_200ms:
                 Sleep(200);
                 break;
 
-
             case TCS3471_INTEGRATION_700ms:
                 Sleep(700);
                 break;
-
 
         }
 }

@@ -110,9 +110,9 @@ int detect_devices(void** apHandles, int apHlength)
 	iArrayPos = 0;
 	
 	
-			printf("---------------------------------------------------------------------\n");
-			printf("USB - FUNCTIONS\n");
-			printf("---------------------------------------------------------------------\n");
+	printf("--------------------------------------------------------\n");
+    printf("USB - FUNCTIONS\n");
+	printf("--------------------------------------------------------\n");
 
 	while(devCounter < numbOfDevs)
 	{
@@ -274,6 +274,14 @@ int init_sensors(void** apHandles, int devIndex, unsigned long integrationtime, 
 }
 
 
+/* 
+MISSING DUE TO LACK OF APPROPRIATE HARDWARE
+
+RETURN ERRORCODE INSTEAD OF 0 (0 = all ok)
+
+REPLACE IF HARDWARE ARRIVES
+*/
+
 /* Function reads out four colors (RGBC) of each sensor (16) under a device */
 int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsigned short* ausRed,
 														  unsigned short* ausGreen, unsigned short* ausBlue)
@@ -301,11 +309,30 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 		{
 			printf(" errorcode identification: %d \n", errorcode);
 			
+			/* 
+			MISSING DUE TO LACK OF APPROPRIATE HARDWARE
+
+			RETURN ERRORCODE INSTEAD OF 0 (0 = all ok)
+
+			REPLACE IF HARDWARE ARRIVES
+			*/
+
 		}
 	
 	if((errorcode = tcs_waitForData(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer)) != 0)
 		{
 			printf(" errorcode incomplete conversion: %d \n", errorcode);
+			
+			
+		/* 
+		MISSING DUE TO LACK OF APPROPRIATE HARDWARE
+
+		RETURN ERRORCODE INSTEAD OF 0 (0 = all ok)
+
+		REPLACE IF HARDWARE ARRIVES
+		*/
+
+			
 			return 0;
 		}
 		
@@ -346,11 +373,30 @@ int check_validity(void** apHandles, int devIndex, unsigned short* ausClear, uns
 	if((errorcode = tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, integrationtime)) != 0)
 	{
 		printf(" errorcode exceeded clear: %d \n", errorcode);
+		
+		/* 
+		MISSING DUE TO LACK OF APPROPRIATE HARDWARE
+
+		RETURN ERRORCODE INSTEAD OF 0 (0 = all ok)
+
+		REPLACE IF HARDWARE ARRIVES
+		*/
+
 	}
 	if((errorcode = tcs_rgbcInvalid(apHandles[handleIndex], apHandles[handleIndex+1], aucReadbuffer)) != 0)
 	{
 		printf(" errorcode invalid rgbc: %d \n", errorcode);
 		
+		/* 
+		MISSING DUE TO LACK OF APPROPRIATE HARDWARE
+
+		RETURN ERRORCODE INSTEAD OF 0 (0 = all ok)
+
+		REPLACE IF HARDWARE ARRIVES
+		
+		
+		*/
+		return 0;
 	}
 	
 	return iResult;
