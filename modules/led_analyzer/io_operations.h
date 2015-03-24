@@ -12,9 +12,9 @@ int writeOutputs(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, const u
 
 int readInputs(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, const unsigned char* readBack);
 
-int process_pins(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned long ulIOMask, unsigned long ulOutput);
+void process_pins(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned long ulIOMask, unsigned long ulOutput);
 
-int process_pins_databack(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned long ulIOMask, unsigned long ulOutput);
+void process_pins_databack(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned long ulIOMask, unsigned long ulOutput);
 
 int send_package_write8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB);
 
