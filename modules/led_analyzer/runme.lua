@@ -37,15 +37,35 @@ ausBlue   = led_analyzer.new_ushort(MAXSENSORS)
 
 
 
+function astring_to_table(astring, numbOfSerials)
+	
+	
+	local tSerialnumbers = {}
+	
+	for i = 0, numbOfSerials - 1 do
+			
+			if led_analyzer.astring_getitem(astring, i) ~= NULL then 
+				tSerialnumbers[i+1] = led_analyzer.astring_getitem(astring, i)
+			end 
+	end
+			
+	return tSerialnumbers
+end
+
 
 asSerials = led_analyzer.new_astring(MAXSERIALS)
+
 
 numberofserials = led_analyzer.scan_devices(asSerials, MAXSERIALS);
 
 
-firststringadress = led_analyzer.astring_getitem(asSerials, 0)
+stringtable = astring_to_table(asSerials, MAXSERIALS)
 
-print(string.format("firstString:%s", firststringadress))
+
+print(1)
+print(stringtable[1])
+print(2)
+
 
 
 
