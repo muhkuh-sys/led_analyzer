@@ -11,6 +11,8 @@ TEST_RESULT_SENSORS_FAILED = 2
 MAXHANDLES = 16 
 MAXSENSORS = 16 
 
+MAXSERIALS = 10
+
 INIT_MAXERROR  = 10
 READ_MAXERROR  = 10 
 VALID_MAXERROR = 10 
@@ -32,6 +34,21 @@ ausClear  = led_analyzer.new_ushort(MAXSENSORS)
 ausRed    = led_analyzer.new_ushort(MAXSENSORS)
 ausGreen  = led_analyzer.new_ushort(MAXSENSORS)
 ausBlue   = led_analyzer.new_ushort(MAXSENSORS)
+
+
+
+
+asSerials = led_analyzer.new_astring(MAXSERIALS)
+
+numberofserials = led_analyzer.scan_devices(asSerials, MAXSERIALS);
+
+
+firststringadress = led_analyzer.astring_getitem(asSerials, 0)
+
+print(string.format("firstString:%s", firststringadress))
+
+
+
 
 -- array of void pointers which will contain struct_ftdi_context* elements -- 
 apHandles = led_analyzer.new_apvoid(MAXSENSORS)
@@ -159,6 +176,7 @@ else
 	led_analyzer.delete_ushort(ausBlue)
 
 	led_analyzer.delete_apvoid(apHandles)
+	led_analyzer.delete_astring(asSerials)
 
 	if flag == 0 then 
 		print("All LEDs found") 
