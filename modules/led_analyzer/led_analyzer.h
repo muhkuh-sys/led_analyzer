@@ -45,7 +45,8 @@ int 		  free_devices(void** apHandles);
 
 int			  check_validity(void** apHandles, int devIndex, unsigned short* ausClear, unsigned long integrationtime);
 			  /* Returns device # to a given handle # */
-int 		  handleToDevice(int handle);				
+int 		  handleToDevice(int handle);
+int 		  scan_devices(char* apSerial, unsigned int length);				
  
 #endif	/* __BIT_H__ */
 

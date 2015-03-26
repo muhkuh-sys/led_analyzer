@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Christoph Thelen                                *
- *   doc_bacardi@users.sourceforge.net                                     *
+ *   Copyright (C) 2014 by Subhan Waizi                           		   *
+ *                                     									   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -28,6 +28,82 @@
 
 
 
+
+
+
+/* Scans for connected ftdi devices and prints their Manufacturer, Description and Serialnumber
+Serialnumber(s) of found devices will be stored in asSerial 
+
+retVal >=0: everything ok - number of devices found
+retVal < 0: ftdi / libusb function failure 
+*/
+
+
+int scan_devices(char* apSerial, unsigned int length)
+{
+	int retVal = 0;
+	int i = 0;
+	int f;
+	int numbOfDevs = 0;
+	
+	
+	printf("length: %d\n", length);
+	
+	memset(apSerial, 0, length);
+	
+	int maxIndex = length/128;
+	
+	char manufacturer[128], description[128], serial[128];
+	
+	struct ftdi_device_list *devlist, *curdev;
+	struct ftdi_context *ftdi;
+
+	 if ((ftdi = ftdi_new()) == 0)
+		{
+			fprintf(stderr, "ftdi_new failed\n");
+			ftdi_list_free(&devlist);
+			ftdi_free(ftdi);
+			return -1;
+		}
+
+	numbOfDevs = ftdi_usb_find_all(ftdi, &devlist, VID, PID);
+		
+	if(numbOfDevs == 0)
+		{
+			printf("no ftdi device detected ... quitting.\n");
+			ftdi_list_free(&devlist);
+			ftdi_free(ftdi);
+			return -1;
+		}
+
+	printf("Number of device(s) found: %d\n\n", numbOfDevs);	
+	
+	
+	
+	i = 0;
+	for (curdev = devlist; curdev != NULL; i++)
+    {
+        printf("Checking device: %d\n", i);
+        if ((f = ftdi_usb_get_strings(ftdi, curdev->dev, manufacturer, 128, description, 128, serial, 128)) < 0)
+        {
+            fprintf(stderr, "ftdi_usb_get_strings failed: %d (%s)\n", f, ftdi_get_error_string(ftdi));
+            ftdi_list_free(&devlist);
+			ftdi_free(ftdi);
+			return -1;
+        }
+        printf("Manufacturer: %s, Description: %s, Serial: %s\n\n", manufacturer, description, serial);
+        
+		strcpy(&(apSerial[i*128]), serial);
+		
+		curdev = curdev->next;
+    }
+	
+	ftdi_list_free(&devlist);
+	ftdi_free(ftdi);
+}
+
+
+
 /* Diese Funktion detektiert alle Farbsensor devices am PC und öffnet sie.
  * Die handles auf die geöffneten Devices werden in einer Liste zurückgegeben.
  *
@@ -47,7 +123,7 @@ int detect_devices(void** apHandles, int apHlength)
 	int devCounter = 0;
 	char manufacturer[128], description[128], serial[10][128];
 	struct ftdi_device_list *devlist, *curdev;
-	struct ftdi_context *pHandle, *ftdi;
+	struct ftdi_context *ftdi;
 	//struct ftdi_context *ftdiA, *ftdiB;
 	
 
