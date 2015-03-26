@@ -308,6 +308,15 @@ int get_handleLength(void ** apHandles)
 	return iCounter;
 }
 
+
+/* This function returns the device number given to a certain handleindex */
+int handleToDevice(int handle)
+{	
+	return (int)(handle/2);
+}
+
+
+
 /* Initialize the sensors under a certain device# and handle#
 	Initializing a sensor, sets up its gain and integration time, clears any priorly generated interrupt, turns the sensor on, and waits 
 	an integration time cycle, so that data is already ready for the next color reading */
@@ -509,9 +518,42 @@ int free_devices(void** apHandles)
 	return iResult;
 }
 
-/* This function returns the device number given to a certain handleindex */
-int handleToDevice(int handle)
-{	
-	return (int)(handle/2);
+int get_gainSettings(void** apHandles, int devIndex, unsigned short* ausGains)
+{
+	
+	int iHandleLength = get_handleLength(apHandles);
+	unsigned char aucTempbuffer[16];
+	int handleIndex = devIndex * 2;
+	int iResult = 0;
+	
+	if(handleIndex >= iHandleLength)
+	{
+			printf("Exceeded maximum amount of handles ... \n");
+			printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
+			return 1;
+	}
+	
+	iResult = tcs_getGain(apHandles[handleIndex], apHandles[handleIndex+1], ausGains);
+	return iResult;
 }
 
+int get_intTimeSettings(void** apHandles, int devIndex, unsigned short* ausIntTimeSettings)
+{
+
+	int iHandleLength = get_handleLength(apHandles);
+	unsigned char aucTempbuffer[16];
+	int handleIndex = devIndex * 2;
+	int iResult = 0;
+	
+	if(handleIndex >= iHandleLength)
+	{
+			printf("Exceeded maximum amount of handles ... \n");
+			printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
+			return 1;
+	}
+
+	
+	iResult = tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], ausIntTimeSettings);
+	return iResult;
+
+}

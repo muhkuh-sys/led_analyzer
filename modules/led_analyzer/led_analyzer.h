@@ -46,7 +46,10 @@ int 		  free_devices(void** apHandles);
 int			  check_validity(void** apHandles, int devIndex, unsigned short* ausClear, unsigned long integrationtime);
 			  /* Returns device # to a given handle # */
 int 		  handleToDevice(int handle);
-			
- 
+			  /* parameter ausGains will hold the gain settings of 16 sensors */
+int			  get_gainSettings(void** apHandles, int devIndex, unsigned short* ausGains);	
+			  /* parameter ausIntTimeSettings will hold the integration time settings of 16 sensors */
+int			  get_intTimeSettings(void** apHandles, int devIndex, unsigned short* ausIntTimeSettings);
+
 #endif	/* __BIT_H__ */
 

@@ -370,3 +370,23 @@ void tcs_waitIntegrationtime(tcs3471Integration_t uiIntegrationtime)
 
         }
 }
+
+/* Reads gain settings of 16 sensors and stores them in usGainSettings */
+unsigned short int tcs_getGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausGainSettings)
+{
+	unsigned char aucTempbuffer[2] = {(0x29<<1), TCS3471_CONTROL_REG | TCS3471_COMMAND_BIT};
+	
+	if(i2c_read16(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), ausGainSettings, sizeof(ausGainSettings) < 0)) return 1;
+	
+	return 0;
+}
+
+
+unsigned short int tcs_getIntegrationtime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausInttimeSettings)
+{
+	unsigned char aucTempbuffer[2] = {(0x29<<1), TCS3471_ATIME_REG | TCS3471_COMMAND_BIT};
+
+	if(i2c_read16(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), ausInttimeSettings, sizeof(ausInttimeSettings) < 0)) return 1;
+	
+	return 0;
+}

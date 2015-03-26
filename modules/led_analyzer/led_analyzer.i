@@ -33,6 +33,8 @@
 %include <typemaps.i>
 %apply void** INOUT {(void** apHandles)};
 %apply (unsigned short *INOUT) {unsigned short* ausClear, unsigned short* ausRed, unsigned short* ausGreen, unsigned short* ausBlue};
+%apply (unsigned short *INOUT) {unsigned short* ausGains}
+%apply (unsigned short *INOUT) {unsigned short* ausIntTimeSettings}
 %apply (char** INOUT) {(char** asSerial)}
 
 
