@@ -82,14 +82,14 @@ int scan_devices(char** asSerial, unsigned int uiLength)
 			return -1;
 		}
 
-	printf("Number of device(s) found: %d\n\n", numbOfDevs);	
+	printf("Number of ftdi device(s) found: %d\n\n", numbOfDevs);	
 	
 	
 	
 	i = 0;
 	for (curdev = devlist; curdev != NULL; i++)
     {
-        printf("Checking device: %d\n", i);
+        printf("Scanning device: %d\n", i);
         if ((f = ftdi_usb_get_strings(ftdi, curdev->dev, manufacturer, 128, description, 128, serial, 128)) < 0)
         {
             fprintf(stderr, "ftdi_usb_get_strings failed: %d (%s)\n", f, ftdi_get_error_string(ftdi));
@@ -111,6 +111,137 @@ int scan_devices(char** asSerial, unsigned int uiLength)
 	return numbOfSerials;
 }
 
+/* Funktion verbindet sich mit den zu den Seriennummern passenden USB-Devices 
+   
+   retVal >0 : number of devices connected to
+   retVal <=0: 
+   
+*/
+int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
+{
+
+	struct ftdi_context* ftdi;
+	int numbOfDevs = get_number_of_serials(asSerial);
+	int iArrayPos = 0;
+	int devCounter = 0;
+	int f;
+	
+	
+	
+	printf("Number of LED-Analyzers found: %d\n", numbOfDevs);
+	
+	
+	if(2*numbOfDevs > apHlength)
+	{
+		printf("handlearray too small for number of ftdi-chips found\n");
+		printf("needed: %d, got: %d\n", numbOfDevs*2, apHlength);
+		return -1;
+	}
+	
+	memset(apHandles, 0, sizeof(void*) * apHlength);
+	printf("Test: Serialnumber: %s \n", asSerial[0]);
+	
+	while(devCounter < numbOfDevs)
+	{
+		
+		if(iArrayPos+2 <= apHlength)
+		{
+			/* Ch A */
+			
+		    if ((apHandles[iArrayPos] = ftdi_new()) == 0)
+				{
+					fprintf(stderr, "ftdi_new failed!\n");
+					return -1;
+				}
+			
+			printf("Test: Serialnumber: %s \n", asSerial[devCounter]);
+			
+			if((f = ftdi_set_interface(apHandles[iArrayPos], INTERFACE_A))<0)
+				{
+					fprintf(stderr, "Unable to attach to dev %d interface A: %d, (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					ftdi_free(apHandles[iArrayPos]);
+					return -1;
+				}
+				
+			
+			
+			
+			//if((f = ftdi_usb_open_desc_index(apHandles[iArrayPos], VID, PID, NULL, NULL, devCounter)<0))
+			if((f = ftdi_usb_open_desc(apHandles[iArrayPos], VID, PID, NULL, asSerial[devCounter])<0))
+				{
+					fprintf(stderr, "unable to open dev %d interface A: %d (%s)\n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					ftdi_deinit(apHandles[iArrayPos]);
+					ftdi_free(apHandles[iArrayPos]);
+					return -1;
+				}
+			else printf("ftdi dev %d Channel A - open succeeded\n", devCounter);
+			
+			if((f=ftdi_set_bitmode(apHandles[iArrayPos], 0xFF, BITMODE_MPSSE)) < 0)
+				{
+					fprintf(stderr, "unable to set the mode on dev %d Channel A: %d (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					ftdi_free(apHandles[iArrayPos]);
+					return -1;
+				}
+			else  printf("enabling bitbang mode on dev %d Channel A\n", devCounter);
+			
+			iArrayPos ++;
+						
+			/* Ch B */
+			
+		    if ((apHandles[iArrayPos] = ftdi_new()) == 0)
+				{
+					fprintf(stderr, "ftdi_new failed!\n");
+					return -1;
+				}
+			
+			if((f = ftdi_set_interface(apHandles[iArrayPos], INTERFACE_B))<0)
+				{
+					fprintf(stderr, "Unable to attach to dev %d interface B: %d, (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					ftdi_free(apHandles[iArrayPos]);
+					return -1;
+				}
+				
+			//if((f = ftdi_usb_open_desc_index(apHandles[iArrayPos],VID, PID, NULL, NULL, devCounter)<0))
+			if((f = ftdi_usb_open_desc(apHandles[iArrayPos],VID, PID, NULL, asSerial[devCounter])<0))	
+				{
+					fprintf(stderr, "unable to open dev %d interface B: %d (%s)\n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					ftdi_deinit(apHandles[iArrayPos]);
+					ftdi_free(apHandles[iArrayPos]);
+					return -1;
+				}
+			else printf("ftdi dev %d Channel B - open succeeded\n", devCounter);
+			
+			if((f=ftdi_set_bitmode(apHandles[iArrayPos], 0xFF, BITMODE_MPSSE)) < 0)
+				{
+					fprintf(stderr, "unable to set the mode on dev %d Channel B: %d (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					ftdi_free(apHandles[iArrayPos]);
+					return -1;
+				}
+			
+			else  printf("enabling bitbang mode on dev %d Channel B\n", devCounter);
+			
+			iArrayPos ++;
+			
+		}
+		/* Go to the next device found */
+		devCounter ++;
+		
+		
+	}
+	
+	return numbOfDevs;
+	
+}
+
+int get_number_of_serials(char** asSerial)
+{
+	int counter = 0;
+	int i = 0;
+	
+	while(asSerial[counter]!=NULL) counter ++;
+	
+	return counter;
+}
 
 
 /* Diese Funktion detektiert alle Farbsensor devices am PC und öffnet sie.
@@ -522,7 +653,6 @@ int get_gainSettings(void** apHandles, int devIndex, unsigned short* ausGains)
 {
 	
 	int iHandleLength = get_handleLength(apHandles);
-	unsigned char aucTempbuffer[16];
 	int handleIndex = devIndex * 2;
 	int iResult = 0;
 	
@@ -541,7 +671,6 @@ int get_intTimeSettings(void** apHandles, int devIndex, unsigned short* ausIntTi
 {
 
 	int iHandleLength = get_handleLength(apHandles);
-	unsigned char aucTempbuffer[16];
 	int handleIndex = devIndex * 2;
 	int iResult = 0;
 	

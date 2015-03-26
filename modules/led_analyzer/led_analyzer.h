@@ -50,6 +50,13 @@ int 		  handleToDevice(int handle);
 int			  get_gainSettings(void** apHandles, int devIndex, unsigned short* ausGains);	
 			  /* parameter ausIntTimeSettings will hold the integration time settings of 16 sensors */
 int			  get_intTimeSettings(void** apHandles, int devIndex, unsigned short* ausIntTimeSettings);
+			  /* returns the amount of serial numbers in the serial number array */
+int 		  get_number_of_serials(char** asSerial);
+
+			  /* returns the amount of serial numbers the computer has connected to */
+int 		  connect_to_devices(void** apHandles, int apHlength, char** asSerial);
+
+
 
 #endif	/* __BIT_H__ */
 
