@@ -34,29 +34,35 @@
 /* Scans for connected ftdi devices and prints their Manufacturer, Description and Serialnumber
 Serialnumber(s) of found devices will be stored in asSerial 
 
-retVal >=0: everything ok - number of devices found
-retVal < 0: ftdi / libusb function failure 
+ * Return = 0: no device detected
+ *        > 0: number of detected ftdi devices (different serial numbers)
+ *		  < 0: error with ftdi functions or arraylength
+ *
+ *
 */
 
 
-int scan_devices(char* apSerial, unsigned int length)
+int scan_devices(char** asSerial, unsigned int uiLength)
 {
 	int retVal = 0;
 	int i = 0;
 	int f;
 	int numbOfDevs = 0;
+	int numbOfSerials = 0;
 	
-	
-	printf("length: %d\n", length);
-	
-	memset(apSerial, 0, length);
-	
-	int maxIndex = length/128;
 	
 	char manufacturer[128], description[128], serial[128];
-	
 	struct ftdi_device_list *devlist, *curdev;
 	struct ftdi_context *ftdi;
+	
+	
+	
+	if(uiLength <1)
+	{
+		printf("error - length of serialnumber array too small ... \n");
+		return -1;
+	}
+
 
 	 if ((ftdi = ftdi_new()) == 0)
 		{
@@ -93,13 +99,16 @@ int scan_devices(char* apSerial, unsigned int length)
         }
         printf("Manufacturer: %s, Description: %s, Serial: %s\n\n", manufacturer, description, serial);
         
-		strcpy(&(apSerial[i*128]), serial);
 		
+		numbOfSerials++;
+		asSerial[i] = serial;
 		curdev = curdev->next;
     }
 	
 	ftdi_list_free(&devlist);
 	ftdi_free(ftdi);
+	
+	return numbOfSerials;
 }
 
 
@@ -107,10 +116,11 @@ int scan_devices(char* apSerial, unsigned int length)
 /* Diese Funktion detektiert alle Farbsensor devices am PC und öffnet sie.
  * Die handles auf die geöffneten Devices werden in einer Liste zurückgegeben.
  *
- * Return = 0: alles OK
- *        !=0: fehler
+ * Return = 0: no device detected
+ *        > 0: number of detected ftdi devices
+ *		  < 0: error with ftdi functions
  *
- *	Returns the number of devices found (1 device = 2 handles )
+ *
  */
  
  

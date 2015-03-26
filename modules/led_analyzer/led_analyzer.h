@@ -28,7 +28,7 @@
 
 
 
-
+int 		  scan_devices(char** asSerial, unsigned int uiLength);	
 			  /* Detects all devices and stores the device handles into the apHandles Array, returns number of devices found if successful, else
 			  returns -1 */
 int 		  detect_devices(void** apHandles, int apHlength);
@@ -46,7 +46,7 @@ int 		  free_devices(void** apHandles);
 int			  check_validity(void** apHandles, int devIndex, unsigned short* ausClear, unsigned long integrationtime);
 			  /* Returns device # to a given handle # */
 int 		  handleToDevice(int handle);
-int 		  scan_devices(char* apSerial, unsigned int length);				
+			
  
 #endif	/* __BIT_H__ */
 

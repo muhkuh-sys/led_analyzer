@@ -6,6 +6,7 @@
 %array_functions(unsigned long, ulong)
 %array_functions(int, integer)
 %array_functions(void*, apvoid)
+%array_functions(char*, astring)
 
 
 %include <cpointer.i>
@@ -32,7 +33,7 @@
 %include <typemaps.i>
 %apply void** INOUT {(void** apHandles)};
 %apply (unsigned short *INOUT) {unsigned short* ausClear, unsigned short* ausRed, unsigned short* ausGreen, unsigned short* ausBlue};
-
+%apply (char** INOUT) {(char** asSerial)}
 
 
 
