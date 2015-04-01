@@ -1,9 +1,8 @@
 -- a helper to print a color table 
 function print_color(devIndex, colortable, length, mode)
 	print(string.format("\n"))
-	print(				" ------------------------------------------------ ")
-	print(string.format(" ------------------ Device %d -------------------- ", devIndex))
-	print(				" ------------------------------------------------ ")
+	print(string.format(" ------------------- Colors --------------------- ", devIndex))
+	
 	
 	if mode == "RGB" then 
 		print("     Clear   Red     Green    Blue")
