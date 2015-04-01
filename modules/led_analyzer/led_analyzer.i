@@ -7,7 +7,7 @@
 %array_functions(int, integer)
 %array_functions(void*, apvoid)
 %array_functions(char*, astring)
-
+%array_functions(unsigned char, puchar)
 
 %include <cpointer.i>
 
@@ -36,7 +36,8 @@
 %apply (unsigned short *INOUT) {unsigned short* ausGains}
 %apply (unsigned short *INOUT) {unsigned short* ausIntTimeSettings}
 %apply (char **INOUT) {(char** asSerial)}
-
+%apply (char *INOUT) {char* aucGains}
+%apply (char *INOUT) {char* aucIntTimeSettings}
 
 
 

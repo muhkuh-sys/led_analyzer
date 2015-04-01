@@ -36,6 +36,8 @@ ausGreen  = led_analyzer.new_ushort(MAXSENSORS)
 ausBlue   = led_analyzer.new_ushort(MAXSENSORS)
 
 
+aucGains  = led_analyzer.new_puchar(MAXSENSORS)
+aucIntTimes = led_analyzer.new_puchar(MAXSENSORS)
 
 function astring_to_table(astring, numbOfSerials)
 	
@@ -88,9 +90,9 @@ else
 	 
 	while(devIndex < numberOfDevices) do 
 	
-		print(				" ------------------------------------------------ ")
-		print(string.format(" ------------------ Device %d -------------------- ", devIndex))
-		print(				" ------------------------------------------------ ")
+		print(				"------------------------------------------------ ")
+		print(string.format("------------------ Device %d -------------------- ", devIndex))
+		print(				"------------------------------------------------ ")
 		
 		
 		
@@ -143,6 +145,17 @@ else
 		end 
 		
 		
+		led_analyzer.get_gainSettings(apHandles, devIndex, aucGains)
+		led_analyzer.get_intTimeSettings(apHandles, devIndex, aucIntTimes)
+		
+		for i = 0, 15 do
+			print(led_analyzer.puchar_getitem(aucGains, i))
+			print(led_analyzer.puchar_getitem(aucIntTimes, i))
+		end
+		
+		
+		
+		
 		tColor, tXYZ, tYxy, tnm, tHSV = aus_to_table(devIndex, ausClear, ausRed, ausGreen, ausBlue, 16)
 
 		--print_color(devIndex, tColor, 16, "RGB")
@@ -190,6 +203,9 @@ else
 	led_analyzer.delete_ushort(ausRed)
 	led_analyzer.delete_ushort(ausGreen)
 	led_analyzer.delete_ushort(ausBlue)
+	
+	led_analyzer.delete_puchar(aucGains)
+	led_analyzer.delete_puchar(aucIntTimes)
 
 	led_analyzer.delete_apvoid(apHandles)
 	led_analyzer.delete_astring(asSerials)

@@ -47,9 +47,9 @@ int			  check_validity(void** apHandles, int devIndex, unsigned short* ausClear,
 			  /* Returns device # to a given handle # */
 int 		  handleToDevice(int handle);
 			  /* parameter ausGains will hold the gain settings of 16 sensors */
-int			  get_gainSettings(void** apHandles, int devIndex, unsigned short* ausGains);	
+int			  get_gainSettings(void** apHandles, int devIndex, unsigned char* aucGains);	
 			  /* parameter ausIntTimeSettings will hold the integration time settings of 16 sensors */
-int			  get_intTimeSettings(void** apHandles, int devIndex, unsigned short* ausIntTimeSettings);
+int			  get_intTimeSettings(void** apHandles, int devIndex, unsigned char* aucIntTimeSettings);
 			  /* returns the amount of serial numbers in the serial number array */
 int 		  get_number_of_serials(char** asSerial);
 

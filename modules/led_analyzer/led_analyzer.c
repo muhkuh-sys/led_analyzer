@@ -670,7 +670,7 @@ int free_devices(void** apHandles)
 	return iResult;
 }
 
-int get_gainSettings(void** apHandles, int devIndex, unsigned short* ausGains)
+int get_gainSettings(void** apHandles, int devIndex, unsigned char* aucGains)
 {
 	
 	int iHandleLength = get_handleLength(apHandles);
@@ -684,11 +684,11 @@ int get_gainSettings(void** apHandles, int devIndex, unsigned short* ausGains)
 			return 1;
 	}
 	
-	iResult = tcs_getGain(apHandles[handleIndex], apHandles[handleIndex+1], ausGains);
+	iResult = tcs_getGain(apHandles[handleIndex], apHandles[handleIndex+1], aucGains);
 	return iResult;
 }
 
-int get_intTimeSettings(void** apHandles, int devIndex, unsigned short* ausIntTimeSettings)
+int get_intTimeSettings(void** apHandles, int devIndex, unsigned char* aucIntTimeSettings)
 {
 
 	int iHandleLength = get_handleLength(apHandles);
@@ -703,7 +703,7 @@ int get_intTimeSettings(void** apHandles, int devIndex, unsigned short* ausIntTi
 	}
 
 	
-	iResult = tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], ausIntTimeSettings);
+	iResult = tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntTimeSettings);
 	return iResult;
 
 }
