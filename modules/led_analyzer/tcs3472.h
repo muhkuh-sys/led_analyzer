@@ -81,9 +81,14 @@ enum tcs_color_t
 }
 colors;
 
-unsigned short int tcs_setIntegrationTime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Integration_t integration);
+unsigned short int tcs_setIntegrationTime   (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Integration_t integration);
+unsigned short int tcs_setIntegrationTime_x (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Integration_t integration, unsigned int uiX);
+
 unsigned short int tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer);
-unsigned short int tcs_setGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Gain_t gain);
+
+unsigned short int tcs_setGain   (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Gain_t gain);
+unsigned short int tcs_setGain_x (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Gain_t gain, unsigned int uiX); 
+
 unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer);
 unsigned short int tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer);
 unsigned short int tcs_readColour(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausColourArray, enum tcs_color_t colour);

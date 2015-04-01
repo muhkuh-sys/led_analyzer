@@ -468,6 +468,31 @@ int handleToDevice(int handle)
 }
 
 
+/* Set the integration time of one sensor given in uiX which ranges from 0 ... 15 */
+int set_intTime_x(void** apHandles, int devIndex, unsigned long integrationtime, unsigned int uiX)
+{
+	int handleIndex = devIndex * 2;
+	
+	if(tcs_setIntegrationTime_x(apHandles[handleIndex], apHandles[handleIndex+1], integrationtime, uiX) != 0)
+	{
+		printf("failed to set integration time for sensor %d on dev %d ...\n", uiX+1, devIndex);
+		return 1;
+	}
+	return 0;
+}
+
+int set_gain_x(void** apHandles, int devIndex, unsigned long gain, unsigned int uiX)
+{
+	int handleIndex = devIndex * 2;
+		
+	if(tcs_setGain_x(apHandles[handleIndex], apHandles[handleIndex+1], gain, uiX) != 0)
+	{
+		printf("failed to set gain for sensor %d on dev %d ...\n", uiX+1, devIndex);
+		return 1;		
+	}
+	return 0;
+}
+
 
 /* Initialize the sensors under a certain device# and handle#
 	Initializing a sensor, sets up its gain and integration time, clears any priorly generated interrupt, turns the sensor on, and waits 

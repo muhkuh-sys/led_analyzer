@@ -71,7 +71,7 @@ unsigned short int tcs_ON(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB
 */
 
 
-/* This function sets the integration time of the sensor, darker leds need longer integration times.
+/* This function sets the integration time of all sensor, darker leds need longer integration times.
 whereas brighter leds need shorter integration times */
 unsigned short int tcs_setIntegrationTime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Integration_t uiIntegrationtime)
 {
@@ -80,18 +80,46 @@ unsigned short int tcs_setIntegrationTime(struct ftdi_context* ftdiA, struct ftd
 
     return 0;
 }
-/* this function sets the gain of the sensor
+
+
+/* This function sets the integration time of one sensor given in uiX (ranges from 0 ... 15), darker leds need longer integration times.
+whereas brighter leds need shorter integration times */
+unsigned short int tcs_setIntegrationTime_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Integration_t uiIntegrationtime, unsigned int uiX)
+{
+    unsigned char aucTempbuffer[3] = {(0x29<<1), TCS3471_ATIME_REG | TCS3471_COMMAND_BIT, uiIntegrationtime};
+    if(i2c_write8_x(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), uiX) <0) return 1;
+
+    return 0;
+}
+
+
+
+
+
+/* this function sets the gain of all sensors
 just like the integration time, darker leds need a higher gain setting and brighter leds can have a lower gain setting
 */
 unsigned short int tcs_setGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Gain_t gain)
 {
     unsigned char aucTempbuffer[3] = {(0x29<<1), TCS3471_CONTROL_REG | TCS3471_COMMAND_BIT, gain};
 
-    if(gain == 0xFF) printf("Fehler!\n");
-
     if(i2c_write8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer)) <0) return 1;
     return 0;
 }
+
+/* this function sets the gain of one sensor given in uiX (ranges from 0 ... 15)
+just like the integration time, darker leds need a higher gain setting and brighter leds can have a lower gain setting
+*/
+unsigned short int tcs_setGain_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Gain_t gain, unsigned int uiX)
+{
+    unsigned char aucTempbuffer[3] = {(0x29<<1), TCS3471_CONTROL_REG | TCS3471_COMMAND_BIT, gain};
+
+    if(i2c_write8_x(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), uiX) <0) return 1;
+    return 0;
+}
+
+
+
 
 
 

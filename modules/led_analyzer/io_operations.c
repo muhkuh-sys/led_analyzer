@@ -187,6 +187,9 @@ void process_pins(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsign
 
 }
 
+
+
+
 /* This function gets called repeatedly by i2c functions. It stores the commands in glbal Buffers
 (aucBufferA and aucBufferB). The commands consist of a mask which determines which pins are set as input and output and and output value
 which will be written to the pins set as output. 
