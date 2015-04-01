@@ -42,7 +42,7 @@ Serialnumber(s) of found devices will be stored in asSerial
 */
 
 
-int scan_devices(char** asSerial, unsigned int uiLength)
+int scan_devices(char** asSerial, unsigned int asLength)
 {
 	int retVal = 0;
 	int i = 0;
@@ -57,7 +57,11 @@ int scan_devices(char** asSerial, unsigned int uiLength)
 	
 	
 	
-	if(uiLength <1)
+	//memset(asSerial, 0, sizeof(char*) * asLength);
+	
+	
+	
+	if(asLength <1)
 	{
 		printf("error - length of serialnumber array too small ... \n");
 		return -1;
@@ -101,7 +105,9 @@ int scan_devices(char** asSerial, unsigned int uiLength)
         
 		
 		numbOfSerials++;
-		asSerial[i] = serial;
+		
+		asSerial[i] = (char*) malloc(strlen(serial)+1);
+		strcpy(asSerial[i], serial);
 		curdev = curdev->next;
     }
 	
@@ -111,7 +117,7 @@ int scan_devices(char** asSerial, unsigned int uiLength)
 	return numbOfSerials;
 }
 
-/* Funktion verbindet sich mit den zu den Seriennummern passenden USB-Devices 
+/* function connects to devices with serial numbers given in asSerial 
    
    retVal >0 : number of devices connected to
    retVal <=0: 
@@ -128,7 +134,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 	
 	
 	
-	printf("Number of LED-Analyzers found: %d\n", numbOfDevs);
+	printf("Number of LED-Analyzers found: %d\n\n", numbOfDevs);
 	
 	
 	if(2*numbOfDevs > apHlength)
@@ -139,10 +145,10 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 	}
 	
 	memset(apHandles, 0, sizeof(void*) * apHlength);
-	printf("Test: Serialnumber: %s \n", asSerial[0]);
 	
 	while(devCounter < numbOfDevs)
 	{
+		printf("Connecting to device %d - %s\n", devCounter, asSerial[devCounter]);
 		
 		if(iArrayPos+2 <= apHlength)
 		{
@@ -154,7 +160,6 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 					return -1;
 				}
 			
-			printf("Test: Serialnumber: %s \n", asSerial[devCounter]);
 			
 			if((f = ftdi_set_interface(apHandles[iArrayPos], INTERFACE_A))<0)
 				{
@@ -165,8 +170,14 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 				
 			
 			
-			
-			//if((f = ftdi_usb_open_desc_index(apHandles[iArrayPos], VID, PID, NULL, NULL, devCounter)<0))
+			if(asSerial[devCounter] == NULL) 
+				{
+					printf("Serial number non-existent ... please rescan your devices\n");
+					ftdi_deinit(apHandles[iArrayPos]);
+					ftdi_free(apHandles[iArrayPos]);
+					return -1;
+				}
+				
 			if((f = ftdi_usb_open_desc(apHandles[iArrayPos], VID, PID, NULL, asSerial[devCounter])<0))
 				{
 					fprintf(stderr, "unable to open dev %d interface A: %d (%s)\n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
@@ -200,8 +211,15 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
 				}
-				
-			//if((f = ftdi_usb_open_desc_index(apHandles[iArrayPos],VID, PID, NULL, NULL, devCounter)<0))
+			
+			if(asSerial[devCounter] == NULL) 
+				{
+					printf("Serial number non-existent ... please rescan your devices\n");
+					ftdi_deinit(apHandles[iArrayPos]);
+					ftdi_free(apHandles[iArrayPos]);
+					return -1;
+				}
+			
 			if((f = ftdi_usb_open_desc(apHandles[iArrayPos],VID, PID, NULL, asSerial[devCounter])<0))	
 				{
 					fprintf(stderr, "unable to open dev %d interface B: %d (%s)\n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
@@ -226,10 +244,13 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 		/* Go to the next device found */
 		devCounter ++;
 		
+		printf("\n");
 		
 	}
 	
+	printf("\n");
 	return numbOfDevs;
+	
 	
 }
 

@@ -54,7 +54,7 @@ int			  get_intTimeSettings(void** apHandles, int devIndex, unsigned short* ausI
 int 		  get_number_of_serials(char** asSerial);
 
 			  /* returns the amount of serial numbers the computer has connected to */
-int 		  connect_to_devices(void** apHandles, int apHlength, char** asSerial);
+int 		  connect_to_devices(void** apHandles, int apHlength, char** asLength);
 
 
 
