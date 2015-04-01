@@ -54,7 +54,7 @@ end
 
 
 asSerials = led_analyzer.new_astring(MAXSERIALS)
-
+apHandles = led_analyzer.new_apvoid(MAXHANDLES)
 
 numberofserials = led_analyzer.scan_devices(asSerials, MAXSERIALS);
 
@@ -62,20 +62,9 @@ numberofserials = led_analyzer.scan_devices(asSerials, MAXSERIALS);
 stringtable = astring_to_table(asSerials, MAXSERIALS)
 
 
-print(1)
-print(stringtable[1])
-print(2)
-
-
-
-
-
--- array of void pointers which will contain struct_ftdi_context* elements -- 
-apHandles = led_analyzer.new_apvoid(MAXSENSORS)
-
 -- Detects the ftdi devices and returns the number of devices found 
 -- #1 => 1 ftdi device found => two handles saved in apHandles, second param: number of max handles
-numberOfDevices = led_analyzer.detect_devices(apHandles, 10)
+numberOfDevices = led_analyzer.connect_to_devices(apHandles, MAXHANDLES, asSerials)
 
 
 local error_counter = 0 
@@ -98,10 +87,17 @@ else
 	 
 	 
 	while(devIndex < numberOfDevices) do 
+	
+		print(				" ------------------------------------------------ ")
+		print(string.format(" ------------------ Device %d -------------------- ", devIndex))
+		print(				" ------------------------------------------------ ")
+		
+		
+		
 		-- Init: apHandles, devIndex, integrationtime, gain, -waittime 
 		
 		while(error_counter < INIT_MAXERROR) do
-			ret = led_analyzer.init_sensors(apHandles, devIndex, TCS3471_INTEGRATION_200ms, TCS3471_GAIN_4X)
+			ret = led_analyzer.init_sensors(apHandles, devIndex, TCS3471_INTEGRATION_200ms, TCS3471_GAIN_1X)
 			if ret ~= 0 then
 				error_counter = error_counter + 1 
 			else
