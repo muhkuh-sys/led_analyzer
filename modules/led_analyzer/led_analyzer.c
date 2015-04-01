@@ -50,6 +50,7 @@ int scan_devices(char** asSerial, unsigned int asLength)
 	int numbOfDevs = 0;
 	int numbOfSerials = 0;
 	
+	char sMatch[] = "Color Controller";
 	
 	char manufacturer[128], description[128], serial[128];
 	struct ftdi_device_list *devlist, *curdev;
@@ -86,8 +87,6 @@ int scan_devices(char** asSerial, unsigned int asLength)
 			return -1;
 		}
 
-	printf("Number of ftdi device(s) found: %d\n\n", numbOfDevs);	
-	
 	
 	
 	i = 0;
@@ -104,10 +103,14 @@ int scan_devices(char** asSerial, unsigned int asLength)
         printf("Manufacturer: %s, Description: %s, Serial: %s\n\n", manufacturer, description, serial);
         
 		
-		numbOfSerials++;
 		
-		asSerial[i] = (char*) malloc(strlen(serial)+1);
-		strcpy(asSerial[i], serial);
+		if(strcmp(sMatch, description) == 0)
+		{
+			numbOfSerials++;
+			asSerial[i] = (char*) malloc(strlen(serial)+1);
+			strcpy(asSerial[i], serial);			
+		}
+		
 		curdev = curdev->next;
     }
 	
@@ -127,6 +130,8 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 {
 
 	struct ftdi_context* ftdi;
+	
+	
 	int numbOfDevs = get_number_of_serials(asSerial);
 	int iArrayPos = 0;
 	int devCounter = 0;
@@ -134,7 +139,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 	
 	
 	
-	printf("Number of LED-Analyzers found: %d\n\n", numbOfDevs);
+	printf("Number of Color Controllers found: %d\n\n", numbOfDevs);
 	
 	
 	if(2*numbOfDevs > apHlength)
