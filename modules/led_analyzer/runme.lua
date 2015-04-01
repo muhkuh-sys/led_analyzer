@@ -69,6 +69,10 @@ stringtable = astring_to_table(asSerials, MAXSERIALS)
 numberOfDevices = led_analyzer.connect_to_devices(apHandles, MAXHANDLES, asSerials)
 
 
+
+led_analyzer.set_gain_x(apHandles, 0, TCS3471_GAIN_4X, 0)
+
+
 local error_counter = 0 
 
 
@@ -145,13 +149,16 @@ else
 		end 
 		
 		
+		--led_analyzer.set_gain_x(apHandles, devIndex, TCS3471_GAIN_4X, 0);
+		--led_analyzer.set_intTime_x(apHandles, devIndex, TCS3471_INTEGRATION_154ms, 0);
+		
 		led_analyzer.get_gainSettings(apHandles, devIndex, aucGains)
 		led_analyzer.get_intTimeSettings(apHandles, devIndex, aucIntTimes)
 		
-		for i = 0, 15 do
-			print(led_analyzer.puchar_getitem(aucGains, i))
-			print(led_analyzer.puchar_getitem(aucIntTimes, i))
-		end
+		-- for i = 0, 15 do
+		--	print(led_analyzer.puchar_getitem(aucGains, i))
+		--	print(led_analyzer.puchar_getitem(aucIntTimes, i))
+		--end
 		
 		
 		
