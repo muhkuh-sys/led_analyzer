@@ -1,7 +1,7 @@
 ---- importing ----
 require("color_conversions") -- Convert between color spaces 
 require("color_validation")	 -- Validate your colors, contains helper to print your colors and store your colors in adequate arrays
-require("led_analyzer")				 -- should be renamed soon, contains the libusb, libftdi, tcs ... files 
+require("led_analyzer")		 -- should be renamed soon, contains the libusb, libftdi, tcs ... files 
 require("testBoard")		 -- board to be tested, containing dom. wavelengths and/or x/y pairs
 
 TEST_RESULT_OK = 0 
@@ -11,14 +11,14 @@ TEST_RESULT_SENSORS_FAILED = 2
 MAXHANDLES = 16 
 MAXSENSORS = 16 
 
-MAXSERIALS = 10
+MAXSERIALS = 16
 
 INIT_MAXERROR  = 10
 READ_MAXERROR  = 10 
 VALID_MAXERROR = 10 
 
-TCS3471_GAIN_1X = 0x00
-TCS3471_GAIN_4X = 0x01
+TCS3471_GAIN_1X  = 0x00
+TCS3471_GAIN_4X  = 0x01
 TCS3471_GAIN_16X = 0x02
 TCS3471_GAIN_60X = 0x03
 
@@ -100,7 +100,7 @@ else
 		
 		
 		
-		-- Init: apHandles, devIndex, integrationtime, gain, -waittime 
+		
 		
 		while(error_counter < INIT_MAXERROR) do
 			ret = led_analyzer.init_sensors(apHandles, devIndex, TCS3471_INTEGRATION_200ms, TCS3471_GAIN_4X)
