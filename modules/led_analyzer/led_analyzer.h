@@ -34,7 +34,7 @@ int 		  scan_devices(char** asSerial, unsigned int uiLength);
 int 		  detect_devices(void** apHandles, int apHlength);
 			  /* Reads the colors of a device (devIndex starting with 0) and stores the 4x 16 unsigned short values into the argument parameters */
 int 		  read_colors(void** apHandles, int devIndex, unsigned short *ausClear, unsigned short* ausRed,
-			  unsigned short *ausGreen, unsigned short* ausBlue);
+			  unsigned short *ausGreen, unsigned short* ausBlue, unsigned char* aucIntegrationtime);
 			  /* used to set gain and integrationtime and to turn sensor on, last argument is used for the wait directive after tcs_on, normalle 100ms - waitAdjust */						   
 int 		  init_sensors(void** apHandles, int devIndex, unsigned long integrationtime, unsigned long gain);
 		      /* Returns number of handles in apHandles (1device = 2 handles) Note: May only be called after detect_devices has been called, otherwise apHandles will be empty */
@@ -43,7 +43,7 @@ int 		  get_handleLength(void ** apHandles);
 int 		  free_devices(void** apHandles);
 			  /* Checks the sensor data for validity / exceedings of maximum clear */
 
-int			  check_validity(void** apHandles, int devIndex, unsigned short* ausClear, unsigned long integrationtime);
+int			  check_validity(void** apHandles, int devIndex, unsigned short* ausClear, unsigned char* aucIntegrationtime);
 			  /* Returns device # to a given handle # */
 int 		  handleToDevice(int handle);
 			  /* parameter ausGains will hold the gain settings of 16 sensors */ 

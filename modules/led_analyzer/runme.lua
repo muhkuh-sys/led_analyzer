@@ -103,7 +103,7 @@ else
 		-- Init: apHandles, devIndex, integrationtime, gain, -waittime 
 		
 		while(error_counter < INIT_MAXERROR) do
-			ret = led_analyzer.init_sensors(apHandles, devIndex, TCS3471_INTEGRATION_200ms, TCS3471_GAIN_1X)
+			ret = led_analyzer.init_sensors(apHandles, devIndex, TCS3471_INTEGRATION_200ms, TCS3471_GAIN_4X)
 			if ret ~= 0 then
 				error_counter = error_counter + 1 
 			else
@@ -119,7 +119,7 @@ else
 		
 		
 		while(error_counter < READ_MAXERROR) do		
-			ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue)
+			ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue, aucIntTimes)
 			if ret ~= 0 then
 				error_counter = error_counter + 1
 			else
@@ -134,7 +134,7 @@ else
 		end 
 		
 		while(error_counter < VALID_MAXERROR) do 
-			ret = led_analyzer.check_validity(apHandles, devIndex, ausClear, TCS3471_INTEGRATION_100ms)
+			ret = led_analyzer.check_validity(apHandles, devIndex, ausClear, aucIntTimes)
 			if ret ~= 0 then 
 				error_counter = error_counter + 1 
 			else 

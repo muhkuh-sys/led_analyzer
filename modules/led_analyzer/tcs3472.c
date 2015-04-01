@@ -267,7 +267,7 @@ unsigned short int tcs_wakeUp(struct ftdi_context* ftdiA, struct ftdi_context* f
     return 0;
 }
 
-unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned int uiIntegrationtime)
+unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned char* aucIntegrationtime)
 {
     int i= 0;
     unsigned int uiSuccesscounter = 0;
@@ -276,12 +276,13 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
 	unsigned short int usErrorMask = 0;
 	
 	
+	
     for(i=0; i<16; i++)
     {
 		
 	//TODO: pass an integration time parameter which contains 16 different integration times
 	// so each sensor can be checked for itself, as each sensor can have different integration time settings
-        switch(uiIntegrationtime)
+        switch(aucIntegrationtime[i])
         {
             case TCS3471_INTEGRATION_2_4ms:
                 if(ausClear[i] >= 1024)

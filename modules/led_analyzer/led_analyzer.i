@@ -37,7 +37,8 @@
 %apply (unsigned short *INOUT) {unsigned short* ausIntTimeSettings}
 %apply (char **INOUT) {(char** asSerial)}
 %apply (char *INOUT) {char* aucGains}
-%apply (char *INOUT) {char* aucIntTimeSettings}
+%apply (char *INOUT) {char* aucIntegrationtime}
+
 
 
 

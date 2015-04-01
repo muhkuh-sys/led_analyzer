@@ -556,7 +556,7 @@ REPLACE IF HARDWARE ARRIVES
 
 /* Function reads out four colors (RGBC) of each sensor (16) under a device */
 int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsigned short* ausRed,
-														  unsigned short* ausGreen, unsigned short* ausBlue)
+														  unsigned short* ausGreen, unsigned short* ausBlue, unsigned char* aucIntegrationtime)
 {
 	int iResult = 0;
 	int iHandleLength = get_handleLength(apHandles);
@@ -614,6 +614,7 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	tcs_readColour(apHandles[handleIndex], apHandles[handleIndex+1], ausGreen, GREEN);
 	tcs_readColour(apHandles[handleIndex], apHandles[handleIndex+1], ausBlue, BLUE);
 
+	tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntegrationtime);
 
 	printf("reading colors successful\n");
 	return iResult;
@@ -624,7 +625,7 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 and can be used for led detection 
 Colors are not valid if the gain/integration time setting was too high, which could result in a a color out of range
 or the color sets are not valid due to any other reason */
-int check_validity(void** apHandles, int devIndex, unsigned short* ausClear, unsigned long integrationtime)
+int check_validity(void** apHandles, int devIndex, unsigned short* ausClear, unsigned char* aucIntegrationtime)
 {
 	int iResult = 0;
 	int iHandleLength = get_handleLength(apHandles);
@@ -642,7 +643,7 @@ int check_validity(void** apHandles, int devIndex, unsigned short* ausClear, uns
 	}
 	
 	
-	if((errorcode = tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, integrationtime)) != 0)
+	if((errorcode = tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, aucIntegrationtime)) != 0)
 	{
 		printf(" errorcode exceeded clear: %d \n", errorcode);
 		
@@ -713,7 +714,7 @@ int get_gainSettings(void** apHandles, int devIndex, unsigned char* aucGains)
 	return iResult;
 }
 
-int get_intTimeSettings(void** apHandles, int devIndex, unsigned char* aucIntTimeSettings)
+int get_intTimeSettings(void** apHandles, int devIndex, unsigned char* aucIntegrationtime)
 {
 
 	int iHandleLength = get_handleLength(apHandles);
@@ -728,7 +729,7 @@ int get_intTimeSettings(void** apHandles, int devIndex, unsigned char* aucIntTim
 	}
 
 	
-	iResult = tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntTimeSettings);
+	iResult = tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntegrationtime);
 	return iResult;
 
 }

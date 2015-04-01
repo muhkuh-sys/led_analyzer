@@ -95,7 +95,7 @@ unsigned short int tcs_readColour(struct ftdi_context* ftdiA, struct ftdi_contex
 unsigned short int tcs_sleep(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
 unsigned short int tcs_wakeUp(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
 unsigned short int tcs_ON(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
-unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* usClear, unsigned int uiIntegrationtime);
+unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned char* aucIntegrationtime);
 unsigned short int tcs_clearInt(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
 void               tcs_waitIntegrationtime(tcs3471Integration_t uiIntegrationtime);
 unsigned short int tcs_getGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucGainSettings);
