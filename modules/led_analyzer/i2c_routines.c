@@ -27,6 +27,7 @@ void i2c_startCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 }
 
 
+    
 
 
 void i2c_stopCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB )
@@ -118,6 +119,84 @@ int i2c_write8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
     return iRetval;
 
 }
+
+/* Sends a databyte to one sensor only. Sensornumber ranges from 0 - 15 
+   Adresse R/W - ack - register - ack - data
+aucSendbuffer contains: Address, Register to write to, content that will be written to the register 
+
+retVal  >0 : everything ok 
+retVal ==0 : something failed, as retVal represents the number of bytes read back from the usb-device, always more then 0 bytes expected
+retval <0  : libusb functions failed (for example writing to channel A/B, reading from Channel A/B) */
+
+int i2c_write8_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength, unsigned int uiX)
+{
+    unsigned int uiBufferIndex = 0;
+    unsigned char ucMask = 0x80;
+    unsigned char ucBitnumber = 7;
+    unsigned long ucDataToSend = 0;
+    unsigned long ulDataToSend = 0;
+    int iRetval = 0;
+
+	int sensorToDataline = uiX*2;
+    i2c_startCond(ftdiA, ftdiB);
+
+        /* Send Adress leave Bit0 for WR Bit */
+        while(ucMask!=1)
+        {
+            ucDataToSend = ((aucSendBuffer[uiBufferIndex] & ucMask)>>ucBitnumber);
+            
+			/* Write to a single dataline */			
+			ulDataToSend = ucDataToSend << (sensorToDataline);
+
+            process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
+            i2c_clock(ftdiA, ftdiB, ulDataToSend);
+
+            ucMask>>=1;
+            ucBitnumber--;
+        }
+
+
+    /* 0 write 1 read */
+    process_pins(ftdiA, ftdiB,  SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_WRITE);
+    i2c_clock(ftdiA, ftdiB, SDA_WRITE);
+    i2c_getAck(ftdiA, ftdiB);
+    uiBufferIndex++;
+    ucMask = 128;
+    ucBitnumber = 7;
+
+    /* Iterate to all elements of aucBuffer, Index 1 will be the register written to / read from, index 2+ will be data */
+    while(ucLength > 1)
+    {
+       /* Process the byte with indexnumber uiBufferIndex - apply masks and put the byte into the buffer beginning with msb */
+        while(ucMask)
+        {
+            ucDataToSend = ((aucSendBuffer[uiBufferIndex] & ucMask)>>ucBitnumber);
+            
+			/* Write to a single dataline */
+			ulDataToSend = ucDataToSend << (sensorToDataline);
+
+            process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
+            i2c_clock(ftdiA, ftdiB, ulDataToSend);
+
+            ucMask>>=1;
+            ucBitnumber--;
+        }
+        // an ack bit should come here
+        //i2c_fakeAck(ftdiA, ftdiB);
+        i2c_getAck(ftdiA, ftdiB);
+        ucMask = 128;
+        ucBitnumber = 7;
+        ucLength--;
+        uiBufferIndex++;
+    }
+
+    i2c_stopCond(ftdiA, ftdiB);
+
+    iRetval = send_package_write8(ftdiA, ftdiB); // 3 Acknowladges expected
+    return iRetval;
+
+}
+
 
 /* aucSendbuffer contains adress, register to read from 
 aucRecBuffer will hold 16 unsigned char values 
