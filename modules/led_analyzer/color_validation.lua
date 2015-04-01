@@ -1,7 +1,7 @@
 -- a helper to print a color table 
 function print_color(devIndex, colortable, length, mode)
 	print(string.format("\n"))
-	print(string.format(" ------------------- Colors --------------------- ", devIndex))
+	print(string.format("------------------- Colors --------------------- ", devIndex))
 	
 	
 	if mode == "RGB" then 
