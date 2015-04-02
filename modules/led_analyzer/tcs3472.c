@@ -1,4 +1,23 @@
-
+/***************************************************************************
+ *   Copyright (C) 2014 by Subhan Waizi                           		   *
+ *                                     									   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+ 
 #include "tcs3472.h"
 
 
@@ -19,7 +38,7 @@ unsigned short int tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context*
 
     int i = 0;
 
-    unsigned char aucTempbuffer[2] = {(0x29<<1), TCS3471_ID_REG | TCS3471_COMMAND_BIT};
+    unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3471_ID_REG | TCS3471_COMMAND_BIT};
     unsigned char aucErrorbuffer[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
         i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucReadbuffer, sizeof(aucReadbuffer));
@@ -57,51 +76,60 @@ unsigned short int tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context*
 
 
 /* This function turns the tcs3472 sensor on, in case it was sent to sleep before
-   If function is called without the sensor being priorily sent to sleep this function does nothing */
+   If function is called without the sensor being priorily sent to sleep this function does nothing 
+   
+   retVal == 0: everything ok
+   retVal == 1: I2C-Functions failed
+   */
 unsigned short int tcs_ON(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
-   unsigned char aucTempbuffer[3] = {(0x29<<1), TCS3471_ENABLE_REG | TCS3471_COMMAND_BIT, TCS3471_AIEN_BIT | TCS3471_AEN_BIT
+   unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3471_ENABLE_REG | TCS3471_COMMAND_BIT, TCS3471_AIEN_BIT | TCS3471_AEN_BIT
                                     | TCS3471_PON_BIT };
    if(i2c_write8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer)) <0) return 1;
    return 0;
 }
 
 
-/* Following two functions have to be set up properly to have a decent detection. 
-*/
-
+/* Following 4 functions have to be set up properly to have a decent detection */
 
 /* This function sets the integration time of all sensor, darker leds need longer integration times.
-whereas brighter leds need shorter integration times */
+whereas brighter leds need shorter integration times 
+
+retVal == 0: everything ok
+retVal == 1: I2C-Functions failed 
+*/
 unsigned short int tcs_setIntegrationTime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Integration_t uiIntegrationtime)
 {
-    unsigned char aucTempbuffer[3] = {(0x29<<1), TCS3471_ATIME_REG | TCS3471_COMMAND_BIT, uiIntegrationtime};
+    unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3471_ATIME_REG | TCS3471_COMMAND_BIT, uiIntegrationtime};
     if(i2c_write8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer)) <0) return 1;
 
     return 0;
 }
 
-
 /* This function sets the integration time of one sensor given in uiX (ranges from 0 ... 15), darker leds need longer integration times.
-whereas brighter leds need shorter integration times */
+whereas brighter leds need shorter integration times 
+
+retVal == 0: everything ok
+retVal == 1: I2C-Functions failed 
+
+*/
 unsigned short int tcs_setIntegrationTime_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Integration_t uiIntegrationtime, unsigned int uiX)
 {
-    unsigned char aucTempbuffer[3] = {(0x29<<1), TCS3471_ATIME_REG | TCS3471_COMMAND_BIT, uiIntegrationtime};
+    unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3471_ATIME_REG | TCS3471_COMMAND_BIT, uiIntegrationtime};
     if(i2c_write8_x(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), uiX) <0) return 1;
 
     return 0;
 }
 
-
-
-
-
 /* this function sets the gain of all sensors
 just like the integration time, darker leds need a higher gain setting and brighter leds can have a lower gain setting
+
+retVal == 0: everything ok
+retVal == 1: I2C-Functions failed 
 */
 unsigned short int tcs_setGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Gain_t gain)
 {
-    unsigned char aucTempbuffer[3] = {(0x29<<1), TCS3471_CONTROL_REG | TCS3471_COMMAND_BIT, gain};
+    unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3471_CONTROL_REG | TCS3471_COMMAND_BIT, gain};
 
     if(i2c_write8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer)) <0) return 1;
     return 0;
@@ -109,10 +137,13 @@ unsigned short int tcs_setGain(struct ftdi_context* ftdiA, struct ftdi_context* 
 
 /* this function sets the gain of one sensor given in uiX (ranges from 0 ... 15)
 just like the integration time, darker leds need a higher gain setting and brighter leds can have a lower gain setting
+
+retVal == 0: everything ok
+retVal == 1: I2C-Functions failed 
 */
 unsigned short int tcs_setGain_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Gain_t gain, unsigned int uiX)
 {
-    unsigned char aucTempbuffer[3] = {(0x29<<1), TCS3471_CONTROL_REG | TCS3471_COMMAND_BIT, gain};
+    unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3471_CONTROL_REG | TCS3471_COMMAND_BIT, gain};
 
     if(i2c_write8_x(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), uiX) <0) return 1;
     return 0;
@@ -139,7 +170,7 @@ unsigned short int tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_conte
 	unsigned short int usErrorMask = 0;
     int i = 0;
 
-    unsigned char aucTempbuffer[2] = {(0x29<<1), TCS3471_STATUS_REG | TCS3471_COMMAND_BIT};
+    unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3471_STATUS_REG | TCS3471_COMMAND_BIT};
     unsigned char aucErrorbuffer[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
         i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucReadbuffer, sizeof(aucReadbuffer));
@@ -157,7 +188,7 @@ unsigned short int tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_conte
                if(uiSuccesscounter == 16)
                {
                    printf("RGBC datasets valid.\n");
-                   return 0; // Valid RGBC data from all sensors
+                   return 0; 
                }
             }
         printf("Invalid RGBC data with following Sensors ...\n");
@@ -181,7 +212,7 @@ unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_conte
 	unsigned short int usErrorMask = 0;
     int i = 0;
 
-    unsigned char aucTempbuffer[2] = {(0x29<<1), TCS3471_STATUS_REG | TCS3471_COMMAND_BIT};
+    unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3471_STATUS_REG | TCS3471_COMMAND_BIT};
     unsigned char aucErrorbuffer[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
         i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucReadbuffer, sizeof(aucReadbuffer));
@@ -199,7 +230,7 @@ unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_conte
                if(uiSuccesscounter == 16)
                {
                    printf("Conversions complete.\n");
-                   return 0; // SUCCESFULL IDENTFICATION OF ALL SENSORS
+                   return 0; 
                }
             }
 
@@ -214,10 +245,15 @@ unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_conte
 		
 }
 
-
+/* Read 4 color values per sensor - RED; GREEN; BLUE; CLEAR 
+   Color arrays will contain 16 elements corresponding to the 16 sensors of a device 
+   
+   retVal == 0: everything ok
+   retVal == 1: I2C-Functions failed 
+*/
 unsigned short int tcs_readColour(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausColorArray, enum tcs_color_t color)
 {
-    unsigned char aucTempbuffer[2] = {(0x29<<1), TCS3471_AUTOINCR_BIT | TCS3471_COMMAND_BIT};
+    unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3471_AUTOINCR_BIT | TCS3471_COMMAND_BIT};
 
     switch(color)
     {
@@ -244,29 +280,46 @@ unsigned short int tcs_readColour(struct ftdi_context* ftdiA, struct ftdi_contex
 }
 
 
+/* Send 16 color sensors into sleep state
+
+retVal == 0: everything ok
+retVal == 1: I2C-Functions failed 
+*/
 
 unsigned short int tcs_sleep(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
     unsigned char aucReadbuffer[16];
-    unsigned char aucTempbuffer[2]  = {(0x29<<1), TCS3471_COMMAND_BIT | TCS3471_ENABLE_REG};
+    unsigned char aucTempbuffer[2]  = {(TCS_ADDRESS<<1), TCS3471_COMMAND_BIT | TCS3471_ENABLE_REG};
     if(i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucReadbuffer, sizeof(aucReadbuffer))<0) return 1;
-    unsigned char aucTempbuffer2[3] = {(0x29<<1), TCS3471_COMMAND_BIT | TCS3471_ENABLE_REG,  aucReadbuffer[0] & ~(TCS3471_PON_BIT | TCS3471_AEN_BIT)};
+    unsigned char aucTempbuffer2[3] = {(TCS_ADDRESS<<1), TCS3471_COMMAND_BIT | TCS3471_ENABLE_REG,  aucReadbuffer[0] & ~(TCS3471_PON_BIT | TCS3471_AEN_BIT)};
     if(i2c_write8(ftdiA, ftdiB,  aucTempbuffer2, sizeof(aucTempbuffer2))<0) return 1;
 
     return 0;
 }
 
+/* Wake up 16 color sensors which were sent to sleep state before 
+
+	retVal == 0: everything ok
+	retVal == 1: I2C-Functions failed 
+*/
 unsigned short int tcs_wakeUp(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
     unsigned char aucReadbuffer[16];
-    unsigned char aucTempbuffer[2]  = {(0x29<<1), TCS3471_COMMAND_BIT | TCS3471_ENABLE_REG};
+    unsigned char aucTempbuffer[2]  = {(TCS_ADDRESS<<1), TCS3471_COMMAND_BIT | TCS3471_ENABLE_REG};
     if(i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucReadbuffer, sizeof(aucReadbuffer))<0) return 1;
-    unsigned char aucTempbuffer2[3] = {(0x29<<1), TCS3471_COMMAND_BIT | TCS3471_ENABLE_REG,  aucReadbuffer[0] | TCS3471_PON_BIT};
+    unsigned char aucTempbuffer2[3] = {(TCS_ADDRESS<<1), TCS3471_COMMAND_BIT | TCS3471_ENABLE_REG,  aucReadbuffer[0] | TCS3471_PON_BIT};
     if(i2c_write8(ftdiA, ftdiB,  aucTempbuffer2, sizeof(aucTempbuffer2))<0) return 1;
 
     return 0;
 }
 
+/* Check if the sensors' color values for clear channel were exceeded - this means we had an inappropriate gain / integration time setting
+
+   return value ==0: everything ok 
+   return value > 0: if bit0 is high -> first sensor exceeded maximum clear
+					 if bit1 is high -> second sensor exceeded maximum clear
+					 and so on
+*/			 
 unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned char* aucIntegrationtime)
 {
     int i= 0;
@@ -360,15 +413,23 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
 		
 }
 
+
+/* Clear the interrupt channel of all sensors 
+	
+	retVal == 0: everything ok
+	retVal == 1: I2C-Functions failed 
+	
+*/
 unsigned short int tcs_clearInt(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
-    unsigned char aucTempbuffer[2]  = {(0x29<<1), TCS3471_COMMAND_BIT | TCS3471_SPECIAL_BIT | TCS3471_INTCLEAR_BIT};
+    unsigned char aucTempbuffer[2]  = {(TCS_ADDRESS<<1), TCS3471_COMMAND_BIT | TCS3471_SPECIAL_BIT | TCS3471_INTCLEAR_BIT};
 
     if(i2c_write8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer))<0) return 1;
     return 0;
 
 }
 
+/* Wait the integration time needed by the sensor to make a color reading */
 void tcs_waitIntegrationtime(tcs3471Integration_t uiIntegrationtime)
 {
         switch(uiIntegrationtime)
@@ -400,20 +461,29 @@ void tcs_waitIntegrationtime(tcs3471Integration_t uiIntegrationtime)
         }
 }
 
-/* Reads gain settings of 16 sensors and stores them in usGainSettings */
+/* Reads gain settings of 16 sensors and stores them in usGainSettings 
+
+	retVal == 0: everything ok
+	retVal == 1: I2C-Functions failed 
+*/
 unsigned short int tcs_getGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucGainSettings)
 {
-	unsigned char aucTempbuffer[2] = {(0x29<<1), TCS3471_CONTROL_REG | TCS3471_COMMAND_BIT};
+	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3471_CONTROL_REG | TCS3471_COMMAND_BIT};
 	
 	if(i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucGainSettings, sizeof(aucGainSettings) < 0)) return 1;
 	
 	return 0;
 }
 
-
+/* Read the integration time setings of 16 sensors and store them into aucInttimeSettings 
+	
+	retVal == 0: everything ok
+	retVal == 1: I2C-Functions failed 
+	
+*/
 unsigned short int tcs_getIntegrationtime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucInttimeSettings)
 {
-	unsigned char aucTempbuffer[2] = {(0x29<<1), TCS3471_ATIME_REG | TCS3471_COMMAND_BIT};
+	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3471_ATIME_REG | TCS3471_COMMAND_BIT};
 
 	if(i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucInttimeSettings, sizeof(aucInttimeSettings) < 0)) return 1;
 	
