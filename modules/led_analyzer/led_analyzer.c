@@ -28,6 +28,49 @@
 
 
 
+/* Functions swaps two strings in the asSerial string array 
+
+	retVal = -1: swapping didn't work due to overindexing the asSerial array 
+	retVal = 0 : everything ok -- swapping worked 
+*/
+
+int swap_serialPos(char** asSerial, unsigned int swap1, unsigned int swap2)
+{
+	int numbOfDevs = get_number_of_serials(asSerial);
+	char temp[128];
+	
+	if(swap1 >= numbOfDevs) 
+	{
+		printf("Reaching out of seralnumber array ... cannot swap\n");
+		return -1;
+	}
+	
+	if(swap2 >= numbOfDevs) 
+	{
+		printf("Reaching out of seralnumber array ... cannot swap\n");
+		return -1;
+	}
+	
+	// printf("Before swap \n");
+	// int counter = 0;
+	// while(counter < numbOfDevs)
+	// {
+		// printf("Serial %d: %s\n",counter, asSerial[counter]);
+		// counter++;
+	// }
+	
+	/* Temporary store of Serials old position */
+	strcpy(temp, asSerial[swap1]);
+	/* store the serial number into the new position */
+	strcpy(asSerial[swap1], asSerial[swap2]);
+	/* Restore the old position */
+	strcpy(asSerial[swap2], temp);
+	
+	return 0;
+
+	
+}
+
 
 
 
@@ -58,8 +101,6 @@ int scan_devices(char** asSerial, unsigned int asLength)
 	
 	
 	
-	//memset(asSerial, 0, sizeof(char*) * asLength);
-	
 	
 	
 	if(asLength <1)
@@ -87,7 +128,7 @@ int scan_devices(char** asSerial, unsigned int asLength)
 			return -1;
 		}
 
-	
+	printf("\n\n");
 	
 	i = 0;
 	for (curdev = devlist; curdev != NULL; i++)
@@ -107,7 +148,8 @@ int scan_devices(char** asSerial, unsigned int asLength)
 		if(strcmp(sMatch, description) == 0)
 		{
 			numbOfSerials++;
-			asSerial[i] = (char*) malloc(strlen(serial)+1);
+			/* + 10 to have some puffer if 2 serial numbers have different lengths in the swapping function */
+			asSerial[i] = (char*) malloc(sizeof(serial));
 			strcpy(asSerial[i], serial);			
 		}
 		
@@ -117,31 +159,34 @@ int scan_devices(char** asSerial, unsigned int asLength)
 	ftdi_list_free(&devlist);
 	ftdi_free(ftdi);
 	
+	if(numbOfSerials == 0)
+	{
+			printf("no color controller(s) detected ... quitting.\n");
+			ftdi_list_free(&devlist);
+			ftdi_free(ftdi);
+			return -1;
+	}
+	
 	return numbOfSerials;
 }
 
 /* function connects to devices with serial numbers given in asSerial 
    
-   retVal >0 : number of devices connected to
-   retVal <=0: 
+   retVal >0  : number of devices connected to
+   retVal <=0 : error with ftdi functions or arraylength
    
 */
 int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 {
 
 	struct ftdi_context* ftdi;
-	
-	
 	int numbOfDevs = get_number_of_serials(asSerial);
 	int iArrayPos = 0;
 	int devCounter = 0;
 	int f;
 	
-	
-	
 	printf("Number of Color Controllers found: %d\n\n", numbOfDevs);
-	
-	
+
 	if(2*numbOfDevs > apHlength)
 	{
 		printf("handlearray too small for number of ftdi-chips found\n");
@@ -262,8 +307,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 int get_number_of_serials(char** asSerial)
 {
 	int counter = 0;
-	int i = 0;
-	
+
 	while(asSerial[counter]!=NULL) counter ++;
 	
 	return counter;
@@ -452,7 +496,6 @@ int detect_devices(void** apHandles, int apHlength)
 *  Each color sensor returns 4 unsigned short values
 */
 
-
 int get_handleLength(void ** apHandles)
 {
 	int iCounter = 0;
@@ -486,6 +529,7 @@ int set_intTime_x(void** apHandles, int devIndex, unsigned long integrationtime,
 	return 0;
 }
 
+/* Set the gain of one sensor given in uiX which ranges from 0 ... 15 */
 int set_gain_x(void** apHandles, int devIndex, unsigned long gain, unsigned int uiX)
 {
 	int handleIndex = devIndex * 2;
@@ -501,7 +545,10 @@ int set_gain_x(void** apHandles, int devIndex, unsigned long gain, unsigned int 
 
 /* Initialize the sensors under a certain device# and handle#
 	Initializing a sensor, sets up its gain and integration time, clears any priorly generated interrupt, turns the sensor on, and waits 
-	an integration time cycle, so that data is already ready for the next color reading */
+	an integration time cycle, so that data is already ready for the next color reading 
+
+	
+*/
 int init_sensors(void** apHandles, int devIndex, unsigned long integrationtime, unsigned long gain)
 {
 	int iResult = 0;
@@ -584,7 +631,8 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	
 	if((errorcode = tcs_identify(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer)) != 0)
 		{
-			printf(" errorcode identification: %d \n", errorcode);
+			
+			// return errorcode //
 			
 			/* 
 			MISSING DUE TO LACK OF APPROPRIATE HARDWARE
@@ -598,9 +646,10 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	
 	if((errorcode = tcs_waitForData(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer)) != 0)
 		{
-			printf(" errorcode incomplete conversion: %d \n", errorcode);
+	
 			
-			
+		// return errorcode 
+		
 		/* 
 		MISSING DUE TO LACK OF APPROPRIATE HARDWARE
 
@@ -649,30 +698,26 @@ int check_validity(void** apHandles, int devIndex, unsigned short* ausClear, uns
 	
 	
 	if((errorcode = tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, aucIntegrationtime)) != 0)
-	{
-		printf(" errorcode exceeded clear: %d \n", errorcode);
-		
+	{		
+		// return errorcode 
 		/* 
 		MISSING DUE TO LACK OF APPROPRIATE HARDWARE
 
 		RETURN ERRORCODE INSTEAD OF 0 (0 = all ok)
 
 		REPLACE IF HARDWARE ARRIVES
-		*/
-
+		*/	
 	}
+	
 	if((errorcode = tcs_rgbcInvalid(apHandles[handleIndex], apHandles[handleIndex+1], aucReadbuffer)) != 0)
 	{
-		printf(" errorcode invalid rgbc: %d \n", errorcode);
-		
 		/* 
 		MISSING DUE TO LACK OF APPROPRIATE HARDWARE
 
 		RETURN ERRORCODE INSTEAD OF 0 (0 = all ok)
 
 		REPLACE IF HARDWARE ARRIVES
-		
-		
+			
 		*/
 		return 0;
 	}
@@ -721,7 +766,6 @@ int get_gainSettings(void** apHandles, int devIndex, unsigned char* aucGains)
 
 int get_intTimeSettings(void** apHandles, int devIndex, unsigned char* aucIntegrationtime)
 {
-
 	int iHandleLength = get_handleLength(apHandles);
 	int handleIndex = devIndex * 2;
 	int iResult = 0;
@@ -732,7 +776,6 @@ int get_intTimeSettings(void** apHandles, int devIndex, unsigned char* aucIntegr
 			printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
 			return 1;
 	}
-
 	
 	iResult = tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntegrationtime);
 	return iResult;
