@@ -1,4 +1,23 @@
-
+/***************************************************************************
+ *   Copyright (C) 2014 by Subhan Waizi                           		   *
+ *                                     									   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+ 
 #include "io_operations.h"
 
 /* Wird auf Kanal a Lowbyte (AD) gemapped */
@@ -56,8 +75,6 @@
 #define SCL15        0x80000000
 
 
-#define I2C_DELAYTIME 10
-
 #define SDA_WRITE 0x0
 #define SDA_READ 0x55555555
 
@@ -66,18 +83,18 @@
 #define SDA_0WRITE 0x00
 #define SDA_0READ  0x00000055
 
-int  i2c_setSpeed(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned int uiSpeedkHz);
+int  i2c_setSpeed    (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned int uiSpeedkHz);
 void i2c_startCond   (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
 void i2c_stopCond    (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
 void i2c_clock       (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend);
-void i2c_clockInput(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend);
-void i2c_giveAck(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
+void i2c_clockInput  (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend);
+void i2c_giveAck     (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
 void i2c_clock_forACK(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend);
-void i2c_getAck(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
-int  i2c_read16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength,
-              unsigned short* ausReadBuffer, unsigned char ucReadBufferLength);
-int  i2c_read8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength,
-              unsigned char* aucRecBuffer, unsigned char ucRecLength);
+void i2c_getAck      (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
+int  i2c_read16      (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength,
+                      unsigned short* ausReadBuffer, unsigned char ucReadBufferLength);
+int  i2c_read8       (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength,
+                      unsigned char* aucRecBuffer, unsigned char ucRecLength);
 			  
-int  i2c_write8  (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength);
-int  i2c_write8_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength, unsigned int uiX);
+int  i2c_write8      (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength);
+int  i2c_write8_x    (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength, unsigned int uiX);

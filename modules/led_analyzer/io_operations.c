@@ -4,7 +4,6 @@
 #define R_LOWBYTE 0x81   // Channel AD and BD
 #define R_HIGHBYTE 0x83   // Channel AC and BC3
 
-
 #define MASK_ALOW  0x000000FF
 #define MASK_AHIGH 0x0000FF00
 #define MASK_BLOW  0x00FF0000
@@ -190,7 +189,7 @@ void process_pins(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsign
 
 
 
-/* This function gets called repeatedly by i2c functions. It stores the commands in glbal Buffers
+/* This function gets called repeatedly by i2c functions. It stores the commands in global Buffers
 (aucBufferA and aucBufferB). The commands consist of a mask which determines which pins are set as input and output and and output value
 which will be written to the pins set as output. 
 */
@@ -223,10 +222,10 @@ void process_pins_databack(struct ftdi_context *ftdiA, struct ftdi_context *ftdi
 
 /* This function sends the content of the global Buffers aucBufferA and aucBufferB to the ftdi chip 
 Furthermore it reads back the data of pins which were configured as input. In case of i2c these read back pins
-can be acknowledes send back by the device. 
+can be acknowledge bits or data send back by the device. 
 
 retval <0: usb communication failed 
-retval >=0: number of bytes read back from the device
+retval >=0: number of bytes written to the device
 */
 
 int send_package_write8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB)
@@ -235,39 +234,37 @@ int send_package_write8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB)
     unsigned int uiWritten;
     unsigned int uiRead;
 
-        /*
-       Missing: Check if ACKNOWLEDGES were received
-                waiting for all sensors
-    */
 
+	/* Send to Channel A */
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->in_ep, aucBufferA, indexA, &uiWritten, ftdiA->usb_write_timeout)<0)
     {
         printf("Writing to Channel %s failed!\n", ftdiA->interface==0?"A":(ftdiA->interface==1?"B":" error - invalid channel"));
         return -1;
     }
-
+	
+	/* Send to Channel B */
     if(libusb_bulk_transfer(ftdiB->usb_dev, ftdiB->in_ep, aucBufferB, indexB, &uiWritten, ftdiB->usb_write_timeout)<0)
     {
         printf("Writing to Channel %s failed!\n", ftdiB->interface==0?"A":(ftdiB->interface==1?"B":" error - invalid channel"));
         return -2;
     }
 
-
+	/* Read from Channel A */
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->out_ep, aucBufferA, sizeof(aucBufferA), &uiRead, ftdiA->usb_write_timeout)<0)
     {
         printf("Reading from channel %s failed!\n", ftdiA->interface==0?"A":(ftdiA->interface==1?"B":" error - invalid channel"));
         return -3;
     }
 
+	/* Read from Channel B */
     if(libusb_bulk_transfer(ftdiB->usb_dev, ftdiB->out_ep, aucBufferB, sizeof(aucBufferB), &uiRead, ftdiB->usb_write_timeout)<0)
     {
         printf("Reading from channel %s failed!\n", ftdiB->interface==0?"A":(ftdiB->interface==1?"B":" error - invalid channel"));
         return -4;
     }
 
-    //if(aucBufferA[2] & aucBufferA[3] & aucBufferA[6] & aucBufferA[7] & aucBufferA[10] & aucBufferA[11] & 0xAAAAAAAA == 0)
-    // printf("acks: %d\n", aucBufferA[2] & aucBufferA[3] & aucBufferA[6] & aucBufferA[7] & aucBufferA[10] & aucBufferA[11] & 0xAAAAAAAA);
-
+	
+	/* Reset the index Counters for channel A and channel B */
     indexA = 0;
     indexB = 0;
     readIndexA = 0;
@@ -294,32 +291,30 @@ int send_package_read8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, u
     unsigned int uiWritten;
     unsigned int uiRead;
 
-
-    /*
-       Missing: Check if ACKNOWLEDGES were received
-                waiting for all sensors
-    */
-    /* Reset the receive and the transmit buffers */
-
-
+	
+	/* Send to Channel A */
+	
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->in_ep, aucBufferA, indexA, &uiWritten, ftdiA->usb_write_timeout)<0)
     {
         printf("Writing to Channel %s failed!\n", ftdiA->interface==0?"A":(ftdiA->interface==1?"B":" error - invalid channel"));
         return -1;
     }
 
+	/* Send to chanel B */
     if(libusb_bulk_transfer(ftdiB->usb_dev, ftdiB->in_ep, aucBufferB, indexB, &uiWritten, ftdiB->usb_write_timeout)<0)
     {
         printf("Writing to Channel %s failed!\n", ftdiB->interface==0?"A":(ftdiB->interface==1?"B":" error - invalid channel"));
         return -2;
     }
 
+	/* Read from Channel A */
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->out_ep, aucBufferA, sizeof(aucBufferA), &uiRead, ftdiA->usb_write_timeout)<0)
     {
         printf("Reading from channel %s failed!\n", ftdiA->interface==0?"A":(ftdiA->interface==1?"B":" error - invalid channel"));
         return -3;
     }
 
+	/* Read from Channel B */
     if(libusb_bulk_transfer(ftdiB->usb_dev, ftdiB->out_ep, aucBufferB, sizeof(aucBufferB), &uiRead, ftdiB->usb_write_timeout)<0)
     {
         printf("Reading from channel %s failed!\n", ftdiB->interface==0?"A":(ftdiB->interface==1?"B":" error - invalid channel"));
@@ -399,6 +394,7 @@ int send_package_read8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, u
         ucMask--;
     }
 
+	/* Reset the index counters for Channel A and channel B */
     indexA = 0;
     indexB = 0;
     readIndexA = 0;
@@ -464,11 +460,6 @@ int send_package_read16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, 
     unsigned char ucBufferIndexA = 0;
     unsigned char ucBufferIndexB = 8;
     unsigned int uiCounter = 8;
-
-    /*
-       Missing: Check if ACKNOWLEDGES were received
-                waiting for all sensors
-    */
 
 
     while(uiCounter>0)
@@ -581,6 +572,8 @@ int send_package_read16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, 
         ucMask--;
     }
 
+	
+	/* Reset the index counters for Channel A and channel B */
     indexA = 0;
     indexB = 0;
     readIndexA = 0;

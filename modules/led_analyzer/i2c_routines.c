@@ -1,9 +1,27 @@
-
+/***************************************************************************
+ *   Copyright (C) 2014 by Subhan Waizi                           		   *
+ *                                     									   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 
 #include "i2c_routines.h"
 
 
-/* This function needs to be implemented */
+/* This function does not work*/
 int i2c_setSpeed(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned int uiSpeedkHz)
 {
     return 0;
@@ -47,7 +65,7 @@ void i2c_stopCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB )
 aucSendbuffer contains: Address, Register to write to, content that will be written to the register 
 
 retVal  >0 : everything ok 
-retVal ==0 : something failed, as retVal represents the number of bytes read back from the usb-device, always more then 0 bytes expected
+retVal ==0 : something failed, as retVal represents the number of bytes written to the usb-device, always more then 0 bytes expected
 retval <0  : libusb functions failed (for example writing to channel A/B, reading from Channel A/B) 
 */
 int i2c_write8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength)
@@ -104,8 +122,7 @@ int i2c_write8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
             ucMask>>=1;
             ucBitnumber--;
         }
-        // an ack bit should come here
-        //i2c_fakeAck(ftdiA, ftdiB);
+
         i2c_getAck(ftdiA, ftdiB);
         ucMask = 128;
         ucBitnumber = 7;
@@ -115,14 +132,14 @@ int i2c_write8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
 
     i2c_stopCond(ftdiA, ftdiB);
 
-    iRetval = send_package_write8(ftdiA, ftdiB); // 3 Acknowladges expected
+    iRetval = send_package_write8(ftdiA, ftdiB);
     return iRetval;
 
 }
 
 /* Sends a databyte to one sensor only. Sensornumber ranges from 0 - 15 
    Adresse R/W - ack - register - ack - data
-aucSendbuffer contains: Address, Register to write to, content that will be written to the register 
+   aucSendbuffer contains: Address, register to write to, content that will be written to the register 
 
 retVal  >0 : everything ok 
 retVal ==0 : something failed, as retVal represents the number of bytes read back from the usb-device, always more then 0 bytes expected
@@ -131,13 +148,14 @@ retval <0  : libusb functions failed (for example writing to channel A/B, readin
 int i2c_write8_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength, unsigned int uiX)
 {
     unsigned int uiBufferIndex = 0;
-    unsigned char ucMask = 0x80;
-    unsigned char ucBitnumber = 7;
+    unsigned char ucMask       = 0x80;
+    unsigned char ucBitnumber  = 7;
     unsigned long ucDataToSend = 0;
     unsigned long ulDataToSend = 0;
-    int iRetval = 0;
+    int iRetval				   = 0;
+	int sensorToDataline 	   = uiX*2;
 
-	int sensorToDataline = uiX*2;
+
     i2c_startCond(ftdiA, ftdiB);
 
         /* Send Adress leave Bit0 for WR Bit */
@@ -156,7 +174,7 @@ int i2c_write8_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
         }
 
 
-    /* 0 write 1 read */
+    /* 8th bit of the first byte --> 0 write 1 read */
     process_pins(ftdiA, ftdiB,  SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_WRITE);
     i2c_clock(ftdiA, ftdiB, SDA_WRITE);
     i2c_getAck(ftdiA, ftdiB);
@@ -375,7 +393,7 @@ int i2c_read16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
             ulDataToSend = ucDataToSend << 0 | ucDataToSend << 2 | ucDataToSend << 4 | ucDataToSend << 6  // DA0-3
                          | ucDataToSend << 8 | ucDataToSend << 10| ucDataToSend << 12| ucDataToSend <<14  // DA4-7
                          | ucDataToSend <<16 | ucDataToSend << 18| ucDataToSend << 20| ucDataToSend <<22  // DA8-11
-                         | ucDataToSend <<24 | ucDataToSend << 26| ucDataToSend <<28 | ucDataToSend <<30; // DA12-15
+                         | ucDataToSend <<24 | ucDataToSend << 26| ucDataToSend << 28| ucDataToSend <<30; // DA12-15
 
             process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
             i2c_clock(ftdiA, ftdiB, ulDataToSend);
