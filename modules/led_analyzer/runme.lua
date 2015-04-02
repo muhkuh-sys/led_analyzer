@@ -8,6 +8,7 @@ TEST_RESULT_OK = 0
 TEST_RESULT_LED_FAILED = 1 
 TEST_RESULT_SENSORS_FAILED = 2
 
+
 MAXHANDLES = 16 
 MAXSENSORS = 16 
 
@@ -59,22 +60,11 @@ asSerials = led_analyzer.new_astring(MAXSERIALS)
 apHandles = led_analyzer.new_apvoid(MAXHANDLES)
 
 numberofserials = led_analyzer.scan_devices(asSerials, MAXSERIALS);
-
-
 stringtable = astring_to_table(asSerials, MAXSERIALS)
-
-
--- Detects the ftdi devices and returns the number of devices found 
--- #1 => 1 ftdi device found => two handles saved in apHandles, second param: number of max handles
 numberOfDevices = led_analyzer.connect_to_devices(apHandles, MAXHANDLES, asSerials)
 
 
-
-led_analyzer.set_gain_x(apHandles, 0, TCS3471_GAIN_4X, 0)
-
-
 local error_counter = 0 
-
 
 
 if numberOfDevices == -1 then
