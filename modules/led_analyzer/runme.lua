@@ -145,10 +145,10 @@ else
 		led_analyzer.get_gainSettings(apHandles, devIndex, aucGains)
 		led_analyzer.get_intTimeSettings(apHandles, devIndex, aucIntTimes)
 		
-		-- for i = 0, 15 do
-		--	print(led_analyzer.puchar_getitem(aucGains, i))
-		--	print(led_analyzer.puchar_getitem(aucIntTimes, i))
-		--end
+		for i = 0, 15 do
+			print(led_analyzer.puchar_getitem(aucGains, i))
+			print(led_analyzer.puchar_getitem(aucIntTimes, i))
+		end
 		
 		
 		
