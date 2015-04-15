@@ -29,6 +29,7 @@ before_install:
   - sudo apt-get --assume-yes install python-pip python-virtualenv
   - virtualenv ~/virtualenv/python2.7
   - source ~/virtualenv/python2.7/bin/activate
+  - sudo apt-get install {libc6,python}-dev
   - pip install -q requests
   #- pip install -q requests
 
