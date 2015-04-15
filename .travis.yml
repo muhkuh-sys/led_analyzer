@@ -26,6 +26,10 @@ before_install:
   - sudo apt-get --assume-yes install gcc-multilib g++-multilib make libudev-dev libreadline6-dev
   - sudo apt-get --assume-yes install cmake3
   - sudo apt-get --assume-yes install swig3
+  - sudo apt-get --assume-yes install python-pip python-virtualenv
+  - virtualenv ~/virtualenv/python2.7
+  - source ~/virtualenv/python2.7/bin/activate
+  - pip install -q requests
   #- pip install -q requests
 
 
