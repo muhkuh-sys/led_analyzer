@@ -13,7 +13,7 @@ before_install:
  
   # Curl is a software that gives possibility of Copying Data from and to a server, we get our open.suse project 
   # and thus make it possible to find cmake3 and swig3 later on 
-   - curl http://download.opensuse.org/repositories/home:/doc_bacardi/xUbuntu_12.04/Release.key | sudo apt-key add -
+  - curl http://download.opensuse.org/repositories/home:/doc_bacardi/xUbuntu_12.04/Release.key | sudo apt-key add -
   
   # echo command enables string display on command view
   # tee -a permits the forking of a data pipe in a shell script or at the command line. We add our data pipe to the sources.lis
