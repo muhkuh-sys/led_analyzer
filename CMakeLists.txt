@@ -32,8 +32,6 @@ ENDIF(${CMAKE_BUILD_TOOL} MATCHES "(msdev|VCExpress|devenv)")
 
 
 #
-
-SET(SWIG_EXECUTABLE C:/Users/subhan/Desktop/swigwin-3.0.2/swig.exe)
 SET(USE_SYSTEM_LUA FALSE)
 
 
