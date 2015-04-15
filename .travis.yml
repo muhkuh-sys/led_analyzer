@@ -1,0 +1,48 @@
+language: c
+
+# This is the travis.yml Script for my Led_Analyzer Project
+
+env:
+  # - secure: Jf4NKmknTjdvCvhWQndTLQE4uVqK4Gl5akCs+Jhy/owYQv2O05nnfQdayhl0XtLD9vuzzRDZIMvAOGcJQxW0g+mYGUPUNPVKwcbItHoumaA5iut0eCRADXiMWukejKQpK1SGerMUSLyTl49dcCaM2mRMYxcyoVI6BVyW0Zmy76M=
+
+
+before_install:
+  # Delete the existing CMake installation (2.0) to provide a clean installation foundation for cmake 3.0
+  # dpkg serves for Installation of .deb-packages, it provides the functionality needed by apt-get and aptitude
+  - sudo dpkg --purge cmake cmake-doc cmake-data
+ 
+  # Curl is a software that gives possibility of Copying Data from and to a server, we get our open.suse project 
+  # and thus make it possible to find cmake3 and swig3 later on 
+   - curl http://download.opensuse.org/repositories/home:/doc_bacardi/xUbuntu_12.04/Release.key | sudo apt-key add -
+  
+  # echo command enables string display on command view
+  # tee -a permits the forking of a data pipe in a shell script or at the command line. We add our data pipe to the sources.lis
+  - echo "deb http://download.opensuse.org/repositories/home:/doc_bacardi/xUbuntu_12.04 ./" | sudo tee -a /etc/apt/sources.list
+  # Get an update of the before (-qq is a flag to make it less noisy --> only errors will be shown as output)
+  - sudo apt-get update -qq
+  
+  #--assume-yes will answer [yes] to the "Do you want to proceed with the installation" 
+  - sudo apt-get --assume-yes install mingw-w64 g++-mingw-w64 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-mingw-w64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 binutils-mingw-w64-i686 binutils-mingw-w64-x86-64
+  - sudo apt-get --assume-yes install gcc-multilib g++-multilib make libudev-dev libreadline6-dev
+  - sudo apt-get --assume-yes install cmake3
+  - sudo apt-get --assume-yes install swig3
+  #- pip install -q requests
+
+
+# This is the command to build the whole project and pack the results in a distributable form.
+script:
+  - ./.build.sh
+  
+
+
+#deploy:
+#  provider: releases
+#  api_key:
+#    secure: mrw32k5aKAP2p/1RnkNGKa9Gc2Vu3bASqb3ryiCWNif22RLuCts2eMwTr2mPnc/umRVYyHqggPJf+BcPkvAgxgwo4paN7JwED35RMDSP+ghLEcPQyS7VEj5SrWqF9vYm9AZ6pw8aTqLvemgdcjMJa/jzJ/UtovLq79vJ+i+SqBw=
+#  file:
+#    - build/lua.zip
+#    - build/ivy.xml
+#  skip_cleanup: true
+#  on:
+#    repo: muhkuh-sys/org.lua-lua
+#    tags: true
