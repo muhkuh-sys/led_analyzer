@@ -51,13 +51,6 @@ int swap_serialPos(char** asSerial, unsigned int swap1, unsigned int swap2)
 		return -1;
 	}
 	
-	// printf("Before swap \n");
-	// int counter = 0;
-	// while(counter < numbOfDevs)
-	// {
-		// printf("Serial %d: %s\n",counter, asSerial[counter]);
-		// counter++;
-	// }
 	
 	/* Temporary store of Serials old position */
 	strcpy(temp, asSerial[swap1]);
@@ -93,7 +86,7 @@ int scan_devices(char** asSerial, unsigned int asLength)
 	int numbOfDevs = 0;
 	int numbOfSerials = 0;
 	
-	char sMatch[] = "Color Controller";
+	const char sMatch[] = "Color Controller";
 	
 	char manufacturer[128], description[128], serial[128];
 	struct ftdi_device_list *devlist, *curdev;
@@ -179,7 +172,6 @@ int scan_devices(char** asSerial, unsigned int asLength)
 int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 {
 
-	struct ftdi_context* ftdi;
 	int numbOfDevs = get_number_of_serials(asSerial);
 	int iArrayPos = 0;
 	int devCounter = 0;
