@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <ivy-module version="2.0">
-	<info organisation="org.lua" module="lua" revision="${VERSION_FULL}">
+	<info organisation="unknown" module="led_analyzer" revision="${VERSION_FULL}">
 		<license name="GPL-2.0"/>
 		<ivyauthor name="Muhkuh team" url="https://github.com/muhkuh-sys" />
 		<description>
-			This module contains the LUA 5.1.4 interpreter in form of an executable with an accompanying shared library and the development files.
+This module contains the led_analyzer project in form of a wrapped lua binding, called led_analyzer.dll. It provides functionality to talk to tcs3472 color sensors via USB.
 		</description>
 	</info>
 	<publications>
