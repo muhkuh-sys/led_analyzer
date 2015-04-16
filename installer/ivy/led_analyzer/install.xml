@@ -2,12 +2,12 @@
 	<target name="install" description="install all components">
 		<echo>led_analyzer</echo>
 		<sequential if:true="${install.os_arch.windows_x86}">
-			<copy file="windows_x86/led_analyzer.dll"        todir="${install.executable}" />
+			<copy file="windows_x86/led_analyzer.dll"        todir="${install.sharedobject}" />
 			<copy file="windows_x86/led_analyzeLUA_wrap.c"   todir="${install.sharedobject}" />
 		</sequential>
 		
 		<sequential if:true="${install.os_arch.windows_amd64}">
-			<copy file="windows_amd64/led_analyzer.dll"      todir="${install.executable}" />
+			<copy file="windows_amd64/led_analyzer.dll"         todir="${install.sharedobject}" />
 			<copy file="windows_amd64/led_analyzerLUA_wrap.c"   todir="${install.sharedobject}" />
 		</sequential>
 

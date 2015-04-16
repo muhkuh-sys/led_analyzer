@@ -4,5 +4,5 @@
 	<groupId>${POM_GROUP_ID}</groupId>
 	<artifactId>${POM_ARTIFACT_ID}</artifactId>
 	<version>${POM_VERSION}</version>
-	<packaging>${POM_PACKAGING}/packaging>
+	<packaging>${POM_PACKAGING}</packaging>
 </project>

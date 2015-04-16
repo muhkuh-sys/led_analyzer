@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <ivy-module version="2.0">
-	<info organisation="unknown" module="led_analyzer" revision="${VERSION_FULL}">
+	<info organisation="org.hilscher.com" module="led_analyzer" revision="${VERSION_FULL}">
 		<license name="GPL-2.0"/>
 		<ivyauthor name="Muhkuh team" url="https://github.com/muhkuh-sys" />
 		<description>
@@ -11,5 +11,6 @@ This module contains the led_analyzer project in form of a wrapped lua binding, 
 	<publications>
 		<artifact ext="zip" type="zip" packaging="zip" />
 	</publications>
-	<dependencies/>
+	<dependencies>	
+	</dependencies>
 </ivy-module>
