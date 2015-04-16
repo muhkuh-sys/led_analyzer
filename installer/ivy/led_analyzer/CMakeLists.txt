@@ -28,11 +28,11 @@ INSTALL(FILES ${COCO_WIN32_INSTALL}/modules/led_analyzer/led_analyzerLUA_wrap.c
 # Install the 64bit files.
 #
 INSTALL(FILES ${COCO_WIN64_INSTALL}/modules/led_analyzer/led_analyzer.dll 
-        DESTINATION windows_amd_64
+        DESTINATION windows_amd64
 )
 
 INSTALL(FILES ${COCO_WIN64_INSTALL}/modules/led_analyzer/led_analyzerLUA_wrap.c 
-        DESTINATION windows_amd_64
+        DESTINATION windows_amd64
 )
 
 #-----------------------------------------------------------------------------
@@ -48,7 +48,6 @@ INSTALL(DIRECTORY ${LED_ANALYZER_LUA}
 	DESTINATION modules
 	FILES_MATCHING PATTERN "*.lua"
 )
-
 
 
 #-----------------------------------------------------------------------------

@@ -1,25 +1,21 @@
-<project xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:if="ant:if" name="lua" default="install">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:if="ant:if" name="led_analyzer" default="install">
 	<target name="install" description="install all components">
-		<echo>org.lua.lua</echo>
-		
-		<sequential if:true="${install.os_arch.linux_i386}">
-			<copy file="linux_i386/lua"           todir="${install.executable}" />
-			<copy file="linux_i386/lua.so"        todir="${install.sharedobject}" />
-		</sequential>
-		
-		<sequential if:true="${install.os_arch.linux_x86_64}">
-			<copy file="linux_x86_64/lua"         todir="${install.executable}" />
-			<copy file="linux_x86_64/lua.so"      todir="${install.sharedobject}" />
-		</sequential>
-		
+		<echo>led_analyzer</echo>
 		<sequential if:true="${install.os_arch.windows_x86}">
-			<copy file="windows_x86/lua.exe"      todir="${install.executable}" />
-			<copy file="windows_x86/liblua.dll"   todir="${install.sharedobject}" />
+			<copy file="windows_x86/led_analyzer.dll"        todir="${install.executable}" />
+			<copy file="windows_x86/led_analyzeLUA_wrap.c"   todir="${install.sharedobject}" />
 		</sequential>
 		
 		<sequential if:true="${install.os_arch.windows_amd64}">
-			<copy file="windows_amd64/lua.exe"      todir="${install.executable}" />
-			<copy file="windows_amd64/liblua.dll"   todir="${install.sharedobject}" />
+			<copy file="windows_amd64/led_analyzer.dll"      todir="${install.executable}" />
+			<copy file="windows_amd64/led_analyzerLUA_wrap.c"   todir="${install.sharedobject}" />
+		</sequential>
+
+	        <sequential>
+			<copy file="modules/led_analyzer/color_conversions.lua" todir="${install.sharedobjects}"/>
+			<copy file="modules/led_analyzer/color_validation.lua " todir="${install.sharedobjects}"/>
+			<copy file="modules/led_analyzer/runme.lua"             todir="${install.sharedobjects}"/>
+			<copy file="modules/led_analyzer/tcs_chromaTable.lua"   todir="${install.sharedobjects}"/>
 		</sequential>
 	</target>
 </project>

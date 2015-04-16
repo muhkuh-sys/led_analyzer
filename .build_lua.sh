@@ -22,6 +22,7 @@ if [ $STATUS -ne 0 ]; then
 fi
 
 
+cd ..
 
 
 
