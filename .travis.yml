@@ -7,21 +7,10 @@ env:
 
 
 before_install:
-  # Delete the existing CMake installation (2.0) to provide a clean installation foundation for cmake 3.0
-  # dpkg serves for Installation of .deb-packages, it provides the functionality needed by apt-get and aptitude
   - sudo dpkg --purge cmake cmake-doc cmake-data
- 
-  # Curl is a software that gives possibility of Copying Data from and to a server, we get our open.suse project 
-  # and thus make it possible to find cmake3 and swig3 later on 
   - curl http://download.opensuse.org/repositories/home:/doc_bacardi/xUbuntu_12.04/Release.key | sudo apt-key add -
-  
-  # echo command enables string display on command view
-  # tee -a permits the forking of a data pipe in a shell script or at the command line. We add our data pipe to the sources.lis
   - echo "deb http://download.opensuse.org/repositories/home:/doc_bacardi/xUbuntu_12.04 ./" | sudo tee -a /etc/apt/sources.list
-  # Get an update of the before (-qq is a flag to make it less noisy --> only errors will be shown as output)
   - sudo apt-get update -qq
-  
-  #--assume-yes will answer [yes] to the "Do you want to proceed with the installation" 
   - sudo apt-get --assume-yes install mingw-w64 g++-mingw-w64 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-mingw-w64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 binutils-mingw-w64-i686 binutils-mingw-w64-x86-64
   - sudo apt-get --assume-yes install gcc-multilib g++-multilib make libudev-dev libreadline6-dev
   - sudo apt-get --assume-yes install cmake3
@@ -30,7 +19,6 @@ before_install:
   - virtualenv ~/virtualenv/python2.7
   - source ~/virtualenv/python2.7/bin/activate
   - pip install -q requests
-  #- pip install -q requests
 
 
 # This is the command to build the whole project and pack the results in a distributable form.
