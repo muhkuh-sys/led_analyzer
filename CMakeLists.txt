@@ -42,7 +42,7 @@ SET(USE_SYSTEM_LUA FALSE)
 add_subdirectory(external)
 add_subdirectory(lua)
 add_subdirectory(modules)
-
+add_subdirectory(CoCoApp)
 
 #----------------------------------------------------------------------------
 

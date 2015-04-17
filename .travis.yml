@@ -5,12 +5,14 @@ language: c
 env:
   # - secure: Jf4NKmknTjdvCvhWQndTLQE4uVqK4Gl5akCs+Jhy/owYQv2O05nnfQdayhl0XtLD9vuzzRDZIMvAOGcJQxW0g+mYGUPUNPVKwcbItHoumaA5iut0eCRADXiMWukejKQpK1SGerMUSLyTl49dcCaM2mRMYxcyoVI6BVyW0Zmy76M=
 
+# my token: 
 
 before_install:
   - sudo dpkg --purge cmake cmake-doc cmake-data
   - curl http://download.opensuse.org/repositories/home:/doc_bacardi/xUbuntu_12.04/Release.key | sudo apt-key add -
   - echo "deb http://download.opensuse.org/repositories/home:/doc_bacardi/xUbuntu_12.04 ./" | sudo tee -a /etc/apt/sources.list
   - sudo apt-get update -qq
+  - curl http://sourceforge.net/projects/muhkuh/files/mbs/org/wxwidgets/wxwidgets-3.0.2-mingw-static.zip | unzip wxwidgets.zip -d /tmp
   - sudo apt-get --assume-yes install mingw-w64 g++-mingw-w64 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-mingw-w64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 binutils-mingw-w64-i686 binutils-mingw-w64-x86-64
   - sudo apt-get --assume-yes install gcc-multilib g++-multilib make libudev-dev libreadline6-dev
   - sudo apt-get --assume-yes install cmake3
@@ -28,14 +30,14 @@ script:
   
 
 
-#deploy:
-#  provider: releases
-#  api_key:
-#    secure: mrw32k5aKAP2p/1RnkNGKa9Gc2Vu3bASqb3ryiCWNif22RLuCts2eMwTr2mPnc/umRVYyHqggPJf+BcPkvAgxgwo4paN7JwED35RMDSP+ghLEcPQyS7VEj5SrWqF9vYm9AZ6pw8aTqLvemgdcjMJa/jzJ/UtovLq79vJ+i+SqBw=
-#  file:
-#    - build/lua.zip
-#    - build/ivy.xml
-#  skip_cleanup: true
-#  on:
-#    repo: muhkuh-sys/org.lua-lua
-#    tags: true
+#eploy:
+# provider: releases
+# api_key: 
+
+# file:
+#   - build/led_analyzer.zip
+#   - build/ivy.xml
+# skip_cleanup: true
+# on:
+#   repo: muhkuh-sys/led_analyzer
+#   tags: true

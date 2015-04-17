@@ -33,14 +33,16 @@ ExternalProject_Add(TARGET_led_analyzer
                     INSTALL_COMMAND make package
 )
 
-# Create a copy of the artifacts without a version number in the filename.
-# This allows easy deploy to GitHub.
-#INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/TARGET_lua-prefix/src/TARGET_lua-build/lua-${CPACK_PACKAGE_VERSION_MAJOR}.#${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}.zip
-#        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-#        RENAME lua.zip)
-#INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/TARGET_lua-prefix/src/TARGET_lua-build/ivy-${CPACK_PACKAGE_VERSION_MAJOR}.#${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}.xml
-#        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-#        RENAME ivy.xml)
+
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/TARGET_led_analyzer-prefix/src/TARGET_led_analyzer-build/led_analyzer-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}.zip
+	DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
+	RENAME led_analyzer.zip
+)
+
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/TARGET_led_analyzer-prefix/src/TARGET_led_analyzer-build/ivy-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}.xml
+	DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
+	RENAME	    ivy.xml
+)
 
 #----------------------------------------------------------------------------
 
