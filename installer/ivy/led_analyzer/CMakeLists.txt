@@ -61,7 +61,7 @@ INSTALL(DIRECTORY ${LED_ANALYZER_LUA}
 # Filter the pom.xml file.
 #
 SET(POM_ARTIFACT_ID  "led_analyzer")
-SET(POM_GROUP_ID     "org.muhkuh.tools")
+SET(POM_GROUP_ID     "tools.muhkuh.org")
 SET(POM_VERSION      "${VERSION_FULL}")
 SET(POM_PACKAGING    "zip")
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../pom.xml pom.xml)
@@ -73,7 +73,7 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../pom.xml pom.xml)
 #
 SET(ARTIFACT_DIRECTORY    "${CMAKE_CURRENT_BINARY_DIR}")
 SET(ARTIFACT_ARTIFACT_ID  "led_analyzer")
-SET(ARTIFACT_GROUP_ID     "org.muhkuh.tools")
+SET(ARTIFACT_GROUP_ID     "tools.muhkuh.org")
 SET(ARTIFACT_VERSION      "${VERSION_FULL}")
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../artifacts.xml ${ARTIFACT_LISTS_OUTPUT}/artifacts_led_analyzer.xml)
 
