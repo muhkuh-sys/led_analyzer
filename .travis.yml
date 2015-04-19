@@ -3,9 +3,8 @@ language: c
 # This is the travis.yml Script for my Led_Analyzer Project
 
 env:
-  # - secure: Jf4NKmknTjdvCvhWQndTLQE4uVqK4Gl5akCs+Jhy/owYQv2O05nnfQdayhl0XtLD9vuzzRDZIMvAOGcJQxW0g+mYGUPUNPVKwcbItHoumaA5iut0eCRADXiMWukejKQpK1SGerMUSLyTl49dcCaM2mRMYxcyoVI6BVyW0Zmy76M=
+  - secure: "cYO+77K4FIp5TXbGSn2QkVBnf+usTo4vtnkZ+Cqx/y2HadI/gzfIDq1JIX0Za9Ov7X7QIUYpelWFt1DkYGgjg0xzIChBDp7F3/6mRXUlnPIu3LcNVrY4toIkFy6LdygwanMpPMVloe+DNOTvAcq6pqiJnEFPDm/0QXq4Hq1EVKo="
 
-# my token: 
 
 before_install:
   - sudo dpkg --purge cmake cmake-doc cmake-data
@@ -28,7 +27,7 @@ before_install:
 script:
   - unset CC
   - ./.build.sh
-  
+  - python installer/ivy/deploy.py build/artifacts/artifacts_led_analyzer.xml
 
 
 #eploy:
