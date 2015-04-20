@@ -183,7 +183,7 @@ void process_pins(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsign
     aucBufferB[indexB++] = W_HIGHBYTE; // BC
     aucBufferB[indexB++] = (unsigned char)((ulOutput&MASK_BHIGH)>>24); // BC
     aucBufferB[indexB++] = (unsigned char)((ulIOMask&MASK_BHIGH)>>24);
-
+	
 }
 
 
@@ -217,7 +217,7 @@ void process_pins_databack(struct ftdi_context *ftdiA, struct ftdi_context *ftdi
     aucBufferB[indexB++] = R_LOWBYTE;
     aucBufferB[indexB++] = R_HIGHBYTE;
     readIndexB+=2;
-
+	
 }
 
 /* This function sends the content of the global Buffers aucBufferA and aucBufferB to the ftdi chip 
@@ -323,7 +323,7 @@ int send_package_read8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, u
 
     /* Fill your readBuffer with zeroes, so nothing can go wrong mate ! */
     int i = 0;
-    for(i; i<16; i++)
+    for(i; i<8; i++)
     {
         aucReadBuffer[i] = 0;
     }
@@ -500,7 +500,7 @@ int send_package_read16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, 
         /* DA7 */
         ausReadBuffer[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x40)>>6)<<ucMask);
 
-        /* Channel AD */
+        /* Channel BC */
         /* DA12 */
         ausReadBuffer[ucBufferIndexB++] |= ((unsigned char)(aucBufferB[ucBitnumber]&0x01)<<ucMask);
         /* DA13 */
@@ -513,6 +513,7 @@ int send_package_read16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, 
         ucBitnumber +=3;
         uiCounter--;
         ucMask--;
+		
     }
 
     ucMask = 7;
