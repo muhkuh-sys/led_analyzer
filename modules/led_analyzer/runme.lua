@@ -93,7 +93,7 @@ else
 		
 		
 		while(error_counter < INIT_MAXERROR) do
-			ret = led_analyzer.init_sensors(apHandles, devIndex, TCS3471_INTEGRATION_200ms, TCS3471_GAIN_4X)
+			ret = led_analyzer.init_sensors(apHandles, devIndex, TCS3471_INTEGRATION_200ms, TCS3471_GAIN_1X)
 			if ret ~= 0 then
 				error_counter = error_counter + 1 
 			else
@@ -155,7 +155,7 @@ else
 		
 		tColor, tXYZ, tYxy, tnm, tHSV = aus_to_table(devIndex, ausClear, ausRed, ausGreen, ausBlue, 16)
 
-		--print_color(devIndex, tColor, 16, "RGB")
+		print_color(devIndex, tColor, 16, "RGB")
 		--print_color(devIndex, tXYZ, 16, "XYZ")
 		--print_color(devIndex, tColor, 16, "RGB_n")
 		--print_color(devIndex, tHSV, 16, "HSV")
