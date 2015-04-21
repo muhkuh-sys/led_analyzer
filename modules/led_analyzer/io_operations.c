@@ -323,7 +323,7 @@ int send_package_read8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, u
 
     /* Fill your readBuffer with zeroes, so nothing can go wrong mate ! */
     int i = 0;
-    for(i; i<8; i++)
+    for(i; i<16; i++)
     {
         aucReadBuffer[i] = 0;
     }
