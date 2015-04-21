@@ -623,35 +623,12 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	
 	if((errorcode = tcs_identify(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer)) != 0)
 		{
-			
-			// return errorcode //
-			
-			/* 
-			MISSING DUE TO LACK OF APPROPRIATE HARDWARE
-
-			RETURN ERRORCODE INSTEAD OF 0 (0 = all ok)
-
-			REPLACE IF HARDWARE ARRIVES
-			*/
-
+			return errorcode;
 		}
 	
 	if((errorcode = tcs_waitForData(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer)) != 0)
 		{
-	
-			
-		// return errorcode 
-		
-		/* 
-		MISSING DUE TO LACK OF APPROPRIATE HARDWARE
-
-		RETURN ERRORCODE INSTEAD OF 0 (0 = all ok)
-
-		REPLACE IF HARDWARE ARRIVES
-		*/
-
-			
-			return 0;
+			return errorcode;
 		}
 		
 	
@@ -673,7 +650,6 @@ Colors are not valid if the gain/integration time setting was too high, which co
 or the color sets are not valid due to any other reason */
 int check_validity(void** apHandles, int devIndex, unsigned short* ausClear, unsigned char* aucIntegrationtime)
 {
-	int iResult = 0;
 	int iHandleLength = get_handleLength(apHandles);
 	int handleIndex = devIndex * 2;
 	unsigned char aucReadbuffer[16];
@@ -691,30 +667,15 @@ int check_validity(void** apHandles, int devIndex, unsigned short* ausClear, uns
 	
 	if((errorcode = tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, aucIntegrationtime)) != 0)
 	{		
-		// return errorcode 
-		/* 
-		MISSING DUE TO LACK OF APPROPRIATE HARDWARE
-
-		RETURN ERRORCODE INSTEAD OF 0 (0 = all ok)
-
-		REPLACE IF HARDWARE ARRIVES
-		*/	
+		return errorcode;
 	}
 	
 	if((errorcode = tcs_rgbcInvalid(apHandles[handleIndex], apHandles[handleIndex+1], aucReadbuffer)) != 0)
 	{
-		/* 
-		MISSING DUE TO LACK OF APPROPRIATE HARDWARE
-
-		RETURN ERRORCODE INSTEAD OF 0 (0 = all ok)
-
-		REPLACE IF HARDWARE ARRIVES
-			
-		*/
-		return 0;
+		return errorcode;
 	}
 	
-	return iResult;
+	return errorcode;
 }
 
 int free_devices(void** apHandles)
