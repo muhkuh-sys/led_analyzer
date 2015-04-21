@@ -45,7 +45,6 @@ unsigned short int tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context*
 		
             for(i = 0; i<=15; i++)
             {
-                printf("ID of the sensors 0x%02x\n", aucReadbuffer[i]);
 				/* 0x14 = ID for tcs3471        0x44 = ID for tcs3472 */
                if(aucReadbuffer[i] != (0x14) && aucReadbuffer[i] != 0x44)
                {
