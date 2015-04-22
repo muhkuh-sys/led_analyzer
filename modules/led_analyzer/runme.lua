@@ -146,18 +146,14 @@ else
 			error_counter = 0 
 		end 
 		
+	
+	led_analyzer.set_gain(apHandles, devIndex, TCS3471_GAIN_4X)
+	led_analyzer.set_intTime(apHandles, devIndex, TCS3471_INTEGRATION_200ms)
+	
 		
+	led_analyzer.get_gain(apHandles, devIndex, aucGains)
+	led_analyzer.get_intTime(apHandles, devIndex, aucIntTimes)
 		
-		--led_analyzer.set_gain_x(apHandles, devIndex, TCS3471_GAIN_4X, 0);
-		--led_analyzer.set_intTime_x(apHandles, devIndex, TCS3471_INTEGRATION_154ms, 0);
-		
-
-			led_analyzer.set_gain(apHandles, devIndex, TCS3471_GAIN_4X)
-			led_analyzer.set_intTime(apHandles, devIndex, TCS3471_INTEGRATION_200ms)
-
-			led_analyzer.get_gain(apHandles, devIndex, aucGains)
-			led_analyzer.get_intTime(apHandles, devIndex, aucIntTimes)
-			
 --			for i = 0, 15 do
 --				print(led_analyzer.puchar_getitem(aucGains, i))
 --				print(led_analyzer.puchar_getitem(aucIntTimes, i))
