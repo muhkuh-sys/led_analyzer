@@ -48,12 +48,18 @@ int 		  free_devices(void** apHandles);
 int			  check_validity(void** apHandles, int devIndex, unsigned short* ausClear, unsigned char* aucIntegrationtime);
 			  /* Returns device # to a given handle # */
 int 		  handleToDevice(int handle);
-			  /* parameter ausGains will hold the gain settings of 16 sensors */ 
-int			  set_gain_x(void** apHandles, int devIndex, unsigned long gain, unsigned int uiX);
-int			  get_gainSettings(void** apHandles, int devIndex, unsigned char* aucGains);	
-			  /* parameter ausIntTimeSettings will hold the integration time settings of 16 sensors */
-int			  set_intTime_x(void** apHandles, int devIndex, unsigned long integrationtime, unsigned int uiX);
-int			  get_intTimeSettings(void** apHandles, int devIndex, unsigned char* aucIntTimeSettings);
+			  /* Set gain of all sensors */
+int			  set_gain(void** apHandles, int devIndex, unsigned char gain);
+			  /* Set gain for sensor uiX (0 ... 15) */
+int			  set_gain_x(void** apHandles, int devIndex, unsigned char gain, unsigned int uiX);
+			  /* Get gain of all sensors and store them in aucGains */
+int			  get_gain(void** apHandles, int devIndex, unsigned char* aucGains);	
+			  /* Set integration time of all sensors */
+int			  set_intTime(void** apHandles, int devIndex, unsigned char integrationtime);
+			  /* Set integration time for sensor uiX (0 ... 15) */
+int			  set_intTime_x(void** apHandles, int devIndex, unsigned char integrationtime, unsigned int uiX);
+			  /* Get integration time of all sensors and store them in aucIntTimeSettings */
+int			  get_intTime(void** apHandles, int devIndex, unsigned char* aucIntTimeSettings);
 			  /* returns the amount of serial numbers in the serial number array */
 int 		  get_number_of_serials(char** asSerial);
 			  /* Swap two serial numbers, so the order of opening color controllers can be chosen */

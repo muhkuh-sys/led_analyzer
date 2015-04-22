@@ -62,7 +62,7 @@ unsigned short int tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context*
                }
             }
 			
-        printf("Identification errors with following Sensors ...\n");
+        printf("Identification errors for following Sensors ...\n");
         for(i = 0; i<16; i++)
         {
             if(aucErrorbuffer[i] != 0xFF) printf("%d ", aucErrorbuffer[i]);
@@ -190,7 +190,7 @@ unsigned short int tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_conte
                    return 0; 
                }
             }
-        printf("Invalid RGBC data with following Sensors ...\n");
+        printf("Invalid RGBC data from following Sensors ...\n");
         for(i = 0; i<16; i++)
         {
             if(aucErrorbuffer[i] != 0xFF) printf("%d ", aucErrorbuffer[i]);
@@ -233,7 +233,7 @@ unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_conte
                }
             }
 
-        printf("Incomplete conversions with following Sensors ...\n");
+        printf("Incomplete conversions for following Sensors ...\n");
         for(i = 0; i<16; i++)
         {
             if(aucErrorbuffer[i] != 0xFF) printf("%d ", aucErrorbuffer[i]);
@@ -393,7 +393,7 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
 
         if(uiSuccesscounter ==16)
         {
-            printf("All gain settings ok - no clear level exceedings.\n");
+            printf("All gain settings ok.\n");
             return 0;
         }
 		

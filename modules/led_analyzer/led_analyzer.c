@@ -23,8 +23,8 @@
 #include "ftdi.h"
 
 #include <stdio.h>
-#define VID 0x0403
-#define PID 0x6010
+#define VID 0x1939
+#define PID 0x0024
 
 
 
@@ -86,7 +86,7 @@ int scan_devices(char** asSerial, unsigned int asLength)
 	int numbOfDevs = 0;
 	int numbOfSerials = 0;
 	
-	const char sMatch[] = "Color Controller";
+	const char sMatch[] = "COLOR-CTRL";
 	
 	char manufacturer[128], description[128], serial[128];
 	struct ftdi_device_list *devlist, *curdev;
@@ -105,7 +105,7 @@ int scan_devices(char** asSerial, unsigned int asLength)
 
 	 if ((ftdi = ftdi_new()) == 0)
 		{
-			fprintf(stderr, "ftdi_new failed\n");
+			fprintf(stderr, "... ftdi_new failed\n");
 			ftdi_list_free(&devlist);
 			ftdi_free(ftdi);
 			return -1;
@@ -115,7 +115,7 @@ int scan_devices(char** asSerial, unsigned int asLength)
 		
 	if(numbOfDevs == 0)
 		{
-			printf("no ftdi device detected ... quitting.\n");
+			printf("... no ftdi device detected ... quitting.\n");
 			ftdi_list_free(&devlist);
 			ftdi_free(ftdi);
 			return -1;
@@ -126,10 +126,10 @@ int scan_devices(char** asSerial, unsigned int asLength)
 	i = 0;
 	for (curdev = devlist; curdev != NULL; i++)
     {
-        printf("Scanning device: %d\n", i);
+        printf("Scanning device %d\n", i);
         if ((f = ftdi_usb_get_strings(ftdi, curdev->dev, manufacturer, 128, description, 128, serial, 128)) < 0)
         {
-            fprintf(stderr, "ftdi_usb_get_strings failed: %d (%s)\n", f, ftdi_get_error_string(ftdi));
+            fprintf(stderr, "... ftdi_usb_get_strings failed: %d (%s)\n", f, ftdi_get_error_string(ftdi));
             ftdi_list_free(&devlist);
 			ftdi_free(ftdi);
 			return -1;
@@ -154,7 +154,7 @@ int scan_devices(char** asSerial, unsigned int asLength)
 	
 	if(numbOfSerials == 0)
 	{
-			printf("no color controller(s) detected ... quitting.\n");
+			printf("... no color controller(s) detected ... quitting.\n");
 			ftdi_list_free(&devlist);
 			ftdi_free(ftdi);
 			return -1;
@@ -198,14 +198,14 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 			
 		    if ((apHandles[iArrayPos] = ftdi_new()) == 0)
 				{
-					fprintf(stderr, "ftdi_new failed!\n");
+					fprintf(stderr, "... ftdi_new failed!\n");
 					return -1;
 				}
 			
 			
 			if((f = ftdi_set_interface(apHandles[iArrayPos], INTERFACE_A))<0)
 				{
-					fprintf(stderr, "Unable to attach to dev %d interface A: %d, (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					fprintf(stderr, "... unable to attach to dev %d interface A: %d, (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
 				}
@@ -214,7 +214,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 			
 			if(asSerial[devCounter] == NULL) 
 				{
-					printf("Serial number non-existent ... please rescan your devices\n");
+					printf("... serial number non-existent ... please rescan your devices\n");
 					ftdi_deinit(apHandles[iArrayPos]);
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
@@ -222,7 +222,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 				
 			if((f = ftdi_usb_open_desc(apHandles[iArrayPos], VID, PID, NULL, asSerial[devCounter])<0))
 				{
-					fprintf(stderr, "unable to open dev %d interface A: %d (%s)\n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					fprintf(stderr, "... unable to open dev %d interface A: %d (%s)\n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_deinit(apHandles[iArrayPos]);
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
@@ -231,7 +231,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 			
 			if((f=ftdi_set_bitmode(apHandles[iArrayPos], 0xFF, BITMODE_MPSSE)) < 0)
 				{
-					fprintf(stderr, "unable to set the mode on dev %d Channel A: %d (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					fprintf(stderr, "... unable to set the mode on dev %d Channel A: %d (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
 				}
@@ -243,20 +243,20 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 			
 		    if ((apHandles[iArrayPos] = ftdi_new()) == 0)
 				{
-					fprintf(stderr, "ftdi_new failed!\n");
+					fprintf(stderr, "... ftdi_new failed!\n");
 					return -1;
 				}
 			
 			if((f = ftdi_set_interface(apHandles[iArrayPos], INTERFACE_B))<0)
 				{
-					fprintf(stderr, "Unable to attach to dev %d interface B: %d, (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					fprintf(stderr, "... unable to attach to dev %d interface B: %d, (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
 				}
 			
 			if(asSerial[devCounter] == NULL) 
 				{
-					printf("Serial number non-existent ... please rescan your devices\n");
+					printf("... serial number non-existent ... please rescan your devices\n");
 					ftdi_deinit(apHandles[iArrayPos]);
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
@@ -264,7 +264,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 			
 			if((f = ftdi_usb_open_desc(apHandles[iArrayPos],VID, PID, NULL, asSerial[devCounter])<0))	
 				{
-					fprintf(stderr, "unable to open dev %d interface B: %d (%s)\n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					fprintf(stderr, "... unable to open dev %d interface B: %d (%s)\n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_deinit(apHandles[iArrayPos]);
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
@@ -509,26 +509,26 @@ int handleToDevice(int handle)
 
 
 /* Set the integration time of one sensor given in uiX which ranges from 0 ... 15 */
-int set_intTime_x(void** apHandles, int devIndex, unsigned long integrationtime, unsigned int uiX)
+int set_intTime_x(void** apHandles, int devIndex, unsigned char integrationtime, unsigned int uiX)
 {
 	int handleIndex = devIndex * 2;
 	
 	if(tcs_setIntegrationTime_x(apHandles[handleIndex], apHandles[handleIndex+1], integrationtime, uiX) != 0)
 	{
-		printf("failed to set integration time for sensor %d on dev %d ...\n", uiX+1, devIndex);
+		printf("... failed to set integration time for sensor %d on dev %d ...\n", uiX+1, devIndex);
 		return 1;
 	}
 	return 0;
 }
 
 /* Set the gain of one sensor given in uiX which ranges from 0 ... 15 */
-int set_gain_x(void** apHandles, int devIndex, unsigned long gain, unsigned int uiX)
+int set_gain_x(void** apHandles, int devIndex, unsigned char gain, unsigned int uiX)
 {
 	int handleIndex = devIndex * 2;
 		
 	if(tcs_setGain_x(apHandles[handleIndex], apHandles[handleIndex+1], gain, uiX) != 0)
 	{
-		printf("failed to set gain for sensor %d on dev %d ...\n", uiX+1, devIndex);
+		printf("... failed to set gain for sensor %d on dev %d ...\n", uiX+1, devIndex);
 		return 1;		
 	}
 	return 0;
@@ -549,7 +549,7 @@ int init_sensors(void** apHandles, int devIndex, unsigned long integrationtime, 
 	
 	int iHandleLength = get_handleLength(apHandles);
 	
-	printf("Initializing on devIndex: %d\n", devIndex);
+	printf("Initializing on device %d\n", devIndex);
 	
 	if(handleIndex >= iHandleLength)
 	{
@@ -561,31 +561,31 @@ int init_sensors(void** apHandles, int devIndex, unsigned long integrationtime, 
 
 	if(tcs_setIntegrationTime(apHandles[handleIndex], apHandles[handleIndex+1], integrationtime) != 0)
 	{
-		printf("failed to set integration time on dev %d ...\n", devIndex);
+		printf("... failed to set integration time on dev %d ...\n", devIndex);
 		return 1;
 	}
 			
 	if(tcs_setGain(apHandles[handleIndex], apHandles[handleIndex+1], gain) != 0)
 	{
-		printf("failed to set integration time on dev %d...\n", devIndex);
+		printf("... failed to set integration time on dev %d...\n", devIndex);
 		return 2;
 	}
 			
 	if(tcs_clearInt(apHandles[handleIndex], apHandles[handleIndex+1]) != 0)
 	{
-		printf("failed to clear interrupt channel on dev %d...\n", devIndex);
+		printf("... failed to clear interrupt channel on dev %d...\n", devIndex);
 		return 3;
 	}
 			
 	if(tcs_ON(apHandles[handleIndex], apHandles[handleIndex+1]) != 0)
 	{
-		printf("failed to turn the sensors on on dev %d...\n", devIndex);
+		printf("... failed to turn the sensors on on dev %d...\n", devIndex);
 		return 4;
 	}
 			
 	tcs_waitIntegrationtime(integrationtime);
 	
-	printf("initializing successful on devIndex: %d\n", devIndex);
+	printf("initializing successful on device: %d\n", devIndex);
 	return iResult;
 }
 
@@ -610,7 +610,6 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	unsigned short int errorcode = 0;
 	
 	// Transform device index into handle index, as each device has two handles */
-	printf("Reading colors on devIndex: %d\n", devIndex);
 	
 	if(handleIndex >= iHandleLength)
 		{
@@ -639,7 +638,7 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 
 	tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntegrationtime);
 
-	printf("reading colors successful\n");
+	printf("Reading colors successful.\n");
 	return iResult;
 	
 }														 
@@ -699,7 +698,23 @@ int free_devices(void** apHandles)
 	return iResult;
 }
 
-int get_gainSettings(void** apHandles, int devIndex, unsigned char* aucGains)
+int set_gain(void** apHandles, int devIndex, unsigned char gain)
+{
+	int iHandleLength = get_handleLength(apHandles);
+	int handleIndex = devIndex * 2;
+	int iResult = 0;
+	
+	if(handleIndex >= iHandleLength)
+	{
+			printf("Exceeded maximum amount of handles ... \n");
+			printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
+			return 1;
+	}
+	
+	iResult = tcs_setGain(apHandles[handleIndex], apHandles[handleIndex+1], gain);
+	return iResult;		
+}
+int get_gain(void** apHandles, int devIndex, unsigned char* aucGains)
 {
 	
 	int iHandleLength = get_handleLength(apHandles);
@@ -717,7 +732,25 @@ int get_gainSettings(void** apHandles, int devIndex, unsigned char* aucGains)
 	return iResult;
 }
 
-int get_intTimeSettings(void** apHandles, int devIndex, unsigned char* aucIntegrationtime)
+int set_intTime(void** apHandles, int devIndex, unsigned char integrationtime)
+{
+	int iHandleLength = get_handleLength(apHandles);
+	int handleIndex = devIndex * 2;
+	int iResult = 0;
+	
+	if(handleIndex >= iHandleLength)
+	{
+			printf("Exceeded maximum amount of handles ... \n");
+			printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
+			return 1;
+	}
+	
+	iResult = tcs_setIntegrationTime(apHandles[handleIndex], apHandles[handleIndex+1], integrationtime);
+	return iResult;
+		
+}
+
+int get_intTime(void** apHandles, int devIndex, unsigned char* aucIntegrationtime)
 {
 	int iHandleLength = get_handleLength(apHandles);
 	int handleIndex = devIndex * 2;

@@ -40,6 +40,14 @@ ausBlue   = led_analyzer.new_ushort(MAXSENSORS)
 aucGains  = led_analyzer.new_puchar(MAXSENSORS)
 aucIntTimes = led_analyzer.new_puchar(MAXSENSORS)
 
+
+local clock = os.clock
+function sleep(n)  -- seconds
+  local t0 = clock()
+  while clock() - t0 <= n do end
+end
+
+
 function astring_to_table(astring, numbOfSerials)
 	
 	
@@ -139,18 +147,22 @@ else
 		end 
 		
 		
+		
 		--led_analyzer.set_gain_x(apHandles, devIndex, TCS3471_GAIN_4X, 0);
 		--led_analyzer.set_intTime_x(apHandles, devIndex, TCS3471_INTEGRATION_154ms, 0);
 		
-		led_analyzer.get_gainSettings(apHandles, devIndex, aucGains)
-		led_analyzer.get_intTimeSettings(apHandles, devIndex, aucIntTimes)
-		
-		for i = 0, 15 do
-			print(led_analyzer.puchar_getitem(aucGains, i))
-			print(led_analyzer.puchar_getitem(aucIntTimes, i))
-		end
-		
-		
+
+			led_analyzer.set_gain(apHandles, devIndex, TCS3471_GAIN_4X)
+			led_analyzer.set_intTime(apHandles, devIndex, TCS3471_INTEGRATION_200ms)
+
+			led_analyzer.get_gain(apHandles, devIndex, aucGains)
+			led_analyzer.get_intTime(apHandles, devIndex, aucIntTimes)
+			
+--			for i = 0, 15 do
+--				print(led_analyzer.puchar_getitem(aucGains, i))
+--				print(led_analyzer.puchar_getitem(aucIntTimes, i))
+--			end
+			
 		
 		
 		tColor, tXYZ, tYxy, tnm, tHSV = aus_to_table(devIndex, ausClear, ausRed, ausGreen, ausBlue, 16)
