@@ -558,34 +558,22 @@ int init_sensors(void** apHandles, int devIndex, unsigned long integrationtime, 
 		return 1;
 	}
 	
-
-	if(tcs_setIntegrationTime(apHandles[handleIndex], apHandles[handleIndex+1], integrationtime) != 0)
-	{
-		printf("... failed to set integration time on dev %d ...\n", devIndex);
-		return 1;
-	}
-			
-	if(tcs_setGain(apHandles[handleIndex], apHandles[handleIndex+1], gain) != 0)
-	{
-		printf("... failed to set integration time on dev %d...\n", devIndex);
-		return 2;
-	}
 			
 	if(tcs_clearInt(apHandles[handleIndex], apHandles[handleIndex+1]) != 0)
 	{
 		printf("... failed to clear interrupt channel on dev %d...\n", devIndex);
-		return 3;
+		return 2;
 	}
 			
 	if(tcs_ON(apHandles[handleIndex], apHandles[handleIndex+1]) != 0)
 	{
 		printf("... failed to turn the sensors on on dev %d...\n", devIndex);
-		return 4;
+		return 3;
 	}
 			
 	tcs_waitIntegrationtime(integrationtime);
 	
-	printf("initializing successful on device: %d\n", devIndex);
+	printf("initializing successful on device %d\n", devIndex);
 	return iResult;
 }
 
