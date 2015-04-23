@@ -36,9 +36,9 @@ function print_color(devIndex, colortable, length, mode)
 		end
 		
 	elseif mode == "wavelength" then
-	    print(" dominant wavelength	              saturation  ")
+	    print(" dominant wavelength	       brightness  ")
 		for i=1, length do
-			print(string.format("%2d)   %3.3f nm, 			%.2f ", i, colortable[devIndex+1][i].nm, colortable[devIndex+1][i].sat))
+			print(string.format("%3d)   %3d nm, 			%.2f", i, math.floor(colortable[devIndex+1][i].nm + 0.5), colortable[devIndex+1][i].sat))
 		end								
 	
 	elseif mode == "HSV" then
@@ -57,9 +57,21 @@ function print_color(devIndex, colortable, length, mode)
 	print("\n")
 end
 
---print(string.format("0x%04x\n", tColor[1][1].clear))
+function astring_to_table(astring, numbOfSerials)
 
-function aus_to_table(devIndex, clear, red, green, blue, length)
+	local tSerialnumbers = {}
+	
+	for i = 0, numbOfSerials - 1 do
+			
+			if led_analyzer.astring_getitem(astring, i) ~= NULL then 
+				tSerialnumbers[i+1] = led_analyzer.astring_getitem(astring, i)
+			end 
+	end
+			
+	return tSerialnumbers
+end
+
+function aus2colorTable(devIndex, clear, red, green, blue, length)
 	local x,y,z
 	
 	local tRGB = {}
@@ -78,27 +90,15 @@ function aus_to_table(devIndex, clear, red, green, blue, length)
 	-- Lua starting index (1) differs from C index (0)
 	for i = 0, length-1 do
 		-- table containing sensorindices with R, G, B values 
-		tRGB[devIndex+1][i+1] = {	clear = led_analyzer.ushort_getitem(clear, i),
-								red   = led_analyzer.ushort_getitem(red, i),
-								green = led_analyzer.ushort_getitem(green, i),
-								blue  = led_analyzer.ushort_getitem(blue, i)}
+		tRGB[devIndex+1][i+1] = {clear = led_analyzer.ushort_getitem(clear, i),
+								red    = led_analyzer.ushort_getitem(red, i),
+								green  = led_analyzer.ushort_getitem(green, i),
+								blue   = led_analyzer.ushort_getitem(blue, i)}
 		
 		-- table containing sensorindices with X,Y,Z  values
 		local r_n = led_analyzer.ushort_getitem(red, i)/led_analyzer.ushort_getitem(clear, i)
 		local g_n = led_analyzer.ushort_getitem(green, i)/led_analyzer.ushort_getitem(clear, i)
 		local b_n = led_analyzer.ushort_getitem(blue, i)/led_analyzer.ushort_getitem(clear, i)
-		
-		
-		-- testing E 
-		-- table containing XYZ values dependent on the RGB working space
-		-- adobe, not good
-		-- apple good for orange, worse for red 
-		-- best rgb sucks 
-		-- beta rgb good for red bad for orange, ok for green 
-		-- similiar to srgb
-		-- cie too strong reds and oranges 
-		-- coloarmatch good for green, sux for others 
-		-- ntsc ok for green, ok for red, bad for yellow 
 		
 		
 		
@@ -134,17 +134,9 @@ function aus_to_table(devIndex, clear, red, green, blue, length)
 	return tRGB, tXYZ, tYxy , tnm, tHSV
 end
 
--- devIndex starts with 1, get first element with 1 => devIndex +1 
--- k = rowindex 
--- In tolerance range checks if the values which were returned by the sensor, are the ones looked for
--- If the measured LED lies in the tolerance range we return 0, else 13
--- The table we compare the measured sensor values to is found in tTest and contains EITHER 
--- the dominant wavelength searched for OR x and y chromaticity points, as some datasheets provide dom. wavelengths
--- and others provide the bins (x and y points)
--- If dom. wavelength, x and y chroma points are given, we will only evaluate wavelength
 
 
--- distance 
+-- calculate the distance between 2 points v1 and v2  
 function get_distance(v1, v2)
 	return math.sqrt(math.pow((v1.x - v2.x),2) + math.pow((v1.y - v2.y),2))
 end 
