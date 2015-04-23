@@ -2,7 +2,6 @@ require("tcs_chromaTable")
 
 -- a helper to print a color table 
 function print_color(devIndex, colortable, length, mode)
-	print(string.format("\n"))
 	print(string.format("------------------- Colors --------------------- ", devIndex))
 	
 	
@@ -56,7 +55,6 @@ function print_color(devIndex, colortable, length, mode)
 	print("	x	y ")
 			print(string.format("%.8f %.8f", colortable[devIndex+1][8].x, colortable[devIndex+1][8].y))
 	end 
-	print("\n")
 end
 
 function astring_to_table(astring, numbOfSerials)
@@ -79,14 +77,14 @@ function aus2colorTable(devIndex, clear, red, green, blue, length)
 	local tRGB = {}
 	local tXYZ = {}
 	local tYxy = {}
-	local tnm = {}
+	local tWavelength = {}
 	local tHSV = {}
 	
 	
 	tRGB[devIndex+1] = {}
 	tXYZ[devIndex+1] = {}
 	tYxy[devIndex+1] = {}
-	tnm[devIndex+1]  = {}
+	tWavelength[devIndex+1]  = {}
 	tHSV[devIndex+1] = {}
 	
 	for i = 0, length-1 do
@@ -121,18 +119,17 @@ function aus2colorTable(devIndex, clear, red, green, blue, length)
 		
 		-- table containing sensorindices with wavelength in nanometers
 		local wavelength, saturation = Yxy2wavelength(x_chroma, y_chroma)
-		tnm[devIndex+1][i+1] = {nm = wavelength,
+		tWavelength[devIndex+1][i+1] = {nm = wavelength,
 								sat = saturation*100}
 		
 		local H,S,V = RGB2HSV(r_n, g_n, b_n)
 		tHSV[devIndex+1][i+1] = { H = H,
 								  S = S,
 								  V = V }
-	
 								
 	end
 	
-	return tRGB, tXYZ, tYxy , tnm, tHSV
+	return tRGB, tXYZ, tYxy , tWavelength, tHSV
 end
 
 -- Convert XYZ to LAB --
