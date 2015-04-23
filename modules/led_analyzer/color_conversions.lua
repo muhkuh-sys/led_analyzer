@@ -245,9 +245,6 @@ end
     h = h / 6
   end
   
-  -- H Value from 0 to 360 °
- -- S Value from 0 to 100
- -- V Value from 0 to 100 
   
   return h*360, s*100, v*100
   
@@ -362,43 +359,25 @@ end
 --negative when direction vector towards purpurline 
 function Yxy2wavelength(x,y)
 
-	
-	local min_angle = 2*math.pi -- Set the initial min angle to a max value
-	local cur_angle = 2*math.pi -- Set the initial current angle to a max value 
-	local length = 0.1 
-	local saturation = 0.1 
-	
 
 	-- use global tRefWhite table to get ur refwhite values which depend on the rgb work space 
 	local refWhitex = tRefWhite.x
 	local refWhitey = tRefWhite.y 
-	
-	 
-	
-	
-	local wavelength = 0 
-		
+			
 	-- Construct direction vector from current input values
 	local t_curDirVector = {}
 		  t_curDirVector.x = (x-refWhitex)
 		  t_curDirVector.y = (y-refWhitey)
 		  
-	length = get_length(t_curDirVector)
-	--print(length)
-	-- This means color is very close to white point, i.e. very low saturation at all
-	-- In this case return 0, otherwise one might return a valid wavelength -- 
-
 		  
-	local t_reverseDirVector = {}
-		  t_reverseDirVector.x = 0
-		  t_reverseDirVector.y = 0 
-	
 	-- Construct your spectral line directionvector table --
 	local t_CIEdirVector = {}
 	for i=1,817 do
 		t_CIEdirVector[i] = {}
 	end 
-	-- Fill the vector table which now contains direction vectors from 1505 entries of the
+	
+	
+	-- Fill the vector table which now contains direction vectors from 817 entries of the
 	-- CIE 1931 table (tChromaticity) to the whitepoint
 	for i=1,817 do
 		t_CIEdirVector[i].x = tTCS_Chromaticity[i].x - refWhitex -- x value of direction vector
@@ -411,28 +390,33 @@ function Yxy2wavelength(x,y)
 	-- given by the current x,y pair
 	
 	-- Get smalest angle variance 
+	local min_angle = 2*math.pi -- Set the initial min angle to a max value
+	local cur_angle = 2*math.pi -- Set the initial current angle to a max value 
+	local min_index = 0 
+	
 	for i=1,817 do
 		cur_angle = math.abs(get_angle(t_curDirVector, t_CIEdirVector[i]))
 		if cur_angle < min_angle then
+			min_index = i 
 			min_angle = cur_angle
 		end 
 	end 
 	
 	
-	
-	for i=1, 817 do
-		if min_angle == math.abs(get_angle(t_curDirVector, t_CIEdirVector[i])) then
-			saturation = get_length(t_curDirVector) / get_length(t_CIEdirVector[i])
-			if saturation < 0.01 then 
-				return 0, 0 
-			else 
-				return  tTCS_Chromaticity[i].nm, saturation 
-			end 
-		end 
+	local saturation = get_length(t_curDirVector) / get_length(t_CIEdirVector[min_index])
+	if saturation < 0.15 then 
+		return 0, 0 
 	end 
 	
+	if saturation >= 1.0 then 
+		saturation = 1.0 
+	end 
+		
 
-	return 0, 0
+	
+
+	
+	return  tTCS_Chromaticity[min_index].nm, saturation 
 	
 end
  
