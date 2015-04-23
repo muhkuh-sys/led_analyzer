@@ -57,7 +57,7 @@ unsigned short int tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context*
 
                if(uiSuccesscounter == 16)
                {
-                   printf("Identification successful.\n");
+                  //  printf("Identification successful.\n");
                    return 0; // SUCCESFULL IDENTFICATION OF ALL SENSORS
                }
             }
@@ -456,6 +456,10 @@ void tcs_waitIntegrationtime(tcs3471Integration_t uiIntegrationtime)
             case TCS3471_INTEGRATION_700ms:
                 Sleep(700);
                 break;
+				
+			default:
+				Sleep(150);
+				break;
 
         }
 }
