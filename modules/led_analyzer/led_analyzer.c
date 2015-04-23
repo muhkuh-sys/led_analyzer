@@ -28,6 +28,8 @@
 
 
 
+const char sMatch[] = "COLOR-CTRL";
+
 /* Functions swaps two strings in the asSerial string array 
 
 	retVal = -1: swapping didn't work due to overindexing the asSerial array 
@@ -80,20 +82,15 @@ Serialnumber(s) of found devices will be stored in asSerial
 
 int scan_devices(char** asSerial, unsigned int asLength)
 {
-	int retVal = 0;
-	int i = 0;
+	int i;
 	int f;
 	int numbOfDevs = 0;
 	int numbOfSerials = 0;
 	
-	const char sMatch[] = "COLOR-CTRL";
 	
 	char manufacturer[128], description[128], serial[128];
 	struct ftdi_device_list *devlist, *curdev;
 	struct ftdi_context *ftdi;
-	
-	
-	
 	
 	
 	if(asLength <1)
@@ -154,10 +151,9 @@ int scan_devices(char** asSerial, unsigned int asLength)
 	
 	if(numbOfSerials == 0)
 	{
-			printf("... no color controller(s) detected ... quitting.\n");
+			printf("... no color controller(s) detected.\n");
 			ftdi_list_free(&devlist);
 			ftdi_free(ftdi);
-			return -1;
 	}
 	
 	return numbOfSerials;
@@ -320,16 +316,13 @@ int get_number_of_serials(char** asSerial)
 int detect_devices(void** apHandles, int apHlength)
 {
 	int iArrayPos;
-	int iResult;
 	int i, f;
 	int numbOfDevs = 0;
 	int devCounter = 0;
 	char manufacturer[128], description[128], serial[10][128];
 	struct ftdi_device_list *devlist, *curdev;
 	struct ftdi_context *ftdi;
-	//struct ftdi_context *ftdiA, *ftdiB;
 	
-
 	 if ((ftdi = ftdi_new()) == 0)
 		{
 			fprintf(stderr, "ftdi_new failed\n");
@@ -338,10 +331,6 @@ int detect_devices(void** apHandles, int apHlength)
 			return -1;
 		}
 		
-	
-		
-	
-	
 	numbOfDevs = ftdi_usb_find_all(ftdi, &devlist, VID, PID);
 		
 	if(numbOfDevs == 0)
@@ -353,7 +342,6 @@ int detect_devices(void** apHandles, int apHlength)
 		}
 	
 	
-
 	printf("Number of device(s) found: %d\n\n", numbOfDevs);
 	
 	/* This ftdi_specific function was only needed in order to detect the number of devices */
@@ -541,40 +529,43 @@ int set_gain_x(void** apHandles, int devIndex, unsigned char gain, unsigned int 
 
 	
 */
-int init_sensors(void** apHandles, int devIndex, unsigned long integrationtime, unsigned long gain)
+int init_sensors(void** apHandles, int devIndex)
 {
-	int iResult = 0;
 	/* 2 handles per device, dev 0 has handles 0,1 .. dev 1 has handles 2,3 and so on*/
 	int handleIndex = devIndex * 2;
+	int errorcode = 0;
+	unsigned char aucTempbuffer[16];
 	
 	int iHandleLength = get_handleLength(apHandles);
 	
-	printf("Initializing on device %d\n", devIndex);
 	
 	if(handleIndex >= iHandleLength)
 	{
 		printf("Exceeded maximum amount of handles ... \n");
 		printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
-		return 1;
+		return -1;
 	}
 	
 			
 	if(tcs_clearInt(apHandles[handleIndex], apHandles[handleIndex+1]) != 0)
 	{
 		printf("... failed to clear interrupt channel on dev %d...\n", devIndex);
-		return 2;
 	}
 			
 	if(tcs_ON(apHandles[handleIndex], apHandles[handleIndex+1]) != 0)
 	{
 		printf("... failed to turn the sensors on on dev %d...\n", devIndex);
-		return 3;
 	}
 			
-	tcs_waitIntegrationtime(integrationtime);
+		
+	if((errorcode = tcs_identify(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer)) != 0)
+	{
+		return errorcode;
+	}
 	
-	printf("initializing successful on device %d\n", devIndex);
-	return iResult;
+	
+	printf("Initializing successful on device %d.\n", devIndex);
+	return errorcode;
 }
 
 
@@ -590,12 +581,11 @@ REPLACE IF HARDWARE ARRIVES
 int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsigned short* ausRed,
 														  unsigned short* ausGreen, unsigned short* ausBlue, unsigned char* aucIntegrationtime)
 {
-	int iResult = 0;
 	int iHandleLength = get_handleLength(apHandles);
 	unsigned char aucTempbuffer[16];
 	int handleIndex = devIndex * 2;
 	
-	unsigned short int errorcode = 0;
+	int errorcode = 0;
 	
 	// Transform device index into handle index, as each device has two handles */
 	
@@ -603,16 +593,10 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 		{
 			printf("Exceeded maximum amount of handles ... \n");
 			printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
-			return 1;
+			return -1;
 		}
-	
-	// First perform the functions needed for assertion of correct color values */
-	
-	if((errorcode = tcs_identify(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer)) != 0)
-		{
-			return errorcode;
-		}
-	
+
+	/* Check if sensors' ADCs have completed conversion */
 	if((errorcode = tcs_waitForData(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer)) != 0)
 		{
 			return errorcode;
@@ -627,7 +611,7 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntegrationtime);
 
 	printf("Reading colors successful.\n");
-	return iResult;
+	return errorcode;
 	
 }														 
 
@@ -641,14 +625,14 @@ int check_validity(void** apHandles, int devIndex, unsigned short* ausClear, uns
 	int handleIndex = devIndex * 2;
 	unsigned char aucReadbuffer[16];
 
-	unsigned short int errorcode = 0;
+	int errorcode = 0;
 	
 	
 	if(handleIndex >= iHandleLength)
 	{
 		printf("Exceeded maximum amount of handles ... \n");
 		printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
-		return 1;
+		return -1;
 	}
 	
 	
@@ -696,7 +680,7 @@ int set_gain(void** apHandles, int devIndex, unsigned char gain)
 	{
 			printf("Exceeded maximum amount of handles ... \n");
 			printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
-			return 1;
+			return -1;
 	}
 	
 	iResult = tcs_setGain(apHandles[handleIndex], apHandles[handleIndex+1], gain);
@@ -713,7 +697,7 @@ int get_gain(void** apHandles, int devIndex, unsigned char* aucGains)
 	{
 			printf("Exceeded maximum amount of handles ... \n");
 			printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
-			return 1;
+			return -1;
 	}
 	
 	iResult = tcs_getGain(apHandles[handleIndex], apHandles[handleIndex+1], aucGains);
@@ -730,7 +714,7 @@ int set_intTime(void** apHandles, int devIndex, unsigned char integrationtime)
 	{
 			printf("Exceeded maximum amount of handles ... \n");
 			printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
-			return 1;
+			return -1;
 	}
 	
 	iResult = tcs_setIntegrationTime(apHandles[handleIndex], apHandles[handleIndex+1], integrationtime);
@@ -748,10 +732,19 @@ int get_intTime(void** apHandles, int devIndex, unsigned char* aucIntegrationtim
 	{
 			printf("Exceeded maximum amount of handles ... \n");
 			printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
-			return 1;
+			return -1;
 	}
 	
 	iResult = tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntegrationtime);
 	return iResult;
 
+}
+
+void wait4Conversion(unsigned int uiWaitTime)
+{
+
+	if((uiWaitTime > 0) && (uiWaitTime <= 700))
+		Sleep(uiWaitTime);
+	
+	else Sleep(150);
 }
