@@ -38,8 +38,8 @@ int 		  detect_devices(void** apHandles, int apHlength);
 			  /* Reads the colors of a device (devIndex starting with 0) and stores the 4x 16 unsigned short values into the argument parameters */
 int 		  read_colors(void** apHandles, int devIndex, unsigned short *ausClear, unsigned short* ausRed,
 			  unsigned short *ausGreen, unsigned short* ausBlue, unsigned char* aucIntegrationtime);
-			  /* used to set gain and integrationtime and to turn sensor on, last argument is used for the wait directive after tcs_on, normalle 100ms - waitAdjust */						   
-int 		  init_sensors(void** apHandles, int devIndex, unsigned long integrationtime, unsigned long gain);
+			  /* Initializing = turn sensor on, clear relevant flags */						   
+int 		  init_sensors(void** apHandles, int devIndex);
 		      /* Returns number of handles in apHandles (1device = 2 handles) Note: May only be called after detect_devices has been called, otherwise apHandles will be empty */
 int 		  get_handleLength(void ** apHandles);
 			  /* Frees all devices and closes the usb connection */
@@ -64,7 +64,8 @@ int			  get_intTime(void** apHandles, int devIndex, unsigned char* aucIntTimeSet
 int 		  get_number_of_serials(char** asSerial);
 			  /* Swap two serial numbers, so the order of opening color controllers can be chosen */
 int 		  swap_serialPos(char** asSerial, unsigned int swap1, unsigned int swap2);
-
+			  /* Wait for uiWaitTime ms time, to give the sensor some time for color measurement */
+void          wait4Conversion(unsigned int uiWaitTime);
 
 
 #endif	/* __BIT_H__ */
