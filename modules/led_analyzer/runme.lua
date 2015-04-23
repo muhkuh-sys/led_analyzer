@@ -36,6 +36,8 @@ ausRed    = led_analyzer.new_ushort(MAXSENSORS)
 ausGreen  = led_analyzer.new_ushort(MAXSENSORS)
 ausBlue   = led_analyzer.new_ushort(MAXSENSORS)
 
+afBrightness = led_analyzer.new_afloat(MAXSENSORS)
+
 
 aucGains  = led_analyzer.new_puchar(MAXSENSORS)
 aucIntTimes = led_analyzer.new_puchar(MAXSENSORS)
@@ -80,8 +82,8 @@ else
 		print(string.format("------------------ Device %d -------------------- ", devIndex))
 		print(				"------------------------------------------------ ")
 		
-		led_analyzer.set_gain(apHandles, devIndex, TCS3471_GAIN_16X)
-		led_analyzer.set_intTime(apHandles, devIndex, TCS3471_INTEGRATION_200ms)
+		led_analyzer.set_gain(apHandles, devIndex, TCS3471_GAIN_4X)
+		led_analyzer.set_intTime(apHandles, devIndex, TCS3471_INTEGRATION_100ms)
 		
 		
 		while(error_counter < INIT_MAXERROR) do
@@ -102,7 +104,7 @@ else
 		
 		
 		while(error_counter < READ_MAXERROR) do		
-			ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue, aucIntTimes)
+			ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue, afBrightness)
 			if ret ~= 0 then
 				error_counter = error_counter + 1
 			else
@@ -116,23 +118,6 @@ else
 			error_counter = 0
 		end 
 		
-		while(error_counter < VALID_MAXERROR) do 
-			ret = led_analyzer.check_validity(apHandles, devIndex, ausClear, aucIntTimes)
-			if ret ~= 0 then 
-				error_counter = error_counter + 1 
-			else 
-				break 
-			end 
-		end 
-		if error_counter == VALID_MAXERROR then 
-			print(string.format("%d invalid datasets in a row, test aborting ...", error_counter))
-			return TEST_RESULT_SENSORS_FAILED 
-		else 
-			error_counter = 0 
-		end 
-		
-	
-	
 		
 	led_analyzer.get_gain(apHandles, devIndex, aucGains)
 	led_analyzer.get_intTime(apHandles, devIndex, aucIntTimes)
@@ -194,6 +179,7 @@ else
 	
 	led_analyzer.delete_puchar(aucGains)
 	led_analyzer.delete_puchar(aucIntTimes)
+	led_analyzer.delete_afloat(afBrightness)
 
 	led_analyzer.delete_apvoid(apHandles)
 	led_analyzer.delete_astring(asSerials)

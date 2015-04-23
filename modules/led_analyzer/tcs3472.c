@@ -161,7 +161,7 @@ unsigned short int tcs_setGain_x(struct ftdi_context* ftdiA, struct ftdi_context
 					 if bit1 is high -> second sensor rgbc dataset failure
 					 and so on
 					 */
-unsigned short int tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer)
+unsigned short int tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
     unsigned int uiErrorcounter = 0;
     unsigned int uiSuccesscounter = 0;
@@ -170,8 +170,10 @@ unsigned short int tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_conte
     int i = 0;
 
     unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3471_STATUS_REG | TCS3471_COMMAND_BIT};
+	unsigned char aucReadbuffer[16];
     unsigned char aucErrorbuffer[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-
+	
+	
         i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucReadbuffer, sizeof(aucReadbuffer));
 
             for(i = 0; i<=15; i++)
@@ -203,7 +205,7 @@ unsigned short int tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_conte
 }
 
 
-unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer)
+unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
     unsigned int uiErrorcounter = 0;
     unsigned int uiSuccesscounter = 0;
@@ -212,7 +214,8 @@ unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_conte
     int i = 0;
 
     unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3471_STATUS_REG | TCS3471_COMMAND_BIT};
-    unsigned char aucErrorbuffer[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+    unsigned char aucReadbuffer[16];
+	unsigned char aucErrorbuffer[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
         i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucReadbuffer, sizeof(aucReadbuffer));
 
@@ -491,4 +494,28 @@ unsigned short int tcs_getIntegrationtime(struct ftdi_context* ftdiA, struct ftd
 	if(i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucInttimeSettings, sizeof(aucInttimeSettings) < 0)) return 1;
 	
 	return 0;
+}
+
+
+unsigned int getGainDivisor(tcs3471Gain_t gain)
+{
+		switch(gain)
+		{
+			case TCS3471_GAIN_1X:
+				return 1;
+				break;
+			case TCS3471_GAIN_4X:
+				return 4;
+				break;
+			case TCS3471_GAIN_16X:
+				return 16;
+				break;
+			case TCS3471_GAIN_60X:
+				return 60;
+				break;
+			default:
+				printf("Can't calculate a gain divisor!\n");
+				return 1;
+				break;
+		}
 }

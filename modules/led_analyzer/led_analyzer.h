@@ -37,7 +37,7 @@ int 		  connect_to_devices(void** apHandles, int apHlength, char** asLength);
 int 		  detect_devices(void** apHandles, int apHlength);
 			  /* Reads the colors of a device (devIndex starting with 0) and stores the 4x 16 unsigned short values into the argument parameters */
 int 		  read_colors(void** apHandles, int devIndex, unsigned short *ausClear, unsigned short* ausRed,
-			  unsigned short *ausGreen, unsigned short* ausBlue, unsigned char* aucIntegrationtime);
+			  unsigned short *ausGreen, unsigned short* ausBlue, float* afBrightness);
 			  /* Initializing = turn sensor on, clear relevant flags */						   
 int 		  init_sensors(void** apHandles, int devIndex);
 		      /* Returns number of handles in apHandles (1device = 2 handles) Note: May only be called after detect_devices has been called, otherwise apHandles will be empty */

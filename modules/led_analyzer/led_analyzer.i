@@ -8,6 +8,7 @@
 %array_functions(void*, apvoid)
 %array_functions(char*, astring)
 %array_functions(unsigned char, puchar)
+%array_functions(float, afloat)
 
 %include <cpointer.i>
 
@@ -33,6 +34,7 @@
 %include <typemaps.i>
 %apply void **INOUT {(void** apHandles)};
 %apply (unsigned short *INOUT) {unsigned short* ausClear, unsigned short* ausRed, unsigned short* ausGreen, unsigned short* ausBlue};
+%apply (float* INOUT) {float* afBrightness}
 %apply (unsigned short *INOUT) {unsigned short* ausGains}
 %apply (unsigned short *INOUT) {unsigned short* ausIntTimeSettings}
 %apply (char **INOUT) {(char** asSerial)}

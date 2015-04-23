@@ -28,13 +28,12 @@
 
 
 
-const char sMatch[] = "COLOR-CTRL";
-
 /* Functions swaps two strings in the asSerial string array 
 
 	retVal = -1: swapping didn't work due to overindexing the asSerial array 
 	retVal = 0 : everything ok -- swapping worked 
 */
+
 
 int swap_serialPos(char** asSerial, unsigned int swap1, unsigned int swap2)
 {
@@ -87,6 +86,7 @@ int scan_devices(char** asSerial, unsigned int asLength)
 	int numbOfDevs = 0;
 	int numbOfSerials = 0;
 	
+	const char sMatch[] = "COLOR-CTRL";
 	
 	char manufacturer[128], description[128], serial[128];
 	struct ftdi_device_list *devlist, *curdev;
@@ -579,11 +579,16 @@ REPLACE IF HARDWARE ARRIVES
 
 /* Function reads out four colors (RGBC) of each sensor (16) under a device */
 int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsigned short* ausRed,
-														  unsigned short* ausGreen, unsigned short* ausBlue, unsigned char* aucIntegrationtime)
+				unsigned short* ausGreen, unsigned short* ausBlue, float* afBrightness)
 {
 	int iHandleLength = get_handleLength(apHandles);
+	
 	unsigned char aucTempbuffer[16];
+	unsigned char aucIntegrationtime[16];
+	unsigned char aucGain[16];
+	
 	int handleIndex = devIndex * 2;
+	int gainDivisor = 0;
 	
 	int errorcode = 0;
 	
@@ -597,18 +602,67 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 		}
 
 	/* Check if sensors' ADCs have completed conversion */
-	if((errorcode = tcs_waitForData(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer)) != 0)
+	if((errorcode = tcs_waitForData(apHandles[handleIndex], apHandles[handleIndex+1])) != 0)
 		{
 			return errorcode;
 		}
 		
+	tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntegrationtime);
+	tcs_getGain(apHandles[handleIndex], apHandles[handleIndex+1], aucGain);
 	
 	tcs_readColour(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, CLEAR);
 	tcs_readColour(apHandles[handleIndex], apHandles[handleIndex+1], ausRed, RED);
 	tcs_readColour(apHandles[handleIndex], apHandles[handleIndex+1], ausGreen, GREEN);
 	tcs_readColour(apHandles[handleIndex], apHandles[handleIndex+1], ausBlue, BLUE);
 
-	tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntegrationtime);
+	if((errorcode = tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, aucIntegrationtime)) != 0)
+	{		
+		return errorcode;
+	}
+	
+	if((errorcode = tcs_rgbcInvalid(apHandles[handleIndex], apHandles[handleIndex+1])) != 0)
+	{
+		return errorcode;
+	}
+		
+	int i;
+	for(i=0; i<16; i++)
+	{
+		gainDivisor = getGainDivisor(aucGain[i]);
+		
+		switch(aucIntegrationtime[i])
+		{
+            case TCS3471_INTEGRATION_2_4ms:
+                afBrightness[i] = (float)ausClear[i]/gainDivisor/1024;
+                break;
+
+            case TCS3471_INTEGRATION_24ms:
+				afBrightness[i] = (float)ausClear[i]/gainDivisor/10240;
+                break;
+
+            case TCS3471_INTEGRATION_100ms:
+                afBrightness[i] = (float)ausClear[i]/gainDivisor/43007;
+                break;
+
+            case TCS3471_INTEGRATION_154ms:
+                afBrightness[i] = (float)ausClear[i]/gainDivisor/65535;
+                break;
+
+            case TCS3471_INTEGRATION_200ms:
+				afBrightness[i] = (float)ausClear[i]/gainDivisor/65535;
+                break;
+
+            case TCS3471_INTEGRATION_700ms:
+                afBrightness[i] = (float)ausClear[i]/gainDivisor/65535;
+                break;
+				
+			default: 
+				printf("Unknown integration time setting - please take a enum value\n");
+				afBrightness[i] = 0.;
+				break;
+		}
+		
+	}
 
 	printf("Reading colors successful.\n");
 	return errorcode;
@@ -619,11 +673,11 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 and can be used for led detection 
 Colors are not valid if the gain/integration time setting was too high, which could result in a a color out of range
 or the color sets are not valid due to any other reason */
+
 int check_validity(void** apHandles, int devIndex, unsigned short* ausClear, unsigned char* aucIntegrationtime)
 {
 	int iHandleLength = get_handleLength(apHandles);
 	int handleIndex = devIndex * 2;
-	unsigned char aucReadbuffer[16];
 
 	int errorcode = 0;
 	
@@ -641,7 +695,7 @@ int check_validity(void** apHandles, int devIndex, unsigned short* ausClear, uns
 		return errorcode;
 	}
 	
-	if((errorcode = tcs_rgbcInvalid(apHandles[handleIndex], apHandles[handleIndex+1], aucReadbuffer)) != 0)
+	if((errorcode = tcs_rgbcInvalid(apHandles[handleIndex], apHandles[handleIndex+1])) != 0)
 	{
 		return errorcode;
 	}
