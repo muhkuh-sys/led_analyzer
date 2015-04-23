@@ -48,21 +48,6 @@ function sleep(n)  -- seconds
 end
 
 
-function astring_to_table(astring, numbOfSerials)
-	
-	
-	local tSerialnumbers = {}
-	
-	for i = 0, numbOfSerials - 1 do
-			
-			if led_analyzer.astring_getitem(astring, i) ~= NULL then 
-				tSerialnumbers[i+1] = led_analyzer.astring_getitem(astring, i)
-			end 
-	end
-			
-	return tSerialnumbers
-end
-
 
 asSerials = led_analyzer.new_astring(MAXSERIALS)
 apHandles = led_analyzer.new_apvoid(MAXHANDLES)
@@ -75,17 +60,16 @@ numberOfDevices = led_analyzer.connect_to_devices(apHandles, MAXHANDLES, asSeria
 local error_counter = 0 
 
 
+
 if numberOfDevices == -1 then
 		
-		
-	
 else 
 	
 	-- must be 0 first, the functions increment it to 1 
 	-- 0 because deviceNr -> handleNr algorithm needs this (detect_devices)	
+	
+	
 	devIndex = 0
-
-
 	 
 	 -- integration time gain, waittime mit defines aus .c files ersetzen 
 	 
@@ -96,12 +80,13 @@ else
 		print(string.format("------------------ Device %d -------------------- ", devIndex))
 		print(				"------------------------------------------------ ")
 		
-		
-		
+		led_analyzer.set_gain(apHandles, devIndex, TCS3471_GAIN_16X)
+		led_analyzer.set_intTime(apHandles, devIndex, TCS3471_INTEGRATION_200ms)
 		
 		
 		while(error_counter < INIT_MAXERROR) do
-			ret = led_analyzer.init_sensors(apHandles, devIndex, TCS3471_INTEGRATION_200ms, TCS3471_GAIN_1X)
+			ret = led_analyzer.init_sensors(apHandles, devIndex)
+			led_analyzer.wait4Conversion(200)
 			if ret ~= 0 then
 				error_counter = error_counter + 1 
 			else
@@ -147,8 +132,6 @@ else
 		end 
 		
 	
-	led_analyzer.set_gain(apHandles, devIndex, TCS3471_GAIN_4X)
-	led_analyzer.set_intTime(apHandles, devIndex, TCS3471_INTEGRATION_200ms)
 	
 		
 	led_analyzer.get_gain(apHandles, devIndex, aucGains)
@@ -161,7 +144,7 @@ else
 			
 		
 		
-		tColor, tXYZ, tYxy, tnm, tHSV = aus_to_table(devIndex, ausClear, ausRed, ausGreen, ausBlue, 16)
+		tColor, tXYZ, tYxy, tnm, tHSV = aus2colorTable(devIndex, ausClear, ausRed, ausGreen, ausBlue, 16)
 
 		print_color(devIndex, tColor, 16, "RGB")
 		--print_color(devIndex, tXYZ, 16, "XYZ")
@@ -174,7 +157,7 @@ else
 		-- as devIndex start = 0, and tableIndex start = 1, we have to pass devIndex +16
 		
 		-- other functions like print_color, austotable, ... get devIndex = 0 and use devIndex +1 intern
-		validate_color(tTest[devIndex+1], tnm[devIndex+1], tYxy[devIndex+1])
+		-- validate_color(tTest[devIndex+1], tnm[devIndex+1], tYxy[devIndex+1])
 		--print_LEDs(tTest[devIndex+1])
 		
 		devIndex = devIndex + 1
