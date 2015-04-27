@@ -797,8 +797,8 @@ int get_intTime(void** apHandles, int devIndex, unsigned char* aucIntegrationtim
 void wait4Conversion(unsigned int uiWaitTime)
 {
 
-	if((uiWaitTime > 0) && (uiWaitTime <= 700))
+	if((uiWaitTime > 0) && (uiWaitTime <= 2000))
 		Sleep(uiWaitTime);
 	
-	else Sleep(150);
+	else Sleep(200);
 }
