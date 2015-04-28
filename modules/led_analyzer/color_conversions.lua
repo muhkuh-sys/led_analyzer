@@ -2,59 +2,56 @@ require("tcs_chromaTable")
 
 -- a helper to print a color table 
 function print_color(devIndex, colortable, length, mode)
-	print(string.format("------------------- Colors --------------------- ", devIndex))
+	print(string.format("------------- Colors - Device %2d --------------- ", devIndex))
 	
 	
 	if mode == "RGB" then 
 		print("     Clear   Red     Green    Blue")
 		for i=1,length do
-		   print(string.format("%2d - 0x%04x, 0x%04x, 0x%04x, 0x%04x", i, colortable[devIndex+1][i].clear,
-													colortable[devIndex+1][i].red, colortable[devIndex+1][i].green,
-													colortable[devIndex+1][i].blue))
+		   print(string.format("%2d - 0x%04x 0x%04x 0x%04x 0x%04x", i, colortable[devIndex][2][i].clear,
+													colortable[devIndex][2][i].red, colortable[devIndex][2][i].green,
+													colortable[devIndex][2][i].blue))
 		end
 	
 	elseif mode == "RGB_n" then
 		print("     Clear   Red     Green    Blue")
 		for i=1,length do
-		   print(string.format("%2d - 0x%04x, %.5f, %.5f, %.5f", i, colortable[devIndex+1][i].clear,
-													(colortable[devIndex+1][i].red/colortable[devIndex+1][i].clear)*255, 
-													(colortable[devIndex+1][i].green/colortable[devIndex+1][i].clear)*255,
-													(colortable[devIndex+1][i].blue/colortable[devIndex+1][i].clear)*255))
+		   print(string.format("%2d - 0x%04x %.5f %.5f %.5f", i, colortable[devIndex][2][i].clear,
+													(colortable[devIndex][2][i].red/colortable[devIndex][2][i].clear)*255, 
+													(colortable[devIndex][2][i].green/colortable[devIndex][2][i].clear)*255,
+													(colortable[devIndex][2][i].blue/colortable[devIndex][2][i].clear)*255))
 		end
 		
 	elseif mode == "XYZ" then
 		print("     X        Y	       Z    ")
 		for i=1, length do
-			print(string.format("%2d - %.5f, %.5f, %.5f", i, colortable[devIndex+1][i].X,
-											colortable[devIndex+1][i].Y, colortable[devIndex+1][i].Z))
+			print(string.format("%2d - %.5f %.5f %.5f", i, colortable[devIndex][3][i].X,
+											colortable[devIndex][3][i].Y, colortable[devIndex][3][i].Z))
 		end
 		
 	elseif mode == "Yxy" then
 		print("     Y        x	       y    ")
 		for i=1, length do
-			print(string.format("%2d - %.7f, %.7f, %.7f", i, colortable[devIndex+1][i].Y,
-											colortable[devIndex+1][i].x, colortable[devIndex+1][i].y))
+			print(string.format("%2d - %.7f %.7f %.7f", i, colortable[devIndex][4][i].Y,
+											colortable[devIndex][4][i].x, colortable[devIndex][4][i].y))
 		end
 		
 	elseif mode == "wavelength" then
 	    print(" dominant wavelength	 sat         brightness  ")
 		for i=1, length do
-			print(string.format("%3d)   %3d nm,		%.2f,		%2.5f", i, math.floor(colortable[devIndex+1][i].nm + 0.5), colortable[devIndex+1][i].sat, colortable[devIndex+1][i].brightness))
+			print(string.format("%3d)   %3d nm		%3.2f		%1.5f", i, colortable[devIndex][1][i].nm, colortable[devIndex][1][i].sat, colortable[devIndex][1][i].brightness))
 		end								
 	
 	elseif mode == "HSV" then
 	print("     H        S	       V    ")
 		for i=1,length do
-		   print(string.format("%2d -  %.5f, %.5f, %.5f", i, 
-													colortable[devIndex+1][i].H,
-													colortable[devIndex+1][i].S,
-													colortable[devIndex+1][i].V))
+		   print(string.format("%2d -  %3.2f %3.2f %3.2f", i, 
+													colortable[devIndex][5][i].H,
+													colortable[devIndex][5][i].S,
+													colortable[devIndex][5][i].V))
 		end	
-		
-	elseif mode == "test" then
-	print("	x	y ")
-			print(string.format("%.8f %.8f", colortable[devIndex+1][8].x, colortable[devIndex+1][8].y))
-	end 
+	end
+	print("\n")
 end
 
 function astring_to_table(astring, numbOfSerials)
@@ -71,7 +68,7 @@ function astring_to_table(astring, numbOfSerials)
 	return tSerialnumbers
 end
 
-function aus2colorTable(devIndex, clear, red, green, blue, brightness, length)
+function aus2colorTable(clear, red, green, blue, brightness, length)
 	local x,y,z
 	
 	local tRGB = {}
@@ -79,18 +76,12 @@ function aus2colorTable(devIndex, clear, red, green, blue, brightness, length)
 	local tYxy = {}
 	local tWavelength = {}
 	local tHSV = {}
+	local tColorTable = {}
 	
-	
-	
-	tRGB[devIndex+1] = {}
-	tXYZ[devIndex+1] = {}
-	tYxy[devIndex+1] = {}
-	tWavelength[devIndex+1]  = {}
-	tHSV[devIndex+1] = {}
 	
 	for i = 0, length-1 do
 		-- table containing sensorindices with R, G, B values 
-		tRGB[devIndex+1][i+1] = {clear = led_analyzer.ushort_getitem(clear, i),
+		tRGB[i+1] = {clear = led_analyzer.ushort_getitem(clear, i),
 								red    = led_analyzer.ushort_getitem(red, i),
 								green  = led_analyzer.ushort_getitem(green, i),
 								blue   = led_analyzer.ushort_getitem(blue, i)}
@@ -103,7 +94,7 @@ function aus2colorTable(devIndex, clear, red, green, blue, brightness, length)
 		
 		
 		local X, Y, Z = RGB2XYZ(r_n, g_n, b_n, "sRGB")									  
-		tXYZ[devIndex+1][i+1] = { X = X,
+		tXYZ[i+1] = {			  X = X,
 								  Y = Y,
 								  Z = Z }
 								  
@@ -113,7 +104,7 @@ function aus2colorTable(devIndex, clear, red, green, blue, brightness, length)
 		local Y, x, y = XYZ2Yxy(X, Y, Z)
 		local x_chroma = x
 		local y_chroma = y
-		tYxy[devIndex+1][i+1] = { Y = Y,
+		tYxy[i+1] = 			{ Y = Y,
 								  x = x,
 								  y = y }
 								  
@@ -122,27 +113,31 @@ function aus2colorTable(devIndex, clear, red, green, blue, brightness, length)
 		local wavelength, saturation = Yxy2wavelength(x_chroma, y_chroma)
 		
 		
-		if xbrightness <= 0.004 then 
-			tWavelength[devIndex+1][i+1] = {nm  = 0,
+		if xbrightness <= 0.005 then 
+			tWavelength[i+1] =			   {nm  = 0,
 											sat = 0,
 											brightness = xbrightness}
 		else 
-			tWavelength[devIndex+1][i+1] = {nm  = wavelength,
+			tWavelength[i+1] = 				{nm  = math.floor(wavelength)+0.5,
 											sat = saturation * 100,
 											brightness = xbrightness}			
 		end 
 		
 		
 		local H,S,V = RGB2HSV(r_n, g_n, b_n)
-		tHSV[devIndex+1][i+1] = { H = H,
+		tHSV[i+1] =				 { H = H,
 								  S = S,
 								  V = V }
 								
 	end
+	 
+	tColorTable [1] = tWavelength 
+	tColorTable [2] = tRGB
+	tColorTable [3]  = tXYZ 
+	tColorTable [4] = tYxy 
+	tColorTable [5] = tHSV 
 	
-	
-	
-	return tRGB, tXYZ, tYxy , tWavelength, tHSV
+	return tColorTable 
 end
 
 -- Convert XYZ to LAB --
