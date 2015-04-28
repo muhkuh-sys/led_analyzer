@@ -55,7 +55,7 @@ function validate_color(tTest, tnm, tYxy)
 			if inToleranceRange(tTest[k], tnm[k], tYxy[k]) == 0 then 
 				tTest[k].LED_State = 1
 			elseif inToleranceRange(tTest[k], tnm[k], tYxy[k]) == 1 then
-			    tTest[k].LED_State = 2 			
+			    tTest[k].LED_State = 2 			 
 		    end 
 	end 	
 	 

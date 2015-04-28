@@ -37,9 +37,9 @@ function print_color(devIndex, colortable, length, mode)
 		end
 		
 	elseif mode == "wavelength" then
-	    print(" dominant wavelength	       brightness  ")
+	    print(" dominant wavelength	 sat         brightness  ")
 		for i=1, length do
-			print(string.format("%3d)   %3d nm, 			%.2f", i, math.floor(colortable[devIndex+1][i].nm + 0.5), colortable[devIndex+1][i].sat))
+			print(string.format("%3d)   %3d nm,		%.2f,		%2.5f", i, math.floor(colortable[devIndex+1][i].nm + 0.5), colortable[devIndex+1][i].sat, colortable[devIndex+1][i].brightness))
 		end								
 	
 	elseif mode == "HSV" then
@@ -71,7 +71,7 @@ function astring_to_table(astring, numbOfSerials)
 	return tSerialnumbers
 end
 
-function aus2colorTable(devIndex, clear, red, green, blue, length)
+function aus2colorTable(devIndex, clear, red, green, blue, brightness, length)
 	local x,y,z
 	
 	local tRGB = {}
@@ -79,6 +79,7 @@ function aus2colorTable(devIndex, clear, red, green, blue, length)
 	local tYxy = {}
 	local tWavelength = {}
 	local tHSV = {}
+	
 	
 	
 	tRGB[devIndex+1] = {}
@@ -95,10 +96,10 @@ function aus2colorTable(devIndex, clear, red, green, blue, length)
 								blue   = led_analyzer.ushort_getitem(blue, i)}
 		
 		-- table containing sensorindices with X,Y,Z  values
-		local r_n = led_analyzer.ushort_getitem(red, i)/led_analyzer.ushort_getitem(clear, i)
-		local g_n = led_analyzer.ushort_getitem(green, i)/led_analyzer.ushort_getitem(clear, i)
-		local b_n = led_analyzer.ushort_getitem(blue, i)/led_analyzer.ushort_getitem(clear, i)
-		
+		local r_n         = led_analyzer.ushort_getitem(red, i)/led_analyzer.ushort_getitem(clear, i)
+		local g_n 		  = led_analyzer.ushort_getitem(green, i)/led_analyzer.ushort_getitem(clear, i)
+		local b_n 	      = led_analyzer.ushort_getitem(blue, i)/led_analyzer.ushort_getitem(clear, i)
+		local xbrightness = led_analyzer.afloat_getitem(brightness, i)
 		
 		
 		local X, Y, Z = RGB2XYZ(r_n, g_n, b_n, "sRGB")									  
@@ -119,8 +120,18 @@ function aus2colorTable(devIndex, clear, red, green, blue, length)
 		
 		-- table containing sensorindices with wavelength in nanometers
 		local wavelength, saturation = Yxy2wavelength(x_chroma, y_chroma)
-		tWavelength[devIndex+1][i+1] = {nm = wavelength,
-								sat = saturation*100}
+		
+		
+		if xbrightness <= 0.004 then 
+			tWavelength[devIndex+1][i+1] = {nm  = 0,
+											sat = 0,
+											brightness = xbrightness}
+		else 
+			tWavelength[devIndex+1][i+1] = {nm  = wavelength,
+											sat = saturation * 100,
+											brightness = xbrightness}			
+		end 
+		
 		
 		local H,S,V = RGB2HSV(r_n, g_n, b_n)
 		tHSV[devIndex+1][i+1] = { H = H,
@@ -128,6 +139,8 @@ function aus2colorTable(devIndex, clear, red, green, blue, length)
 								  V = V }
 								
 	end
+	
+	
 	
 	return tRGB, tXYZ, tYxy , tWavelength, tHSV
 end
@@ -203,7 +216,7 @@ function RGB2XYZ(r, g, b, rgb_workingspace)
   -- CIE Standard Observer 2 °, Daylight
   if rgb_workingspace == 'sRGB' then 
 	   --Source White in XYZ units not Yxy units !
-	   tRefWhite = {x = 0.312727, y=0.329023}
+	   tRefWhite = {x = 0.312727, y = 0.329023}
 	   x = r_n * 0.4124564 + g_n * 0.3575761 + b_n * 0.1804375
 	   y = r_n * 0.2126729 + g_n * 0.7151522 + b_n * 0.0721750
 	   z = r_n * 0.0193339 + g_n * 0.1191920 + b_n * 0.9503041
@@ -211,7 +224,7 @@ function RGB2XYZ(r, g, b, rgb_workingspace)
 	 
   -- CIE RGB, Observer = 2°, Illuminant = E
   elseif rgb_workingspace == 'CIE_RGB' then
- 	   tRefWhite = {x = 0.3333, y=0.3333}
+ 	   tRefWhite = {x = 0.3333, y = 0.3333}
 	   x = r_n * 0.4887180 + g_n * 0.3106803  + b_n * 0.2006017
 	   y = r_n * 0.1762044 + g_n * 0.8129847  + b_n * 0.0108109
 	   z = r_n * 0.0000000 + g_n * 0.0102048  + b_n * 0.989795
@@ -219,7 +232,7 @@ function RGB2XYZ(r, g, b, rgb_workingspace)
 	   
   -- Apple RGB, Observer = 2°, Illuminant = D65 
   elseif rgb_workingspace == 'Apple_RGB' then
- 	   tRefWhite = {x = 0.312727, y=0.329023}
+ 	   tRefWhite = {x = 0.312727, y = 0.329023}
 	   x = r_n *0.4497288 + g_n * 0.3162486  + b_n *0.1844926
 	   y = r_n *0.2446525 + g_n * 0.6720283  + b_n *0.0833192
 	   z = r_n *0.0251848 + g_n * 0.1411824  + b_n *0.9224628
@@ -227,7 +240,7 @@ function RGB2XYZ(r, g, b, rgb_workingspace)
 	  
    -- Best RGB, Observer = 2°, Illuminant = D50
   elseif rgb_workingspace == 'Best_RGB' then 
-      tRefWhite = {x = 0.34567, y= 0.35850}
+      tRefWhite = {x = 0.34567, y = 0.35850}
 	   x = r_n * 0.6326696  + g_n * 0.2045558  + b_n * 0.1269946
        y = r_n * 0.2284569  + g_n * 0.7373523  + b_n * 0.0341908
        z = r_n * 0.0000000  + g_n * 0.0095142  + b_n * 0.8156958
@@ -235,7 +248,7 @@ function RGB2XYZ(r, g, b, rgb_workingspace)
 	   
    -- Beta RGB , Observere 2°, Illuminant D50 
   elseif rgb_workingspace == 'Beta_RGB' then 
-      tRefWhite = {x = 0.34567, y= 0.35850}
+      tRefWhite = {x = 0.34567, y = 0.35850}
 	   x = r_n * 0.6712537  + g_n * 0.1745834  + b_n * 0.1183829
        y = r_n * 0.3032726  + g_n * 0.6637861  + b_n * 0.0329413
        z = r_n * 0.0000000  + g_n * 0.0407010  + b_n * 0.7845090
@@ -245,7 +258,7 @@ function RGB2XYZ(r, g, b, rgb_workingspace)
 	  
    -- Bruce RGB, Observer 2°, Illuminant D65 
   elseif rgb_workingspace == 'Bruce_RGB' then 
-         tRefWhite = {x = 0.312727, y=0.329023}
+         tRefWhite = {x = 0.312727, y = 0.329023}
 	   x = r_n *  0.4674162  + g_n * 0.2944512  + b_n * 0.1886026
        y = r_n *  0.2410115  + g_n * 0.6835475  + b_n * 0.0754410
        z = r_n *  0.0219101  + g_n * 0.0736128  + b_n * 0.9933071
@@ -254,7 +267,7 @@ function RGB2XYZ(r, g, b, rgb_workingspace)
 	   
    -- Color Match RGB, Observer = 2°, Illuminant = D50
   elseif rgb_workingspace == 'D50' then 
-       tRefWhite = {x = 0.34567, y= 0.35850}
+       tRefWhite = {x = 0.34567, y = 0.35850}
 	   x = r_n * 0.5093439  + g_n * 0.3209071  + b_n * 0.1339691
        y = r_n * 0.2748840  + g_n * 0.6581315  + b_n * 0.0669845
        z = r_n * 0.0242545  + g_n * 0.1087821  + b_n * 0.6921735
@@ -270,7 +283,7 @@ function RGB2XYZ(r, g, b, rgb_workingspace)
 	   
    -- NTSCRGB, Observer = 2°, Illuminant = C
    elseif rgb_workingspace == 'PAL_RGB' then 
-       tRefWhite = {x = 0.31273, y=0.32902}
+       tRefWhite = {x = 0.31273, y = 0.32902}
 	   x = r_n * 0.4306190   + g_n * 0.3415419  + b_n * 0.1783091
        y = r_n * 0.2220379   + g_n * 0.7066384  + b_n * 0.0713236
        z = r_n * 0.0201853   + g_n * 0.1295504  + b_n * 0.9390944
@@ -285,7 +298,11 @@ function RGB2XYZ(r, g, b, rgb_workingspace)
 		y = r_n * 0.2973769 + g_n * 0.6273491  + b_n *  0.0752741
 		z = r_n * 0.0270343 + g_n * 0.0706872  + b_n *  0.9911085
 		tXYZ = {x = x, y = y, z = z}
-  end
+  
+  else 
+		tRefWhite = {x = 0.312727, y = 0.329023}
+  end 
+  
    
   return x, y, z 
   
@@ -505,14 +522,10 @@ function Yxy2wavelength(x,y)
 			min_index = i 
 			min_angle = cur_angle
 		end 
-	end 
+	end 		
 	
 	
-	local saturation = get_length(t_curDirVector) / get_length(t_CIEdirVector[min_index])
-	if saturation < 0.15 then 
-		return 0, 0 
-	end 
-	
+	local saturation = get_length(t_curDirVector) / get_length(t_CIEdirVector[min_index])	
 	if saturation >= 1.0 then 
 		saturation = 1.0 
 	end 
