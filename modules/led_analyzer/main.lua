@@ -135,7 +135,7 @@ while(devIndex < numberOfDevices) do
 	end 
 	
 	tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, afBrightness, 16)
-	print_color(devIndex, tColorTable, 16, "wavelength")
+	print_color(devIndex, tColorTable, 16, "RGB_n")
 	
 	
 	devIndex = devIndex + 1 
