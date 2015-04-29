@@ -5,34 +5,6 @@
 -- tTest = a row in the tTesttable containing name, dWavelength, tol, led_state ...
 -- tnm is a row with a .nm value 
 
-local tTestSummary = {}
-
-function inToleranceRange(devIndex, tTest, tWavelength, brightness_enable) 
-	
-	
-	
-	
-	
-	if tTest.dWavelength ~= nil then
-			if tnm.nm > (tTest.dWavelength - tTest.tol_nm)
-			and tnm.nm < (tTest.dWavelength + tTest.tol_nm) 
-			and tnm.sat < (tTest.sat + (tTest.tol_sat/100)*tTest.sat)
-			and tnm.sat > (tTest.sat - (tTest.tol_sat/100)*tTest.sat)then 
-				return 0 
-
-			else 
-				if tnm.nm > (tTest.dWavelength - tTest.tol_nm)
-				and tnm.nm < (tTest.dWavelength + tTest.tol_nm) then
-					return 1 
-				else 
-					return 2
-				end 
-			end 
-	end
-			
-			
-end 
-
 function compare(row_testboard, row_curset, brightness_check_enable)
 	
 	-- The row in testboard exists, thus a test for this LED is desired 
@@ -48,18 +20,17 @@ function compare(row_testboard, row_curset, brightness_check_enable)
 		end 
 		
 		-- Saturation and wavelength fit 
-		if  row_curset.nm  		  > (row_testboard.nm  - row_testboard.tol_nm)
-		and row_curset.nm  		  < (row_testboard.nm  + row_testboard.tol_nm)
-		and row_curset.sat 		  > (row_testboard.sat - row_testboard.tol_sat)
-		and row_curset.sat		  < (row_testboard.sat + row_testboard.tol_sat) then 
+		if  (row_curset.nm  		  >= (row_testboard.nm  - row_testboard.tol_nm)
+		and  row_curset.nm  		  <= (row_testboard.nm  + row_testboard.tol_nm)
+		and  row_curset.sat 		  >= (row_testboard.sat - row_testboard.tol_sat)
+		and  row_curset.sat		      <= (row_testboard.sat + row_testboard.tol_sat)) then 
 		
 			-- Brightness check is enabled 
 			if brightness_check_enable >= 1 then 
 				-- Brightness is OK --
 				if row_curset.brightness > (row_testboard.brightness - row_testboard.tol_brightness)
 				and row_curset.brightness < (row_testboard.brightness + row_testboard.tol_brightness) then 
-					print("hello")
-					return 0, "OK", dnm, dsat, dbrightness
+					return 0, string.format("%s LED OK!", tReferenceColors[row_testboard.nm].colorname), dnm, dsat, dbrightness
 				 
 				-- Brightness falls below min_brightness
 				elseif row_curset.brightness < (row_testboard.brightness - row_testboard.tol_brightness) then
@@ -73,17 +44,17 @@ function compare(row_testboard, row_curset, brightness_check_enable)
 			--Brightness check is disabled 
 			else 
 				-- As wavelength and saturations are OK and there's no need for a brightness check we can return OK here
-				return 0, "OK", 0, 0, 0
+				return 0, string.format("%s LED OK!", tReferenceColors[row_testboard.nm].colorname), 0, 0, 0
 			end 
 		
 		-- Saturation fits but wavelength doesn't 
-		elseif (row_curset.nm  < (row_testboard.nm  - row_testboard.tol_nm) 
-		or 	   row_curset.nm  > (row_testboard.nm  + row_testboard.tol_nm))
-		and    row_curset.sat > (row_testboard.sat - row_testboard.tol_sat)
-		and    row_curset.sat < (row_testboard.sat + row_testboard.tol_sat) then 
+		elseif ((row_curset.nm  <= (row_testboard.nm  - row_testboard.tol_nm) 
+		or 	     row_curset.nm  >= (row_testboard.nm  + row_testboard.tol_nm))
+		and      row_curset.sat >= (row_testboard.sat - row_testboard.tol_sat)
+		and      row_curset.sat <= (row_testboard.sat + row_testboard.tol_sat)) then 
 			-- We probly have a wrong LED in place 
-			return 3, "A LED with wrong color is detected - check !", dnm, dsat, dbrightness
-			
+			return 3, string.format("Wrong LED Color! Want: %s with %d nm -- Detected: %s with %d nm", tReferenceColors[row_testboard.nm].colorname,
+					tReferenceColors[row_testboard.nm].nm, tReferenceColors[row_curset.nm].colorname, tReferenceColors[row_curset.nm].nm), dnm, dsat, dbrightness
 		-- Neither saturation nor wavelength fit -- NO LED 
 		else 
 			return 4, "NO LED detected!", dnm, dsat, dbrightness
@@ -134,19 +105,21 @@ end
 function print_deviceSummary(tTestSummary_device, info_enable)
 
 	if info_enable >= 0 then 
-		print("Status --------- dnm ----------- dsat -------- dbrightness ------ infotext -----")
+		print("Sensor -------- Status --------- dnm ----------- dsat -------- dbrightness")
 	else 
-		print("Status --------- dnm ----------- dsat -------- dbrightness -----------------")
+		print("Sensor -------- Status --------- dnm ----------- dsat -------- dbrightness")
 	end 
 	
 	for i = 1, 16 do 
 		if info_enable >= 1 then 
-			print(string.format("%2d		%3d		%2.2f		%1.5f		%s", tTestSummary_device[i].status, tTestSummary_device[i].dnm, 
-			tTestSummary_device[i].dsat, tTestSummary_device[i].dbrightness, tTestSummary_device[i].infotext))
+			print(string.format("%2d	 	 %2d		%3d		%2.2f		%1.5f", i, tTestSummary_device[i].status, tTestSummary_device[i].dnm, 
+			tTestSummary_device[i].dsat, tTestSummary_device[i].dbrightness))
+			print(tTestSummary_device[i].infotext)
 		else 
-			print(string.format("%2d		%3d		%2.2f		%1.5f", tTestSummary_device[i].status, tTestSummary_device[i].dnm, 
+			print(string.format("%2d 		 %2d		%3d		%2.2f		%1.5f", i, tTestSummary_device[i].status, tTestSummary_device[i].dnm, 
 			tTestSummary_device[i].dsat, tTestSummary_device[i].dbrightness))
 		end 
 	end 
 
 end 
+
