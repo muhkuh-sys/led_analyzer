@@ -1,6 +1,7 @@
 require("tcs_chromaTable")
 
--- a helper to print a color table 
+-- a helper to print a colortable which contains values in RGB, XYZ, HSV, Yxy and wavelength space 
+-- parameter mode determines which space should be printed out 
 function print_color(devIndex, colortable, length, mode)
 	print(string.format("------------- Colors - Device %2d --------------- ", devIndex))
 	
@@ -50,7 +51,7 @@ function print_color(devIndex, colortable, length, mode)
 	elseif mode == "HSV" then
 	print("     H        S	       V    ")
 		for i=1,length do
-		   print(string.format("%2d -  %3.2f %3.2f %3.2f", i, 
+		   print(string.format("%2d -  %3.2f    %3.2f    %3.2f", i, 
 													colortable[devIndex][5][i].H,
 													colortable[devIndex][5][i].S,
 													colortable[devIndex][5][i].V))
@@ -59,6 +60,8 @@ function print_color(devIndex, colortable, length, mode)
 	print("\n")
 end
 
+
+-- Saves content of a string array into a lua table 
 function astring_to_table(astring, numbOfSerials)
 
 	local tSerialnumbers = {}
@@ -251,8 +254,6 @@ function RGB2XYZ(r, g, b, rgb_workingspace)
 	local x,y,z
 	local tXYZ = {}
  
- 
-  -- Hier kann man noch was drehen-- 
   -- CIE Standard Observer 2 °, Daylight
   if rgb_workingspace == 'sRGB' then 
 	   --Source White in XYZ units not Yxy units !
@@ -292,9 +293,7 @@ function RGB2XYZ(r, g, b, rgb_workingspace)
 	   x = r_n * 0.6712537  + g_n * 0.1745834  + b_n * 0.1183829
        y = r_n * 0.3032726  + g_n * 0.6637861  + b_n * 0.0329413
        z = r_n * 0.0000000  + g_n * 0.0407010  + b_n * 0.7845090
-	   
- 
-  tXYZ = {x = x, y = y, z = z}
+	   tXYZ = {x = x, y = y, z = z}
 	  
    -- Bruce RGB, Observer 2°, Illuminant D65 
   elseif rgb_workingspace == 'Bruce_RGB' then 
@@ -302,7 +301,6 @@ function RGB2XYZ(r, g, b, rgb_workingspace)
 	   x = r_n *  0.4674162  + g_n * 0.2944512  + b_n * 0.1886026
        y = r_n *  0.2410115  + g_n * 0.6835475  + b_n * 0.0754410
        z = r_n *  0.0219101  + g_n * 0.0736128  + b_n * 0.9933071
-	   
 	   tXYZ = {x = x, y = y, z = z}
 	   
    -- Color Match RGB, Observer = 2°, Illuminant = D50
@@ -340,23 +338,20 @@ function RGB2XYZ(r, g, b, rgb_workingspace)
 		tXYZ = {x = x, y = y, z = z}
   
   else 
+		-- Default Reference white values if wrong or unknown "rgb_workingspace" 
 		tRefWhite = {x = 0.312727, y = 0.329023}
   end 
   
-   
   return x, y, z 
   
  end
  
  -- X,Y,Z in the nominal range [0.0, 1.0]
  function XYZ2Yxy(X, Y, Z)
-	
-	
-	
+		
 	local Y = Y
 	local x = X / ( X + Y + Z )
 	local y = Y / ( X + Y + Z )
-	
 	
 	return Y, x, y
 end
@@ -521,7 +516,9 @@ function get_length(directionVector)
 end 
  
  
---Returns the dominant wavelength of input parameters x,y (CIE 1931 - 2°Deg - chromaticity)
+--Returns the dominant wavelength of input parameters x,y
+--instead of using the idealized CIE1931 2° Observer Curver we use the spectral sensitivity data
+--of our sensor and thus achieve a much better accuracy 
 function Yxy2wavelength(x,y)
 
 
@@ -529,40 +526,24 @@ function Yxy2wavelength(x,y)
 	local refWhitex = tRefWhite.x
 	local refWhitey = tRefWhite.y 
 			
-	-- Construct direction vector from current input values
+	-- Construct direction vector from current x and y input values
 	local t_curDirVector = {}
 		  t_curDirVector.x = (x-refWhitex)
 		  t_curDirVector.y = (y-refWhitey)
 		  
-	
-	--print(string.format("x: %f, y: %f", x, y))
-		  
-	-- Construct your spectral line directionvector table --
-	local t_CIEdirVector = {}
-	for i=1,817 do
-		t_CIEdirVector[i] = {}
-	end 
+
 	
 	
-	-- Fill the vector table which now contains direction vectors from 817 entries of the
-	-- CIE 1931 table (tChromaticity) to the whitepoint
-	for i=1,817 do
-		t_CIEdirVector[i].x = tTCS_Chromaticity[i].x - refWhitex -- x value of direction vector
-		t_CIEdirVector[i].y = tTCS_Chromaticity[i].y - refWhitey -- y value of direction vector	
-	end
-	
-	
-	
-	-- Algorithm determines which direction vector in the t_CIEdirVector is closest to the direction vector
-	-- given by the current x,y pair
+	-- Algorithm determines which direction vector in tTCS_dirVector is closest to the direction vector
+	-- given by the current x,y pair by calculating their absolute angle variance 
 	
 	-- Get smalest angle variance 
 	local min_angle = 2*math.pi -- Set the initial min angle to a max value
 	local cur_angle = 2*math.pi -- Set the initial current angle to a max value 
-	local min_index = 0 
+	local min_index = 0 		-- Set the initial index to an invalid value 
 	
 	for i=1,817 do
-		cur_angle = math.abs(get_angle(t_curDirVector, t_CIEdirVector[i]))
+		cur_angle = math.abs(get_angle(t_curDirVector, tTCS_dirVector[i]))
 		if cur_angle < min_angle then
 			min_index = i 
 			min_angle = cur_angle
@@ -570,12 +551,11 @@ function Yxy2wavelength(x,y)
 	end 		
 	
 	
-	local saturation = get_length(t_curDirVector) / get_length(t_CIEdirVector[min_index])	
+	local saturation = get_length(t_curDirVector) / get_length(tTCS_dirVector[min_index])	
+	-- As 100 % should be the max saturation possible, cap your saturation in case it gets over 1.0 ( == 100 % )
 	if saturation >= 1.0 then 
 		saturation = 1.0 
 	end 
-		
-	--print(string.format("wavelength: %2d, saturation %2.2f", tTCS_Chromaticity[min_index].nm, saturation ))
 		
 	return  tTCS_Chromaticity[min_index].nm, saturation 
 	
