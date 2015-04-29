@@ -161,7 +161,7 @@ function aus2colorTable(clear, red, green, blue, brightness, length)
 			local wavelength, saturation = Yxy2wavelength(x, y)
 			
 			-- Wavelength Saturation Brightness table 
-			tWavelength[i+1] = {nm = math.floor(wavelength)+0.5,
+			tWavelength[i+1] = {nm = math.floor(wavelength+0.5),
 						        sat = saturation * 100,
 								brightness = lBrightness }
 								
