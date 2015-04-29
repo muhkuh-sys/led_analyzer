@@ -82,6 +82,7 @@ int i2c_write8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
         /* Send Adress leave Bit0 for WR Bit */
         while(ucMask!=1)
         {
+			/* Begin with MSB and iterate through all elements until LSB is reached */
             ucDataToSend = ((aucSendBuffer[uiBufferIndex] & ucMask)>>ucBitnumber);
             ulDataToSend = ucDataToSend << 0 | ucDataToSend << 2 | ucDataToSend << 4 | ucDataToSend << 6
                          | ucDataToSend << 8 | ucDataToSend << 10| ucDataToSend << 12| ucDataToSend <<14
