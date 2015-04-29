@@ -16,10 +16,15 @@ function print_color(devIndex, colortable, length, mode)
 	elseif mode == "RGB_n" then
 		print("     Clear   Red     Green    Blue")
 		for i=1,length do
-		   print(string.format("%2d - 0x%04x %.5f %.5f %.5f", i, colortable[devIndex][2][i].clear,
+			-- Avoid division by zero 
+		    if(colortable[devIndex][2][i].clear == 0) then 
+				print(string.format("%2d - 0x%04x %3.5f %3.5f %3.5f", i, 0, 0, 0, 0))
+		    else 
+				print(string.format("%2d - 0x%04x %.5f %.5f %.5f", i, colortable[devIndex][2][i].clear,
 													(colortable[devIndex][2][i].red/colortable[devIndex][2][i].clear)*255, 
 													(colortable[devIndex][2][i].green/colortable[devIndex][2][i].clear)*255,
 													(colortable[devIndex][2][i].blue/colortable[devIndex][2][i].clear)*255))
+		    end 
 		end
 		
 	elseif mode == "XYZ" then
@@ -68,9 +73,12 @@ function astring_to_table(astring, numbOfSerials)
 	return tSerialnumbers
 end
 
+
+-- Convert the Colors given as parameters into various color spaces (RGB, HSV, XYZ, Yxy, Wavelength)
+-- and save the values of the color spaces into tables 
 function aus2colorTable(clear, red, green, blue, brightness, length)
-	local x,y,z
-	
+
+	-- tables containing colors in different color spaces 
 	local tRGB = {}
 	local tXYZ = {}
 	local tYxy = {}
@@ -78,67 +86,103 @@ function aus2colorTable(clear, red, green, blue, brightness, length)
 	local tHSV = {}
 	local tColorTable = {}
 	
+	-- local values for clear, red, green and blue channel 
+	local lClear, lRed, lGreen, lBlue 
 	
-	for i = 0, length-1 do
-		-- table containing sensorindices with R, G, B values 
-		tRGB[i+1] = {clear = led_analyzer.ushort_getitem(clear, i),
-								red    = led_analyzer.ushort_getitem(red, i),
-								green  = led_analyzer.ushort_getitem(green, i),
-								blue   = led_analyzer.ushort_getitem(blue, i)}
+	
+	for i = 0, length - 1 do 
+	
+	    -- Get your current colors and save them into tables 
+		lClear = led_analyzer.ushort_getitem(clear, i)
+		lRed   = led_analyzer.ushort_getitem(red,   i)
+		lGreen = led_analyzer.ushort_getitem(green, i)
+		lBlue  = led_analyzer.ushort_getitem(blue,  i)
+		lBrightness = led_analyzer.afloat_getitem(brightness, i)	
+
 		
-		-- table containing sensorindices with X,Y,Z  values
-		local r_n         = led_analyzer.ushort_getitem(red, i)/led_analyzer.ushort_getitem(clear, i)
-		local g_n 		  = led_analyzer.ushort_getitem(green, i)/led_analyzer.ushort_getitem(clear, i)
-		local b_n 	      = led_analyzer.ushort_getitem(blue, i)/led_analyzer.ushort_getitem(clear, i)
-		local xbrightness = led_analyzer.afloat_getitem(brightness, i)
+		-- to avoid a later division by zero and to have more stable readings and no unneccessary
+		-- outputs with the channels which are not reading any LEDs we will check if any of the channels is zero
 		
-		
-		local X, Y, Z = RGB2XYZ(r_n, g_n, b_n, "sRGB")									  
-		tXYZ[i+1] = {			  X = X,
-								  Y = Y,
-								  Z = Z }
-								  
-								
-								  
-		-- table containing sensorindices with Yxy values
-		local Y, x, y = XYZ2Yxy(X, Y, Z)
-		local x_chroma = x
-		local y_chroma = y
-		tYxy[i+1] = 			{ Y = Y,
-								  x = x,
-								  y = y }
-								  
-		
-		-- table containing sensorindices with wavelength in nanometers
-		local wavelength, saturation = Yxy2wavelength(x_chroma, y_chroma)
-		
-		
-		if xbrightness <= 0.005 then 
-			tWavelength[i+1] =			   {nm  = 0,
-											sat = 0,
-											brightness = xbrightness}
+		if((lRed == 0) or (lGreen == 0) or (lBlue == 0) or (lClear == 0)) then 
+			
+			-- RGB table 
+			tRGB[i+1] = {clear = 0,
+						 red = 0,
+						 green = 0,
+						 blue = 0 }
+						 
+			-- RGB normalized
+			tXYZ[i+1] = { X = 0,
+						  Y = 0,
+						  Z = 0 }
+						  
+			-- Yxy space 
+			tYxy[i+1] = { Y = 0,
+						  x = 0,
+						  y = 0 }
+						  
+			-- Wavelength and saturation 
+			tWavelength[i+1] = { nm  = 0,
+							     sat = 0,
+							     brightness = 0 }
+							
+			tHSV[i+1] = { H = 0,
+						  S = 0,
+						  V = 0 }
+						  
 		else 
-			tWavelength[i+1] = 				{nm  = math.floor(wavelength)+0.5,
-											sat = saturation * 100,
-											brightness = xbrightness}			
-		end 
-		
-		
-		local H,S,V = RGB2HSV(r_n, g_n, b_n)
-		tHSV[i+1] =				 { H = H,
-								  S = S,
-								  V = V }
+			local r_n = lRed   / lClear
+			local g_n = lGreen / lClear
+			local b_n = lBlue  / lClear 
+			
+			-- RGB table 
+			tRGB[i+1] = {clear = lClear,
+						 red   = lRed,
+						 green = lGreen,
+						 blue  = lBlue }		
+
+			local X, Y, Z = RGB2XYZ(r_n, g_n, b_n, "sRGB")
+			
+			-- XYZ table 
+			tXYZ[i+1] = { X = X,
+						  Y = Y,
+						  Z = Z }
+						  
+			local Y, x, y = XYZ2Yxy(X, Y, Z)
+			
+			-- Yxy table 
+			tYxy[i+1] = { Y = Y,
+						  x = x,
+						  y = y }
+						  
+			local wavelength, saturation = Yxy2wavelength(x, y)
+			
+			-- Wavelength Saturation Brightness table 
+			tWavelength[i+1] = {nm = math.floor(wavelength)+0.5,
+						        sat = saturation * 100,
+								brightness = lBrightness }
 								
-	end
-	 
+			-- HSV (Hue Saturation Value)
+			
+			local H, S, V = RGB2HSV(r_n, g_n, b_n)
+			
+			-- HSV table 
+			tHSV[i+1] = { H = H,
+						  S = S,
+						  V = V }
+						  
+		end 
+	end 
+	
 	tColorTable [1] = tWavelength 
 	tColorTable [2] = tRGB
 	tColorTable [3]  = tXYZ 
 	tColorTable [4] = tYxy 
-	tColorTable [5] = tHSV 
+	tColorTable [5] = tHSV 	
 	
-	return tColorTable 
-end
+	return tColorTable
+			
+end 
 
 -- Convert XYZ to LAB --
 function XYZToLAB(x, y, z)
@@ -183,6 +227,7 @@ function RGB2XYZ(r, g, b, rgb_workingspace)
 	local r_n = r
 	local g_n = g
 	local b_n = b
+	
 
 	if r_n>0.04045 then
 	   r_n = math.pow((r_n + 0.055) / 1.055, 2.4)
@@ -306,9 +351,12 @@ function RGB2XYZ(r, g, b, rgb_workingspace)
  -- X,Y,Z in the nominal range [0.0, 1.0]
  function XYZ2Yxy(X, Y, Z)
 	
+	
+	
 	local Y = Y
 	local x = X / ( X + Y + Z )
 	local y = Y / ( X + Y + Z )
+	
 	
 	return Y, x, y
 end
@@ -486,6 +534,8 @@ function Yxy2wavelength(x,y)
 		  t_curDirVector.x = (x-refWhitex)
 		  t_curDirVector.y = (y-refWhitey)
 		  
+	
+	--print(string.format("x: %f, y: %f", x, y))
 		  
 	-- Construct your spectral line directionvector table --
 	local t_CIEdirVector = {}
@@ -525,7 +575,8 @@ function Yxy2wavelength(x,y)
 		saturation = 1.0 
 	end 
 		
-
+	--print(string.format("wavelength: %2d, saturation %2.2f", tTCS_Chromaticity[min_index].nm, saturation ))
+		
 	return  tTCS_Chromaticity[min_index].nm, saturation 
 	
 end
