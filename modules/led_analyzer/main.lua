@@ -76,7 +76,7 @@ while(devIndex < numberOfDevices) do
 
 
 	led_analyzer.set_gain(apHandles, devIndex, TCS3471_GAIN_1X)
-	led_analyzer.set_intTime(apHandles, devIndex, TCS3471_INTEGRATION_200ms)
+	led_analyzer.set_intTime(apHandles, devIndex, TCS3471_INTEGRATION_100ms)
 	
 	while(error_counter < INIT_MAXERROR) do
 		ret = led_analyzer.init_sensors(apHandles, devIndex)
@@ -135,7 +135,7 @@ while(devIndex < numberOfDevices) do
 	end 
 	
 	tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, afBrightness, 16)
-	print_color(devIndex, tColorTable, 16, "RGB_n")
+	print_color(devIndex, tColorTable, 16, "wavelength")
 	
 	
 	devIndex = devIndex + 1 
@@ -152,8 +152,9 @@ while(devIndex < numberOfDevices) do
 	print_deviceSummary(tTestSummary[devIndex], 1 )
 
 devIndex = devIndex + 1 
-end 
 
+	
+end 
 
 
 ret = led_analyzer.free_devices(apHandles)	
