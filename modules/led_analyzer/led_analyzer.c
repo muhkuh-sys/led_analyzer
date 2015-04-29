@@ -35,18 +35,18 @@
 */
 
 
-int swap_serialPos(char** asSerial, unsigned int swap1, unsigned int swap2)
+int swap_serialPos(char** asSerial, unsigned int pos1, unsigned int pos2)
 {
 	int numbOfDevs = get_number_of_serials(asSerial);
 	char temp[128];
 	
-	if(swap1 >= numbOfDevs) 
+	if(pos1 >= numbOfDevs || pos1 < 0) 
 	{
 		printf("Reaching out of seralnumber array ... cannot swap\n");
 		return -1;
 	}
 	
-	if(swap2 >= numbOfDevs) 
+	if(pos2 >= numbOfDevs || pos2 < 0) 
 	{
 		printf("Reaching out of seralnumber array ... cannot swap\n");
 		return -1;
@@ -54,11 +54,11 @@ int swap_serialPos(char** asSerial, unsigned int swap1, unsigned int swap2)
 	
 	
 	/* Temporary store of Serials old position */
-	strcpy(temp, asSerial[swap1]);
+	strcpy(temp, asSerial[pos1]);
 	/* store the serial number into the new position */
-	strcpy(asSerial[swap1], asSerial[swap2]);
+	strcpy(asSerial[pos1], asSerial[pos2]);
 	/* Restore the old position */
-	strcpy(asSerial[swap2], temp);
+	strcpy(asSerial[pos2], temp);
 	
 	return 0;
 
