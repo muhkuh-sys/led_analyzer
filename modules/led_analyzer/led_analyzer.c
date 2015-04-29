@@ -503,7 +503,7 @@ int set_intTime_x(void** apHandles, int devIndex, unsigned char integrationtime,
 	
 	if(tcs_setIntegrationTime_x(apHandles[handleIndex], apHandles[handleIndex+1], integrationtime, uiX) != 0)
 	{
-		printf("... failed to set integration time for sensor %d on dev %d ...\n", uiX+1, devIndex);
+		printf("... failed to set integration time for sensor %d on device %d ...\n", uiX+1, devIndex);
 		return 1;
 	}
 	return 0;
@@ -516,7 +516,7 @@ int set_gain_x(void** apHandles, int devIndex, unsigned char gain, unsigned int 
 		
 	if(tcs_setGain_x(apHandles[handleIndex], apHandles[handleIndex+1], gain, uiX) != 0)
 	{
-		printf("... failed to set gain for sensor %d on dev %d ...\n", uiX+1, devIndex);
+		printf("... failed to set gain for sensor %d on device %d ...\n", uiX+1, devIndex);
 		return 1;		
 	}
 	return 0;
