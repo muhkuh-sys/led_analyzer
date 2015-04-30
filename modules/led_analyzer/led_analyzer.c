@@ -28,46 +28,6 @@
 
 
 
-/* Functions swaps two strings in the asSerial string array 
-
-	retVal = -1: swapping didn't work due to overindexing the asSerial array 
-	retVal = 0 : everything ok -- swapping worked 
-*/
-
-
-int swap_serialPos(char** asSerial, unsigned int pos1, unsigned int pos2)
-{
-	int numbOfDevs = get_number_of_serials(asSerial);
-	char temp[128];
-	
-	if(pos1 >= numbOfDevs || pos1 < 0) 
-	{
-		printf("Reaching out of seralnumber array ... cannot swap\n");
-		return -1;
-	}
-	
-	if(pos2 >= numbOfDevs || pos2 < 0) 
-	{
-		printf("Reaching out of seralnumber array ... cannot swap\n");
-		return -1;
-	}
-	
-	
-	/* Temporary store of Serials old position */
-	strcpy(temp, asSerial[pos1]);
-	/* store the serial number into the new position */
-	strcpy(asSerial[pos1], asSerial[pos2]);
-	/* Restore the old position */
-	strcpy(asSerial[pos2], temp);
-	
-	return 0;
-
-	
-}
-
-
-
-
 /* Scans for connected ftdi devices and prints their Manufacturer, Description and Serialnumber
 Serialnumber(s) of found devices will be stored in asSerial 
 
@@ -138,7 +98,6 @@ int scan_devices(char** asSerial, unsigned int asLength)
 		if(strcmp(sMatch, description) == 0)
 		{
 			numbOfSerials++;
-			/* + 10 to have some puffer if 2 serial numbers have different lengths in the swapping function */
 			asSerial[i] = (char*) malloc(sizeof(serial));
 			strcpy(asSerial[i], serial);			
 		}
@@ -201,7 +160,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 			
 			if((f = ftdi_set_interface(apHandles[iArrayPos], INTERFACE_A))<0)
 				{
-					fprintf(stderr, "... unable to attach to dev %d interface A: %d, (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					fprintf(stderr, "... unable to attach to device %d interface A: %d, (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
 				}
@@ -218,20 +177,20 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 				
 			if((f = ftdi_usb_open_desc(apHandles[iArrayPos], VID, PID, NULL, asSerial[devCounter])<0))
 				{
-					fprintf(stderr, "... unable to open dev %d interface A: %d (%s)\n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					fprintf(stderr, "... unable to open device %d interface A: %d (%s)\n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_deinit(apHandles[iArrayPos]);
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
 				}
-			else printf("ftdi dev %d Channel A - open succeeded\n", devCounter);
+			else printf("ftdi device %d Channel A - open succeeded\n", devCounter);
 			
 			if((f=ftdi_set_bitmode(apHandles[iArrayPos], 0xFF, BITMODE_MPSSE)) < 0)
 				{
-					fprintf(stderr, "... unable to set the mode on dev %d Channel A: %d (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					fprintf(stderr, "... unable to set the mode on device %d Channel A: %d (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
 				}
-			else  printf("enabling bitbang mode on dev %d Channel A\n", devCounter);
+			else  printf("enabling bitbang mode on device %d Channel A\n", devCounter);
 			
 			iArrayPos ++;
 						
@@ -245,7 +204,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 			
 			if((f = ftdi_set_interface(apHandles[iArrayPos], INTERFACE_B))<0)
 				{
-					fprintf(stderr, "... unable to attach to dev %d interface B: %d, (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					fprintf(stderr, "... unable to attach to device %d interface B: %d, (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
 				}
@@ -260,21 +219,21 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 			
 			if((f = ftdi_usb_open_desc(apHandles[iArrayPos],VID, PID, NULL, asSerial[devCounter])<0))	
 				{
-					fprintf(stderr, "... unable to open dev %d interface B: %d (%s)\n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					fprintf(stderr, "... unable to open device %d interface B: %d (%s)\n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_deinit(apHandles[iArrayPos]);
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
 				}
-			else printf("ftdi dev %d Channel B - open succeeded\n", devCounter);
+			else printf("ftdi device %d Channel B - open succeeded\n", devCounter);
 			
 			if((f=ftdi_set_bitmode(apHandles[iArrayPos], 0xFF, BITMODE_MPSSE)) < 0)
 				{
-					fprintf(stderr, "unable to set the mode on dev %d Channel B: %d (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					fprintf(stderr, "unable to set the mode on device %d Channel B: %d (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
 				}
 			
-			else  printf("enabling bitbang mode on dev %d Channel B\n", devCounter);
+			else  printf("enabling bitbang mode on device %d Channel B\n", devCounter);
 			
 			iArrayPos ++;
 			
@@ -302,8 +261,7 @@ int get_number_of_serials(char** asSerial)
 }
 
 
-/* Diese Funktion detektiert alle Farbsensor devices am PC und öffnet sie.
- * Die handles auf die geöffneten Devices werden in einer Liste zurückgegeben.
+/* function detects all devices with a given VID and PID and opens them 
  *
  * Return = 0: no device detected
  *        > 0: number of detected ftdi devices
@@ -399,7 +357,7 @@ int detect_devices(void** apHandles, int apHlength)
 			
 			if((f = ftdi_set_interface(apHandles[iArrayPos], INTERFACE_A))<0)
 				{
-					fprintf(stderr, "Unable to attach to dev %d interface A: %d, (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					fprintf(stderr, "Unable to attach to device %d interface A: %d, (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
 				}
@@ -407,20 +365,20 @@ int detect_devices(void** apHandles, int apHlength)
 			//if((f = ftdi_usb_open_desc_index(apHandles[iArrayPos], VID, PID, NULL, NULL, devCounter)<0))
 			if((f = ftdi_usb_open_desc(apHandles[iArrayPos], VID, PID, NULL, serial[devCounter])<0))
 				{
-					fprintf(stderr, "unable to open dev %d interface A: %d (%s)\n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					fprintf(stderr, "unable to open device %d interface A: %d (%s)\n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_deinit(apHandles[iArrayPos]);
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
 				}
-			else printf("ftdi dev %d Channel A - open succeeded\n", devCounter);
+			else printf("ftdi device %d Channel A - open succeeded\n", devCounter);
 			
 			if((f=ftdi_set_bitmode(apHandles[iArrayPos], 0xFF, BITMODE_MPSSE)) < 0)
 				{
-					fprintf(stderr, "unable to set the mode on dev %d Channel A: %d (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					fprintf(stderr, "unable to set the mode on device %d Channel A: %d (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
 				}
-			else  printf("enabling bitbang mode on dev %d Channel A\n", devCounter);
+			else  printf("enabling bitbang mode on device %d Channel A\n", devCounter);
 			
 			iArrayPos ++;
 						
@@ -434,7 +392,7 @@ int detect_devices(void** apHandles, int apHlength)
 			
 			if((f = ftdi_set_interface(apHandles[iArrayPos], INTERFACE_B))<0)
 				{
-					fprintf(stderr, "Unable to attach to dev %d interface B: %d, (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					fprintf(stderr, "Unable to attach to device %d interface B: %d, (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
 				}
@@ -442,21 +400,21 @@ int detect_devices(void** apHandles, int apHlength)
 			//if((f = ftdi_usb_open_desc_index(apHandles[iArrayPos],VID, PID, NULL, NULL, devCounter)<0))
 			if((f = ftdi_usb_open_desc(apHandles[iArrayPos],VID, PID, NULL, serial[devCounter])<0))	
 				{
-					fprintf(stderr, "unable to open dev %d interface B: %d (%s)\n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					fprintf(stderr, "unable to open device %d interface B: %d (%s)\n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_deinit(apHandles[iArrayPos]);
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
 				}
-			else printf("ftdi dev %d Channel B - open succeeded\n", devCounter);
+			else printf("ftdi device %d Channel B - open succeeded\n", devCounter);
 			
 			if((f=ftdi_set_bitmode(apHandles[iArrayPos], 0xFF, BITMODE_MPSSE)) < 0)
 				{
-					fprintf(stderr, "unable to set the mode on dev %d Channel B: %d (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					fprintf(stderr, "unable to set the mode on device %d Channel B: %d (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
 				}
 			
-			else  printf("enabling bitbang mode on dev %d Channel B\n", devCounter);
+			else  printf("enabling bitbang mode on device %d Channel B\n", devCounter);
 			
 			iArrayPos ++;
 			
@@ -531,7 +489,7 @@ int set_gain_x(void** apHandles, int devIndex, unsigned char gain, unsigned int 
 */
 int init_sensors(void** apHandles, int devIndex)
 {
-	/* 2 handles per device, dev 0 has handles 0,1 .. dev 1 has handles 2,3 and so on*/
+	/* 2 handles per device, device 0 has handles 0,1 .. device 1 has handles 2,3 and so on*/
 	int handleIndex = devIndex * 2;
 	int errorcode = 0;
 	unsigned char aucTempbuffer[16];
@@ -549,12 +507,12 @@ int init_sensors(void** apHandles, int devIndex)
 			
 	if(tcs_clearInt(apHandles[handleIndex], apHandles[handleIndex+1]) != 0)
 	{
-		printf("... failed to clear interrupt channel on dev %d...\n", devIndex);
+		printf("... failed to clear interrupt channel on device %d...\n", devIndex);
 	}
 			
 	if(tcs_ON(apHandles[handleIndex], apHandles[handleIndex+1]) != 0)
 	{
-		printf("... failed to turn the sensors on on dev %d...\n", devIndex);
+		printf("... failed to turn the sensors on on device %d...\n", devIndex);
 	}
 			
 		
@@ -569,13 +527,6 @@ int init_sensors(void** apHandles, int devIndex)
 }
 
 
-/* 
-MISSING DUE TO LACK OF APPROPRIATE HARDWARE
-
-RETURN ERRORCODE INSTEAD OF 0 (0 = all ok)
-
-REPLACE IF HARDWARE ARRIVES
-*/
 
 /* Function reads out four colors (RGBC) of each sensor (16) under a device */
 int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsigned short* ausRed,
@@ -797,8 +748,107 @@ int get_intTime(void** apHandles, int devIndex, unsigned char* aucIntegrationtim
 void wait4Conversion(unsigned int uiWaitTime)
 {
 
-	if((uiWaitTime > 0) && (uiWaitTime <= 2000))
+	if((uiWaitTime > 0) && (uiWaitTime <= 700))
 		Sleep(uiWaitTime);
 	
 	else Sleep(200);
+}
+
+
+/* Functions swaps two strings in the asSerial string array 
+
+	retVal = -1: swapping didn't work due to overindexing the asSerial array 
+	retVal = 0 : everything ok -- swapping worked 
+*/
+
+
+int swap_serialPos(char** asSerial, unsigned int pos1, unsigned int pos2)
+{
+	int numbOfDevs = get_number_of_serials(asSerial);
+	char temp[128];
+	
+	if(pos1 >= numbOfDevs || pos1 < 0) 
+	{
+		printf("Reaching out of seralnumber array ... cannot swap\n");
+		return -1;
+	}
+	
+	if(pos2 >= numbOfDevs || pos2 < 0) 
+	{
+		printf("Reaching out of seralnumber array ... cannot swap\n");
+		return -1;
+	}
+	
+	
+	/* Temporary store of Serials old position */
+	strcpy(temp, asSerial[pos1]);
+	/* store the serial number into the new position */
+	strcpy(asSerial[pos1], asSerial[pos2]);
+	/* Restore the old position */
+	strcpy(asSerial[pos2], temp);
+	
+	return 0;
+
+	
+}
+
+
+int getSerialIndex(char** asSerial, char* curSerial)
+{
+	int numbOfDevs = get_number_of_serials(asSerial);
+	int i;
+	int index = -1;
+	
+	
+	for(i = 0; i < numbOfDevs; i++)
+	{
+		if(strcmp(curSerial, asSerial[i]) == 0) index = i;
+	}
+	
+	printf("... serial not found - cannot return an index\n");
+	return -1;
+
+}
+
+
+int swap_up(char** asSerial, char* curSerial)
+{
+	int curIndex;
+	
+	if((curIndex = getSerialIndex(asSerial, curSerial)) < 0)
+	{
+		printf("... cannot swap serial position up\n");
+		return -1;
+	}
+	
+	if(curIndex == 0)
+	{
+		printf("... cannot swap up, serial number already in first position\n");
+		return 0;
+	}
+
+	return swap_serialPos(asSerial, curIndex, curIndex-1);
+	
+}
+
+
+int swap_down(char** asSerial, char* curSerial)
+{
+	int curIndex;
+	int numbOfDevs = get_number_of_serials(asSerial);
+	
+	if(curIndex = getSerialIndex(asSerial, curSerial) < 0)
+	{
+		printf("... cannot swap serial position down\n");
+		return -1;
+	}
+	
+	if(curIndex == (numbOfDevs-1))
+	{
+		printf("... cannot swap down, serial number already in last position\n");
+		return 0;
+	}
+	
+	return swap_serialPos(asSerial, curIndex, curIndex+1);
+	
 }
