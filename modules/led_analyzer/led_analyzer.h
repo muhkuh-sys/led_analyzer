@@ -65,6 +65,12 @@ int 		  get_number_of_serials(char** asSerial);
 			  /* Swap two serial numbers, so the order of opening color controllers can be chosen */
 int 		  swap_serialPos(char** asSerial, unsigned int swap1, unsigned int swap2);
 			  /* Wait for uiWaitTime ms time, to give the sensor some time for color measurement */
+int			  getSerialIndex(char** asSerial, char* curSerial);
+
+int			  swap_up(char** asSerial, char* curSerial);
+
+int			  swap_down(char** asSerial, char* curSerial);
+
 void          wait4Conversion(unsigned int uiWaitTime);
 
 
