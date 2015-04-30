@@ -632,27 +632,27 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 		
 		switch(aucIntegrationtime[i])
 		{
-            case TCS3471_INTEGRATION_2_4ms:
+            case TCS3472_INTEGRATION_2_4ms:
                 afBrightness[i] = (float)ausClear[i]/gainDivisor/1024;
                 break;
 
-            case TCS3471_INTEGRATION_24ms:
+            case TCS3472_INTEGRATION_24ms:
 				afBrightness[i] = (float)ausClear[i]/gainDivisor/10240;
                 break;
 
-            case TCS3471_INTEGRATION_100ms:
+            case TCS3472_INTEGRATION_100ms:
                 afBrightness[i] = (float)ausClear[i]/gainDivisor/43007;
                 break;
 
-            case TCS3471_INTEGRATION_154ms:
+            case TCS3472_INTEGRATION_154ms:
                 afBrightness[i] = (float)ausClear[i]/gainDivisor/65535;
                 break;
 
-            case TCS3471_INTEGRATION_200ms:
+            case TCS3472_INTEGRATION_200ms:
 				afBrightness[i] = (float)ausClear[i]/gainDivisor/65535;
                 break;
 
-            case TCS3471_INTEGRATION_700ms:
+            case TCS3472_INTEGRATION_700ms:
                 afBrightness[i] = (float)ausClear[i]/gainDivisor/65535;
                 break;
 				

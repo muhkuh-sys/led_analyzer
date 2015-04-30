@@ -38,14 +38,14 @@ unsigned short int tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context*
 
     int i = 0;
 
-    unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3471_ID_REG | TCS3471_COMMAND_BIT};
+    unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_ID_REG | TCS3472_COMMAND_BIT};
     unsigned char aucErrorbuffer[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
         i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucReadbuffer, sizeof(aucReadbuffer));
 		
             for(i = 0; i<=15; i++)
             {
-				/* 0x14 = ID for tcs3471        0x44 = ID for tcs3472 */
+				/* 0x14 = ID for tcs3472        0x44 = ID for tcs3472 */
                if(aucReadbuffer[i] != (0x14) && aucReadbuffer[i] != 0x44)
                {
                     aucErrorbuffer[i] = i+1;
@@ -82,8 +82,8 @@ unsigned short int tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context*
    */
 unsigned short int tcs_ON(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
-   unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3471_ENABLE_REG | TCS3471_COMMAND_BIT, TCS3471_AIEN_BIT | TCS3471_AEN_BIT
-                                    | TCS3471_PON_BIT };
+   unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3472_ENABLE_REG | TCS3472_COMMAND_BIT, TCS3472_AIEN_BIT | TCS3472_AEN_BIT
+                                    | TCS3472_PON_BIT };
    if(i2c_write8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer)) <0) return 1;
    return 0;
 }
@@ -97,9 +97,9 @@ whereas brighter leds need shorter integration times
 retVal == 0: everything ok
 retVal == 1: I2C-Functions failed 
 */
-unsigned short int tcs_setIntegrationTime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Integration_t uiIntegrationtime)
+unsigned short int tcs_setIntegrationTime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Integration_t uiIntegrationtime)
 {
-    unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3471_ATIME_REG | TCS3471_COMMAND_BIT, uiIntegrationtime};
+    unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3472_ATIME_REG | TCS3472_COMMAND_BIT, uiIntegrationtime};
     if(i2c_write8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer)) <0) return 1;
 
     return 0;
@@ -112,9 +112,9 @@ retVal == 0: everything ok
 retVal == 1: I2C-Functions failed 
 
 */
-unsigned short int tcs_setIntegrationTime_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Integration_t uiIntegrationtime, unsigned int uiX)
+unsigned short int tcs_setIntegrationTime_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Integration_t uiIntegrationtime, unsigned int uiX)
 {
-    unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3471_ATIME_REG | TCS3471_COMMAND_BIT, uiIntegrationtime};
+    unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3472_ATIME_REG | TCS3472_COMMAND_BIT, uiIntegrationtime};
     if(i2c_write8_x(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), uiX) <0) return 1;
 
     return 0;
@@ -126,9 +126,9 @@ just like the integration time, darker leds need a higher gain setting and brigh
 retVal == 0: everything ok
 retVal == 1: I2C-Functions failed 
 */
-unsigned short int tcs_setGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Gain_t gain)
+unsigned short int tcs_setGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Gain_t gain)
 {
-    unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3471_CONTROL_REG | TCS3471_COMMAND_BIT, gain};
+    unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3472_CONTROL_REG | TCS3472_COMMAND_BIT, gain};
 
     if(i2c_write8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer)) <0) return 1;
     return 0;
@@ -140,9 +140,9 @@ just like the integration time, darker leds need a higher gain setting and brigh
 retVal == 0: everything ok
 retVal == 1: I2C-Functions failed 
 */
-unsigned short int tcs_setGain_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3471Gain_t gain, unsigned int uiX)
+unsigned short int tcs_setGain_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Gain_t gain, unsigned int uiX)
 {
-    unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3471_CONTROL_REG | TCS3471_COMMAND_BIT, gain};
+    unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3472_CONTROL_REG | TCS3472_COMMAND_BIT, gain};
 
     if(i2c_write8_x(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), uiX) <0) return 1;
     return 0;
@@ -169,7 +169,7 @@ unsigned short int tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_conte
 	unsigned short int usErrorMask = 0;
     int i = 0;
 
-    unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3471_STATUS_REG | TCS3471_COMMAND_BIT};
+    unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_STATUS_REG | TCS3472_COMMAND_BIT};
 	unsigned char aucReadbuffer[16];
     unsigned char aucErrorbuffer[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 	
@@ -178,7 +178,7 @@ unsigned short int tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_conte
 
             for(i = 0; i<=15; i++)
             {
-               if((aucReadbuffer[i]&TCS3471_AVALID_BIT) != TCS3471_AVALID_BIT)
+               if((aucReadbuffer[i]&TCS3472_AVALID_BIT) != TCS3472_AVALID_BIT)
                {
                     aucErrorbuffer[i] = i+1;
                     uiErrorcounter ++;
@@ -213,7 +213,7 @@ unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_conte
 	unsigned short int usErrorMask = 0;
     int i = 0;
 
-    unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3471_STATUS_REG | TCS3471_COMMAND_BIT};
+    unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_STATUS_REG | TCS3472_COMMAND_BIT};
     unsigned char aucReadbuffer[16];
 	unsigned char aucErrorbuffer[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
@@ -221,7 +221,7 @@ unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_conte
 
             for(i = 0; i<=15; i++)
             {
-               if((aucReadbuffer[i]&TCS3471_AINT_BIT) != TCS3471_AINT_BIT)
+               if((aucReadbuffer[i]&TCS3472_AINT_BIT) != TCS3472_AINT_BIT)
                {
                     aucErrorbuffer[i] = i+1;
 					usErrorMask  |= (1<<i);
@@ -255,21 +255,21 @@ unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_conte
 */
 unsigned short int tcs_readColour(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausColorArray, enum tcs_color_t color)
 {
-    unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3471_AUTOINCR_BIT | TCS3471_COMMAND_BIT};
+    unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_AUTOINCR_BIT | TCS3472_COMMAND_BIT};
 
     switch(color)
     {
         case RED:
-            aucTempbuffer[1] |= TCS3471_RDATA_REG;
+            aucTempbuffer[1] |= TCS3472_RDATA_REG;
             break;
         case GREEN:
-            aucTempbuffer[1] |= TCS3471_GDATA_REG;
+            aucTempbuffer[1] |= TCS3472_GDATA_REG;
             break;
         case BLUE:
-            aucTempbuffer[1] |= TCS3471_BDATA_REG;
+            aucTempbuffer[1] |= TCS3472_BDATA_REG;
             break;
         case CLEAR:
-            aucTempbuffer[1] |= TCS3471_CDATA_REG;
+            aucTempbuffer[1] |= TCS3472_CDATA_REG;
             break;
         default:
             printf("Unknown color ... \n");
@@ -291,9 +291,9 @@ retVal == 1: I2C-Functions failed
 unsigned short int tcs_sleep(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
     unsigned char aucReadbuffer[16];
-    unsigned char aucTempbuffer[2]  = {(TCS_ADDRESS<<1), TCS3471_COMMAND_BIT | TCS3471_ENABLE_REG};
+    unsigned char aucTempbuffer[2]  = {(TCS_ADDRESS<<1), TCS3472_COMMAND_BIT | TCS3472_ENABLE_REG};
     if(i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucReadbuffer, sizeof(aucReadbuffer))<0) return 1;
-    unsigned char aucTempbuffer2[3] = {(TCS_ADDRESS<<1), TCS3471_COMMAND_BIT | TCS3471_ENABLE_REG,  aucReadbuffer[0] & ~(TCS3471_PON_BIT | TCS3471_AEN_BIT)};
+    unsigned char aucTempbuffer2[3] = {(TCS_ADDRESS<<1), TCS3472_COMMAND_BIT | TCS3472_ENABLE_REG,  aucReadbuffer[0] & ~(TCS3472_PON_BIT | TCS3472_AEN_BIT)};
     if(i2c_write8(ftdiA, ftdiB,  aucTempbuffer2, sizeof(aucTempbuffer2))<0) return 1;
 
     return 0;
@@ -307,9 +307,9 @@ unsigned short int tcs_sleep(struct ftdi_context* ftdiA, struct ftdi_context* ft
 unsigned short int tcs_wakeUp(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
     unsigned char aucReadbuffer[16];
-    unsigned char aucTempbuffer[2]  = {(TCS_ADDRESS<<1), TCS3471_COMMAND_BIT | TCS3471_ENABLE_REG};
+    unsigned char aucTempbuffer[2]  = {(TCS_ADDRESS<<1), TCS3472_COMMAND_BIT | TCS3472_ENABLE_REG};
     if(i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucReadbuffer, sizeof(aucReadbuffer))<0) return 1;
-    unsigned char aucTempbuffer2[3] = {(TCS_ADDRESS<<1), TCS3471_COMMAND_BIT | TCS3471_ENABLE_REG,  aucReadbuffer[0] | TCS3471_PON_BIT};
+    unsigned char aucTempbuffer2[3] = {(TCS_ADDRESS<<1), TCS3472_COMMAND_BIT | TCS3472_ENABLE_REG,  aucReadbuffer[0] | TCS3472_PON_BIT};
     if(i2c_write8(ftdiA, ftdiB,  aucTempbuffer2, sizeof(aucTempbuffer2))<0) return 1;
 
     return 0;
@@ -339,7 +339,7 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
 	// so each sensor can be checked for itself, as each sensor can have different integration time settings
         switch(aucIntegrationtime[i])
         {
-            case TCS3471_INTEGRATION_2_4ms:
+            case TCS3472_INTEGRATION_2_4ms:
                 if(ausClear[i] >= 1024)
                 {
                     aucErrorbuffer[i] = i+1;
@@ -348,7 +348,7 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
                 else uiSuccesscounter++;
                 break;
 
-            case TCS3471_INTEGRATION_24ms:
+            case TCS3472_INTEGRATION_24ms:
                 if(ausClear[i] >= 10240)
                 {
                     aucErrorbuffer[i] = i+1;
@@ -357,7 +357,7 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
                 else uiSuccesscounter++;
                 break;
 
-            case TCS3471_INTEGRATION_100ms:
+            case TCS3472_INTEGRATION_100ms:
                 if(ausClear[i] >= 43007)
                 {
                     aucErrorbuffer[i] = i+1;
@@ -366,7 +366,7 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
                 else uiSuccesscounter++;
                 break;
 
-            case TCS3471_INTEGRATION_154ms:
+            case TCS3472_INTEGRATION_154ms:
                 if(ausClear[i] >= 65535)
                 {
                     aucErrorbuffer[i] = i+1;
@@ -375,7 +375,7 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
                 else uiSuccesscounter++;
                 break;
 
-            case TCS3471_INTEGRATION_200ms:
+            case TCS3472_INTEGRATION_200ms:
                 if(ausClear[i] >= 65535)
                 {
                     aucErrorbuffer[i] = i+1;
@@ -384,7 +384,7 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
                 else uiSuccesscounter++;
                 break;
 
-            case TCS3471_INTEGRATION_700ms:
+            case TCS3472_INTEGRATION_700ms:
                 if(ausClear[i] >= 65535)
                 {
                     aucErrorbuffer[i] = i+1;
@@ -424,7 +424,7 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
 */
 unsigned short int tcs_clearInt(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
-    unsigned char aucTempbuffer[2]  = {(TCS_ADDRESS<<1), TCS3471_COMMAND_BIT | TCS3471_SPECIAL_BIT | TCS3471_INTCLEAR_BIT};
+    unsigned char aucTempbuffer[2]  = {(TCS_ADDRESS<<1), TCS3472_COMMAND_BIT | TCS3472_SPECIAL_BIT | TCS3472_INTCLEAR_BIT};
 
     if(i2c_write8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer))<0) return 1;
     return 0;
@@ -432,31 +432,31 @@ unsigned short int tcs_clearInt(struct ftdi_context* ftdiA, struct ftdi_context*
 }
 
 /* Wait the integration time needed by the sensor to make a color reading */
-void tcs_waitIntegrationtime(tcs3471Integration_t uiIntegrationtime)
+void tcs_waitIntegrationtime(tcs3472Integration_t uiIntegrationtime)
 {
         switch(uiIntegrationtime)
         {
-            case TCS3471_INTEGRATION_2_4ms:
+            case TCS3472_INTEGRATION_2_4ms:
                 Sleep(3);
                 break;
 
-            case TCS3471_INTEGRATION_24ms:
+            case TCS3472_INTEGRATION_24ms:
                 Sleep(24);
                 break;
 
-            case TCS3471_INTEGRATION_100ms:
+            case TCS3472_INTEGRATION_100ms:
                Sleep(100);
                 break;
 
-            case TCS3471_INTEGRATION_154ms:
+            case TCS3472_INTEGRATION_154ms:
                 Sleep(154);
                 break;
 
-            case TCS3471_INTEGRATION_200ms:
+            case TCS3472_INTEGRATION_200ms:
                 Sleep(200);
                 break;
 
-            case TCS3471_INTEGRATION_700ms:
+            case TCS3472_INTEGRATION_700ms:
                 Sleep(700);
                 break;
 				
@@ -474,7 +474,7 @@ void tcs_waitIntegrationtime(tcs3471Integration_t uiIntegrationtime)
 */
 unsigned short int tcs_getGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucGainSettings)
 {
-	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3471_CONTROL_REG | TCS3471_COMMAND_BIT};
+	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_CONTROL_REG | TCS3472_COMMAND_BIT};
 	
 	if(i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucGainSettings, sizeof(aucGainSettings) < 0)) return 1;
 	
@@ -489,7 +489,7 @@ unsigned short int tcs_getGain(struct ftdi_context* ftdiA, struct ftdi_context* 
 */
 unsigned short int tcs_getIntegrationtime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucInttimeSettings)
 {
-	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3471_ATIME_REG | TCS3471_COMMAND_BIT};
+	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_ATIME_REG | TCS3472_COMMAND_BIT};
 
 	if(i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucInttimeSettings, sizeof(aucInttimeSettings) < 0)) return 1;
 	
@@ -497,20 +497,20 @@ unsigned short int tcs_getIntegrationtime(struct ftdi_context* ftdiA, struct ftd
 }
 
 
-unsigned int getGainDivisor(tcs3471Gain_t gain)
+unsigned int getGainDivisor(tcs3472Gain_t gain)
 {
 		switch(gain)
 		{
-			case TCS3471_GAIN_1X:
+			case TCS3472_GAIN_1X:
 				return 1;
 				break;
-			case TCS3471_GAIN_4X:
+			case TCS3472_GAIN_4X:
 				return 4;
 				break;
-			case TCS3471_GAIN_16X:
+			case TCS3472_GAIN_16X:
 				return 16;
 				break;
-			case TCS3471_GAIN_60X:
+			case TCS3472_GAIN_60X:
 				return 60;
 				break;
 			default:
