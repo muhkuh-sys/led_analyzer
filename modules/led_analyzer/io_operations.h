@@ -3,8 +3,7 @@
 	
 Once the ftdi2232h is set into BITMODE_MPSSE simple USB commands can be sent to it in order to mainpulate its input and output pins.
 Special commands (for example found in AN_108) can be used to set the 32 GPIO Pins of the ftdi device as either input or output, and once done,
-values can be assigned to the output pins and data can be read back from the input pins. These functions are designed for implementing software
-i2c-functions.
+values can be assigned to the output pins and data can be read back from the input pins. These functions will be used to provide software i2c functionality.
 */
 
 #include <stdio.h>
@@ -33,7 +32,6 @@ i2c-functions.
 #define OUTPUT 0xFF
 /** Set all Bits as input */
 #define MYINPUT 0x00 
-
 
 int writeOutputs           (struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, const unsigned long ulOutput);
 

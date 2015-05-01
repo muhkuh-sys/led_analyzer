@@ -3,21 +3,21 @@
 	 
 Once the ftdi2232h is set into BITMODE_MPSSE simple USB commands can be sent to it in order to mainpulate its input and output pins.
 Special commands (for example found in AN_108) can be used to set the 32 GPIO Pins of the ftdi device as either input or output, and once done,
-values can be assigned to the output pins and data can be read back from the input pins. These functions are designed for implementing software
-i2c-functions.
+values can be assigned to the output pins and data can be read back from the input pins.
+These functions will be used to provide software i2c functionality.
  
  */
  
 #include "io_operations.h"
 
-/** global arrayindex for Channel a */
+/** global arrayindex for Channel A, it marks the current index of aucBufferA */
 unsigned int indexA = 0;
-/** global arrayindex for Channel B */
+/** global arrayindex for Channel B, it marks the current index of aucBufferB */
 unsigned int indexB = 0; 
 /** global readIndex for Channel A, incremented everytime a byte is expected to be read back from Channel A*/
-unsigned int readIndexA = 0; /** global readIndex for Channel A, incremented everytime a byte is expected to be read back from Channel A*/
+unsigned int readIndexA = 0; 
 /** global readIndex for Channel B, incremented everytime a byte is expected to be read back from Channel B*/
-unsigned int readIndexB = 0; /** global readIndex for Channel B, incremented everytime a byte is expected to be read back from Channel B*/
+unsigned int readIndexB = 0;
 /** global Buffer stores the commands for channel A */
 unsigned char aucBufferA[4096];
 /** global Buffer stores the commands for channel B */
@@ -36,7 +36,7 @@ unsigned char aucBufferB[4096];
 int writeOutputs(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, const unsigned long ulOutput)
 {
 
-     int uiWritten;
+    int uiWritten;
     unsigned char aucBuffer[6];
 
     aucBuffer[0] = W_LOWBYTE; // lowbyte ist ad //highbyte ist ac
@@ -190,7 +190,8 @@ void process_pins(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsign
 
 This function gets called repeatedly by i2c functions. It stores the commands in global Buffers
 (aucBufferA and aucBufferB). The commands consist of a mask which determines which pins are set as input and output and and output value
-which will be written to the pins set as output. 
+which will be written to the pins set as output. All stored commands can be sent by the send_package_xx functions
+which form the software i2c protocol.
 	@param[in] 		ftdiA, ftdiB pointer to a ftdi_context
 	@param[in] 		ulIOMask	 input / output mask to set pin direction
 	@param[in]		ulOutput	 value to be assigned to pins set as output 
