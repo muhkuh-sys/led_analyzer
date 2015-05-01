@@ -17,7 +17,18 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+/**  \file i2c_routines.c
 
+	 \brief Software I2C Functions for the FTDI 2232H Chip
+	 
+i2c_routines is simple library which provides basic i2c-functionality. Functions include sending 1 or more bytes, and reading 1 Byte / 2 Bytes.
+The structure of the buffers which will be sent consists of a [address - register - data]. This i2c-library can be used
+for simple i2c-slaves which do not have the ability of clock stretching.
+
+\warning clock stretching and multi-master-mode is not supported
+ 
+ */
+ 
 #include "i2c_routines.h"
 
 
@@ -28,7 +39,9 @@ int i2c_setSpeed(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
 }
 
 
-/* Send a start condition */
+/** \brief send a start condition on all 16 i2c-busses 
+	@param ftdiA, ftdiB	pointer to ftdi_context
+*/
 void i2c_startCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
     
@@ -45,9 +58,9 @@ void i2c_startCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 }
 
 
-    
-
-
+/** \brief send a stop condition on all 16 i2c-busses 
+	@param ftdiA, ftdiB	pointer to ftdi_context
+*/
 void i2c_stopCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB )
 {
     
@@ -61,13 +74,19 @@ void i2c_stopCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB )
 }
 
 
-/* Adresse R/W - ack - register - ack - data
-aucSendbuffer contains: Address, Register to write to, content that will be written to the register 
+/** \brief i2c-function sends the content of aucSendBuffer on all 16 i2c-busses
 
-retVal  >0 : everything ok 
-retVal ==0 : something failed, as retVal represents the number of bytes written to the usb-device, always more then 0 bytes expected
-retval <0  : libusb functions failed (for example writing to channel A/B, reading from Channel A/B) 
+ftdiA and ftdiB represent Channel A and Channel B of a ftdi device and each of these channels has 8 i2c-busses. This function
+can send one byte to a 8 Bit Register of a i2c-slave. 
+	@param ftdiA, ftdiB  pointer to ftdi_context
+	@param aucSendBuffer pointer to the buffer which contains address, register and data
+	@param ucLength		 sizeof aucSendbuffer in bytes
+	
+	@retval	>0  :	everything ok
+	@retval ==0 :	something failed as retVal represents the number of bytes written to the usb-device (alway more than 0 expected)
+	@retval <0  :	libusb functions failed
 */
+
 int i2c_write8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength)
 {
     unsigned int uiBufferIndex = 0;
@@ -138,14 +157,21 @@ int i2c_write8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
 
 }
 
-/* Sends a databyte to one sensor only. Sensornumber ranges from 0 - 15 
-   Adresse R/W - ack - register - ack - data
-   aucSendbuffer contains: Address, register to write to, content that will be written to the register 
 
-retVal  >0 : everything ok 
-retVal ==0 : something failed, as retVal represents the number of bytes read back from the usb-device, always more then 0 bytes expected
-retval <0  : libusb functions failed (for example writing to channel A/B, reading from Channel A/B) */
+/** \brief i2c-function sends the content of aucSendBuffer on all 16 i2c-busses
 
+Sends a databyte over one of the 16 i2c-busses. The number of the i2c-bus which shall send the data will be given in uiX,
+which ranges from 0 ... 15.
+
+	@param ftdiA, ftdiB  pointer to ftdi_context
+	@param aucSendbuffer pointer to the buffer which contains address, register and data
+	@param ucLength		 sizeof aucSendbuffer in bytes
+	@param uiX			 number of i2c-bus which should send the data (0 ... 15)
+	
+	@retval	>0  :	everything ok
+	@retval ==0 :	something failed as retVal represents the number of bytes written to the usb-device (alway more than 0 expected)
+	@retval <0  :	libusb functions failed
+*/
 int i2c_write8_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength, unsigned int uiX)
 {
     unsigned int uiBufferIndex = 0;
@@ -217,13 +243,20 @@ int i2c_write8_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
 }
 
 
-/* aucSendbuffer contains adress, register to read from 
-aucRecBuffer will hold 16 unsigned char values 
-Reads back 16 unsigned char values 
+/** \brief i2c-function read the slaves connected to all 16 i2c-busses and stores the information in aucRecBuffer.
 
-retVal  >0 : everything ok 
-retVal ==0 : something failed, as retVal represents the number of bytes read back from the usb-device, always more then 0 bytes expected
-retval <0  : libusb functions failed (for example writing to channel A/B, reading from Channel A/B) 
+ftdiA and ftdiB represent Channel A and Channel B of a ftdi device and each of these channels has 8 i2c-busses. This function
+can read one byte from an i2c-slave. 
+	@param ftdiA, ftdiB  pointer to ftdi_context
+	@param aucSendBuffer pointer to the buffer which contains address and register to read from
+	@param ucLength		 sizeof aucSendbuffer in bytes
+	@param aucRecBuffer	 buffer which will store the information read back from the slaves
+	@param aucRecBuffer	 as we have 16 i2c-busses aucRecBuffer must be able to hold at least 16 bytes.
+	@param ucRecLength	 sizeof aucRecBuffer in bytes
+	
+	@retval	>0  :	everything ok
+	@retval ==0 :	something failed as retVal represents the number of bytes read from the usb-device (alway more than 0 expected)
+	@retval <0  :	libusb functions failed
 */
 
 int i2c_read8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength,
@@ -338,17 +371,26 @@ int i2c_read8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned c
 
 }
 
-/* aucSendbuffer contains adress, register to read from 
-ausReadBuffer will hold 16 unsigned short values 
-Reads back 16 unsigned char values 
 
-retVal  >0 : everything ok 
-retVal ==0 : something failed, as retVal represents the number of bytes read back from the usb-device, always more then 0 bytes expected
-retval <0  : libusb functions failed (for example writing to channel A/B, reading from Channel A/B) 
+/** \brief i2c-function read the slaves connected to all 16 i2c-busses and stores the information in aucRecBuffer.
+
+ftdiA and ftdiB represent Channel A and Channel B of a ftdi device and each of these channels has 8 i2c-busses. This function
+can read 2 bytes from an i2c-slave. 
+	@param ftdiA, ftdiB 	pointer to ftdi_context
+	@param aucSendBuffer 	pointer to the buffer which contains address and register to read from
+	@param ucLength		 	sizeof aucSendbuffer in bytes
+	@param ausReadBuffer 	buffer which will store the information read back from the slaves
+	@param ausReadBuffer 	as we have 16 i2c-busses ausReadBuffer must be able to hold at least 16 elements.
+	@param ucRecLength	 	sizeof aucReadBuffer in bytes
+	
+	@retval	>0  :	everything ok
+	@retval ==0 :	something failed as retVal represents the number of bytes read from the usb-device (alway more than 0 expected)
+	@retval <0  :	libusb functions failed
 */
 
+
 int i2c_read16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength,
-              unsigned short* ausReadBuffer, unsigned char ucReadBufferLength)
+              unsigned short* ausReadBuffer, unsigned char ucRecLength)
 {
     unsigned int uiBufferIndex = 0;
     unsigned char ucMask = 0x80;
@@ -456,7 +498,7 @@ int i2c_read16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
     i2c_stopCond(ftdiA, ftdiB);
 
 
-    iRetval = send_package_read16(ftdiA, ftdiB, ausReadBuffer, ucReadBufferLength);
+    iRetval = send_package_read16(ftdiA, ftdiB, ausReadBuffer, ucRecLength);
     return iRetval;
 
 }
