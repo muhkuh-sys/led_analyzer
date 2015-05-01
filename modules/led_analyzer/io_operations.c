@@ -1,55 +1,38 @@
-#define W_LOWBYTE 0x80   // Channel AD and BD
-#define W_HIGHBYTE 0x82  // Channel AC and BC
-
-#define R_LOWBYTE 0x81   // Channel AD and BD
-#define R_HIGHBYTE 0x83   // Channel AC and BC3
-
-#define MASK_ALOW  0x000000FF
-#define MASK_AHIGH 0x0000FF00
-#define MASK_BLOW  0x00FF0000
-#define MASK_BHIGH 0xFF000000
-
-#define OUTPUT 0xFF
-#define MYINPUT 0x00 
-
-
+/** \file io_operations.c 
+	\brief io_operations provides functions to manipulate ftdi 2232h's I/O-Pins. 
+	 
+Once the ftdi2232h is set into BITMODE_MPSSE simple USB commands can be sent to it in order to mainpulate its input and output pins.
+Special commands (for example found in AN_108) can be used to set the 32 GPIO Pins of the ftdi device as either input or output, and once done,
+values can be assigned to the output pins and data can be read back from the input pins. These functions are designed for implementing software
+i2c-functions.
+ 
+ */
+ 
 #include "io_operations.h"
 
-
+/** global arrayindex for Channel a */
 unsigned int indexA = 0;
-unsigned int indexB = 0;
-
-unsigned int readIndexA = 0;
-unsigned int readIndexB = 0;
-
+/** global arrayindex for Channel B */
+unsigned int indexB = 0; 
+/** global readIndex for Channel A, incremented everytime a byte is expected to be read back from Channel A*/
+unsigned int readIndexA = 0; /** global readIndex for Channel A, incremented everytime a byte is expected to be read back from Channel A*/
+/** global readIndex for Channel B, incremented everytime a byte is expected to be read back from Channel B*/
+unsigned int readIndexB = 0; /** global readIndex for Channel B, incremented everytime a byte is expected to be read back from Channel B*/
+/** global Buffer stores the commands for channel A */
 unsigned char aucBufferA[4096];
-unsigned char aucBufferB[4096];
-
-/* Testfunction
-Writes the content of aucSendbuffer to a single channel of a ftdi Chip (A or B) 
-the Lowbyte is used as default 
-*/ 
-int io_write(struct ftdi_context* ftdi, unsigned char* aucSendbuffer, unsigned char ucSizeSendbuffer)
-{
-    int uiWritten;
-
-    if(libusb_bulk_transfer(ftdi->usb_dev, ftdi->in_ep, aucSendbuffer, ucSizeSendbuffer, &uiWritten, ftdi->usb_write_timeout)<0)
-    {
-        printf("Writing to output was not successful ... \n");
-        return -1;
-    }
-
-    return 0;
-
-}
+/** global Buffer stores the commands for channel B */
+unsigned char aucBufferB[4096]; 
 
 
+/** \brief writes a value to the ftdi 2232h output pins.
+	@param[in] 		ftdiA, ftdiB pointer to a ftdi_context
+	@param[in] 		ulOutput	 a 32 Bit value to be written to the ftdi pins
+	@param[in] 		ulOutput     Bit0 will be assigned to AD0, Bit31 to BC7
 
-/* Writes an unsigned long variable ulOutput to both channels of a ftdi chip 
-	ulOutput is split into two 16 bit words
-	the upper word is assigned to ftdiB
-	the lower word is assigned to ftdiA
+	@return 		>0 : number of bytes written to the chip
+	@return			<0 : USB functions failed 
 */
+
 int writeOutputs(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, const unsigned long ulOutput)
 {
 
@@ -92,8 +75,14 @@ int writeOutputs(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, const u
     return uiWritten;
 }
 
+/** \brief reads the input pins of both ftdi channels
+	@param[in] 		ftdiA, ftdiB pointer to a ftdi_context
+	@param[in,out] 	readBack	 contains the bytes read back from the input pins
 
-/* Reads input of both Channels of a ftdi chip and prints it */
+	@return 		>0 : number of bytes written to the chip
+	@return			<0 : USB functions failed 
+*/
+
 int readInputs(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, const unsigned char* readBack)
 {
      int uiRead;
@@ -162,9 +151,19 @@ int readInputs(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, const uns
     return uiRead;
 }
 
-/* This function gets called repeatedly by i2c functions. It stores the commands in global Buffers
+
+
+/** \brief stores a ftdi write command in a global buffer for later sending
+
+This function gets called repeatedly by i2c functions. It stores the commands in global Buffers
 (aucBufferA and aucBufferB). The commands consist of a mask which determines which pins are configured as output and input
-plus the actual output value to be written to the pins */
+plus the actual output value to be written to the pins. All stored commands can be sent by the send_package_xx functions
+which form the software i2c protocol.
+	@param[in] 		ftdiA, ftdiB pointer to a ftdi_context
+	@param[in] 		ulIOMask	 input / output mask to set pin functionality
+	@param[in]		ulOutput	 value to be assigned to pins set as output 
+
+*/
 
 void process_pins(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned long ulIOMask, unsigned long ulOutput)
 {
@@ -187,11 +186,15 @@ void process_pins(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsign
 }
 
 
+/** \brief stores a ftdi write command in a global buffer for later sending
 
-
-/* This function gets called repeatedly by i2c functions. It stores the commands in global Buffers
+This function gets called repeatedly by i2c functions. It stores the commands in global Buffers
 (aucBufferA and aucBufferB). The commands consist of a mask which determines which pins are set as input and output and and output value
 which will be written to the pins set as output. 
+	@param[in] 		ftdiA, ftdiB pointer to a ftdi_context
+	@param[in] 		ulIOMask	 input / output mask to set pin direction
+	@param[in]		ulOutput	 value to be assigned to pins set as output 
+
 */
 void process_pins_databack(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned long ulIOMask, unsigned long ulOutput)
 {
@@ -220,14 +223,21 @@ void process_pins_databack(struct ftdi_context *ftdiA, struct ftdi_context *ftdi
 	
 }
 
-/* This function sends the content of the global Buffers aucBufferA and aucBufferB to the ftdi chip 
+
+/** \brief sends the content of the global buffers to the ftdi chip 
+
+This function sends the content of the global Buffers aucBufferA and aucBufferB to the ftdi chip 
 Furthermore it reads back the data of pins which were configured as input. In case of i2c these read back pins
 can be acknowledge bits or data send back by the device. 
+	@param[in] 		ftdiA, ftdiB pointer to a ftdi_context
+	@return			>0: number of bytes sent to the ftdi chip 
+	@return			-1: writing to channel A failed 
+	@return			-2: writing to channel B failed
+	@return			-3: reading from channel A failed
+	@return			-4: reading from channel B failed
+					
 
-retval <0: usb communication failed 
-retval >=0: number of bytes written to the device
 */
-
 int send_package_write8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB)
 {
 
@@ -274,14 +284,21 @@ int send_package_write8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB)
 
 }
 
-/* 
+
+/** \brief sends the content of the global buffers to the ftdi chip 
 
 This function sends the content of the global Buffers aucBufferA and aucBufferB to the ftdi chip. 
 Furthermore it reads back the data of pins which were configured as input. The function returns a value which equals the amount of read back bytes.
-The parameter aucReadbuffer will be used for storing 16 read back unsigned char values of 16 sensors 
-
-retval <0: usb communication failed 
-retval >=0: number of bytes read back from the device
+The parameter aucReadbuffer will be used for storing 16 read back unsigned char values
+	@param[in] 		ftdiA, ftdiB pointer to a ftdi_context
+	@param[in, out] aucReadBuffer pointer to array of unsigned char values
+	@param[in]		ucReadBufferLength number of elements to be stored in aucReadbuffer
+	@return			>0: number of bytes read back from the ftdi chip 
+	@return			-1: writing to channel A failed 
+	@return			-2: writing to channel B failed
+	@return			-3: reading from channel A failed
+	@return			-4: reading from channel B failed
+					
 
 */
 
@@ -403,17 +420,23 @@ int send_package_read8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, u
 
 }
 
-/* 
+
+/** \brief sends the content of the global buffers to the ftdi chip 
 
 This function sends the content of the global Buffers aucBufferA and aucBufferB to the ftdi chip. 
 Furthermore it reads back the data of pins which were configured as input. The function returns a value which equals the amount of read back bytes.
-The parameter aucReadbuffer will be used for storing 16 read back unsigned short int values of 16 sensors 
-
-retval <0: usb communication failed 
-retval >=0: number of bytes read back from the device
+The parameter ausReadbuffer will be used for storing 16 read back unsigned short int values of 16 sensors 
+	@param[in] 		ftdiA, ftdiB pointer to a ftdi_context
+	@param[in, out] ausReadBuffer pointer to array of unsigned short values
+	@param[in]		ucReadBufferLength number of elements to be stored in ausReadbuffer
+	@return			>0: number of bytes read back from the ftdi chip 
+	@return			-1: writing to channel A failed 
+	@return			-2: writing to channel B failed
+	@return			-3: reading from channel A failed
+	@return			-4: reading from channel B failed
+					
 
 */
-
 int send_package_read16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned short* ausReadBuffer, unsigned char ucReadBufferLength)
 {
 
