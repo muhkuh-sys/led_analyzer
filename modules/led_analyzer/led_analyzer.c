@@ -30,7 +30,7 @@ provides the functions which are required for the application CoCo App.
  
 #include "led_analyzer.h"
 
-/** Vendor ID for Hilscher Gesellschaft für Systemautomation mbH */
+/** Vendor ID of 'Hilscher Gesellschaft für Systemautomation mbH' */
 #define VID 0x1939
 /** Product ID for the Color Controller "COLOR-CTRL" */
 #define PID 0x0024
@@ -270,7 +270,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 	
 }
 
-/** \brief returns number of serial numbers from the serial number array.
+/** \brief returns number of serial numbers stored in the serial number array.
 	@param 	asSerial array that stores the serial numbers
 	
 	@return number elements in the serial number array
@@ -305,13 +305,13 @@ int get_number_of_handles(void ** apHandles)
 
 As each device has 2 handles, the device index and the handle index are not the same. Following functions
 provides an easy way to get the device number if a handle index is given 
-	@param handle	index of the handle
+	@param handleIndex	index of the handle
 	
-	@return 		device index 
+	@return 			device index that corresponds to the handle index
 */
-int handleToDevice(int handle)
+int handleToDevice(int handleIndex)
 {	
-	return (int)(handle/2);
+	return (int)(handleIndex/2);
 }
 
 
@@ -507,6 +507,8 @@ if the colors are valid by checking certain bits in the sensors' status register
 in the read color function as well. The returned errorcode can be used to determine which of the sensor(s) failed.
 	@param apHandles	 		array that stores ftdi2232h handles
 	@param devIndex				device index of current color controller device
+	@param ausClear				array that stores 16 clear values
+	@param aucIntegrationtime	current integration time setting of the sensors
 	
 	@return 					0  : everything ok
 	@return 					-1 : i2c-functions failed
@@ -578,6 +580,7 @@ Function sets the gain of 16 sensors of a device. This setting can be used to ca
 LEDs. Whereas dark LEDs require a greater gain factor, gain factor for bright LEDs can be low. Refer to 
 the sensor's datasheet for further information about gain.
 	@param apHandles	 		array that stores ftdi2232h handles
+	@param devIndex				device index of current color controller device
 	@param gain					gain to be sent to the sensors
 	
 	@return  0 : everything OK - Identification successful
@@ -605,6 +608,7 @@ int set_gain(void** apHandles, int devIndex, unsigned char gain)
 The function reads back the gain settings of 16 sensors. Refer to sensors' datasheet for further information about
 gain settings.
 	@param apHandles	 		array that stores ftdi2232h handles
+	@param devIndex				device index of current color controller device
 	@param aucGains	pointer to buffer which will contain the gain settings of the 16 sensors
 	
 	@return 0 :				everything OK
@@ -635,6 +639,7 @@ LEDs. Whereas dark LEDs require a longer integration time, the integration time 
 the sensor's datasheet for calculating the content of the integration time register. A few common values have already
 been calculated and saved in enum tcs3472Integration_t.
 	@param apHandles	 		array that stores ftdi2232h handles
+	@param devIndex				device index of current color controller device		
 	@param integrationtime		integration time to be sent to the sensors
 	
 	@return  0 : everything OK - Identification successful
@@ -665,6 +670,7 @@ int set_intTime(void** apHandles, int devIndex, unsigned char integrationtime)
 The function reads back the integration time of 16 sensors. Refer to sensors' datasheet for further information about
 integration time settings.
 	@param apHandles	 		array that stores ftdi2232h handles
+	@param devIndex				device index of current color controller device
 	@param aucIntegrationtime	pointer to buffer which will store the integration time settings of the 16 sensors
 	
 	@return 0 :					everything OK
