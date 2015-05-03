@@ -35,6 +35,7 @@ provides the functions which are required for the application CoCo App.
 /** Product ID for the Color Controller "COLOR-CTRL" */
 #define PID 0x0024
 
+
 /** \brief scans for connected color controller devices and stores their serial numbers in an array.
 
 Functions scans for all color controller devices that are connected via USB. A device which has "COLOR-CTRL" as description
