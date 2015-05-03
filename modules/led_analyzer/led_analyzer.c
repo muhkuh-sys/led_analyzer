@@ -434,10 +434,10 @@ brightness in an array. This brightness is calculated by the ratio of the curren
 the maximum clear value the sensor can reach. If the sensor has reached maximum clear level this ratio will be 1.0.
 	@param apHandles	 		array that stores ftdi2232h handles
 	@param devIndex				device index of current color controller device
-	@param ausClear				stores all 16 clear colors
-	@param ausRed				stores all 16 red colors
-	@param ausGreen				stores all 16 green colors
-	@param ausBlue				stores all 16 blue colors
+	@param ausClear				stores 16 clear colors
+	@param ausRed				stores 16 red colors
+	@param ausGreen				stores 16 green colors
+	@param ausBlue				stores 16 blue colors
 	
 	@return 					0  : everything ok
 	@return 					-1 : i2c-functions failed
