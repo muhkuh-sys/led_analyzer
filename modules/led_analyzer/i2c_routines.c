@@ -22,7 +22,7 @@
 	 \brief Software I2C Functions for the FTDI 2232H Chip
 	 
 i2c_routines is simple library which provides basic i2c-functionality. Functions include sending 1 or more bytes, and reading 1 Byte / 2 Bytes.
-The structure of the buffers which will be sent consists of a [address - register - data]. This i2c-library can be used
+The structure of the buffers which will be sent consists of [address - register - data]. This i2c-library can be used
 for simple i2c-slaves which do not have the ability of clock stretching.
 
 \warning clock stretching and multi-master-mode is not supported
@@ -32,14 +32,7 @@ for simple i2c-slaves which do not have the ability of clock stretching.
 #include "i2c_routines.h"
 
 
-/* This function does not work*/
-int i2c_setSpeed(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned int uiSpeedkHz)
-{
-    return 0;
-}
-
-
-/** \brief send a start condition on all 16 i2c-busses 
+/** \brief sends a start condition on all 16 i2c-busses.
 	@param ftdiA, ftdiB	pointer to ftdi_context
 */
 void i2c_startCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
@@ -58,7 +51,7 @@ void i2c_startCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 }
 
 
-/** \brief send a stop condition on all 16 i2c-busses 
+/** \brief sends a stop condition on all 16 i2c-busses. 
 	@param ftdiA, ftdiB	pointer to ftdi_context
 */
 void i2c_stopCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB )
@@ -74,10 +67,11 @@ void i2c_stopCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB )
 }
 
 
-/** \brief i2c-function sends the content of aucSendBuffer on all 16 i2c-busses
+/** \brief i2c-function sends the content of aucSendBuffer on all 16 i2c-busses.
 
 ftdiA and ftdiB represent Channel A and Channel B of a ftdi device and each of these channels has 8 i2c-busses. This function
-can send one byte to a 8 Bit Register of a i2c-slave. 
+can send one byte to a 8 Bit Register of a i2c-slave. Though the name is i2c_write8, the function can send out as many bytes as wanted.
+The number of bytes to be sent can be passed in the parameter ucLength.
 	@param ftdiA, ftdiB  pointer to ftdi_context
 	@param aucSendBuffer pointer to the buffer which contains address, register and data
 	@param ucLength		 sizeof aucSendbuffer in bytes
@@ -158,13 +152,13 @@ int i2c_write8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
 }
 
 
-/** \brief i2c-function sends the content of aucSendBuffer on all 16 i2c-busses
+/** \brief i2c-function sends the content of aucSendBuffer on all 16 i2c-busses.
 
-Sends a databyte over one of the 16 i2c-busses. The number of the i2c-bus which shall send the data will be given in uiX,
+Sends the amount of bytes specified in ucLength over one of the 16 i2c-busses.
+The number of the i2c-bus which shall send the data will be given in uiX,
 which ranges from 0 ... 15.
-
 	@param ftdiA, ftdiB  pointer to ftdi_context
-	@param aucSendbuffer pointer to the buffer which contains address, register and data
+	@param aucSendBuffer pointer to the buffer which contains address, register and data
 	@param ucLength		 sizeof aucSendbuffer in bytes
 	@param uiX			 number of i2c-bus which should send the data (0 ... 15)
 	
@@ -243,7 +237,7 @@ int i2c_write8_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
 }
 
 
-/** \brief i2c-function read the slaves connected to all 16 i2c-busses and stores the information in aucRecBuffer.
+/** \brief i2c-function reads the slaves connected to all 16 i2c-busses and stores the information in aucRecBuffer.
 
 ftdiA and ftdiB represent Channel A and Channel B of a ftdi device and each of these channels has 8 i2c-busses. This function
 can read one byte from an i2c-slave. 
@@ -372,16 +366,16 @@ int i2c_read8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned c
 }
 
 
-/** \brief i2c-function read the slaves connected to all 16 i2c-busses and stores the information in aucRecBuffer.
+/** \brief i2c-function reads the slaves connected to all 16 i2c-busses and stores the information in an adequate buffer.
 
 ftdiA and ftdiB represent Channel A and Channel B of a ftdi device and each of these channels has 8 i2c-busses. This function
 can read 2 bytes from an i2c-slave. 
 	@param ftdiA, ftdiB 	pointer to ftdi_context
-	@param aucSendBuffer 	pointer to the buffer which contains address and register to read from
+	@param aucSendBuffer 	pointer to the buffer which contains slave address and register to read from
 	@param ucLength		 	sizeof aucSendbuffer in bytes
-	@param ausReadBuffer 	buffer which will store the information read back from the slaves
+	@param ausReadBuffer 	stores the information read back from the slaves
 	@param ausReadBuffer 	as we have 16 i2c-busses ausReadBuffer must be able to hold at least 16 elements.
-	@param ucRecLength	 	sizeof aucReadBuffer in bytes
+	@param ucRecLength	 	number of expected bytes to read from the slaves
 	
 	@retval	>0  :	everything ok
 	@retval ==0 :	something failed as retVal represents the number of bytes read from the usb-device (alway more than 0 expected)
@@ -504,7 +498,10 @@ int i2c_read16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
 }
 
 
-/* Trigger a clock cycle on the clock lines while Sending out data on the data lines*/
+/** \brief triggers a clock cycle on all clock lines, while sendindg out data on the data lines.
+	@param ftdiA, ftdiB 	pointer to ftdi_context
+	@param ulDataToSend  	data which is going to be clocked on all lines set as output
+ */
 void i2c_clock(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend)
 {
       process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SCL | ulDataToSend);
@@ -513,20 +510,33 @@ void i2c_clock(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
 
 
 /* Trigger a clock cycle on the clock lines while expecting data from the slave on the data lines */
+
+/** \brief triggers a clock cycle on the clock lines while expecting data from the slave on the data lines.
+
+ulDataToSend is the value which is going to be written to all pins set as output, if no pin is set as output, nothing happens. All pins
+which are set as input will capute their value on the negative clock edge.
+	@param ftdiA, ftdiB 	pointer to ftdi_context
+	@param ulDataToSend 	data which is going to be clocked on all lines set as output
+*/
 void i2c_clockInput(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend)
 {
       process_pins_databack(ftdiA, ftdiB, SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, SCL | ulDataToSend);
       process_pins_databack(ftdiA, ftdiB, SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, !SCL | ulDataToSend);
 }
 
-/* master gives an acknowledge bit */
+/** \brief master gives an acknowledge on all data lines. 
+	@param ftdiA, ftdiB 	pointer to ftdi_context
+*/
 void i2c_giveAck(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
       process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_READ );process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, 0);
       i2c_clock(ftdiA, ftdiB, 0);
 }
 
-/* Trigger a clock cycles on the clock lines while expecting an acknowledge on the data lines */
+/** \brief clocks the acknowledge bit given by the slave. 
+	@param ftdiA, ftdiB 	pointer to ftdi_context
+	@param ulDataToSend		data which is going to be clocked on lines set as output
+*/
 void i2c_clock_forACK(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend)
 {
       process_pins_databack(ftdiA, ftdiB, SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, SCL | ulDataToSend);
@@ -534,7 +544,9 @@ void i2c_clock_forACK(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, un
 
 }
 
-/* Let your slave give its acknowledge bit */
+/** \brief expects and clocks an acknowledge bit given by the slave.
+	@param ftdiA, ftdiB 	pointer to ftdi_context
+*/
 void i2c_getAck(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
 

@@ -1,12 +1,31 @@
-/** \file io_operations.c 
-	\brief io_operations provides functions to manipulate ftdi 2232h's I/O-Pins. 
-	 
-Once the ftdi2232h is set into BITMODE_MPSSE simple USB commands can be sent to it in order to mainpulate its input and output pins.
+/***************************************************************************
+ *   Copyright (C) 2015 by Subhan Waizi                              		   *
+ *                                     									   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+
+/** \file io_operations.c
+	\brief provides functions to manipulate ftdi 2232h's I/O-Pins
+	
+Once the ftdi2232h is set into BITMODE_MPSSE simple USB commands can be sent to it in order to manipulate its input and output pins.
 Special commands (for example found in AN_108) can be used to set the 32 GPIO Pins of the ftdi device as either input or output, and once done,
-values can be assigned to the output pins and data can be read back from the input pins.
-These functions will be used to provide software i2c functionality.
- 
- */
+values can be assigned to the output pins and data can be read back from the input pins. These functions will be used to provide software i2c functionality.
+*/
+
  
 #include "io_operations.h"
 
@@ -75,7 +94,7 @@ int writeOutputs(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, const u
     return uiWritten;
 }
 
-/** \brief reads the input pins of both ftdi channels
+/** \brief reads the input pins of both ftdi channels.
 	@param[in] 		ftdiA, ftdiB pointer to a ftdi_context
 	@param[in,out] 	readBack	 contains the bytes read back from the input pins
 
@@ -153,7 +172,7 @@ int readInputs(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, const uns
 
 
 
-/** \brief stores a ftdi write command in a global buffer for later sending
+/** \brief stores a ftdi write command in a global buffer for later sending.
 
 This function gets called repeatedly by i2c functions. It stores the commands in global Buffers
 (aucBufferA and aucBufferB). The commands consist of a mask which determines which pins are configured as output and input
@@ -186,7 +205,7 @@ void process_pins(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsign
 }
 
 
-/** \brief stores a ftdi write command in a global buffer for later sending
+/** \brief stores a ftdi write command in a global buffer for later sending.
 
 This function gets called repeatedly by i2c functions. It stores the commands in global Buffers
 (aucBufferA and aucBufferB). The commands consist of a mask which determines which pins are set as input and output and and output value
@@ -225,7 +244,7 @@ void process_pins_databack(struct ftdi_context *ftdiA, struct ftdi_context *ftdi
 }
 
 
-/** \brief sends the content of the global buffers to the ftdi chip 
+/** \brief sends the content of the global buffers to the ftdi chip. 
 
 This function sends the content of the global Buffers aucBufferA and aucBufferB to the ftdi chip 
 Furthermore it reads back the data of pins which were configured as input. In case of i2c these read back pins
@@ -286,7 +305,7 @@ int send_package_write8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB)
 }
 
 
-/** \brief sends the content of the global buffers to the ftdi chip 
+/** \brief sends the content of the global buffers to the ftdi chip. 
 
 This function sends the content of the global Buffers aucBufferA and aucBufferB to the ftdi chip. 
 Furthermore it reads back the data of pins which were configured as input. The function returns a value which equals the amount of read back bytes.
@@ -422,7 +441,7 @@ int send_package_read8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, u
 }
 
 
-/** \brief sends the content of the global buffers to the ftdi chip 
+/** \brief sends the content of the global buffers to the ftdi chip. 
 
 This function sends the content of the global Buffers aucBufferA and aucBufferB to the ftdi chip. 
 Furthermore it reads back the data of pins which were configured as input. The function returns a value which equals the amount of read back bytes.
@@ -603,6 +622,7 @@ int send_package_read16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, 
     indexB = 0;
     readIndexA = 0;
     readIndexB = 0;
+	
     return uiRead;
 
 }

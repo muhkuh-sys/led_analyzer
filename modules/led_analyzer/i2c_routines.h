@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2014 by Subhan Waizi                           		   *
+ *   Copyright (C) 2015 by Subhan Waizi                              		   *
  *                                     									   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,7 +23,7 @@
 	 \brief Software I2C Functions for the FTDI 2232H Chip (header)
 	 
 i2c_routines is simple library which provides basic i2c-functionality. Functions include sending 1 or more bytes, and reading 1 Byte / 2 Bytes.
-The structure of the buffers which will be sent consists of a [address - register - data]. This i2c-library can be used
+The structure of the buffers which will be sent consists of [address - register - data]. This i2c-library can be used
 for simple i2c-slaves which do not have the ability of clock stretching.
 
 \warning clock stretching and multi-master-mode is not supported
@@ -60,7 +60,6 @@ for simple i2c-slaves which do not have the ability of clock stretching.
 #define SDA_3_INPUT  0x00
 
 
-int  i2c_setSpeed    (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned int uiSpeedkHz);
 void i2c_startCond   (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
 void i2c_stopCond    (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
 void i2c_clock       (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend);
@@ -72,6 +71,5 @@ int  i2c_read16      (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, un
                       unsigned short* ausReadBuffer, unsigned char ucRecLength);
 int  i2c_read8       (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength,
                       unsigned char* aucRecBuffer, unsigned char ucRecLength);
-			  
 int  i2c_write8      (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength);
 int  i2c_write8_x    (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength, unsigned int uiX);

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2014 by Subhan Waizi                           		   *
+ *   Copyright (C) 2015 by Subhan Waizi                           		   *
  *                                     									   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,19 +17,34 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
+ /**  \file tcs3472.c
+
+	 \brief Library to operate with 16 AMS/TAOS Color Sensors (TCS3472)
+	 
+tcs3472 provides functionality to address the color sensor tcs3472, an RGBC sensor manufactured by TAOS. Functions
+include identifying, turning on/off, setting integration time and gain, reading colors and checking colors
+for their validity. The library intends to address 16 color sensors at once. In case any of the functions fail,
+an return code will be returned which can be used to determine which specific sensor(s) failed. Most of the functions have
+2 pointers to ftdi contexts as parameters. Each pointer represents a channel of the ftdi 2232h chip, thus controls 8 sensors.
+ 
+ */
  
 #include "tcs3472.h"
 
 
-/* This function identifies the 16 sensors of a device 
-   It will return an errormask which provides information about the sensors that failed
-   
-   return value ==0: everything ok 
-   return value > 0: if bit0 is high -> first sensor identification failure 
-					 if bit1 is high -> second sensor identification failure
-					 and so on
-					 */
 
+/** \brief reads the ID-Register of 16 sensors and compares the values to expected values.
+
+For the TCS3472 chip 0x14 is expected to be read back from the ID register, for the TCS3471 chip 0x44 is expected.
+	@param ftdiA, ftdiB 	pointer to ftdi_context
+	@param aucReadbuffer	stores the ID-values read back from the 16 sensors, must be able to hold 16 elements
+	
+	@return  0 : everything OK - Identification successful
+	@return >0 : one or more sensor(s) failed
+	@return	    if the return code is 0b0000000000101100, identification failed with sensor 3, sensor 4 and sensor 6
+	*/
+	
 unsigned short int tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer)
 {
     unsigned int uiErrorcounter = 0;
@@ -56,8 +71,7 @@ unsigned short int tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context*
                else uiSuccesscounter ++;
 
                if(uiSuccesscounter == 16)
-               {
-                  //  printf("Identification successful.\n");
+               {       
                    return 0; // SUCCESFULL IDENTFICATION OF ALL SENSORS
                }
             }
@@ -73,13 +87,17 @@ unsigned short int tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context*
 		
 }
 
-
-/* This function turns the tcs3472 sensor on, in case it was sent to sleep before
-   If function is called without the sensor being priorily sent to sleep this function does nothing 
    
-   retVal == 0: everything ok
-   retVal == 1: I2C-Functions failed
-   */
+/** \brief turns 16 tcs3472 sensors on, releasing them from their sleep state.
+
+Function wakes 16 sensors on in case they were put to sleep before. If sensors are already active this function has
+no effect. 
+	@param ftdiA, ftdiB 	pointer to ftdi_context
+	
+	@return  0 : everything OK - Identification successful
+	@return  1 : i2c-functions failed
+	*/
+	
 unsigned short int tcs_ON(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
    unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3472_ENABLE_REG | TCS3472_COMMAND_BIT, TCS3472_AIEN_BIT | TCS3472_AEN_BIT
@@ -88,15 +106,19 @@ unsigned short int tcs_ON(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB
    return 0;
 }
 
+/** \brief sets the integration time of 16 sensors at once.
 
-/* Following 4 functions have to be set up properly to have a decent detection */
-
-/* This function sets the integration time of all sensor, darker leds need longer integration times.
-whereas brighter leds need shorter integration times 
-
-retVal == 0: everything ok
-retVal == 1: I2C-Functions failed 
-*/
+Function sets the integration time of 16 sensors. This setting can be used to capture both bright LEDs and dark
+LEDs. Whereas dark LEDs require a longer integration time, the integration time for bright LEDs can be low. Refer to 
+the sensor's datasheet for calculating the content of the integration time register. A few common values have already
+been calculated and saved in enum tcs3472Integration_t.
+	@param ftdiA, ftdiB 		pointer to ftdi_context
+	@param uiIntegrationtime	integration time to be sent to the sensors
+	
+	@return  0 : everything OK - Identification successful
+	@return  1 : i2c-functions failed
+	*/
+	
 unsigned short int tcs_setIntegrationTime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Integration_t uiIntegrationtime)
 {
     unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3472_ATIME_REG | TCS3472_COMMAND_BIT, uiIntegrationtime};
@@ -105,12 +127,18 @@ unsigned short int tcs_setIntegrationTime(struct ftdi_context* ftdiA, struct ftd
     return 0;
 }
 
-/* This function sets the integration time of one sensor given in uiX (ranges from 0 ... 15), darker leds need longer integration times.
-whereas brighter leds need shorter integration times 
+/** \brief sets the integration time of one sensor.
 
-retVal == 0: everything ok
-retVal == 1: I2C-Functions failed 
-
+Function sets the integration time of one sensor. This setting can be used to capture both bright LEDs and dark
+LEDs. Whereas dark LEDs require a longer integration time, the integration time for bright LEDs can be low. Refer to 
+the sensor's datasheet for calculating the content of the integration time register. A few common values have already
+been calculated and saved in enum tcs3472Integration_t.
+	@param ftdiA, ftdiB 		pointer to ftdi_context
+	@param uiIntegrationtime	integration time to be sent to the sensor
+	@param uiX					sensor which will get the new integration time ( 0 ... 15 )
+	
+	@return  0 : everything OK - Identification successful
+	@return  1 : i2c-functions failed
 */
 unsigned short int tcs_setIntegrationTime_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Integration_t uiIntegrationtime, unsigned int uiX)
 {
@@ -120,11 +148,16 @@ unsigned short int tcs_setIntegrationTime_x(struct ftdi_context* ftdiA, struct f
     return 0;
 }
 
-/* this function sets the gain of all sensors
-just like the integration time, darker leds need a higher gain setting and brighter leds can have a lower gain setting
+/** \brief sets the gain of 16 sensors.
 
-retVal == 0: everything ok
-retVal == 1: I2C-Functions failed 
+Function sets the gain of 16 sensors. This setting can be used to capture both bright LEDs and dark
+LEDs. Whereas dark LEDs require a greater gain factor, gain factor for bright LEDs can be low. Refer to 
+the sensor's datasheet for further information about gain.
+	@param ftdiA, ftdiB 		pointer to ftdi_context
+	@param gain					gain to be sent to the sensors
+	
+	@return  0 : everything OK - Identification successful
+	@return  1 : i2c-functions failed
 */
 unsigned short int tcs_setGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Gain_t gain)
 {
@@ -134,12 +167,19 @@ unsigned short int tcs_setGain(struct ftdi_context* ftdiA, struct ftdi_context* 
     return 0;
 }
 
-/* this function sets the gain of one sensor given in uiX (ranges from 0 ... 15)
-just like the integration time, darker leds need a higher gain setting and brighter leds can have a lower gain setting
+/** \brief sets the gain of one sensor.
 
-retVal == 0: everything ok
-retVal == 1: I2C-Functions failed 
+Function sets the gain of 1 sensors This setting can be used to capture both bright LEDs and dark
+LEDs. Whereas dark LEDs require a greater gain factor, gain factor for bright LEDs can be low. Refer to 
+the sensor's datasheet for further information about gain.
+	@param ftdiA, ftdiB 		pointer to ftdi_context
+	@param gain					gain to be sent to the sensor
+	@param uiX					sensor which will get the new gain ( 0 ... 15 )
+	
+	@return  0 : everything OK - Identification successful
+	@return  1 : i2c-functions failed
 */
+
 unsigned short int tcs_setGain_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Gain_t gain, unsigned int uiX)
 {
     unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3472_CONTROL_REG | TCS3472_COMMAND_BIT, gain};
@@ -148,19 +188,18 @@ unsigned short int tcs_setGain_x(struct ftdi_context* ftdiA, struct ftdi_context
     return 0;
 }
 
+					 
+/** \brief checks if the colors read from the sensors are valid.
 
-
-
-
-
-/* This function checks the color validity of the 16 sensors per device
-   It will return an errormask which provides information about the sensors that failed
-   
-   return value ==0: everything ok 
-   return value > 0: if bit0 is high -> first sensor rgbc dataset failure 
-					 if bit1 is high -> second sensor rgbc dataset failure
-					 and so on
-					 */
+Function checks if the color set read from the sensors is valid. This can be checked by reading a special register
+of the sensor, the status register. If TCS3472_AVALID_BIT is not set after color reading, we can assume errors with
+the color set, thus should repeat a reading. The return code can be used to determine which of the 16 sensor(s) failed.
+	@param ftdiA, ftdiB 	pointer to ftdi_context
+	
+	@return  0 : everything OK - RGBC datasets valid
+	@return >0 : one or more sensor(s) failed
+	@return	    if the return code is 0b0000000000101100, identification failed with sensor 3, sensor 4 and sensor 6
+	*/
 unsigned short int tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
     unsigned int uiErrorcounter = 0;
@@ -204,7 +243,17 @@ unsigned short int tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_conte
 		
 }
 
+/** \brief checks if the ADCs for color measurement have already completed.
 
+Function checks if the sensors have already completed a color measurement. This can be checked by reading a special
+register of the sensor, the status register. If TCS3472_AINT_BIT is sest in this register, the ADCs have completed
+color measurement. If measurements are not completed, the return code can be used to determine which of the 16 sensor(s) failed.
+	@param ftdiA, ftdiB 	pointer to ftdi_context
+	
+	@return  0 : everything OK - conversions complete
+	@return >0 : one or more sensor(s) failed
+	@return	    if the return code is 0b0000000000101100, we have incomplete conversions with sensor 3, sensor 4 and sensor 6
+	*/
 unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
     unsigned int uiErrorcounter = 0;
@@ -247,13 +296,17 @@ unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_conte
 		
 }
 
-/* Read 4 color values per sensor - RED; GREEN; BLUE; CLEAR 
-   Color arrays will contain 16 elements corresponding to the 16 sensors of a device 
-   
-   retVal == 0: everything ok
-   retVal == 1: I2C-Functions failed 
-*/
-unsigned short int tcs_readColour(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausColorArray, enum tcs_color_t color)
+/** \brief reads back 4 color sets of 16 sensors - Red / Green / Blue / Clear.
+
+Function reads 16-Bit color values of 16 sensors. The color will be specified by the input parameter tcs_color_t color. 
+	@param ftdiA, ftdiB 	pointer to ftdi_context
+	@param ausColorArray	will contain color value read back from 16 sensors
+	@param color			specifies the color to be read from the sensor (red, green, blue, clear)
+	
+	@return  0 : everything OK - conversions complete
+	@return  1 : i2c-functions failed
+	*/
+unsigned short int tcs_readColor(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausColorArray, tcs_color_t color)
 {
     unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_AUTOINCR_BIT | TCS3472_COMMAND_BIT};
 
@@ -281,13 +334,14 @@ unsigned short int tcs_readColour(struct ftdi_context* ftdiA, struct ftdi_contex
 
 }
 
+/** \brief sends 16 sensors to sleep.
 
-/* Send 16 color sensors into sleep state
-
-retVal == 0: everything ok
-retVal == 1: I2C-Functions failed 
-*/
-
+Function sends 16 color sensors to sleep state.
+	@param ftdiA, ftdiB 	pointer to ftdi_context
+	
+	@return  0 : everything OK - conversions complete
+	@return  1 : i2c-functions failed
+	*/
 unsigned short int tcs_sleep(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
     unsigned char aucReadbuffer[16];
@@ -299,11 +353,14 @@ unsigned short int tcs_sleep(struct ftdi_context* ftdiA, struct ftdi_context* ft
     return 0;
 }
 
-/* Wake up 16 color sensors which were sent to sleep state before 
+/** \brief wakes up 16 color sensors.
 
-	retVal == 0: everything ok
-	retVal == 1: I2C-Functions failed 
-*/
+Function wakes 16 color sensors from sleep state.
+	@param ftdiA, ftdiB 	pointer to ftdi_context
+	
+	@return  0 : everything OK - conversions complete
+	@return  1 : i2c-functions failed
+	*/
 unsigned short int tcs_wakeUp(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
     unsigned char aucReadbuffer[16];
@@ -315,13 +372,19 @@ unsigned short int tcs_wakeUp(struct ftdi_context* ftdiA, struct ftdi_context* f
     return 0;
 }
 
-/* Check if the sensors' color values for clear channel were exceeded - this means we had an inappropriate gain / integration time setting
+/** \brief checks the clear color read back from the sensors have exceeded maximum clear.
 
-   return value ==0: everything ok 
-   return value > 0: if bit0 is high -> first sensor exceeded maximum clear
-					 if bit1 is high -> second sensor exceeded maximum clear
-					 and so on
-*/			 
+Functions checks if the clear color read back from 16 sensors have exceeded a maximum clear level and are thus invalid.
+In case this maximum clear level is exceeded, one should consider lowering gain and/or integration time.
+If clear levels have been exceeded, the return code can be used to determine which of the 16 sensor(s) failed.
+	@param ftdiA, ftdiB 		pointer to ftdi_context
+	@param ausClear				clear values of the 16 sensors which will be checked for maximum clear level exceedings
+	@param aucIntegrationtime	current integration time setting of the 16 sensors - needed to check if maximum clear level has been exceeded
+	
+	@return  0 : everything OK - conversions complete
+	@return >0 : one or more sensor(s) failed
+	@return	    if the return code is 0b0000000000101100, identification failed with sensor 3, sensor 4 and sensor 6
+	*/	 
 unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned char* aucIntegrationtime)
 {
     int i= 0;
@@ -330,13 +393,9 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
 
 	unsigned short int usErrorMask = 0;
 	
-	
-	
     for(i=0; i<16; i++)
     {
-		
-	//TODO: pass an integration time parameter which contains 16 different integration times
-	// so each sensor can be checked for itself, as each sensor can have different integration time settings
+
         switch(aucIntegrationtime[i])
         {
             case TCS3472_INTEGRATION_2_4ms:
@@ -416,12 +475,88 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
 }
 
 
-/* Clear the interrupt channel of all sensors 
-	
-	retVal == 0: everything ok
-	retVal == 1: I2C-Functions failed 
-	
+/** \brief calculates Illuminance in unit LUX.
+
+Functions calculates the illuminance level of 16 sensors. In photometry, illuminance is the total luminous flux incident on a surface, per unit area.
+It is a measure of how much the incident light illuminates the surface, wavelength-weighted by the luminosity function to correlate with
+human brightness perception.
+Color temperature is related to the color with which a piece of metal glows when heated to a
+particular temperature and is typically stated in terms of degrees Kelvin. The color temperature goes
+from red at lower temperatures to blue at higher temperatures.
+Refer to Design Note 40 from AMS / Taos for further information about the calculations.
+	@param aucGain 				current gain setting of 16 sensors
+	@param aucIntegrationtime	current integration time setting of 16 sensors
+	@param ausClear				contains clear value of 16 sensors
+	@param ausRed				contains red value of 16 sensors
+	@param ausGreen				contains green value of 16 sensors
+	@param ausBlue				contains blue value of 16 sensors
+	@param fLUX					will store the calculated LUX values of 16 sensors 
+	@param CCT					will store the calculated CCT values of 16 sensors
+
+
 */
+void tcs_calculate_CCT_Lux	(unsigned char* aucGain, unsigned char* aucIntegrationtime, unsigned short* ausClear, unsigned short* ausRed,
+									 unsigned short* ausGreen, unsigned short* ausBlue, unsigned short* CCT, float* fLUX)
+{
+	float fTempRed;
+	float fTempGreen;
+	float fTempBlue;
+	float fTempClear;
+	float fIRContent;
+	
+	
+	float CPL = 0;// counts per LUX
+	float GA = 1; // device attenuation
+	
+	/* some magic numbers, retrieved from DN40 - Lux and CCT Calculations */
+	float R_Coef = 0.136;
+	float G_Coef = 1.0;
+	float B_Coef = -0.444;
+	
+	unsigned int CT_Coef = 3810;
+	unsigned int CT_Offset = 1391;
+	
+	float device_factor = 310.0;
+	
+	int i;
+	
+	
+	printf("hi :)\n");
+	/* Calculate the IR value so it can be removed from the colors */
+	
+	for(i=0; i<16; i++)
+	{	
+		fTempRed   = (float)ausRed[i];
+		fTempGreen = (float)ausGreen[i];
+		fTempBlue  = (float)ausBlue[i];
+		fTempClear = (float)ausClear[i];
+		
+		fIRContent = (fTempRed + fTempGreen + fTempBlue - fTempClear) / 2;
+		
+		fTempRed   -= fIRContent;		// R' (removed IR content from R)
+	    fTempGreen -= fIRContent;		// G' (removed IR content from G)
+	    fTempBlue  -= fIRContent;		// B' (removed IR content from B)
+		
+		CPL = ((256 - (float)aucIntegrationtime[i]) * 2.4) * getGainDivisor(aucGain[i]) / device_factor;
+		
+		fLUX[i] = (R_Coef*fTempRed + G_Coef*fTempGreen + B_Coef*fTempBlue) / CPL;
+		CCT[i]  = CT_Coef * (fTempBlue/fTempRed) + CT_Offset;
+		
+	}
+	    
+}
+
+
+
+/** \brief clears the interrupt flag of 16 sensors.
+
+Functions clears the interrupt flag of 16 sensors. The flag will be set if a color value has been exceeded, or the value
+read back from the sensor has fallen below a certain color value. Both settings can be set up in the sensors' registers.
+	@param ftdiA, ftdiB 	pointer to ftdi_context
+	
+	@return  0 : everything OK - conversions complete
+	@return  1 : i2c-functions failed
+	*/	 
 unsigned short int tcs_clearInt(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
     unsigned char aucTempbuffer[2]  = {(TCS_ADDRESS<<1), TCS3472_COMMAND_BIT | TCS3472_SPECIAL_BIT | TCS3472_INTCLEAR_BIT};
@@ -431,7 +566,13 @@ unsigned short int tcs_clearInt(struct ftdi_context* ftdiA, struct ftdi_context*
 
 }
 
-/* Wait the integration time needed by the sensor to make a color reading */
+/** \brief waits for some time, which can be specified in the input parameter uiIntegrationtime.
+
+This function can be used to wait for a time needed by the sensors to complete an ADC measurement. The time
+needed for completion of a measurement depends on the integration time setting.
+	@param uiIntegrationtime ATIME_ms specifies the time to wait
+	
+	*/
 void tcs_waitIntegrationtime(tcs3472Integration_t uiIntegrationtime)
 {
         switch(uiIntegrationtime)
@@ -467,10 +608,15 @@ void tcs_waitIntegrationtime(tcs3472Integration_t uiIntegrationtime)
         }
 }
 
-/* Reads gain settings of 16 sensors and stores them in usGainSettings 
+/** \brief reads the current gain setting of 16 sensors and stores them in an adequate buffer.
 
-	retVal == 0: everything ok
-	retVal == 1: I2C-Functions failed 
+The function reads back the gain settings of 16 sensors. Refer to sensors' datasheet for further information about
+gain settings.
+	@param ftdiA, ftdiB 	pointer to ftdi_context
+	@param aucGainSettings	pointer to buffer which will contain the gain settings of the 16 sensors
+	
+	@return 0 :				everything OK
+	@return	1 : 			i2c-functions failed
 */
 unsigned short int tcs_getGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucGainSettings)
 {
@@ -481,22 +627,33 @@ unsigned short int tcs_getGain(struct ftdi_context* ftdiA, struct ftdi_context* 
 	return 0;
 }
 
-/* Read the integration time setings of 16 sensors and store them into aucInttimeSettings 
+/** \brief reads the current integration time setting of 16 sensors and stores them in an adequate buffer.
+
+The function reads back the integration time of 16 sensors. Refer to sensors' datasheet for further information about
+integration time settings.
+	@param ftdiA, ftdiB 		pointer to ftdi_context
+	@param aucIntegrationtime	pointer to buffer which will store the integration time settings of the 16 sensors
 	
-	retVal == 0: everything ok
-	retVal == 1: I2C-Functions failed 
-	
+	@return 0 :					everything OK
+	@return	1 : 				i2c-functions failed
 */
-unsigned short int tcs_getIntegrationtime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucInttimeSettings)
+unsigned short int tcs_getIntegrationtime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucIntegrationtime)
 {
 	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_ATIME_REG | TCS3472_COMMAND_BIT};
 
-	if(i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucInttimeSettings, sizeof(aucInttimeSettings) < 0)) return 1;
+	if(i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucIntegrationtime, sizeof(aucIntegrationtime) < 0)) return 1;
 	
 	return 0;
 }
 
+/** \brief returns a divisor which corresponds to a specific gain setting.
 
+As the actual gain value which will be written into the sensors' register does not match its enum name (i.e. TCS3472_GAIN_1X
+has the value 0) this function is needed to determine the divisor that corresponds to a specific gain setting (i.e. returns 1 for
+TCS3472_GAIN_1X)
+	@param gain		enum value for gain setting
+	@return			gain divisor value which corresponds to the enum value of the gain setting
+*/
 unsigned int getGainDivisor(tcs3472Gain_t gain)
 {
 		switch(gain)

@@ -1,7 +1,27 @@
+/***************************************************************************
+ *   Copyright (C) 2015 by Subhan Waizi                              		   *
+ *                                     									   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+
 /** \file io_operations.h 
 	\brief provides functions to manipulate ftdi 2232h's I/O-Pins (header)
 	
-Once the ftdi2232h is set into BITMODE_MPSSE simple USB commands can be sent to it in order to mainpulate its input and output pins.
+Once the ftdi2232h is set into BITMODE_MPSSE simple USB commands can be sent to it in order to manipulate its input and output pins.
 Special commands (for example found in AN_108) can be used to set the 32 GPIO Pins of the ftdi device as either input or output, and once done,
 values can be assigned to the output pins and data can be read back from the input pins. These functions will be used to provide software i2c functionality.
 */
