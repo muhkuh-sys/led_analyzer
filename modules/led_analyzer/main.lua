@@ -44,7 +44,6 @@ ausRed    = led_analyzer.new_ushort(MAXSENSORS)
 ausGreen  = led_analyzer.new_ushort(MAXSENSORS)
 ausBlue   = led_analyzer.new_ushort(MAXSENSORS)
 
-afBrightness = led_analyzer.new_afloat(MAXSENSORS)
 
 aucGains  = led_analyzer.new_puchar(MAXSENSORS)
 aucIntTimes = led_analyzer.new_puchar(MAXSENSORS)
@@ -53,9 +52,12 @@ aucIntTimes = led_analyzer.new_puchar(MAXSENSORS)
 asSerials = led_analyzer.new_astring(MAXSERIALS)
 apHandles = led_analyzer.new_apvoid(MAXHANDLES)
 
+
 numberOfDevices = led_analyzer.scan_devices(asSerials, MAXSERIALS);
+
+
 numberOfDevices = led_analyzer.connect_to_devices(apHandles, MAXHANDLES, asSerials)
-tString = astring_to_table(asSerials, MAXSERIALS)
+tSerials = astring_to_table(asSerials, MAXSERIALS)
 
 local devIndex = 0 
 local error_counter = 0 
@@ -120,7 +122,7 @@ while(devIndex < numberOfDevices) do
 	print(string.format("\n------------------ Device %d -------------------- ", devIndex))
 		
 	while(error_counter < READ_MAXERROR) do		
-		ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue, afBrightness)
+		ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue)
 		if ret ~= 0 then
 			error_counter = error_counter + 1
 		else
@@ -134,8 +136,10 @@ while(devIndex < numberOfDevices) do
 		error_counter = 0
 	end 
 	
-	tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, afBrightness, 16)
+	tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, 16)
 	print_color(devIndex, tColorTable, 16, "wavelength")
+	print_color(devIndex, tColorTable, 16, "RGB")
+	
 	
 	
 	devIndex = devIndex + 1 
@@ -166,7 +170,6 @@ led_analyzer.delete_ushort(ausBlue)
 	
 led_analyzer.delete_puchar(aucGains)
 led_analyzer.delete_puchar(aucIntTimes)
-led_analyzer.delete_afloat(afBrightness)
 
 led_analyzer.delete_apvoid(apHandles)
 led_analyzer.delete_astring(asSerials)
