@@ -61,5 +61,5 @@ int	 swap_down(char** asSerial, char* curSerial);
 void wait4Conversion(unsigned int uiWaitTime);
 
 
-#endif	/* __BIT_H__ */
+#endif	/*__LED_ANALYZER_H__*/
 
