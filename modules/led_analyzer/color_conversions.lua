@@ -1,5 +1,46 @@
 require("tcs_chromaTable")
 
+function max(a, b, c)
+	local max = 0
+	
+	if a >= b then
+		if a >= c then
+			max = a
+		else 
+			max = c
+		end
+	else
+		if b >= c then 
+			max = b
+		else
+			max = c
+		end 
+	end 
+	
+	return max
+end
+
+function min(a, b ,c)
+	local min = 0
+	
+	if a <= b then
+		if a <= c then
+			min = a
+		else 
+			min = c
+		end
+	else
+		if b <= c then
+			min = b
+		else 
+			min = c
+		end
+	end
+	
+	return min
+end
+
+
 -- a helper to print a colortable which contains values in RGB, XYZ, HSV, Yxy and wavelength space 
 -- parameter mode determines which space should be printed out 
 function print_color(devIndex, colortable, length, mode)
@@ -13,6 +54,7 @@ function print_color(devIndex, colortable, length, mode)
 													colortable[devIndex][2][i].red, colortable[devIndex][2][i].green,
 													colortable[devIndex][2][i].blue))
 		end
+		
 	
 	elseif mode == "RGB_n" then
 		print("     Clear   Red     Green    Blue")
@@ -45,7 +87,7 @@ function print_color(devIndex, colortable, length, mode)
 	elseif mode == "wavelength" then
 	    print(" dominant wavelength	 sat         brightness  ")
 		for i=1, length do
-			print(string.format("%3d)   %3d nm		%3.2f		%1.5f", i, colortable[devIndex][1][i].nm, colortable[devIndex][1][i].sat, colortable[devIndex][1][i].brightness))
+			print(string.format("%3d)   %3d nm		%3.2f	", i, colortable[devIndex][1][i].nm, colortable[devIndex][1][i].sat))
 		end								
 	
 	elseif mode == "HSV" then
@@ -79,7 +121,7 @@ end
 
 -- Convert the Colors given as parameters into various color spaces (RGB, HSV, XYZ, Yxy, Wavelength)
 -- and save the values of the color spaces into tables 
-function aus2colorTable(clear, red, green, blue, brightness, length)
+function aus2colorTable(clear, red, green, blue, length)
 
 	-- tables containing colors in different color spaces 
 	local tRGB = {}
@@ -100,8 +142,6 @@ function aus2colorTable(clear, red, green, blue, brightness, length)
 		lRed   = led_analyzer.ushort_getitem(red,   i)
 		lGreen = led_analyzer.ushort_getitem(green, i)
 		lBlue  = led_analyzer.ushort_getitem(blue,  i)
-		lBrightness = led_analyzer.afloat_getitem(brightness, i)	
-
 		
 		-- to avoid a later division by zero and to have more stable readings and no unneccessary
 		-- outputs with the channels which are not reading any LEDs we will check if any of the channels is zero
@@ -163,7 +203,7 @@ function aus2colorTable(clear, red, green, blue, brightness, length)
 			-- Wavelength Saturation Brightness table 
 			tWavelength[i+1] = {nm = math.floor(wavelength+0.5),
 						        sat = saturation * 100,
-								brightness = lBrightness }
+								}
 								
 			-- HSV (Hue Saturation Value)
 			
