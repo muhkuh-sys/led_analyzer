@@ -777,8 +777,9 @@ int getSerialIndex(char** asSerial, char* curSerial)
 /** \brief swaps the serial number described by curSerial up by one position.
 
 Function swaps the serial number described by curSerial up by one position. The serial number
-that got pushed away will be in [oldPosition + 1].
-
+that got pushed away will be in [oldPosition - 1].
+	@return 0  : OK - swap successful or no need to swap
+	@return -1 : swapping failed
 */
 int swap_up(char** asSerial, char* curSerial)
 {
@@ -792,7 +793,7 @@ int swap_up(char** asSerial, char* curSerial)
 	
 	if(curIndex == 0)
 	{
-		printf("... cannot swap up, serial number already in first position\n");
+		printf("... no need to swap up, serial number already in first position\n");
 		return 0;
 	}
 
@@ -802,9 +803,10 @@ int swap_up(char** asSerial, char* curSerial)
 
 /** \brief swaps the serial number described by curSerial down by one position.
 
-Function swaps the serial number described by curSerial up by one position. The serial number
+Function swaps the serial number described by curSerial down by one position. The serial number
 that got pushed away will be in [oldPosition + 1].
-
+	@return 0  : OK - swap successful or no need to swap
+	@return -1 : swapping failed
 */
 int swap_down(char** asSerial, char* curSerial)
 {
@@ -819,7 +821,7 @@ int swap_down(char** asSerial, char* curSerial)
 	
 	if(curIndex == (numbOfDevs-1))
 	{
-		printf("... cannot swap down, serial number already in last position\n");
+		printf("... no need to swap down, serial number already in last position\n");
 		return 0;
 	}
 	
