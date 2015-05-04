@@ -9,6 +9,7 @@ function compare(row_testboard, row_curset, lux_check_enable)
 	
 	-- The row in testboard exists, thus a test for this LED is desired 
 	if row_testboard.nm ~= nil then 
+		-- d prefix describes a delta value 
 		local dnm = row_curset.nm - row_testboard.nm 
 		local dsat = row_curset.sat - row_testboard.sat
 		local dlux 
@@ -81,6 +82,7 @@ function inRange(tTestDevice, tWavelengthDevice, lux_check_enable)
 		
 		tTestSummary_device[sensor].status = status
 		tTestSummary_device[sensor].infotext = infotext
+		
 		-- measurement error = x_measured - x_correct
 		tTestSummary_device[sensor].dnm  = dnm 
 		tTestSummary_device[sensor].dsat = dsat  
@@ -88,17 +90,15 @@ function inRange(tTestDevice, tWavelengthDevice, lux_check_enable)
 	end 
 	
 	return tTestSummary_device 
-	
 end 
 
 
 function validate_device_colors(tTestDevice, tWavelengthDevice, lux_check_enable)
 
-		local tTestSummary_device = {} 
-		tTestSummary_device = inRange(tTestDevice, tWavelengthDevice, lux_check_enable)
+	local tTestSummary_device = {} 
+	tTestSummary_device = inRange(tTestDevice, tWavelengthDevice, lux_check_enable)
 	 
-	 
-		return tTestSummary_device 
+	return tTestSummary_device 
 end 
 
 
