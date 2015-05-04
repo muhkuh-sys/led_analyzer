@@ -458,7 +458,6 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
             printf("All gain settings ok.\n");
             return 0;
         }
-		
 
     }
 
@@ -482,31 +481,37 @@ It is a measure of how much the incident light illuminates the surface, waveleng
 human brightness perception.
 Color temperature is related to the color with which a piece of metal glows when heated to a
 particular temperature and is typically stated in terms of degrees Kelvin. The color temperature goes
-from red at lower temperatures to blue at higher temperatures.
-Refer to Design Note 40 from AMS / Taos for further information about the calculations.
+from red at lower temperatures to blue at higher temperatures. Refer to Design Note 40 from AMS / Taos for further information about the calculations.
 	@param aucGain 				current gain setting of 16 sensors
 	@param aucIntegrationtime	current integration time setting of 16 sensors
 	@param ausClear				contains clear value of 16 sensors
 	@param ausRed				contains red value of 16 sensors
 	@param ausGreen				contains green value of 16 sensors
 	@param ausBlue				contains blue value of 16 sensors
-	@param fLUX					will store the calculated LUX values of 16 sensors 
+	@param afLUX				will store the calculated LUX values of 16 sensors 
 	@param CCT					will store the calculated CCT values of 16 sensors
-
 
 */
 void tcs_calculate_CCT_Lux	(unsigned char* aucGain, unsigned char* aucIntegrationtime, unsigned short* ausClear, unsigned short* ausRed,
-									 unsigned short* ausGreen, unsigned short* ausBlue, unsigned short* CCT, float* fLUX)
+									 unsigned short* ausGreen, unsigned short* ausBlue, unsigned short* CCT, float* afLUX)
 {
+	
+/* For some applications, the IR content is negligible and can be ignored. An example would be
+measuring the color temperature of an LED backlight. However, in applications that need to measure
+ambient light levels, incandescent lights and sunlight have strong IR contents. Most IR filters are
+imperfect and allow small amounts of residual IR to pass through. For IR intensive light sources,
+additional calculations are needed to remove the residual IR component. As the project's aim is to measure
+LEDs, and LEDs colors commonly have very low / nearly no IR content, the IR Rejection part of the algorithm
+described in DN40 can be neglected for LUX calculations, but should be considered for CCT calculations */
+
 	float fTempRed;
 	float fTempGreen;
 	float fTempBlue;
 	float fTempClear;
 	float fIRContent;
 	
-	
 	float CPL = 0;// counts per LUX
-	float GA = 1; // device attenuation
+	float GA = 1.0; // device attenuation
 	
 	/* some magic numbers, retrieved from DN40 - Lux and CCT Calculations */
 	float R_Coef = 0.136;
@@ -519,9 +524,7 @@ void tcs_calculate_CCT_Lux	(unsigned char* aucGain, unsigned char* aucIntegratio
 	float device_factor = 310.0;
 	
 	int i;
-	
-	
-	printf("hi :)\n");
+
 	/* Calculate the IR value so it can be removed from the colors */
 	
 	for(i=0; i<16; i++)
@@ -539,9 +542,9 @@ void tcs_calculate_CCT_Lux	(unsigned char* aucGain, unsigned char* aucIntegratio
 		
 		CPL = ((256 - (float)aucIntegrationtime[i]) * 2.4) * getGainDivisor(aucGain[i]) / device_factor;
 		
-		fLUX[i] = (R_Coef*fTempRed + G_Coef*fTempGreen + B_Coef*fTempBlue) / CPL;
+		afLUX[i] = (R_Coef*fTempRed + G_Coef*fTempGreen + B_Coef*fTempBlue) / CPL;
+		afLUX[i] = (afLUX[i] < 0) ? afLUX[i]*(-1) : afLUX[i];
 		CCT[i]  = CT_Coef * (fTempBlue/fTempRed) + CT_Offset;
-		
 	}
 	    
 }

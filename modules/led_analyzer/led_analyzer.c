@@ -188,7 +188,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 			
 			if(asSerial[devCounter] == NULL) 
 				{
-					printf("... serial number non-existent ... please rescan your devices\n");
+					printf("... serial number non-existent ... make sure a color controller device is connected\n");
 					ftdi_deinit(apHandles[iArrayPos]);
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
@@ -230,7 +230,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 			
 			if(asSerial[devCounter] == NULL) 
 				{
-					printf("... serial number non-existent ... please rescan your devices\n");
+					printf("... serial number non-existent ... make sure a correct color controller device is connected\n");
 					ftdi_deinit(apHandles[iArrayPos]);
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
@@ -438,6 +438,8 @@ the maximum clear value the sensor can reach. If the sensor has reached maximum 
 	@param ausRed				stores 16 red colors
 	@param ausGreen				stores 16 green colors
 	@param ausBlue				stores 16 blue colors
+	@param CCT					will store 16 calculated CCT values
+	@param afLUX			    will store 16 calculated LUX levels
 	
 	@return 					0  : everything ok
 	@return 					-1 : i2c-functions failed
@@ -446,21 +448,30 @@ the maximum clear value the sensor can reach. If the sensor has reached maximum 
 
 */
 int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsigned short* ausRed,
-				unsigned short* ausGreen, unsigned short* ausBlue)
+				unsigned short* ausGreen, unsigned short* ausBlue, unsigned short* CCT, float* afLUX)
 {
 	int iHandleLength = get_number_of_handles(apHandles);
 	
 	unsigned char aucTempbuffer[16];
 	unsigned char aucIntegrationtime[16];
 	unsigned char aucGain[16];
-	
-	float fLUX[16];
-	unsigned short CCT[16];
+
 	
 	int handleIndex = devIndex * 2;
 	int gainDivisor = 0;
 	
+	int i;
 	int errorcode = 0;
+	
+	/* Fill the arrays which contain the LUX and CCT values with zeros, so they will have the value 
+	zero in case any of the Checking functions fail and the function returns an errorcode */
+	
+	for(i = 0; i<16; i++)
+	{
+		afLUX[i] = 0.0;
+		CCT[i] 	= 0;
+	}
+	
 	
 	// Transform device index into handle index, as each device has two handles */
 	
@@ -495,7 +506,7 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 		return errorcode;
 	}
 	
-	tcs_calculate_CCT_Lux(aucGain, aucIntegrationtime, ausClear, ausRed, ausGreen, ausBlue, CCT, fLUX);
+	tcs_calculate_CCT_Lux(aucGain, aucIntegrationtime, ausClear, ausRed, ausGreen, ausBlue, CCT, afLUX);
 	
 	return errorcode;
 	
