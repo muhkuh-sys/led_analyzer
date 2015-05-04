@@ -29,9 +29,7 @@ provides the functions which are required for the application CoCo App.
  
  */
  
-#include "ftdi.h"
 #include "tcs3472.h"
-#include <stdio.h>
 
 #ifndef __LED_ANALYZER_H__
 #define __LED_ANALYZER_H__
