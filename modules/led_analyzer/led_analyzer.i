@@ -22,9 +22,6 @@
 
 
 
-
-
-
 %include "led_analyzer.h"
 
 %{
@@ -33,15 +30,13 @@
 
 %include <typemaps.i>
 %apply void **INOUT {(void** apHandles)};
-%apply (unsigned short *INOUT) {unsigned short* ausClear, unsigned short* ausRed, unsigned short* ausGreen, unsigned short* ausBlue};
-%apply (float* INOUT) {float* afBrightness}
+%apply (unsigned short *INOUT) {unsigned short* ausClear, unsigned short* ausRed, unsigned short* ausGreen, unsigned short* ausBlue, unsigned short* ausCCT};
+%apply (float* INOUT) {float* afLUX}
 %apply (unsigned short *INOUT) {unsigned short* ausGains}
 %apply (unsigned short *INOUT) {unsigned short* ausIntTimeSettings}
 %apply (char **INOUT) {(char** asSerial)}
 %apply (char *INOUT) {char* aucGains}
 %apply (char *INOUT) {char* aucIntegrationtime}
-
-
 
 
 
