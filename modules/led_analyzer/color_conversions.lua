@@ -85,9 +85,9 @@ function print_color(devIndex, colortable, length, mode)
 		end
 		
 	elseif mode == "wavelength" then
-	    print(" dominant wavelength	 sat         brightness  ")
+	    print(" dominant wavelength	 sat         LUX  ")
 		for i=1, length do
-			print(string.format("%3d)   %3d nm		%3.2f	", i, colortable[devIndex][1][i].nm, colortable[devIndex][1][i].sat))
+			print(string.format("%3d)   %3d nm		%3.2f	   %4.3f	", i, colortable[devIndex][1][i].nm, colortable[devIndex][1][i].sat, colortable[devIndex][1][i].lux))
 		end								
 	
 	elseif mode == "HSV" then
@@ -121,7 +121,7 @@ end
 
 -- Convert the Colors given as parameters into various color spaces (RGB, HSV, XYZ, Yxy, Wavelength)
 -- and save the values of the color spaces into tables 
-function aus2colorTable(clear, red, green, blue, length)
+function aus2colorTable(clear, red, green, blue, cct, lux, length)
 
 	-- tables containing colors in different color spaces 
 	local tRGB = {}
@@ -142,7 +142,9 @@ function aus2colorTable(clear, red, green, blue, length)
 		lRed   = led_analyzer.ushort_getitem(red,   i)
 		lGreen = led_analyzer.ushort_getitem(green, i)
 		lBlue  = led_analyzer.ushort_getitem(blue,  i)
-		
+		lCCT   = led_analyzer.ushort_getitem(cct,   i)
+		lLUX   = led_analyzer.afloat_getitem(lux,   i)
+				
 		-- to avoid a later division by zero and to have more stable readings and no unneccessary
 		-- outputs with the channels which are not reading any LEDs we will check if any of the channels is zero
 		
@@ -167,7 +169,7 @@ function aus2colorTable(clear, red, green, blue, length)
 			-- Wavelength and saturation 
 			tWavelength[i+1] = { nm  = 0,
 							     sat = 0,
-							     brightness = 0 }
+								 lux = 0}
 							
 			tHSV[i+1] = { H = 0,
 						  S = 0,
@@ -203,6 +205,7 @@ function aus2colorTable(clear, red, green, blue, length)
 			-- Wavelength Saturation Brightness table 
 			tWavelength[i+1] = {nm = math.floor(wavelength+0.5),
 						        sat = saturation * 100,
+								lux = lLUX
 								}
 								
 			-- HSV (Hue Saturation Value)
@@ -600,4 +603,9 @@ function Yxy2wavelength(x,y)
 	return  tTCS_Chromaticity[min_index].nm, saturation 
 	
 end
+
+
+function getSaturation(red, green, blue, cear)
+
+end 
  
