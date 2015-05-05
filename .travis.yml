@@ -18,6 +18,7 @@ before_install:
   - sudo apt-get --assume-yes install cmake3
   - sudo apt-get --assume-yes install swig3
   - sudo apt-get --assume-yes install python-pip python-virtualenv
+  - sudo apt-get --assume-yes --no-install-recommends doxygen doxygen-gui graphviz
   - virtualenv ~/virtualenv/python2.7
   - source ~/virtualenv/python2.7/bin/activate
   - pip install -q requests
