@@ -33,30 +33,100 @@ TCS3471_INTEGRATION_154ms 		= 0xC0
 TCS3471_INTEGRATION_700ms       = 0x00
 
 -- Colors from the TCS3472 will be stored in following arrays -- 
-ausClear  = led_analyzer.new_ushort(MAXSENSORS)
-ausRed    = led_analyzer.new_ushort(MAXSENSORS)
-ausGreen  = led_analyzer.new_ushort(MAXSENSORS)
-ausBlue   = led_analyzer.new_ushort(MAXSENSORS)
-ausCCT    = led_analyzer.new_ushort(MAXSENSORS)
+local ausClear  		= led_analyzer.new_ushort(MAXSENSORS)
+local ausRed    		= led_analyzer.new_ushort(MAXSENSORS)
+local ausGreen  		= led_analyzer.new_ushort(MAXSENSORS)
+local ausBlue   		= led_analyzer.new_ushort(MAXSENSORS)
+local ausCCT    		= led_analyzer.new_ushort(MAXSENSORS)
+local afLUX     		= led_analyzer.new_afloat(MAXSENSORS)
+local aucGains  		= led_analyzer.new_puchar(MAXSENSORS)
+local aucIntTimes 		= led_analyzer.new_puchar(MAXSENSORS)
+local asSerials 		= led_analyzer.new_astring(MAXSERIALS)
+local apHandles 		= led_analyzer.new_apvoid(MAXHANDLES)
+local numberOfDevices   = 0
+local tColorTable 		= {}
+local tTestSummary 		= {}
+local ret 				= 0
 
-afLUX     = led_analyzer.new_afloat(MAXSENSORS)
-
-aucGains  = led_analyzer.new_puchar(MAXSENSORS)
-aucIntTimes = led_analyzer.new_puchar(MAXSENSORS)
 
 
-asSerials = led_analyzer.new_astring(MAXSERIALS)
-apHandles = led_analyzer.new_apvoid(MAXHANDLES)
+function initDevices(numberOfDevices, gain, integrationtime)
+-- iterate over all devices and perform initialization -- 
+	local devIndex = 0
+	local error_counter = 0 
+	while(devIndex < numberOfDevices) do 
 
 
+		led_analyzer.set_gain(apHandles, devIndex, gain)
+		led_analyzer.set_intTime(apHandles, devIndex, integrationtime)
+		
+		while(error_counter < INIT_MAXERROR) do
+			ret = led_analyzer.init_sensors(apHandles, devIndex)
+			if ret ~= 0 then
+				error_counter = error_counter + 1 
+			else
+				break
+			end  
+		end 
+		if error_counter == INIT_MAXERROR then
+			print(string.format("%d initialization errors in a row, test aborting ...", error_counter))
+			return TEST_RESULT_SENSORS_FAILED
+		else 
+			error_counter = 0 
+		end 
+				
+		devIndex = devIndex + 1 
+	end 
+end 
+
+function startMeasurements(numberOfDevices)
+	
+	local devIndex = 0
+	local error_counter = 0 
+
+	while(devIndex < numberOfDevices) do 
+		print(string.format("\n------------------ Device %d -------------------- ", devIndex))
+			
+		while(error_counter < READ_MAXERROR) do		
+			ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX)
+			if ret ~= 0 then
+				error_counter = error_counter + 1
+			else
+				break 
+			end 
+		end 
+		if error_counter == READ_MAXERROR then
+			print(string.format("%d color reading errors in a row, test aborting ...", error_counter))
+			return TEST_RESULT_SENSORS_FAILED  
+		else 
+			error_counter = 0
+		end 
+		
+		tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, 16)
+		print_color(devIndex, tColorTable, 16, "wavelength")
+		
+		devIndex = devIndex + 1 
+		print("\n")
+	end 
+end 
+
+function validateLEDs(numberOfDevices, tDUT, lux_check_enable)
+	
+	local devIndex = 0
+	
+	while(devIndex < numberOfDevices) do 
+		tTestSummary[devIndex] = getDeviceSummary(tDUT[devIndex], tColorTable[devIndex][1], lux_check_enable)
+		--printDeviceSummary(tTestSummary[devIndex], 1 )
+		devIndex = devIndex + 1 
+	end 
+	
+	validateTestSummary(numberOfDevices, tTestSummary)
+
+end
+
+--------------------------------- DEVICE CONNECTION ------------------------------
 numberOfDevices = led_analyzer.scan_devices(asSerials, MAXSERIALS);
-
-
 numberOfDevices = led_analyzer.connect_to_devices(apHandles, MAXHANDLES, asSerials)
-tSerials = astring_to_table(asSerials, MAXSERIALS)
-
-local devIndex = 0 
-local error_counter = 0 
 
 if numberOfDevices == 0 then 
 	return TEST_RESULT_NO_DEVICES
@@ -64,106 +134,18 @@ end
 if numberOfDevices < 0 then
 	return TEST_RESULT_DEVICE_FAILED
 end 
+---------------------------------- ACTUAL TEST -----------------------------------
 
-
-	
-
--- iterate over all devices and perform initialization -- 
-devIndex = 0
-while(devIndex < numberOfDevices) do 
-
-
-	led_analyzer.set_gain(apHandles, devIndex, TCS3471_GAIN_1X)
-	led_analyzer.set_intTime(apHandles, devIndex, TCS3471_INTEGRATION_100ms)
-	
-	while(error_counter < INIT_MAXERROR) do
-		ret = led_analyzer.init_sensors(apHandles, devIndex)
-		if ret ~= 0 then
-			error_counter = error_counter + 1 
-		else
-			break
-		end  
-	end 
-	if error_counter == INIT_MAXERROR then
-		print(string.format("%d initialization errors in a row, test aborting ...", error_counter))
-		return TEST_RESULT_SENSORS_FAILED
-	else 
-		error_counter = 0 
-	end 
-			
-	devIndex = devIndex + 1 
-end 
-
-
-
-
-
--- perform the color related functions which contains reading out color, do the color conversion
--- put the colors into the color tables and perform a final validty check 
-
-
--- table containing sensor's colors in diferent color spaces 
--- Index 1: Wavelength 
--- Index 2: RGB 
--- Index 3: XYZ
--- Index 4: tYxy 
--- Index 5: tHSV 
-
-local counter = 20 
-
-
-
-devIndex = 0 
-local tColorTable = {}
-
+initDevices(numberOfDevices, TCS3471_GAIN_1X, TCS3471_INTEGRATION_100ms)
+startMeasurements(numberOfDevices)
+validateLEDs(numberOfDevices, tTest, 1)
 led_analyzer.wait4Conversion(500)
 
-while(devIndex < numberOfDevices) do 
+--------------------------------- TEST END TEST END ------------------------------
 
-	print(string.format("\n------------------ Device %d -------------------- ", devIndex))
-		
-	while(error_counter < READ_MAXERROR) do		
-		ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX)
-		if ret ~= 0 then
-			error_counter = error_counter + 1
-		else
-			break 
-		end 
-	end 
-	if error_counter == READ_MAXERROR then
-		print(string.format("%d color reading errors in a row, test aborting ...", error_counter))
-		return TEST_RESULT_SENSORS_FAILED  
-	else 
-		error_counter = 0
-	end 
-	
-	tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, 16)
-	print_color(devIndex, tColorTable, 16, "wavelength")
-	print_color(devIndex, tColorTable, 16, "RGB")
-	
-	
-	
-	devIndex = devIndex + 1 
-	print("\n")
-end 
-
--- now follows the validation of the LEDs given in testboard.lua --
-devIndex = 0 
-tTestSummary = {}
-while(devIndex < numberOfDevices) do 
-
-	print(string.format("\n-------------------------------- Device %d -------------------------------------- ", devIndex))	
-	tTestSummary[devIndex] = getDeviceSummary(tTest[devIndex], tColorTable[devIndex][1], 1)
-	printDeviceSummary(tTestSummary[devIndex], 1 )
-	
-	devIndex = devIndex + 1 
-
-	
-end 
+ ret = led_analyzer.free_devices(apHandles)
  
-validateTestSummary(tTestSummary)
- 
-ret = led_analyzer.free_devices(apHandles)	
+------------------------------------ CLEAN UP ------------------------------------
 
 led_analyzer.delete_ushort(ausClear)
 led_analyzer.delete_ushort(ausRed)
@@ -171,9 +153,7 @@ led_analyzer.delete_ushort(ausGreen)
 led_analyzer.delete_ushort(ausBlue)
 led_analyzer.delete_ushort(ausCCT)
 led_analyzer.delete_afloat(afLUX)
-
 led_analyzer.delete_puchar(aucGains)
 led_analyzer.delete_puchar(aucIntTimes)
-
 led_analyzer.delete_apvoid(apHandles)
 led_analyzer.delete_astring(asSerials)
