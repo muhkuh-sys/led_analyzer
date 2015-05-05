@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2014 by Subhan Waizi                           		   *
+ *   Copyright (C) 2015 by Subhan Waizi                           		   *
  *                                     									   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -20,7 +20,7 @@
 
 /** \file led_analyzer.h
 
-	 \brief led_analyzer handles all functionality on device level and provides the functions needed by the GUI application.
+	 \brief led_analyzer handles all functionality on device level and provides the functions needed by the GUI application (header)
 	 
 The led_analyzer library will handle functionality to work with severeal color controller devices. It scans
 for connected color controller devices and opens them. All devices that have been connected to will have handles. 

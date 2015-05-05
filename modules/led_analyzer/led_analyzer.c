@@ -22,7 +22,7 @@
 	 \brief led_analyzer handles all functionality on device level and provides the functions needed by the GUI application.
 	 
 The led_analyzer library will handle functionality to work with severeal color controller devices. It scans
-for connected color controller devices and opens them. All devices that have been connected to will have handles. 
+for connected color controller devices and opens them. Handles will be assigned to all opened color controller devices.
 These handles will be stored in an array and can be used by all underlying color related functions. Furthermore this library
 provides the functions which are required for the application CoCo App.
  
@@ -35,32 +35,31 @@ provides the functions which are required for the application CoCo App.
 /** Product ID for the Color Controller "COLOR-CTRL" */
 #define PID 0x0024
 
+/** Maximum Length of characters a descriptor in the ftdi2232h eeprom can have */
+#define MAX_DESCLENGTH 128
 
 /** \brief scans for connected color controller devices and stores their serial numbers in an array.
 
-Functions scans for all color controller devices that are connected via USB. A device which has "COLOR-CTRL" as description
-will be counted as a color controller. Function prints manufacturer, description and serialnumber.
-Furthermore the serialnumber(s) will be stored in an array and can be used for later functions
-that open a connected device by a serialnumber. 
+Functions scans for all color controller devices with a given VID and PID that are connected via USB. A device which has "COLOR-CTRL" 
+as description will be counted as a color controller. Function prints manufacturer, description and serialnumber of connected devices.
+Furthermore the serialnumber(s) will be stored in an array and can be used by functions that open a connected device by a serialnumber. 
 	@param asSerial stores the serial numbers of all connected color controller devices
-	@param asLength	number of elements the serial number array can contain 
+	@param asLength	maximum number of elements the serial number array can contain 
 	
 	@return 0  : no color controller device detected
-	@return <0 : error with ftdi functions or insufficient length of asSerial
-	@return >0 : number of connected color controller devices
+	@return <0 : error with ftdi functions or insufficient space for storing all serial numbers in asSerial
+	@return >0 : number of connected color controller devices with "COLOR-CTRL" as description
 */
 int scan_devices(char** asSerial, unsigned int asLength)
 {
 	int i;
 	int f;
-	int numbOfDevs = 0;
-	int numbOfSerials = 0;
-	
-	const char sMatch[] = "COLOR-CTRL";
-	
-	char manufacturer[128], description[128], serial[128];
-	struct ftdi_device_list *devlist, *curdev;
-	struct ftdi_context *ftdi;
+	int 		numbOfDevs = 0;
+	int 		numbOfSerials = 0;
+	const char  sMatch[] = "COLOR-CTRL";
+	char 		manufacturer[MAX_DESCLENGTH], description[MAX_DESCLENGTH], serial[MAX_DESCLENGTH];
+	struct 		ftdi_device_list *devlist, *curdev;
+	struct 		ftdi_context *ftdi;
 	
 	
 	if(asLength <1)
@@ -82,13 +81,13 @@ int scan_devices(char** asSerial, unsigned int asLength)
 		
 	if(numbOfDevs == 0)
 		{
-			printf("... no ftdi device detected ... quitting.\n");
+			printf("... no color controller detected ... quitting.\n");
 			ftdi_list_free(&devlist);
 			ftdi_free(ftdi);
 			return -1;
 		}
 
-	printf("\n\n");
+	printf("\n");
 	
 	i = 0;
 	for (curdev = devlist; curdev != NULL; i++)
@@ -120,7 +119,7 @@ int scan_devices(char** asSerial, unsigned int asLength)
 	
 	if(numbOfSerials == 0)
 	{
-			printf("... no color controller(s) detected.\n");
+			printf("... color controller(s) with given VID, PID detected, but description doesn't match.\n");
 			ftdi_list_free(&devlist);
 			ftdi_free(ftdi);
 	}
@@ -155,7 +154,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 
 	if(2*numbOfDevs > apHlength)
 	{
-		printf("handlearray too small for number of ftdi-chips found\n");
+		printf("handlearray too small for number of color controllers found\n");
 		printf("needed: %d, got: %d\n", numbOfDevs*2, apHlength);
 		return -1;
 	}
@@ -169,13 +168,11 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 		if(iArrayPos+2 <= apHlength)
 		{
 			/* Ch A */
-			
 		    if ((apHandles[iArrayPos] = ftdi_new()) == 0)
 				{
 					fprintf(stderr, "... ftdi_new failed!\n");
 					return -1;
 				}
-			
 			
 			if((f = ftdi_set_interface(apHandles[iArrayPos], INTERFACE_A))<0)
 				{
@@ -184,8 +181,6 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 					return -1;
 				}
 				
-			
-			
 			if(asSerial[devCounter] == NULL) 
 				{
 					printf("... serial number non-existent ... make sure a color controller device is connected\n");
@@ -201,7 +196,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
 				}
-			else printf("ftdi device %d Channel A - open succeeded\n", devCounter);
+			else printf("color controller %d Channel A - open succeeded\n", devCounter);
 			
 			if((f=ftdi_set_bitmode(apHandles[iArrayPos], 0xFF, BITMODE_MPSSE)) < 0)
 				{
@@ -214,7 +209,6 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 			iArrayPos ++;
 						
 			/* Ch B */
-			
 		    if ((apHandles[iArrayPos] = ftdi_new()) == 0)
 				{
 					fprintf(stderr, "... ftdi_new failed!\n");
@@ -243,7 +237,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
 				}
-			else printf("ftdi device %d Channel B - open succeeded\n", devCounter);
+			else printf("color controller %d Channel B - open succeeded\n", devCounter);
 			
 			if((f=ftdi_set_bitmode(apHandles[iArrayPos], 0xFF, BITMODE_MPSSE)) < 0)
 				{
@@ -261,18 +255,15 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 		devCounter ++;
 		
 		printf("\n");
-		
 	}
 	
 	printf("\n");
 	
-	return devCounter;
-	
-	
+	return devCounter;	
 }
 
 /** \brief returns number of serial numbers stored in the serial number array.
-	@param 	asSerial array that stores the serial numbers
+	@param asSerial 	stores the serial numbers of all connected color controller devices
 	
 	@return number elements in the serial number array
 */
@@ -286,7 +277,7 @@ int get_number_of_serials(char** asSerial)
 }
 
 
-/** \brief returns number of handles that are stored in the handle array.
+/** \brief returns number of handles stored in the handle array.
 	@param apHandles array that stores the handles
 	
 	@return number elements in the handle array
@@ -321,7 +312,7 @@ int handleToDevice(int handleIndex)
 Function sets the integration time of one sensor. This setting can be used to capture both bright LEDs and dark
 LEDs. Whereas dark LEDs require a longer integration time, the integration time for bright LEDs can be low. Refer to 
 the sensor's datasheet for calculating the content of the integration time register. A few common values have already
-been calculated and saved in enum tcs3472Integration_t.
+been calculated and saved in tcs3472Integration_t.
 	@param apHandles	 		array that stores ftdi2232h handles
 	@param devIndex				device index of current color controller device 
 	@param integrationtime		integration time to be sent to the sensor
@@ -344,7 +335,7 @@ int set_intTime_x(void** apHandles, int devIndex, unsigned char integrationtime,
 
 /** \brief sets the gain of one sensor.
 
-Function sets the gain of 1 sensors This setting can be used to capture both bright LEDs and dark
+Function sets the gain of 1 sensor. This setting can be used to capture both bright LEDs and dark
 LEDs. Whereas dark LEDs require a greater gain factor, gain factor for bright LEDs can be low. Refer to 
 the sensor's datasheet for further information about gain.
 	@param apHandles	 		array that stores ftdi2232h handles
@@ -425,13 +416,12 @@ int init_sensors(void** apHandles, int devIndex)
 
 /** \brief reads the RGBC colors of all sensors under a device and checks if the colors are valid
 
-Function read the colors red, green, blue and clear of all 16 sensors under a device and stores them in adequate buffers.
-Furthermore the function will check if maximum clear levels have been exceeded. If so, the color reading won't be right and
-color readings should be redone. If maximum clear levels are beeing exceeded too often, one should consider turning out
-gain and/or integration time settings. The function will return a returncode which can be determined to check
+Function reads the colors red, green, blue and clear of all 16 sensors under a device and stores them in adequate buffers.
+Furthermore the function will check if maximum clear levels have been exceeded. If so, the color reading won't be valid, as the sensor has
+been saturated, and color reading for failing sensor(s) should be redone. If maximum clear levels are beeing exceeded too often, one 
+should consider lowering gain and/or integration time settings. The function will return a returncode which can be used to determine
 which of the color sensors have exceeded maximum clear levels. Furthermore the function will store the sensors' measured
-brightness in an array. This brightness is calculated by the ratio of the current clear level measured by the sensor to
-the maximum clear value the sensor can reach. If the sensor has reached maximum clear level this ratio will be 1.0.
+LUX level in an array. This level is calculated by a formula given in AMS / TAOS Designer's Note 40.
 	@param apHandles	 		array that stores ftdi2232h handles
 	@param devIndex				device index of current color controller device
 	@param ausClear				stores 16 clear colors
@@ -558,7 +548,7 @@ int check_validity(void** apHandles, int devIndex, unsigned short* ausClear, uns
 }
 
 
-/** frees the memory of all connected and opened color controller devices.
+/** \brief frees the memory of all connected opened color controller devices.
 
 Function iterates over all handle elements in apHandles and frees the memory. Freeing includes closing
 the usb_device and freeing the memory allocated by the device handle. 
@@ -574,9 +564,9 @@ int free_devices(void** apHandles)
 	printf("Number of handles to delete: %d\n", iHandleLength);
 	while(index < iHandleLength)
 	{
+		printf("Freeing handle # %d on device # %d\n", index, handleToDevice(index));
 		ftdi_usb_close(apHandles[index]);
 		ftdi_free(apHandles[index]);
-		printf("Freeing handle # %d on device # %d\n", index, handleToDevice(index));
 		index ++;
 	}
 	/*
@@ -621,14 +611,13 @@ The function reads back the gain settings of 16 sensors. Refer to sensors' datas
 gain settings.
 	@param apHandles	 		array that stores ftdi2232h handles
 	@param devIndex				device index of current color controller device
-	@param aucGains	pointer to buffer which will contain the gain settings of the 16 sensors
+	@param aucGains				buffer which will contain the gain settings of the 16 sensors
 	
-	@return 0 :				everything OK
-	@return	1 : 			i2c-functions failed
+	@return 0 :					everything OK
+	@return	1 : 				i2c-functions failed
 */
 int get_gain(void** apHandles, int devIndex, unsigned char* aucGains)
 {
-	
 	int iHandleLength = get_number_of_handles(apHandles);
 	int handleIndex = devIndex * 2;
 	int iResult = 0;
@@ -644,7 +633,7 @@ int get_gain(void** apHandles, int devIndex, unsigned char* aucGains)
 	return iResult;
 }
 
-/** \brief sets the integration time of 16 sensors under a device at once.
+/** \brief sets the integration time of 16 sensors under a device.
 
 Function sets the integration time of 16 sensors. This setting can be used to capture both bright LEDs and dark
 LEDs. Whereas dark LEDs require a longer integration time, the integration time for bright LEDs can be low. Refer to 
@@ -654,8 +643,8 @@ been calculated and saved in enum tcs3472Integration_t.
 	@param devIndex				device index of current color controller device		
 	@param integrationtime		integration time to be sent to the sensors
 	
-	@return  0 : everything OK - Identification successful
-	@return  1 : i2c-functions failed
+	@return  					0 : everything OK - Identification successful
+	@return 					1 : i2c-functions failed
 	*/
 
 int set_intTime(void** apHandles, int devIndex, unsigned char integrationtime)
@@ -707,8 +696,8 @@ int get_intTime(void** apHandles, int devIndex, unsigned char* aucIntegrationtim
 
 }
 
-/** waits for a time specified in uiWaitTime (ms)
-	@param uiWaitTime	time to wait in order to let the sensors complete their ADC measurements
+/** waits for a time specified in uiWaitTime ]1 ... 700 ms] max 
+	@param uiWaitTime	time in milliseconds to wait in order to let the sensors complete their ADC measurements
 */
 
 void wait4Conversion(unsigned int uiWaitTime)
@@ -721,7 +710,7 @@ void wait4Conversion(unsigned int uiWaitTime)
 }
 
 
-/** swapts the position of two serial numbers located in an array of serial numbers.
+/** swaps the position of two serial numbers located in an array of serial numbers.
 
 Function swaps the location of two serial numbers which are located in an array of serial numbers. This function
 will be used for having control over the opening order of usb devices, as the current algorithm iterates over
@@ -740,7 +729,7 @@ has finished successfully the serial number which was in pos1 will be in positio
 int swap_serialPos(char** asSerial, unsigned int pos1, unsigned int pos2)
 {
 	int numbOfDevs = get_number_of_serials(asSerial);
-	char temp[128];
+	char temp[MAX_DESCLENGTH];
 	
 	if(pos1 >= numbOfDevs || pos1 < 0) 
 	{
