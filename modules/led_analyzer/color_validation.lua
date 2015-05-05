@@ -33,7 +33,7 @@ function compare(row_testboard, row_curset, lux_check_enable)
 				 
 				-- Brightness falls below min_brightness
 				elseif row_curset.lux < (row_testboard.lux - row_testboard.tol_lux) then
-					return 1, "LED too tark -- Check if right series resisor is used", dnm, dsat, dlux
+					return 1, "LED too dark -- Check if right series resisor is used", dnm, dsat, dlux
 				 
 				-- Brightness exceeds max_brightness
 				elseif row_curset.lux > (row_testboard.lux + row_testboard.tol_lux) then  
@@ -121,20 +121,22 @@ function validateTestSummary(tTestSummary)
 	local tErrortable = {}
 	local errorFlag = 0 
 	
+	print("\n\n")
 	while(tTestSummary[devIndex] ~= nil) do
 		tErrortable[devIndex] = {}
 		
 		for i = 1, 16 do 
 			if tTestSummary[devIndex][i].status ~= 0 then 
-				table.insert(tErrortable[devIndex], i)
-				errorFlag = 1 
+				print(string.format("Device %2d Sensor %2d --- 	dnm: %3d, 	dsat: %2.2f,	 dlux %1.5f", 
+									devIndex, i, tTestSummary[devIndex][i].dnm, tTestSummary[devIndex][i].dsat, tTestSummary[devIndex][i].dlux))
+				print(tTestSummary[devIndex][i].infotext)					
+				errorFlag = 1
 			end 
 		end 
 		devIndex = devIndex + 1 
 	end
 	
-	print("\n\n")
-	if erroflag == 0 then 
+	if errorFlag == 0 then 
 		print("")
 		print(" #######  ##    ## ")
 		print("##     ## ##   ##  ")
@@ -144,17 +146,6 @@ function validateTestSummary(tTestSummary)
 		print("##     ## ##   ##  ")
 		print(" #######  ##    ## ")
 		print("")
-	else  
-	devIndex = 0		
-		while(tTestSummary[devIndex] ~= nil) do 
-			if tErrortable[devIndex] ~= nil then
-				print(string.format("Following sensors under device %d failed...", devIndex))
-				for k, v in ipairs(tErrortable[devIndex]) do 
-					print(v)
-				end
-			end 
-			devIndex = devIndex + 1 
-		end 
 	end 
 	print("\n\n")
 	
