@@ -1,8 +1,6 @@
 
 
-
-
--- tTest = a row in the tTesttable containing name, dWavelength, tol, led_state ...
+-- row_testboard is a row in testboard.lua which contains LED, sat, lux and nm values and tolerances
 -- tnm is a row with a .nm value 
 
 function compare(row_testboard, row_curset, lux_check_enable)
@@ -93,7 +91,7 @@ function inRange(tTestDevice, tWavelengthDevice, lux_check_enable)
 end 
 
 
-function validate_device_colors(tTestDevice, tWavelengthDevice, lux_check_enable)
+function getDeviceSummary(tTestDevice, tWavelengthDevice, lux_check_enable)
 
 	local tTestSummary_device = {} 
 	tTestSummary_device = inRange(tTestDevice, tWavelengthDevice, lux_check_enable)
@@ -103,24 +101,61 @@ end
 
 
 -- prints a test summary for a device 
-function print_deviceSummary(tTestSummary_device, info_enable)
+function printDeviceSummary(tTestSummary_device, info_enable)
 
-	if info_enable >= 0 then 
-		print("Sensor -------- Status --------- dnm ----------- dsat -------- dlux")
-	else 
-		print("Sensor -------- Status --------- dnm ----------- dsat -------- dlux")
-	end 
+	print("Sensor -------- Status --------- dnm ----------- dsat -------- dlux") 
 	
 	for i = 1, 16 do 
-		if info_enable >= 1 then 
-			print(string.format("%2d	 	 %2d		%3d		%2.2f		%1.5f", i, tTestSummary_device[i].status, tTestSummary_device[i].dnm, 
-			tTestSummary_device[i].dsat, tTestSummary_device[i].dlux))
+		print(string.format("%2d	 	 %2d		%3d		%2.2f		%1.5f", i, tTestSummary_device[i].status, tTestSummary_device[i].dnm, 
+		tTestSummary_device[i].dsat, tTestSummary_device[i].dlux))
+		if info_enable >= 1 then 	
 			print(tTestSummary_device[i].infotext)
-		else 
-			print(string.format("%2d 		 %2d		%3d		%2.2f		%1.5f", i, tTestSummary_device[i].status, tTestSummary_device[i].dnm, 
-			tTestSummary_device[i].dsat, tTestSummary_device[i].dlux))
 		end 
 	end 
 
 end 
 
+function validateTestSummary(tTestSummary)
+	-- Iterate over all device summaries
+	local devIndex = 0
+	local tErrortable = {}
+	local errorFlag = 0 
+	
+	while(tTestSummary[devIndex] ~= nil) do
+		tErrortable[devIndex] = {}
+		
+		for i = 1, 16 do 
+			if tTestSummary[devIndex][i].status ~= 0 then 
+				table.insert(tErrortable[devIndex], i)
+				errorFlag = 1 
+			end 
+		end 
+		devIndex = devIndex + 1 
+	end
+	
+	print("\n\n")
+	if erroflag == 0 then 
+		print("")
+		print(" #######  ##    ## ")
+		print("##     ## ##   ##  ")
+		print("##     ## ##  ##   ")
+		print("##     ## #####    ")
+		print("##     ## ##  ##   ")
+		print("##     ## ##   ##  ")
+		print(" #######  ##    ## ")
+		print("")
+	else  
+	devIndex = 0		
+		while(tTestSummary[devIndex] ~= nil) do 
+			if tErrortable[devIndex] ~= nil then
+				print(string.format("Following sensors under device %d failed...", devIndex))
+				for k, v in ipairs(tErrortable[devIndex]) do 
+					print(v)
+				end
+			end 
+			devIndex = devIndex + 1 
+		end 
+	end 
+	print("\n\n")
+	
+end  
