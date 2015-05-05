@@ -767,12 +767,12 @@ Function returns the serial number that curSerial currently has in the serial nu
 int getSerialIndex(char** asSerial, char* curSerial)
 {
 	int numbOfDevs = get_number_of_serials(asSerial);
-	int i;
+	int i = 0;
 	
 	
 	for(i = 0; i < numbOfDevs; i++)
 	{
-		if(strcmp(curSerial, asSerial[i]) == 0) return i;
+		if(strcmp(asSerial[i], curSerial) == 0) return i;
 	}
 	
 	printf("... serial not found - cannot return an index\n");
@@ -820,7 +820,7 @@ int swap_down(char** asSerial, char* curSerial)
 	int curIndex;
 	int numbOfDevs = get_number_of_serials(asSerial);
 	
-	if(curIndex = getSerialIndex(asSerial, curSerial) < 0)
+	if((curIndex = getSerialIndex(asSerial, curSerial)) < 0)
 	{
 		printf("... cannot swap serial position down\n");
 		return -1;
