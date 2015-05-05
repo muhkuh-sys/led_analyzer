@@ -3,7 +3,7 @@
 -- tReferenceColorSensor is a row in testboard.lua which contains LED, sat, lux and nm values and tolerances
 -- tnm is a row with a .nm value 
 
-function compare(tReferenceColorSensor, tCurColorSensor, lux_check_enable)
+function compareRows(tReferenceColorSensor, tCurColorSensor, lux_check_enable)
 	
 	-- The row in testboard exists, thus a test for this LED is desired 
 	if tReferenceColorSensor ~= nil then 
@@ -33,17 +33,17 @@ function compare(tReferenceColorSensor, tCurColorSensor, lux_check_enable)
 				 
 				-- Brightness falls below min_brightness
 				elseif tCurColorSensor.lux < (tReferenceColorSensor.lux - tReferenceColorSensor.tol_lux) then
-					return 1, "LED too dark -- Check if right series resisor is used", dnm, dsat, dlux
+					return 1, "LED too dark -- Check if right series resisor is used\n", dnm, dsat, dlux
 				 
 				-- Brightness exceeds max_brightness
 				elseif tCurColorSensor.lux > (tReferenceColorSensor.lux + tReferenceColorSensor.tol_lux) then  
-					return 2, "LED too bright -- Check if right series resistor is used or shortcuts exists on the board", dnm, dsat, dlux
+					return 2, "LED too bright -- Check if right series resistor is used or shortcuts exists on the board\n", dnm, dsat, dlux
 				end   
 			
 			--Brightness check is disabled 
 			else 
 				-- As wavelength and saturations are OK and there's no need for a lux check we can return OK here
-				return 0, string.format("%s LED with %d nm OK - PASS!\n", tReferenceLEDcolors[tReferenceColorSensor.nm].colorname, tCurColorSensor.nm), dnm, dsat, dlux
+				return 0, string.format("%s LED with %d nm OK - PASS!", tReferenceLEDcolors[tReferenceColorSensor.nm].colorname, tCurColorSensor.nm), dnm, dsat, dlux
 			end 
 		
 		-- Saturation fits but wavelength doesn't 
@@ -56,12 +56,12 @@ function compare(tReferenceColorSensor, tCurColorSensor, lux_check_enable)
 			
 		-- Neither saturation nor wavelength fit -- NO LED 
 		else 
-			return 4, "NO LED detected!", dnm, dsat, dlux
+			return 4, "NO LED detected!\n", dnm, dsat, dlux
 		end 
 	
 	-- the wavelength field in the row for testboard does not exist, thus we do not need to test this LED "
 	else 
-		return 0, "NO TEST ENTRY", 0, 0, 0
+		return 0, "NO TEST ENTRY\n", 0, 0, 0
 	end 
 	
 end 
@@ -75,7 +75,7 @@ function inRange(tReferenceColors, tCurColors, lux_check_enable)
 	
 	for sensor = 1, 16 do 
 			tTestSummary_device[sensor] = {}
-			status, infotext, dnm, dsat, dlux = compare(tReferenceColors[sensor], tCurColors[sensor], lux_check_enable)
+			status, infotext, dnm, dsat, dlux = compareRows(tReferenceColors[sensor], tCurColors[sensor], lux_check_enable)
 			tTestSummary_device[sensor].status = status
 			tTestSummary_device[sensor].infotext = infotext
 			tTestSummary_device[sensor].dnm  = dnm 
