@@ -25,6 +25,10 @@ INSTALL(FILES ${COCO_WIN32_INSTALL}/CoCoApp/coco.exe
 	DESTINATION windows_x86
 )
 
+INSTALL(DIRECTORY ${COCO_WIN32_INSTALL}/doc
+	DESTINATION windows_x86
+)
+
 #-----------------------------------------------------------------------------
 #
 # Install the 64bit files.
@@ -38,6 +42,10 @@ INSTALL(FILES ${COCO_WIN64_INSTALL}/modules/led_analyzer/led_analyzerLUA_wrap.c
 )
 
 INSTALL(FILES ${COCO_WIN64_INSTALL}/CoCoApp/coco.exe
+	DESTINATION windows_amd64
+)
+
+INSTALL(DIRECTORY ${COCO_WIN64_INSTALL}/doc
 	DESTINATION windows_amd64
 )
 
