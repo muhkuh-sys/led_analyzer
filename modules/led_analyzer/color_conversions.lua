@@ -111,7 +111,7 @@ function astring_to_table(astring, numbOfSerials)
 	for i = 0, numbOfSerials - 1 do
 			
 			if led_analyzer.astring_getitem(astring, i) ~= NULL then 
-				tSerialnumbers[i+1] = led_analyzer.astring_getitem(astring, i)
+				tSerialnumbers[i] = led_analyzer.astring_getitem(astring, i)
 			end 
 	end
 			
