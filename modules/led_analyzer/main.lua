@@ -4,12 +4,6 @@ require("color_validation")	 -- Validate your colors, contains helper to print y
 require("led_analyzer")		 -- libusb/ftdi driver library + sensor specific functions 
 require("testboard")		 -- board to be tested, containing dom. wavelengths and/or x/y pairs
 
-local clock = os.clock
-function sleep(n)  -- seconds
-  local t0 = clock()
-  while clock() - t0 <= n do end
-end
-
 TEST_RESULT_OK = 0 
 TEST_RESULT_LED_FAILED = 1 
 TEST_RESULT_SENSORS_FAILED = 2
@@ -43,7 +37,9 @@ ausClear  = led_analyzer.new_ushort(MAXSENSORS)
 ausRed    = led_analyzer.new_ushort(MAXSENSORS)
 ausGreen  = led_analyzer.new_ushort(MAXSENSORS)
 ausBlue   = led_analyzer.new_ushort(MAXSENSORS)
+ausCCT    = led_analyzer.new_ushort(MAXSENSORS)
 
+afLUX     = led_analyzer.new_afloat(MAXSENSORS)
 
 aucGains  = led_analyzer.new_puchar(MAXSENSORS)
 aucIntTimes = led_analyzer.new_puchar(MAXSENSORS)
@@ -99,7 +95,6 @@ while(devIndex < numberOfDevices) do
 end 
 
 
-led_analyzer.wait4Conversion(500)
 
 
 
@@ -114,15 +109,21 @@ led_analyzer.wait4Conversion(500)
 -- Index 4: tYxy 
 -- Index 5: tHSV 
 
+local counter = 20 
+
+
+
 devIndex = 0 
 local tColorTable = {}
+
+led_analyzer.wait4Conversion(500)
 
 while(devIndex < numberOfDevices) do 
 
 	print(string.format("\n------------------ Device %d -------------------- ", devIndex))
 		
 	while(error_counter < READ_MAXERROR) do		
-		ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue)
+		ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX)
 		if ret ~= 0 then
 			error_counter = error_counter + 1
 		else
@@ -136,7 +137,7 @@ while(devIndex < numberOfDevices) do
 		error_counter = 0
 	end 
 	
-	tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, 16)
+	tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, 16)
 	print_color(devIndex, tColorTable, 16, "wavelength")
 	print_color(devIndex, tColorTable, 16, "RGB")
 	
@@ -152,22 +153,25 @@ tTestSummary = {}
 while(devIndex < numberOfDevices) do 
 
 	print(string.format("\n-------------------------------- Device %d -------------------------------------- ", devIndex))	
-	tTestSummary[devIndex] = validate_device_colors(tTest[devIndex], tColorTable[devIndex][1], 0)
-	print_deviceSummary(tTestSummary[devIndex], 1 )
-
-devIndex = devIndex + 1 
+	tTestSummary[devIndex] = getDeviceSummary(tTest[devIndex], tColorTable[devIndex][1], 1)
+	printDeviceSummary(tTestSummary[devIndex], 1 )
+	
+	devIndex = devIndex + 1 
 
 	
 end 
-
-
+ 
+validateTestSummary(tTestSummary)
+ 
 ret = led_analyzer.free_devices(apHandles)	
 
 led_analyzer.delete_ushort(ausClear)
 led_analyzer.delete_ushort(ausRed)
 led_analyzer.delete_ushort(ausGreen)
 led_analyzer.delete_ushort(ausBlue)
-	
+led_analyzer.delete_ushort(ausCCT)
+led_analyzer.delete_afloat(afLUX)
+
 led_analyzer.delete_puchar(aucGains)
 led_analyzer.delete_puchar(aucIntTimes)
 
