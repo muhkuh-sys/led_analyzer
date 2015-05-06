@@ -41,13 +41,13 @@ function min(a, b ,c)
 end
 
 
--- a helper to print a colortable which contains values in RGB, XYZ, HSV, Yxy and wavelength space 
--- parameter mode determines which space should be printed out 
-function print_color(devIndex, colortable, length, mode)
+-- a helper to print a colortable which contains values in RGB, XYZ, HSV, Yxy and wavelength color space 
+-- parameter space determines which space should be printed out 
+function print_color(devIndex, colortable, length, space)
 	print(string.format("------------- Colors - Device %2d --------------- ", devIndex))
 	
 	
-	if mode == "RGB" then 
+	if space == "RGB" then 
 		print("     Clear   Red     Green    Blue")
 		for i=1,length do
 		   print(string.format("%2d - 0x%04x 0x%04x 0x%04x 0x%04x", i, colortable[devIndex][2][i].clear,
@@ -56,7 +56,7 @@ function print_color(devIndex, colortable, length, mode)
 		end
 		
 	
-	elseif mode == "RGB_n" then
+	elseif space == "RGB_n" then
 		print("     Clear   Red     Green    Blue")
 		for i=1,length do
 			-- Avoid division by zero 
@@ -70,27 +70,27 @@ function print_color(devIndex, colortable, length, mode)
 		    end 
 		end
 		
-	elseif mode == "XYZ" then
+	elseif space == "XYZ" then
 		print("     X        Y	       Z    ")
 		for i=1, length do
 			print(string.format("%2d - %.5f %.5f %.5f", i, colortable[devIndex][3][i].X,
 											colortable[devIndex][3][i].Y, colortable[devIndex][3][i].Z))
 		end
 		
-	elseif mode == "Yxy" then
+	elseif space == "Yxy" then
 		print("     Y        x	       y    ")
 		for i=1, length do
 			print(string.format("%2d - %.7f %.7f %.7f", i, colortable[devIndex][4][i].Y,
 											colortable[devIndex][4][i].x, colortable[devIndex][4][i].y))
 		end
 		
-	elseif mode == "wavelength" then
+	elseif space == "wavelength" then
 	    print(" dominant wavelength	 sat         LUX  ")
 		for i=1, length do
 			print(string.format("%3d)   %3d nm		%3.2f	   %4.3f	", i, colortable[devIndex][1][i].nm, colortable[devIndex][1][i].sat, colortable[devIndex][1][i].lux))
 		end								
 	
-	elseif mode == "HSV" then
+	elseif space == "HSV" then
 	print("     H        S	       V    ")
 		for i=1,length do
 		   print(string.format("%2d -  %3.2f    %3.2f    %3.2f", i, 
@@ -148,8 +148,8 @@ function aus2colorTable(clear, red, green, blue, cct, lux, length)
 		-- to avoid a later division by zero and to have more stable readings and no unneccessary
 		-- outputs with the channels which are not reading any LEDs we will check if any of the channels is zero
 		
-		if((lRed == 0) or (lGreen == 0) or (lBlue == 0) or (lClear == 0)) then 
-			
+		--if((lRed == 0) or (lGreen == 0) or (lBlue == 0) or (lClear == 0)) then 
+		if(lLUX < 20.0) then 
 			-- RGB table 
 			tRGB[i+1] = {clear = 0,
 						 red = 0,
@@ -574,9 +574,7 @@ function Yxy2wavelength(x,y)
 		  t_curDirVector.x = (x-refWhitex)
 		  t_curDirVector.y = (y-refWhitey)
 		  
-
-	
-	
+		  
 	-- Algorithm determines which direction vector in tTCS_dirVector is closest to the direction vector
 	-- given by the current x,y pair by calculating their absolute angle variance 
 	
