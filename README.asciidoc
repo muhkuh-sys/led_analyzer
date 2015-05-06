@@ -4,7 +4,7 @@ Project LED Analyzer
 Subhan Waizi + 
 <swaizi@hilscher.com> + 
 
-Build status: [![Build Status](https://travis-ci.org/muhkuh-sys/led_analyzer)](https://travis-ci.org/muhkuh-sys/led_analyzer)
+Build status: image:https://travis-ci.org/muhkuh-sys/led_analyzer.svg?branch=master["Build Status", link="https://travis-ci.org/muhkuh-sys/led_analyzer"]
 
 
 [[About, About]]
