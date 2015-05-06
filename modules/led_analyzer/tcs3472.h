@@ -191,7 +191,6 @@ unsigned short int tcs_getIntegrationtime	(struct ftdi_context* ftdiA, struct ft
 unsigned int 	   getGainDivisor			(tcs3472Gain_t gain);
 void			   tcs_calculate_CCT_Lux	(unsigned char* aucGain, unsigned char* aucIntegrationtime, unsigned short* ausClear, unsigned short* ausRed,
 											 unsigned short* ausGreen, unsigned short* ausBlue, unsigned short* CCT, float* afLUX);
-void               tcs_waitIntegrationtime	(tcs3472Integration_t uiIntegrationtime);
 
 
 
