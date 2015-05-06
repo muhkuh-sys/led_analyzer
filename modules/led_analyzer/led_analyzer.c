@@ -265,7 +265,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 /** \brief returns number of serial numbers stored in the serial number array.
 	@param asSerial 	stores the serial numbers of all connected color controller devices
 	
-	@return number elements in the serial number array
+	@return 			number of elements in the serial number array
 */
 int get_number_of_serials(char** asSerial)
 {
@@ -280,7 +280,7 @@ int get_number_of_serials(char** asSerial)
 /** \brief returns number of handles stored in the handle array.
 	@param apHandles array that stores the handles
 	
-	@return number elements in the handle array
+	@return number of elements in the handle array
 */
 
 int get_number_of_handles(void ** apHandles)
@@ -307,56 +307,7 @@ int handleToDevice(int handleIndex)
 }
 
 
-/** \brief sets the integration time of one sensor.
 
-Function sets the integration time of one sensor. This setting can be used to capture both bright LEDs and dark
-LEDs. Whereas dark LEDs require a longer integration time, the integration time for bright LEDs can be low. Refer to 
-the sensor's datasheet for calculating the content of the integration time register. A few common values have already
-been calculated and saved in tcs3472Integration_t.
-	@param apHandles	 		array that stores ftdi2232h handles
-	@param devIndex				device index of current color controller device 
-	@param integrationtime		integration time to be sent to the sensor
-	@param uiX					sensor which will get the new integration time ( 0 ... 15 )
-	
-	@return  0 : everything OK - Identification successful
-	@return  1 : i2c-functions failed
-*/
-int set_intTime_x(void** apHandles, int devIndex, unsigned char integrationtime, unsigned int uiX)
-{
-	int handleIndex = devIndex * 2;
-	
-	if(tcs_setIntegrationTime_x(apHandles[handleIndex], apHandles[handleIndex+1], integrationtime, uiX) != 0)
-	{
-		printf("... failed to set integration time for sensor %d on device %d ...\n", uiX+1, devIndex);
-		return 1;
-	}
-	return 0;
-}
-
-/** \brief sets the gain of one sensor.
-
-Function sets the gain of 1 sensor. This setting can be used to capture both bright LEDs and dark
-LEDs. Whereas dark LEDs require a greater gain factor, gain factor for bright LEDs can be low. Refer to 
-the sensor's datasheet for further information about gain.
-	@param apHandles	 		array that stores ftdi2232h handles
-	@param devIndex				device index of current color controller device 
-	@param gain					gain to be sent to the sensor
-	@param uiX					sensor which will get the new gain ( 0 ... 15 )
-	
-	@return  0 : everything OK - Identification successful
-	@return  1 : i2c-functions failed
-*/
-int set_gain_x(void** apHandles, int devIndex, unsigned char gain, unsigned int uiX)
-{
-	int handleIndex = devIndex * 2;
-		
-	if(tcs_setGain_x(apHandles[handleIndex], apHandles[handleIndex+1], gain, uiX) != 0)
-	{
-		printf("... failed to set gain for sensor %d on device %d ...\n", uiX+1, devIndex);
-		return 1;		
-	}
-	return 0;
-}
 
 
 /** \brief initializes the sensors of a color controller device.
@@ -408,7 +359,7 @@ int init_sensors(void** apHandles, int devIndex)
 	}
 	
 	
-	printf("Initializing successful on device %d.\n", devIndex);
+	printf("Initializing successful on device %d.\n\n", devIndex);
 	return errorcode;
 }
 
@@ -576,6 +527,79 @@ int free_devices(void** apHandles)
 	return iResult;
 }
 
+
+/** \brief sets the integration time of one sensor.
+
+Function sets the integration time of one sensor. This setting can be used to capture both bright LEDs and dark
+LEDs. Whereas dark LEDs require a longer integration time, the integration time for bright LEDs can be low. Refer to 
+the sensor's datasheet for calculating the content of the integration time register. A few common values have already
+been calculated and saved in tcs3472Integration_t.
+	@param apHandles	 		array that stores ftdi2232h handles
+	@param devIndex				device index of current color controller device 
+	@param integrationtime		integration time to be sent to the sensor
+	@param uiX					sensor which will get the new integration time ( 0 ... 15 )
+	
+	@return  0 : everything OK
+	@return  -1: i2c-functions failed
+*/
+int set_intTime_x(void** apHandles, int devIndex, unsigned char integrationtime, unsigned int uiX)
+{
+	int iHandleLength = get_number_of_handles(apHandles);
+	int handleIndex = devIndex * 2;
+	
+	if(handleIndex >= iHandleLength)
+	{
+			printf("Exceeded maximum amount of handles ... \n");
+			printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
+			return -1;
+	}
+	
+	if(tcs_setIntegrationTime_x(apHandles[handleIndex], apHandles[handleIndex+1], integrationtime, uiX) != 0)
+	{
+		printf("... failed to set integration time for sensor %d on device %d ...\n", uiX+1, devIndex);
+		return -1;
+	}
+	
+	else printf("integration time setting successfully sent to sensor %d on device %d.\n", uiX+1, devIndex);
+	return 0;
+}
+
+/** \brief sets the gain of one sensor.
+
+Function sets the gain of 1 sensor. This setting can be used to capture both bright LEDs and dark
+LEDs. Whereas dark LEDs require a greater gain factor, gain factor for bright LEDs can be low. Refer to 
+the sensor's datasheet for further information about gain.
+	@param apHandles	 		array that stores ftdi2232h handles
+	@param devIndex				device index of current color controller device 
+	@param gain					gain to be sent to the sensor
+	@param uiX					sensor which will get the new gain ( 0 ... 15 )
+	
+	@return  0  : everything OK
+	@return  -1 : i2c-functions failed
+*/
+int set_gain_x(void** apHandles, int devIndex, unsigned char gain, unsigned int uiX)
+{
+	int iHandleLength = get_number_of_handles(apHandles);
+	int handleIndex = devIndex * 2;
+	
+	if(handleIndex >= iHandleLength)
+	{
+			printf("Exceeded maximum amount of handles ... \n");
+			printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
+			return -1;
+	}
+	
+	if(tcs_setGain_x(apHandles[handleIndex], apHandles[handleIndex+1], gain, uiX) != 0)
+	{
+		printf("... failed to set gain for sensor %d on device %d ...\n", uiX+1, devIndex);
+		return -1;		
+	}
+	
+	else printf("gain setting successfully sent to sensor %d on device %d.\n", uiX+1, devIndex);
+	
+	return 0;
+}
+
 /** \brief sets the gain of 16 sensors under a device.
 
 Function sets the gain of 16 sensors of a device. This setting can be used to capture both bright LEDs and dark
@@ -585,14 +609,14 @@ the sensor's datasheet for further information about gain.
 	@param devIndex				device index of current color controller device
 	@param gain					gain to be sent to the sensors
 	
-	@return  0 : everything OK - Identification successful
-	@return  1 : i2c-functions failed
+	@return  0  : everything OK - Identification successful
+	@return  -1 : i2c-functions failed or reaching out of apHandles
 */
+
 int set_gain(void** apHandles, int devIndex, unsigned char gain)
 {
 	int iHandleLength = get_number_of_handles(apHandles);
 	int handleIndex = devIndex * 2;
-	int iResult = 0;
 	
 	if(handleIndex >= iHandleLength)
 	{
@@ -601,8 +625,15 @@ int set_gain(void** apHandles, int devIndex, unsigned char gain)
 			return -1;
 	}
 	
-	iResult = tcs_setGain(apHandles[handleIndex], apHandles[handleIndex+1], gain);
-	return iResult;		
+	if(tcs_setGain(apHandles[handleIndex], apHandles[handleIndex+1], gain) != 0)
+	{
+		printf("... failed to set gain for all sensors on device %d ...\n", devIndex);
+		return -1;		
+	}
+	
+	else printf("gain setting successfully sent to all sensors on device %d.\n", devIndex);
+	
+	return 0;
 }
 
 /** \brief reads the current gain setting of 16 sensors under a device and stores them in an adequate buffer.
@@ -613,14 +644,14 @@ gain settings.
 	@param devIndex				device index of current color controller device
 	@param aucGains				buffer which will contain the gain settings of the 16 sensors
 	
-	@return 0 :					everything OK
-	@return	1 : 				i2c-functions failed
+	@return 					0  : everything OK
+	@return						-1 : i2c-functions failed
 */
 int get_gain(void** apHandles, int devIndex, unsigned char* aucGains)
 {
 	int iHandleLength = get_number_of_handles(apHandles);
 	int handleIndex = devIndex * 2;
-	int iResult = 0;
+
 	
 	if(handleIndex >= iHandleLength)
 	{
@@ -629,8 +660,13 @@ int get_gain(void** apHandles, int devIndex, unsigned char* aucGains)
 			return -1;
 	}
 	
-	iResult = tcs_getGain(apHandles[handleIndex], apHandles[handleIndex+1], aucGains);
-	return iResult;
+	if(tcs_getGain(apHandles[handleIndex], apHandles[handleIndex+1], aucGains) != 0)
+	{
+			printf("... failed to read gain from all sensors on device %d.\n", devIndex);
+			return -1;
+	}
+	
+	return 0;
 }
 
 /** \brief sets the integration time of 16 sensors under a device.
@@ -643,15 +679,14 @@ been calculated and saved in enum tcs3472Integration_t.
 	@param devIndex				device index of current color controller device		
 	@param integrationtime		integration time to be sent to the sensors
 	
-	@return  					0 : everything OK - Identification successful
-	@return 					1 : i2c-functions failed
+	@return  					0  : everything OK - Identification successful
+	@return 					-1 : i2c-functions failed
 	*/
 
 int set_intTime(void** apHandles, int devIndex, unsigned char integrationtime)
 {
 	int iHandleLength = get_number_of_handles(apHandles);
 	int handleIndex = devIndex * 2;
-	int iResult = 0;
 	
 	if(handleIndex >= iHandleLength)
 	{
@@ -660,8 +695,15 @@ int set_intTime(void** apHandles, int devIndex, unsigned char integrationtime)
 			return -1;
 	}
 	
-	iResult = tcs_setIntegrationTime(apHandles[handleIndex], apHandles[handleIndex+1], integrationtime);
-	return iResult;
+	if(tcs_setIntegrationTime(apHandles[handleIndex], apHandles[handleIndex+1], integrationtime) != 0)
+	{
+			printf("... failed to set integration time of all sensors on device %d.\n", devIndex);
+			return -1;
+	}
+	
+	printf("integration time setting successfully sent to all sensors on device %d.\n", devIndex);
+	
+	return 0;
 		
 }
 
@@ -674,15 +716,14 @@ integration time settings.
 	@param devIndex				device index of current color controller device
 	@param aucIntegrationtime	pointer to buffer which will store the integration time settings of the 16 sensors
 	
-	@return 0 :					everything OK
-	@return	1 : 				i2c-functions failed
+	@return 					0  : everything OK
+	@return						-1 : i2c-functions failed
 */
 
 int get_intTime(void** apHandles, int devIndex, unsigned char* aucIntegrationtime)
 {
 	int iHandleLength = get_number_of_handles(apHandles);
 	int handleIndex = devIndex * 2;
-	int iResult = 0;
 	
 	if(handleIndex >= iHandleLength)
 	{
@@ -691,8 +732,13 @@ int get_intTime(void** apHandles, int devIndex, unsigned char* aucIntegrationtim
 			return -1;
 	}
 	
-	iResult = tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntegrationtime);
-	return iResult;
+	if(tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntegrationtime) != 0)
+	{
+			printf("... failed to read integration time from all sensors on device %d.\n", devIndex);
+			return -1;
+	}
+	
+	return 0;
 
 }
 
@@ -722,8 +768,8 @@ has finished successfully the serial number which was in pos1 will be in positio
 	@param pos1		current position of one swap operand
 	@param pos2		target position of the swap operand
 	
-	@return -1 :	reaching out of the serial number array
-	@return  0 :	OK - swapping successful
+	@return  		0  : OK - swapping successful
+	@return  		-1 : reaching out of the serial number array
 */
 
 int swap_serialPos(char** asSerial, unsigned int pos1, unsigned int pos2)
@@ -785,8 +831,8 @@ int getSerialIndex(char** asSerial, char* curSerial)
 
 Function swaps the serial number described by curSerial up by one position. The serial number
 that got pushed away will be in [oldPosition - 1].
-	@return 0  : OK - swap successful or no need to swap
-	@return -1 : swapping failed
+	@return 	0  : OK - swap successful or no need to swap
+	@return 	-1 : swapping failed
 */
 int swap_up(char** asSerial, char* curSerial)
 {
