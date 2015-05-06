@@ -569,47 +569,6 @@ unsigned short int tcs_clearInt(struct ftdi_context* ftdiA, struct ftdi_context*
 
 }
 
-/** \brief waits for some time, which can be specified in the input parameter uiIntegrationtime.
-
-This function can be used to wait for a time needed by the sensors to complete an ADC measurement. The time
-needed for completion of a measurement depends on the integration time setting.
-	@param uiIntegrationtime ATIME_ms specifies the time to wait
-	
-	*/
-void tcs_waitIntegrationtime(tcs3472Integration_t uiIntegrationtime)
-{
-        switch(uiIntegrationtime)
-        {
-            case TCS3472_INTEGRATION_2_4ms:
-                Sleep(3);
-                break;
-
-            case TCS3472_INTEGRATION_24ms:
-                Sleep(24);
-                break;
-
-            case TCS3472_INTEGRATION_100ms:
-               Sleep(100);
-                break;
-
-            case TCS3472_INTEGRATION_154ms:
-                Sleep(154);
-                break;
-
-            case TCS3472_INTEGRATION_200ms:
-                Sleep(200);
-                break;
-
-            case TCS3472_INTEGRATION_700ms:
-                Sleep(700);
-                break;
-				
-			default:
-				Sleep(150);
-				break;
-
-        }
-}
 
 /** \brief reads the current gain setting of 16 sensors and stores them in an adequate buffer.
 
