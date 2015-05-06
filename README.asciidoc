@@ -11,15 +11,17 @@ Build status: [![Build Status](https://travis-ci.org/muhkuh-sys/led_analyzer)](h
 == About   
 
 This document describes the LED Analyzer project which uses TCS3472 Color Sensors for wavelength and brightness detection of light emitting diodes. 
-The project is intended to be used in Hilscher's internal test environment. It provides functionality to be both used in an autonomous application and 
-in Hilscher's muhkuh test frameworks. 
+The project is intended to be used in Hilscher's internal test environment and will test LEDs on manufactured printed circuit boards.
+It provides functionality to be both used in an autonomous application and in Hilscher's muhkuh test frameworks. 
 
 
 [[Hardware, Hardware]]
 == Hardware
 
 The hardware consists of a complete ftdi 2232h chip circuit including an eeprom for company specific descriptors. All availabe GPIO pins were used to provide 
-16 I2C-Interfaces which were connected to 16 of AMS TCS3472 Color Sensors.
+16 I2C-Interfaces which were connected to 16 of AMS TCS3472 Color Sensors. Hardware is designed for use with light pipes. Make sure to use an intransparent case,
+to reduce light noise produced by environmental lighting. An adequate case will also enable the sensor to distinguish between measurement of light emitting objects
+and measurement of environmental light by evaluating their LUX levels. 
 
 
 [[Software, Software]]
@@ -35,7 +37,7 @@ marked as "OK" if the measured data of one sensor matches its "wanted data + tol
 
 * The GUI Application called CoCo App will show all connected Led Analyzer Devices and their measured color data, including wavelength saturation and illuminance. Furthermore color sensor specific settings
 like integration time and gain can be set up easily. The App displays the status of the sensors, giving various information in case any problems occur.
-"Test Tables" for later use in an automated test environment (e.g. muhkuh test framwork) can be generated here.
+"Test Tables" for later use in an automated test environment (e.g. muhkuh test framwork) can be generated here. 
 
 
 [[Documentation, Documentation]]
@@ -43,6 +45,10 @@ like integration time and gain can be set up easily. The App displays the status
 
 A code documentation will be generated along the cmake build process, if doxygen is installed. This documentation can be found in the build folder under 'doc' and contains both
 html documentation and tex documentation files.
+
+
+
+
 
 A detailled description of drivers, lua scripts and usage of the application will follow.
 
