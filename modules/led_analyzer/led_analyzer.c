@@ -506,9 +506,8 @@ the usb_device and freeing the memory allocated by the device handle.
 	@param apHandles	 		array that stores ftdi2232h handles
 */
 
-int free_devices(void** apHandles)
+void free_devices(void** apHandles)
 {
-	int iResult = 0;
 	int index = 0;
 	int iHandleLength = get_number_of_handles(apHandles);
 	
@@ -520,11 +519,6 @@ int free_devices(void** apHandles)
 		ftdi_free(apHandles[index]);
 		index ++;
 	}
-	/*
-	Free was successful over all handles
-	*/
-		
-	return iResult;
 }
 
 
