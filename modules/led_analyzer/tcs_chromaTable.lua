@@ -1,5 +1,5 @@
 --/***************************************************************************
- --*   Copyright (C) 2014 by Subhan Waizi                           		   *
+ --*   Copyright (C) 2015 by Subhan Waizi                           		   *
  --*                                     									   *
  --*                                                                         *
  --*   This program is free software; you can redistribute it and/or modify  *
@@ -26,8 +26,7 @@
 -- The interpolated  XYZ data was converted into Yxy 
 -- wavelengths corresponding to their x and y chromaticity values were saved into following table
 
-
---Interpolation der Spektrallinie:
+--interpolated spectral responsitivity data of tcs3472:
 tTCS_Chromaticity = {
 
 	 [     0] = { nm =  -1 , x =    -1 , y = -1 },
