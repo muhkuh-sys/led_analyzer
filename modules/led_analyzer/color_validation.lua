@@ -136,11 +136,11 @@ function ON_validateTestSummary(numberOfDevices, tTestSummary)
 	devIndex = 0
 	while(devIndex < numberOfDevices) do 
 		if(tTestSummary[devIndex] == nil) then 
-			if DEBUG_OUTPUT == 2 then 
+			if DEBUG_OUTPUT >= 3 then 
 				print(string.format("\n!!!!! WARNING !!!!!  WE HAVE %2d DEVICES BUT TEST ENTRY FOR DEVICE %d IS MISSING.\n", numberOfDevices, devIndex))
-			 
-			elseif DEBUG_OUTPUT == 3 then
-				print(string.format("\n!!!!! WARNING !!!!! WE HAVE %2d DEVICES BUT TEST ENTRY FOR DEVICE %d IS MISSING. QUITTING.\n", numberOfDevices, devIndex))
+			end  
+			if DEBUG_OUTPUT >= 4 then
+				print(string.format("\n!!!!! QUITTING !!!!! \n", numberOfDevices, devIndex))
 				return TEST_RESULT_DEVICE_FAILED
 			end 
 		end 
@@ -153,7 +153,7 @@ function ON_validateTestSummary(numberOfDevices, tTestSummary)
 		if(tTestSummary[devIndex] ~= nil) then 
 			for i = 1, 16 do 
 				if(tTestSummary[devIndex][i].infotext == "NO TEST ENTRY") then 
-					if DEBUG_OUTPUT == 2 or DEBUG_OUTPUT == 3 then 
+					if DEBUG_OUTPUT >= 2 then 
 						print(string.format("!! WARNING !! NO TEST ENTRY FOR SENSOR %2d on DEVICE %2d", i, devIndex))
 					end 
 				end 
@@ -218,11 +218,11 @@ function OFF_validateTestSummary(numberOfDevices, tTestSummary)
 	devIndex = 0
 	while(devIndex < numberOfDevices) do 
 		if(tTestSummary[devIndex] == nil) then 
-			if DEBUG_OUTPUT == 2 then 
+			if DEBUG_OUTPUT >= 3 then 
 				print(string.format("\n!!!!! WARNING !!!!!  WE HAVE %2d DEVICES BUT TEST ENTRY FOR DEVICE %d IS MISSING.\n", numberOfDevices, devIndex))
-			 
-			elseif DEBUG_OUTPUT == 3 then
-				print(string.format("\n!!!!! WARNING !!!!! WE HAVE %2d DEVICES BUT TEST ENTRY FOR DEVICE %d IS MISSING. QUITTING.\n", numberOfDevices, devIndex))
+			end  
+			if DEBUG_OUTPUT >= 4 then
+				print(string.format("\n!!!!! QUITTING !!!!! \n", numberOfDevices, devIndex))
 				return TEST_RESULT_DEVICE_FAILED
 			end 
 		end 
