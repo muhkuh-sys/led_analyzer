@@ -4,7 +4,7 @@
 -- 2 : if test entries for devices miss we quit
 -- 3 : if test entries for devices are missing we cry ... alot ... very loud
 
-WARNING_LEVEL = 1
+WARNING_LEVEL = 0
 
 -- tDUTrow is a row in testboard.lua which contains LED, sat, lux and nm values and tolerances
 -- tnm is a row with a .nm value 
@@ -35,15 +35,15 @@ function compareRows(tDUTrow, tCurColorSensor, lux_check_enable)
 				-- Brightness is OK --
 				if tCurColorSensor.lux > (tDUTrow.lux - tDUTrow.tol_lux)
 				and tCurColorSensor.lux < (tDUTrow.lux + tDUTrow.tol_lux) then 
-					return 0, string.format("%s LED with %3d nm OK - PASS!\n", tReferenceLEDcolors[tDUTrow.nm].colorname, tCurColorSensor.nm), dnm, dsat, dlux
+					return 0, string.format("%s LED with %3d nm OK - PASS!", tReferenceLEDcolors[tDUTrow.nm].colorname, tCurColorSensor.nm), dnm, dsat, dlux
 				 
 				-- Brightness falls below min_brightness
 				elseif tCurColorSensor.lux < (tDUTrow.lux - tDUTrow.tol_lux) then
-					return 1, "LED too dark -- Check if right series resisor is used\n", dnm, dsat, dlux
+					return 3, "LED too dark -- Check if right series resisor is used", dnm, dsat, dlux
 				 
 				-- Brightness exceeds max_brightness
 				elseif tCurColorSensor.lux > (tDUTrow.lux + tDUTrow.tol_lux) then  
-					return 2, "LED too bright -- Check if right series resistor is used or shortcuts exists on the board\n", dnm, dsat, dlux
+					return 4, "LED too bright -- Check if right series resistor is used or shortcuts exists on the board", dnm, dsat, dlux
 				end   
 			
 			--Brightness check is disabled 
@@ -57,17 +57,17 @@ function compareRows(tDUTrow, tCurColorSensor, lux_check_enable)
 		or 	     tCurColorSensor.nm  >= (tDUTrow.nm  + tDUTrow.tol_nm))
 		and      tCurColorSensor.sat >= (tDUTrow.sat - tDUTrow.tol_sat)
 		and      tCurColorSensor.sat <= (tDUTrow.sat + tDUTrow.tol_sat)) then 
-			return 3, string.format("Wrong LED Color! Want: %s with %3d nm -- Detected: %s with %3d nm\n", tReferenceLEDcolors[tDUTrow.nm].colorname,
+			return 2, string.format("Wrong LED Color! Want: %s with %3d nm -- Detected: %s with %3d nm", tReferenceLEDcolors[tDUTrow.nm].colorname,
 					tReferenceLEDcolors[tDUTrow.nm].nm, tReferenceLEDcolors[tCurColorSensor.nm].colorname, tReferenceLEDcolors[tCurColorSensor.nm].nm), dnm, dsat, dlux
 			
 		-- Neither saturation nor wavelength fit -- NO LED 
 		else 
-			return 4, "NO LED detected!\n", dnm, dsat, dlux
+			return 1, "NO LED detected!", dnm, dsat, dlux
 		end 
 	
 	-- the wavelength field in the row for testboard does not exist, thus we do not need to test this LED "
 	else 
-		return 0, "NO TEST ENTRY\n", 0, 0, 0
+		return 5, "NO TEST ENTRY", 0, 0, 0
 	end 
 	
 end 
@@ -129,7 +129,7 @@ function validateTestSummary(numberOfDevices, tTestSummary)
 	local devIndex
 	local errorFlag = 0 
 	
-	-- check if any device entries are missing and warn if so --
+	-- check for missing device entries and warn --
 	devIndex = 0
 	while(devIndex < numberOfDevices) do 
 		if(tTestSummary[devIndex] == nil) then 
@@ -144,13 +144,13 @@ function validateTestSummary(numberOfDevices, tTestSummary)
 		devIndex = devIndex + 1 
 	end 
 	
-	-- check if any sensor entries under a device are missing and warn if so -- 
+	-- check for missing sensor entries and warn -- 
 	devIndex = 0 
 	while(devIndex < numberOfDevices) do 
 		if(tTestSummary[devIndex] ~= nil) then 
 			for i = 1, 16 do 
-				if(tTestSummary[devIndex][i].infotext == "NO TEST ENTRY\n") then 
-					if WARNING_LEVEL == 1 then 
+				if(tTestSummary[devIndex][i].infotext == "NO TEST ENTRY") then 
+					if WARNING_LEVEL == 1 or WARNING_LEVEL == 2 then 
 						print(string.format("!! WARNING !! NO TEST ENTRY FOR SENSOR %2d on DEVICE %2d", i, devIndex))
 					end 
 				end 
@@ -165,20 +165,17 @@ function validateTestSummary(numberOfDevices, tTestSummary)
 	while(devIndex < numberOfDevices) do
 		if(tTestSummary[devIndex] ~= nil) then 
 			for i = 1, 16 do
-				if tTestSummary[devIndex][i] ~= nil then 
-					if tTestSummary[devIndex][i].status ~= 0 then 
-						print(string.format("Device %2d Sensor %2d --- 	dnm: %3d, 	dsat: %2.2f,	 dlux %1.5f", 
-											devIndex, i, tTestSummary[devIndex][i].dnm, tTestSummary[devIndex][i].dsat, tTestSummary[devIndex][i].dlux))
-						print(tTestSummary[devIndex][i].infotext)					
-						errorFlag = 1
-					end 
-				end  
+				if tTestSummary[devIndex][i].status ~= 0 and tTestSummary[devIndex][i].infotext ~= "NO TEST ENTRY"	 then 
+					print(string.format("Device %2d Sensor %2d --- 	dnm: %3d, 	dsat: %2.2f,	 dlux %1.5f", 
+										devIndex, i, tTestSummary[devIndex][i].dnm, tTestSummary[devIndex][i].dsat, tTestSummary[devIndex][i].dlux))
+					print(string.format("%s\n",tTestSummary[devIndex][i].infotext))					
+					errorFlag = 1
+				 end 	
 			end 
 		end  
 		devIndex = devIndex + 1 
 	end
-	
-			
+	print("\n\n")
 		
 	
 	if errorFlag == 0 then 
@@ -192,6 +189,7 @@ function validateTestSummary(numberOfDevices, tTestSummary)
 		print(" #######  ##    ## ")
 		print("")
 		
+		print("\n\n")
 		return TEST_RESULT_OK
 	else 
 		print("")
@@ -201,6 +199,8 @@ function validateTestSummary(numberOfDevices, tTestSummary)
 		print(" !!!!!!!!!!!!!			 !!!!!!!!!!!!!")
 		print(" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 		print("")
+		
+		print("\n\n")
 		return TEST_RESULT_LED_FAILED
 	end 
 	
