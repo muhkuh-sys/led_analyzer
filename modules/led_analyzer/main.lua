@@ -174,7 +174,7 @@ end
 if numberOfDevices < 0 then
 	return TEST_RESULT_DEVICE_FAILED
 end 
----------------------------------- ACTUAL TEST -----------------------------------
+-------------------------------------- INIT --------------------------------------
 
 ret = initDevices(numberOfDevices, TCS3472_GAIN_1X, TCS3472_INTEGRATION_100ms)
 led_analyzer.wait4Conversion(500)
@@ -183,6 +183,7 @@ if(ret ~= 0) then
 	return TEST_RESULT_DEVICE_FAILED
 end 
 
+------------------------------------ ACTUAL TEST ---------------------------------
 
 led_analyzer.wait4Conversion(100)
 ret = startMeasurements(numberOfDevices)
@@ -191,13 +192,16 @@ if (ret ~= 0) then
 	return TEST_RESULT_DEVICE_FAILED
 end 
 
-ret = validateLEDs(numberOfDevices, tTest, 1)
+ret = validateLEDs(numberOfDevices, tTest, 0)
 
+------------------------------------ CLEAN UP ------------------------------------
 
 free()
 return ret 
 
-
-
 ------------------------------------ TEST END ------------------------------------
+
+
+
+
 
