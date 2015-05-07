@@ -1,5 +1,7 @@
 require("tcs_chromaTable")
 
+local MIN_LUX = 30.0
+
 function max(a, b, c)
 	local max = 0
 	
@@ -146,10 +148,10 @@ function aus2colorTable(clear, red, green, blue, cct, lux, length)
 		lLUX   = led_analyzer.afloat_getitem(lux,   i)
 				
 		-- to avoid a later division by zero and to have more stable readings and no unneccessary
-		-- outputs with the channels which are not reading any LEDs we will check if any of the channels is zero
+		-- outputs from channels that are not reading any LEDs we set a minum lux level
 		
 		--if((lRed == 0) or (lGreen == 0) or (lBlue == 0) or (lClear == 0)) then 
-		if(lLUX < 20.0) then 
+		if(lLUX <= MIN_LUX) then 
 			-- RGB table 
 			tRGB[i+1] = {clear = 0,
 						 red = 0,
@@ -179,7 +181,7 @@ function aus2colorTable(clear, red, green, blue, cct, lux, length)
 			local r_n = lRed   / lClear
 			local g_n = lGreen / lClear
 			local b_n = lBlue  / lClear 
-			
+			print(lCCT)
 			-- RGB table 
 			tRGB[i+1] = {clear = lClear,
 						 red   = lRed,
