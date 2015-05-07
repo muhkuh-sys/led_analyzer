@@ -34,6 +34,8 @@ which are necessary due to the sensors' unchangable I2C-Address. These functions
 Each device under test will have its unique "test table" that contains entries for each LED on the board. This entry consists of a number which corresponds to the sensor number connected to the LED,
 the wavelength of the LED, saturation of the LED and (optionally) an illuminance value, given in LUX. A tolerance value must be provided for each of these testing values. A LED under test will be 
 marked as "OK" if the measured data of one sensor matches its "wanted data + tolerances"-entries in the "test table".
+If we have 32 Duo LEDs (RED/GREEN) for example we will have 2 test tables. The first test table will contain entries for 2 devices
+for the 32 RED LEDs and the second test table will contain entries for all GREEN LEDs.
 
 * The GUI Application called CoCo App will show all connected Led Analyzer Devices and their measured color data, including wavelength saturation and illuminance. Furthermore color sensor specific settings
 like integration time and gain can be set up easily. The App displays the status of the sensors, giving various information in case any problems occur.
