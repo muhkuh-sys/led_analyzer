@@ -1,6 +1,6 @@
 require("tcs_chromaTable")
 
-local MIN_LUX = 30.0
+local MIN_LUX = 25.0
 
 function max(a, b, c)
 	local max = 0
@@ -181,7 +181,7 @@ function aus2colorTable(clear, red, green, blue, cct, lux, length)
 			local r_n = lRed   / lClear
 			local g_n = lGreen / lClear
 			local b_n = lBlue  / lClear 
-			print(lCCT)
+		
 			-- RGB table 
 			tRGB[i+1] = {clear = lClear,
 						 red   = lRed,
