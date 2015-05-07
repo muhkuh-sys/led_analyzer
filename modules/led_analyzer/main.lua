@@ -4,10 +4,12 @@ require("color_validation")	 -- Validate your colors, contains helper to print y
 require("led_analyzer")		 -- libusb/ftdi driver library + sensor specific functions 
 require("testboard")		 -- board to be tested, containing dom. wavelengths and/or x/y pairs
 
-TEST_RESULT_OK = 0 
-TEST_RESULT_LED_FAILED = 1
-TEST_RESULT_NO_DEVICES = 2
-TEST_RESULT_DEVICE_FAILED = 3
+TEST_RESULT_OK 			  = 0 
+TEST_RESULT_FAIL 		  = 1 
+TEST_RESULT_LEDS_ON 	  = 2 
+TEST_RESULT_LEDS_OFF 	  = 3 
+TEST_RESULT_NO_DEVICES 	  = 4
+TEST_RESULT_DEVICE_FAILED = 5 
 
 MAXDEVICES = 50
 MAXHANDLES = MAXDEVICES * 2
@@ -47,9 +49,9 @@ local asSerials 		= led_analyzer.new_astring(MAXSERIALS)
 local apHandles 		= led_analyzer.new_apvoid(MAXHANDLES)
 local numberOfDevices   = 0
 -- table contains all color and light related data
-local tColorTable 		= {}
+local tColorTable
 -- the test summary --
-local tTestSummary 		= {}
+local tTestSummary
 
 local ret 				= 0
 
@@ -93,6 +95,8 @@ function startMeasurements(numberOfDevices)
 	local devIndex = 0
 	local error_counter = 0 
 	local ret = 0
+	
+	tColorTable = {}
 
 	while(devIndex < numberOfDevices) do 
 		print(string.format("\n------------------ Device %d -------------------- ", devIndex))
@@ -113,7 +117,7 @@ function startMeasurements(numberOfDevices)
 		end 
 		
 		tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, 16)
-		print_color(devIndex, tColorTable, 16, "wavelength")
+		--print_color(devIndex, tColorTable, 16, "wavelength")
 		--print_color(devIndex, tColorTable, 16, "RGB")
 		
 		devIndex = devIndex + 1 
@@ -123,10 +127,13 @@ function startMeasurements(numberOfDevices)
 	return 0 
 end 
 
-function validateLEDs(numberOfDevices, tDUT, lux_check_enable)
+function ON_validateLEDs(numberOfDevices, tDUT, lux_check_enable)
 	
 	local devIndex = 0
 	local ret = 0 
+	
+	tTestSummary = {}
+	print("Testing LEDs ON\n")
 	
 	while(devIndex < numberOfDevices) do 
 		tTestSummary[devIndex] = getDeviceSummary(tDUT[devIndex], tColorTable[devIndex][1], lux_check_enable)
@@ -134,12 +141,28 @@ function validateLEDs(numberOfDevices, tDUT, lux_check_enable)
 		devIndex = devIndex + 1 
 	end 
 	
-	ret = validateTestSummary(numberOfDevices, tTestSummary)
+	ret = ON_validateTestSummary(numberOfDevices, tTestSummary)
+	return ret 
+end
+
+function OFF_validateLEDs(numberOfDevices, tDUT, lux_check_enable)
+	
+	local devIndex = 0
+	local ret = 0 
+	
+	tTestSummary = {}
+	print("Testing LEDs OFF\n")
+	
+	while(devIndex < numberOfDevices) do 
+		tTestSummary[devIndex] = getDeviceSummary(tDUT[devIndex], tColorTable[devIndex][1], lux_check_enable)
+		devIndex = devIndex + 1 
+	end 
+	
+	ret = OFF_validateTestSummary(numberOfDevices, tTestSummary)
 	return ret 
 end
 
 function free()
-
 	-- CLEAN UP --
 	led_analyzer.free_devices(apHandles)
 	led_analyzer.delete_ushort(ausClear)
@@ -155,8 +178,31 @@ function free()
 	
 end 
 
+function show_message_fail() 
+	print("\n\n")
+	print("")
+	print(" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+	print(" !!!!!!!!!!!!!			 !!!!!!!!!!!!!")
+	print(" !!!!!!!!!!!!!       ERROR       !!!!!!!!!!!!!")
+	print(" !!!!!!!!!!!!!			 !!!!!!!!!!!!!")
+	print(" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+	print("")
+	print("\n\n")
+end 
 
-
+function show_message_success()
+	print("\n\n")
+	print("")
+	print(" #######  ##    ## ")
+	print("##     ## ##   ##  ")
+	print("##     ## ##  ##   ")
+	print("##     ## #####    ")
+	print("##     ## ##  ##   ")
+	print("##     ## ##   ##  ")
+	print(" #######  ##    ## ")
+	print("")
+	print("\n\n")
+end 
 
 
 
@@ -177,13 +223,18 @@ end
 -------------------------------------- INIT --------------------------------------
 
 ret = initDevices(numberOfDevices, TCS3472_GAIN_1X, TCS3472_INTEGRATION_100ms)
-led_analyzer.wait4Conversion(500)
+led_analyzer.wait4Conversion(100)
 if(ret ~= 0) then 
 	free()
 	return TEST_RESULT_DEVICE_FAILED
 end 
 
 ------------------------------------ ACTUAL TEST ---------------------------------
+----------------------------------------------------------------------------------
+-- for every testset, that means LED state on the board we must have a test table 
+-- defined.
+
+-- LED STATE 1 -- ALL LEDS SET 1 ON ----------------------------------------------
 
 led_analyzer.wait4Conversion(100)
 ret = startMeasurements(numberOfDevices)
@@ -191,13 +242,37 @@ if (ret ~= 0) then
 	free()
 	return TEST_RESULT_DEVICE_FAILED
 end 
+ret = ON_validateLEDs(numberOfDevices, tTest, 1)
 
-ret = validateLEDs(numberOfDevices, tTest, 0)
+if ret ~= TEST_RESULT_LEDS_ON then 
+	--free()
+	--return TEST_RESULT_FAIL
+end 
 
------------------------------------- CLEAN UP ------------------------------------
+-- LED STATE 2 -- ALL LEDS SET 2 ON ---------------------------------------------
+
+
+
+-- LED STATE 3 -- ALL LEDS SET 1 OFF --------------------------------------------
+
+led_analyzer.wait4Conversion(100)
+ret = startMeasurements(numberOfDevices)
+if (ret ~= 0) then 
+	free()
+	return TEST_RESULT_DEVICE_FAILED
+end 
+ret = OFF_validateLEDs(numberOfDevices, tTest)
+
+if ret ~= TEST_RESULT_LEDS_OFF then
+	--free()
+	--return TEST_RESULT_FAIL
+end 
+
+-------------------------------SUCCESS CLEAN UP---------------------------------
 
 free()
-return ret 
+--show_message_success()
+--return TEST_RESULT_OK 
 
 ------------------------------------ TEST END ------------------------------------
 
