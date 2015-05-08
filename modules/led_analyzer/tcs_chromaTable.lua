@@ -29,7 +29,6 @@
 --interpolated spectral responsitivity data of tcs3472:
 tTCS_Chromaticity = {
 
-	 [     0] = { nm =  -1 , x =    -1 , y = -1 },
      [     1] = { nm =  405.0000 , x =    0.183252606676439 , y = 0.087698811371711 },
      [     2] = { nm =  405.3125 , x =    0.182759625452102 , y = 0.087424920595283 },
      [     3] = { nm =  405.6250 , x =    0.182248888649824 , y = 0.087135413949825 },
@@ -855,7 +854,6 @@ tTCS_Chromaticity = {
 -- The direction vector starts in the reference White Point (here refWhitex = 0.312727 refWhitey = 0.329023)
 -- and ends in the points of tTCS_Chromaticity
 tTCS_dirVector = {
-	[  0] = { nm = -1, x = -1, y = -1 },
 	[  1] = { nm = 405.0000, x = -0.129474393323561, y = -0.241324188628289 },
 	[  2] = { nm = 405.3125, x = -0.129967374547898, y = -0.241598079404717 },
 	[  3] = { nm = 405.6250, x = -0.130478111350176, y = -0.241887586050175 },
