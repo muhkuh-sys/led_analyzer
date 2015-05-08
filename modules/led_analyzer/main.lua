@@ -4,6 +4,10 @@ require("color_validation")	 -- Validate your colors, contains helper to print y
 require("led_analyzer")		 -- libusb/ftdi driver library + sensor specific functions 
 require("testboard")		 -- board to be tested, containing dom. wavelengths and/or x/y pairs
 
+local colortable = require 'ansicolors'
+
+print(colortable.red 'hello')
+
 TEST_RESULT_OK 			  = 0 
 TEST_RESULT_FAIL 		  = 1 
 TEST_RESULT_LEDS_ON 	  = 2 
@@ -117,8 +121,8 @@ function startMeasurements(numberOfDevices)
 		end 
 		
 		tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, 16)
-		--print_color(devIndex, tColorTable, 16, "wavelength")
-		--print_color(devIndex, tColorTable, 16, "RGB")
+		print_color(devIndex, tColorTable, 16, "wavelength")
+		--print_color(devIndex, tColorTable, 16, "Yxy")
 		
 		devIndex = devIndex + 1 
 		print("\n")
@@ -235,7 +239,7 @@ end
 -- defined.
 
 -- LED STATE 1 -- ALL LEDS SET 1 ON ----------------------------------------------
-
+while(1) do 
 led_analyzer.wait4Conversion(100)
 ret = startMeasurements(numberOfDevices)
 if (ret ~= 0) then 
@@ -251,11 +255,10 @@ end
 
 -- LED STATE 2 -- ALL LEDS SET 2 ON ---------------------------------------------
 
-
-
 -- LED STATE 3 -- ALL LEDS SET 1 OFF --------------------------------------------
 
 led_analyzer.wait4Conversion(100)
+
 ret = startMeasurements(numberOfDevices)
 if (ret ~= 0) then 
 	free()
@@ -268,6 +271,7 @@ if ret ~= TEST_RESULT_LEDS_OFF then
 	--return TEST_RESULT_FAIL
 end 
 
+end 
 -------------------------------SUCCESS CLEAN UP---------------------------------
 
 free()
@@ -275,7 +279,6 @@ free()
 --return TEST_RESULT_OK 
 
 ------------------------------------ TEST END ------------------------------------
-
 
 
 
