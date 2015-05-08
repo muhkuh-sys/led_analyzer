@@ -1,6 +1,6 @@
 require("tcs_chromaTable")
 
-local MIN_LUX = 25.0
+local MIN_LUX = 15.0 
 
 function max(a, b, c)
 	local max = 0
@@ -135,7 +135,7 @@ function aus2colorTable(clear, red, green, blue, cct, lux, length)
 	
 	-- local values for clear, red, green and blue channel 
 	local lClear, lRed, lGreen, lBlue 
-	
+	local r_n, g_n, b_n 
 	
 	for i = 0, length - 1 do 
 	
@@ -150,8 +150,10 @@ function aus2colorTable(clear, red, green, blue, cct, lux, length)
 		-- to avoid a later division by zero and to have more stable readings and no unneccessary
 		-- outputs from channels that are not reading any LEDs we set a minum lux level
 		
-		--if((lRed == 0) or (lGreen == 0) or (lBlue == 0) or (lClear == 0)) then 
-		if(lLUX <= MIN_LUX) then 
+		-- if measured brightness (lux) falls beneath required MINIMUM LUX or our clear channel gives zero 
+		-- fill all color tables with zero values, beside the lux value.
+		
+		if(lLUX <= MIN_LUX or lClear == 0) then 
 			-- RGB table 
 			tRGB[i+1] = {clear = 0,
 						 red = 0,
@@ -171,16 +173,17 @@ function aus2colorTable(clear, red, green, blue, cct, lux, length)
 			-- Wavelength and saturation 
 			tWavelength[i+1] = { nm  = 0,
 							     sat = 0,
-								 lux = 0}
+								 lux = lLUX}
 							
 			tHSV[i+1] = { H = 0,
 						  S = 0,
 						  V = 0 }
 						  
 		else 
-			local r_n = lRed   / lClear
-			local g_n = lGreen / lClear
-			local b_n = lBlue  / lClear 
+			r_n = lRed   / lClear
+			g_n = lGreen / lClear
+			b_n = lBlue  / lClear 
+ 
 		
 			-- RGB table 
 			tRGB[i+1] = {clear = lClear,
@@ -204,12 +207,12 @@ function aus2colorTable(clear, red, green, blue, cct, lux, length)
 						  
 			local wavelength, saturation = Yxy2wavelength(x, y)
 			
+			
 			-- Wavelength Saturation Brightness table 
 			tWavelength[i+1] = {nm = math.floor(wavelength+0.5),
 						        sat = saturation * 100,
 								lux = lLUX
 								}
-								
 			-- HSV (Hue Saturation Value)
 			
 			local H, S, V = RGB2HSV(r_n, g_n, b_n)
@@ -295,105 +298,123 @@ function RGB2XYZ(r, g, b, rgb_workingspace)
 	   b_n = b_n / 12.92
 	end
   
-  
-	local x,y,z
 	local tXYZ = {}
  
   -- CIE Standard Observer 2 °, Daylight
   if rgb_workingspace == 'sRGB' then 
 	   --Source White in XYZ units not Yxy units !
 	   tRefWhite = {x = 0.312727, y = 0.329023}
-	   x = r_n * 0.4124564 + g_n * 0.3575761 + b_n * 0.1804375
-	   y = r_n * 0.2126729 + g_n * 0.7151522 + b_n * 0.0721750
-	   z = r_n * 0.0193339 + g_n * 0.1191920 + b_n * 0.9503041
-	   tXYZ = {x = x, y = y, z = z}
+	   tXYZ = {
+				   x = r_n * 0.4124564 + g_n * 0.3575761 + b_n * 0.1804375,
+				   y = r_n * 0.2126729 + g_n * 0.7151522 + b_n * 0.0721750,
+				   z = r_n * 0.0193339 + g_n * 0.1191920 + b_n * 0.9503041
+			  }
 	 
   -- CIE RGB, Observer = 2°, Illuminant = E
   elseif rgb_workingspace == 'CIE_RGB' then
  	   tRefWhite = {x = 0.3333, y = 0.3333}
-	   x = r_n * 0.4887180 + g_n * 0.3106803  + b_n * 0.2006017
-	   y = r_n * 0.1762044 + g_n * 0.8129847  + b_n * 0.0108109
-	   z = r_n * 0.0000000 + g_n * 0.0102048  + b_n * 0.989795
-	   tXYZ = {x = x, y = y, z = z}
+	   tXYZ = {
+				   x = r_n * 0.4887180 + g_n * 0.3106803  + b_n * 0.2006017,
+				   y = r_n * 0.1762044 + g_n * 0.8129847  + b_n * 0.0108109,
+				   z = r_n * 0.0000000 + g_n * 0.0102048  + b_n * 0.989795
+			 }
 	   
   -- Apple RGB, Observer = 2°, Illuminant = D65 
   elseif rgb_workingspace == 'Apple_RGB' then
  	   tRefWhite = {x = 0.312727, y = 0.329023}
-	   x = r_n *0.4497288 + g_n * 0.3162486  + b_n *0.1844926
-	   y = r_n *0.2446525 + g_n * 0.6720283  + b_n *0.0833192
-	   z = r_n *0.0251848 + g_n * 0.1411824  + b_n *0.9224628
-	   tXYZ = {x = x, y = y, z = z}
+	   tXYZ = {
+				   x = r_n *0.4497288 + g_n * 0.3162486  + b_n *0.1844926,
+				   y = r_n *0.2446525 + g_n * 0.6720283  + b_n *0.0833192,
+				   z = r_n *0.0251848 + g_n * 0.1411824  + b_n *0.9224628
+			  }
 	  
    -- Best RGB, Observer = 2°, Illuminant = D50
   elseif rgb_workingspace == 'Best_RGB' then 
       tRefWhite = {x = 0.34567, y = 0.35850}
-	   x = r_n * 0.6326696  + g_n * 0.2045558  + b_n * 0.1269946
-       y = r_n * 0.2284569  + g_n * 0.7373523  + b_n * 0.0341908
-       z = r_n * 0.0000000  + g_n * 0.0095142  + b_n * 0.8156958
-	   tXYZ = {x = x, y = y, z = z}
+	  tXYZ = {
+				   x = r_n * 0.6326696  + g_n * 0.2045558  + b_n * 0.1269946,
+				   y = r_n * 0.2284569  + g_n * 0.7373523  + b_n * 0.0341908,
+				   z = r_n * 0.0000000  + g_n * 0.0095142  + b_n * 0.8156958
+		     }
 	   
    -- Beta RGB , Observere 2°, Illuminant D50 
   elseif rgb_workingspace == 'Beta_RGB' then 
       tRefWhite = {x = 0.34567, y = 0.35850}
-	   x = r_n * 0.6712537  + g_n * 0.1745834  + b_n * 0.1183829
-       y = r_n * 0.3032726  + g_n * 0.6637861  + b_n * 0.0329413
-       z = r_n * 0.0000000  + g_n * 0.0407010  + b_n * 0.7845090
-	   tXYZ = {x = x, y = y, z = z}
+	  tXYZ = {
+				   x = r_n * 0.6712537  + g_n * 0.1745834  + b_n * 0.1183829,
+				   y = r_n * 0.3032726  + g_n * 0.6637861  + b_n * 0.0329413,
+				   z = r_n * 0.0000000  + g_n * 0.0407010  + b_n * 0.7845090
+			 }
 	  
    -- Bruce RGB, Observer 2°, Illuminant D65 
   elseif rgb_workingspace == 'Bruce_RGB' then 
-         tRefWhite = {x = 0.312727, y = 0.329023}
-	   x = r_n *  0.4674162  + g_n * 0.2944512  + b_n * 0.1886026
-       y = r_n *  0.2410115  + g_n * 0.6835475  + b_n * 0.0754410
-       z = r_n *  0.0219101  + g_n * 0.0736128  + b_n * 0.9933071
-	   tXYZ = {x = x, y = y, z = z}
+       tRefWhite = {x = 0.312727, y = 0.329023}
+	   tXYZ = {
+				   x = r_n *  0.4674162  + g_n * 0.2944512  + b_n * 0.1886026,
+				   y = r_n *  0.2410115  + g_n * 0.6835475  + b_n * 0.0754410,
+				   z = r_n *  0.0219101  + g_n * 0.0736128  + b_n * 0.9933071
+			  }
 	   
    -- Color Match RGB, Observer = 2°, Illuminant = D50
   elseif rgb_workingspace == 'D50' then 
        tRefWhite = {x = 0.34567, y = 0.35850}
-	   x = r_n * 0.5093439  + g_n * 0.3209071  + b_n * 0.1339691
-       y = r_n * 0.2748840  + g_n * 0.6581315  + b_n * 0.0669845
-       z = r_n * 0.0242545  + g_n * 0.1087821  + b_n * 0.6921735
-	   tXYZ = {x = x, y = y, z = z}
+	   tXYZ = {
+				   x = r_n * 0.5093439  + g_n * 0.3209071  + b_n * 0.1339691,
+				   y = r_n * 0.2748840  + g_n * 0.6581315  + b_n * 0.0669845,
+				   z = r_n * 0.0242545  + g_n * 0.1087821  + b_n * 0.6921735
+			  }
 
    -- NTSCRGB, Observer = 2°, Illuminant = C
   elseif rgb_workingspace == 'NTSC_RGB' then 
        tRefWhite = {x = 0.31006, y = 0.31616}
-	   x = r_n * 0.6068909  + g_n * 0.1735011  + b_n * 0.2003480
-       y = r_n * 0.2989164  + g_n * 0.5865990  + b_n * 0.1144845
-       z = r_n * 0.0000000  + g_n * 0.0660957  + b_n * 1.1162243
-	   tXYZ = {x = x, y = y, z = z}	   
+	   tXYZ = {
+				   x = r_n * 0.6068909  + g_n * 0.1735011  + b_n * 0.2003480,
+				   y = r_n * 0.2989164  + g_n * 0.5865990  + b_n * 0.1144845,
+				   z = r_n * 0.0000000  + g_n * 0.0660957  + b_n * 1.1162243
+			  }	   
 	   
    -- NTSCRGB, Observer = 2°, Illuminant = C
    elseif rgb_workingspace == 'PAL_RGB' then 
        tRefWhite = {x = 0.31273, y = 0.32902}
-	   x = r_n * 0.4306190   + g_n * 0.3415419  + b_n * 0.1783091
-       y = r_n * 0.2220379   + g_n * 0.7066384  + b_n * 0.0713236
-       z = r_n * 0.0201853   + g_n * 0.1295504  + b_n * 0.9390944
-	   tXYZ = {x = x, y = y, z = z}	   
+	   tXYZ = {
+				   x = r_n * 0.4306190   + g_n * 0.3415419  + b_n * 0.1783091,
+				   y = r_n * 0.2220379   + g_n * 0.7066384  + b_n * 0.0713236,
+				   z = r_n * 0.0201853   + g_n * 0.1295504  + b_n * 0.9390944
+			  }	   
 	   
 	    
 	 
   -- Adobe RGB using D65 as reference white -- 
   elseif rgb_workingspace == "Adobe" then
         tRefWhite = {x = 0.312727, y=0.329023}
-		x = r_n * 0.5767309 + g_n * 0.1855540  + b_n *  0.1881852
-		y = r_n * 0.2973769 + g_n * 0.6273491  + b_n *  0.0752741
-		z = r_n * 0.0270343 + g_n * 0.0706872  + b_n *  0.9911085
-		tXYZ = {x = x, y = y, z = z}
+		tXYZ = {
+					x = r_n * 0.5767309 + g_n * 0.1855540  + b_n *  0.1881852,
+					y = r_n * 0.2973769 + g_n * 0.6273491  + b_n *  0.0752741,
+					z = r_n * 0.0270343 + g_n * 0.0706872  + b_n *  0.9911085
+				}
   
   else 
-		-- Default Reference white values if wrong or unknown "rgb_workingspace" 
-		tRefWhite = {x = 0.312727, y = 0.329023}
+		-- Default Reference white and sRGB if wrong or unknown "rgb_workingspace" 
+	   tRefWhite = {x = 0.312727, y = 0.329023}
+	   tXYZ = {
+				   x = r_n * 0.4124564 + g_n * 0.3575761 + b_n * 0.1804375,
+				   y = r_n * 0.2126729 + g_n * 0.7151522 + b_n * 0.0721750,
+				   z = r_n * 0.0193339 + g_n * 0.1191920 + b_n * 0.9503041
+			  }
   end 
   
-  return x, y, z 
+  return tXYZ.x, tXYZ.y, tXYZ.z 
   
  end
  
  -- X,Y,Z in the nominal range [0.0, 1.0]
  function XYZ2Yxy(X, Y, Z)
-		
+	
+	-- avoid division by zero -- 
+	if ((X == 0) and (Y == 0) and (Z == 0)) then 
+		return 0, 0, 0
+	end 
+	
 	local Y = Y
 	local x = X / ( X + Y + Z )
 	local y = Y / ( X + Y + Z )
@@ -557,6 +578,10 @@ end
 -- calculate the length of a direction vector
 -- length means absolute distance from .x .y coordinates to whitePoint.x .y 
 function get_length(directionVector)
+	if (directionVector.x == nil or directionVector.y == nil) then 
+		directionVector.x = 0 
+		directionVector.y = 0 
+	end 
 	return math.sqrt(math.pow(directionVector.x,2) + math.pow(directionVector.y,2)) 
 end 
  
@@ -566,15 +591,21 @@ end
 --of our sensor and thus achieve a much better accuracy 
 function Yxy2wavelength(x,y)
 
+	
+	-- if too dark return zeros -- 
+	if ((x == 0) and (y == 0)) then 
+		return 0, 0
+	end 
+	
+	local t_curDirVector = {}
 
 	-- use global tRefWhite table to get ur refwhite values which depend on the rgb work space 
 	local refWhitex = tRefWhite.x
 	local refWhitey = tRefWhite.y 
 			
 	-- Construct direction vector from current x and y input values
-	local t_curDirVector = {}
-		  t_curDirVector.x = (x-refWhitex)
-		  t_curDirVector.y = (y-refWhitey)
+	t_curDirVector.x = (x-refWhitex)
+	t_curDirVector.y = (y-refWhitey)
 		  
 		  
 	-- Algorithm determines which direction vector in tTCS_dirVector is closest to the direction vector
@@ -608,4 +639,92 @@ end
 function getSaturation(red, green, blue, cear)
 
 end 
- 
+
+
+--Discussion
+--The WaveLengthToRGB function is based on Dan Bruton's work (www.physics.sfasu.edu/astro/color.html) and is in the file SpectraLibrary.PAS, which is part of the download set:
+function wavelength2RGB(wavelength)
+
+	local r = 0 
+	local g = 0 
+	local b = 0 
+	
+	local factor 
+	
+	-- 380 ... 439 
+	if ((wavelength >= 380) and (wavelength <= 439)) then 
+		r = -(wavelength - 440) / (440 - 380)
+		g = 0.0 
+		b = 1.0 
+	
+	-- 440 ... 489
+	elseif ((wavelength >= 440) and (wavelength <= 489)) then 
+		r = 0.0;
+		g = (wavelength -440) / (490 - 440)
+		b = 1.0 
+		
+	-- 490 ... 509 
+	elseif ((wavelength >= 490) and (wavelength <= 509)) then 
+		r = 0.0 
+		g = 1.0 
+		b = -(wavelength - 510) / (510 - 490)
+		
+	-- 510 ... 579 
+	elseif ((wavelength >= 510) and (wavelength <= 579)) then 
+		r = (wavelength - 510) / (580 - 510)
+		g = 1.0 
+		b = 0.0000000
+		
+	-- 580 ... 644 
+	elseif ((wavelength >= 580) and (wavelength <= 644)) then 
+		r = 1.0 
+		g = -(wavelength - 645) / (645 - 580)
+		b = 0.0 
+	
+	-- 645 ... 780 
+	elseif ((wavelength >= 645) and (wavelength <= 780)) then 
+		r = 1.0 
+		g = 0.0 
+		b = 0.0 
+	end 
+	
+	-- let the intensitiy fall off near the vision limits 
+	if ((wavelength >= 380) and (wavelength <= 419)) then 
+		factor = 0.3 + 0.7*(wavelength - 380) / (420 - 380)
+	
+	elseif ((wavelength >= 420) and (wavelength <= 700)) then 
+		factor = 1.0;
+	
+	elseif ((wavelength >= 701) and (wavelength <= 780)) then 
+		factor = 0.3 + 0.7*(780 - wavelength) / (780 - 700) 
+	
+	else 
+		factor = 0.0 
+	end 
+
+	r = adjustColor(r, factor)
+	g = adjustColor(g, factor)
+	b = adjustColor(b, factor)
+	
+	return r, g, b
+
+end 
+
+function round(num, idp)
+  local mult = 10^(idp or 0)
+  return math.floor(num * mult + 0.5) / mult
+end
+
+function adjustColor(color, factor)
+
+	local Gamma = 0.8 
+	local IntensityMax = 255 
+	 
+	if color == 0.0 then 
+		return 0 
+	else 
+		return round(IntensityMax * math.pow(color * factor, Gamma))
+	end 
+
+end 
+
