@@ -271,7 +271,7 @@ function OFF_validateTestSummary(numberOfDevices, tTestSummary)
 		print("##     ## ##   ##  ")
 		print(" #######  ##    ## ")
 		print("")
-
+		
 		return TEST_RESULT_LEDS_OFF
 	else 
 		print("")
