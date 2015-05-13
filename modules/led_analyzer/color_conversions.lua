@@ -2,47 +2,6 @@ require("tcs_chromaTable")
 
 local MIN_LUX = 15.0 
 
-function max(a, b, c)
-	local max = 0
-	
-	if a >= b then
-		if a >= c then
-			max = a
-		else 
-			max = c
-		end
-	else
-		if b >= c then 
-			max = b
-		else
-			max = c
-		end 
-	end 
-	
-	return max
-end
-
-function min(a, b ,c)
-	local min = 0
-	
-	if a <= b then
-		if a <= c then
-			min = a
-		else 
-			min = c
-		end
-	else
-		if b <= c then
-			min = b
-		else 
-			min = c
-		end
-	end
-	
-	return min
-end
-
-
 -- a helper to print a colortable which contains values in RGB, XYZ, HSV, Yxy and wavelength color space 
 -- parameter space determines which space should be printed out 
 function print_color(devIndex, colortable, length, space)
@@ -106,11 +65,11 @@ end
 
 
 -- Saves content of a string array into a lua table 
-function astring_to_table(astring, numbOfSerials)
+function astring2table(astring, numbOfSerials)
 
 	local tSerialnumbers = {}
 	
-	for i = 0, numbOfSerials - 1 do
+	for i = 1, numbOfSerials do
 			
 			if led_analyzer.astring_getitem(astring, i) ~= NULL then 
 				tSerialnumbers[i] = led_analyzer.astring_getitem(astring, i)
@@ -120,6 +79,22 @@ function astring_to_table(astring, numbOfSerials)
 	return tSerialnumbers
 end
 
+-- Saves content of a string table into a string array 
+function table2astring(tString, aString)
+
+	local numberOfEntries = table.getn(tString)
+	
+	if numberOfEntries > MAXSERIALS then 
+		print("Number of elements in tString exceeds maximum amounts of possible serial numbers!\n")
+		return -1 
+	end
+	
+	for i = 1, numberOfEntries do 
+		led_analyzer.astring_setitem(aString, i-1, tString[i])
+	end 
+	
+	return aString
+end 
 
 -- Convert the Colors given as parameters into various color spaces (RGB, HSV, XYZ, Yxy, Wavelength)
 -- and save the values of the color spaces into tables 
