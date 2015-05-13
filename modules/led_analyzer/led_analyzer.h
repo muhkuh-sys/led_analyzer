@@ -42,7 +42,6 @@ int  read_colors(void** apHandles, int devIndex, unsigned short *ausClear, unsig
 	 unsigned short *ausGreen, unsigned short* ausBlue, unsigned short* CCT, float* afLUX);
 int  init_sensors(void** apHandles, int devIndex);
 int  get_number_of_handles(void ** apHandles);
-int	 check_validity(void** apHandles, int devIndex, unsigned short* ausClear, unsigned char* aucIntegrationtime);
 int  handleToDevice(int handle);
 int	 set_gain(void** apHandles, int devIndex, unsigned char gain);
 int	 set_gain_x(void** apHandles, int devIndex, unsigned char gain, unsigned int uiX);

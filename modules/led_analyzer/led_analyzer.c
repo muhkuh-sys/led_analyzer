@@ -453,50 +453,6 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	
 }														 
 
-/** \brief checks if clear level has been exceeded and if rgbc datasets are valid.
-
-Function checks if clear levels of 16 sensors under a color controller device have been exceeded and it checks
-if the colors are valid by checking certain bits in the sensors' status register. This functioin has been included
-in the read color function as well. The returned errorcode can be used to determine which of the sensor(s) failed.
-	@param apHandles	 		array that stores ftdi2232h handles
-	@param devIndex				device index of current color controller device
-	@param ausClear				array that stores 16 clear values
-	@param aucIntegrationtime	current integration time setting of the sensors
-	
-	@return 					0  : everything ok
-	@return 					-1 : i2c-functions failed
-	@return 					>0 : one or more sensor(s) failed
-	@return	    				if the return code is 0b101100, identification failed with sensor 3, sensor 4 and sensor 6
-
-*/
-int check_validity(void** apHandles, int devIndex, unsigned short* ausClear, unsigned char* aucIntegrationtime)
-{
-	int iHandleLength = get_number_of_handles(apHandles);
-	int handleIndex = devIndex * 2;
-
-	int errorcode = 0;
-	
-	
-	if(handleIndex >= iHandleLength)
-	{
-		printf("Exceeded maximum amount of handles ... \n");
-		printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
-		return -1;
-	}
-	
-	
-	if((errorcode = tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, aucIntegrationtime)) != 0)
-	{		
-		return errorcode;
-	}
-	
-	if((errorcode = tcs_rgbcInvalid(apHandles[handleIndex], apHandles[handleIndex+1])) != 0)
-	{
-		return errorcode;
-	}
-	
-	return errorcode;
-}
 
 
 /** \brief frees the memory of all connected opened color controller devices.
