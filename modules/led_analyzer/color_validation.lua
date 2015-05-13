@@ -30,22 +30,29 @@ function compareRows(tDUTrow, tCurColorSensor, lux_check_enable)
 		and  tCurColorSensor.sat 		  >= (tDUTrow.sat - tDUTrow.tol_sat)
 		and  tCurColorSensor.sat		  <= (tDUTrow.sat + tDUTrow.tol_sat)) then 
 		
-			-- Brightness check is enabled 
+			-- Brightness check is enabled
 			if lux_check_enable ~= nil then 
-				-- Brightness is OK --
-				if tCurColorSensor.lux > (tDUTrow.lux - tDUTrow.tol_lux)
-				and tCurColorSensor.lux < (tDUTrow.lux + tDUTrow.tol_lux) then 
-					return 0, string.format("%s LED with %3d nm OK - PASS!", tReferenceLEDcolors[tDUTrow.nm].colorname, tCurColorSensor.nm), dnm, dsat, dlux
-				 
-				-- Brightness falls below min_brightness
-				elseif tCurColorSensor.lux < (tDUTrow.lux - tDUTrow.tol_lux) then
-					return 4, "LED too dark!\n			Check if right series resisor is used.", dnm, dsat, dlux
-				 
-				-- Brightness exceeds max_brightness
-				elseif tCurColorSensor.lux > (tDUTrow.lux + tDUTrow.tol_lux) then  
-					return 5, "LED too bright!\n			Check if right series resistor is used.\n			Check if shortcuts exists on the board", dnm, dsat, dlux
-				end   
-			
+				if (tDUTrow.lux ~= nil) and (tDUTrow.tol_lux ~= nil) then 
+					-- Brightness is OK --
+					if tCurColorSensor.lux > (tDUTrow.lux - tDUTrow.tol_lux)
+					and tCurColorSensor.lux < (tDUTrow.lux + tDUTrow.tol_lux) then 
+						return 0, string.format("%s LED with %3d nm OK - PASS!", tReferenceLEDcolors[tDUTrow.nm].colorname, tCurColorSensor.nm), dnm, dsat, dlux
+					 
+					-- Brightness falls below min_brightness
+					elseif tCurColorSensor.lux < (tDUTrow.lux - tDUTrow.tol_lux) then
+						return 4, "LED too dark!\n			Check if right series resisor is used.", dnm, dsat, dlux
+					 
+					-- Brightness exceeds max_brightness
+					elseif tCurColorSensor.lux > (tDUTrow.lux + tDUTrow.tol_lux) then  
+						return 5, "LED too bright!\n			Check if right series resistor is used.\n			Check if shortcuts exists on the board", dnm, dsat, dlux
+					end   
+				elseif tDUTrow.lux == nil and tDUTrow.tol_lux ~= nil then 
+						return 6, "value for lux or tol_lux is missing, please check.\n"
+				
+				elseif tDUTrow.lux ~= nil and tDUTrow.tol_lux == nil then 
+						return 6, "value for lux or tol_lux is missing, please check.\n"
+				end 
+				
 			--Brightness check is disabled 
 			else 
 				-- As wavelength and saturations are OK and there's no need for a lux check we can return OK here
