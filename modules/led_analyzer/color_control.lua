@@ -1,8 +1,8 @@
 ---- importing ----
 require("led_analyzer")		 -- libusb/ftdi driver library + sensor specific functions 
-require("color_conversions") -- Convert between color spaces 
+require("color_conversions") -- handles conversion between color spaces and array to table (or vice versa) handling
 require("color_validation")	 -- Validate your colors, contains helper to print your colors and store your colors in adequate arrays
---require("testboard")		 -- board to be tested, containing dom. wavelengths and/or x/y pairs
+
 
 TEST_RESULT_OK 			  = 0 
 TEST_RESULT_FAIL 		  = 1 
@@ -21,11 +21,14 @@ INIT_MAXERROR  = 10
 READ_MAXERROR  = 10 
 VALID_MAXERROR = 10 
 
+
+-- tcs3472 specific settings for gain 
 TCS3472_GAIN_1X  = 0x00
 TCS3472_GAIN_4X  = 0x01
 TCS3472_GAIN_16X = 0x02
 TCS3472_GAIN_60X = 0x03
 
+-- tcs3472 specific settings for integration time 
 TCS3472_INTEGRATION_2_4ms 		= 0xFF
 TCS3472_INTEGRATION_24ms 		= 0xF6
 TCS3472_INTEGRATION_100ms 		= 0xD6
@@ -45,21 +48,20 @@ local aucGains  		= led_analyzer.new_puchar(MAXSENSORS)
 local aucIntTimes 		= led_analyzer.new_puchar(MAXSENSORS)
 -- serial numbers of connected color controller(s) will be stored in asSerials --
 local asSerials 		= led_analyzer.new_astring(MAXSERIALS)
--- handle to all connected color controller(s) will be stored in apHandles 
+-- handle to all connected color controller(s) will be stored in apHandles (note 2 handles per device)
 local apHandles 		= led_analyzer.new_apvoid(MAXHANDLES)
-local numberOfDevices   = 0
+local numberOfDevices
 -- table contains all color and light related data
 local tColorTable
--- the test summary --
+-- table that contains a test summary for each device --
 local tTestSummary
 
 local ret 				 = 0
 
-local loopCounter    	 = 0 
 
--- connects to devices with given serial numbers in a table tSerials
+-- connects to color controller devices with serial numbers given in table tSerials
 -- if tSerial doesn't exist, function will connect to all color controller devices 
--- taking the order of their serial numbers into account 
+-- taking the order of their serial numbers into account (serial number 20000 will have a smaller index than 20004)
 function connectDevices(tSerials)
 	
 	local numberOfDevices = 0 
@@ -78,6 +80,10 @@ function connectDevices(tSerials)
 end 
 
 
+
+-- initializes all connected devices with gain and integration time settings given in the parameters
+-- if any of the sensor specific settings like gain or integration time is not given the value will 
+-- be set to a default value (gain 1x and integration time 100 ms)
 function initDevices(numberOfDevices, gain, integrationtime)
 -- iterate over all devices and perform initialization -- 
 	local devIndex = 0
@@ -122,6 +128,9 @@ function initDevices(numberOfDevices, gain, integrationtime)
 	return 0 
 end 
 
+
+-- starts the measurements on each opened color controller device
+-- having read and checked all raw color data, these will be converted into the needed color spaces and stored in a color table  
 function startMeasurements(numberOfDevices)
 	
 	local devIndex = 0
@@ -149,8 +158,7 @@ function startMeasurements(numberOfDevices)
 		end 
 		
 		tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, 16)
-		print_color(devIndex, tColorTable, 16, "wavelength")
-		--print_color(devIndex, tColorTable, 16, "Yxy")
+		print_color(devIndex, tColorTable, 16)
 		
 		devIndex = devIndex + 1 
 		print("\n")
@@ -159,6 +167,9 @@ function startMeasurements(numberOfDevices)
 	return 0 
 end 
 
+-- function compares the color sets read from the devices to the testtable given in tDUT
+-- the LEDs under test must be on, this means we test if the right LEDs (correct wavelength, sat, ...) are mounted on the baord
+-- a table tTestSummary will be filled according to the test results (led on, led off, wrong led detected and so on)
 function ON_validateLEDs(numberOfDevices, tDUT, lux_check_enable)
 	
 	local devIndex = 0
@@ -177,6 +188,9 @@ function ON_validateLEDs(numberOfDevices, tDUT, lux_check_enable)
 	return ret 
 end
 
+-- function compares the color sets read from the devices to the testtable given in tDUT
+-- the LEDs under test must be off, this means we test if the LEDs can be powered off 
+-- a table tTestSummary will be filled according to the test results (led on, led off, wrong led detected and so on)
 function OFF_validateLEDs(numberOfDevices, tDUT, lux_check_enable)
 	
 	local devIndex = 0
@@ -194,6 +208,8 @@ function OFF_validateLEDs(numberOfDevices, tDUT, lux_check_enable)
 	return ret 
 end
 
+
+-- don't forget to clean up after every test -- 
 function free()
 	-- CLEAN UP --
 	led_analyzer.free_devices(apHandles)
