@@ -11,13 +11,12 @@
 			<copy file="windows_amd64/led_analyzerLUA_wrap.c"   todir="${install.sharedobject}" />
 		</sequential>
 
-	        <sequential>
+	    <sequential>
 			<copy file="modules/led_analyzer/color_conversions.lua" todir="${install.sharedobjects}"/>
 			<copy file="modules/led_analyzer/color_validation.lua " todir="${install.sharedobjects}"/>
-			<copy file="modules/led_analyzer/main.lua"              todir="${install.sharedobjects}"/>
+			<copy file="modules/led_analyzer/color_control.lua"              todir="${install.sharedobjects}"/>
 			<copy file="modules/led_analyzer/tcs_chromaTable.lua"   todir="${install.sharedobjects}"/>
-			<copy file="modules/led_analyzer/testboard.lua"         todir="${install.sharedobjects}"/>
-			
+			<copy file="modules/led_analyzer/testboard.lua"         todir="${install.sharedobjects}"/>	
 		</sequential>
 	</target>
 </project>
