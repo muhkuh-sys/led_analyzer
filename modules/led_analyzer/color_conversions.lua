@@ -45,7 +45,8 @@ function print_color(devIndex, colortable, length, space)
 											colortable[devIndex][4][i].x, colortable[devIndex][4][i].y))
 		end
 		
-	elseif space == "wavelength" then
+	-- if no colorspace is given, we will print out wavelengths as default
+	elseif space == "wavelength" or space == nil then
 	    print(" dominant wavelength	 sat         LUX  ")
 		for i=1, length do
 			print(string.format("%3d)   %3d nm		%3.2f	   %4.3f	", i, colortable[devIndex][1][i].nm, colortable[devIndex][1][i].sat, colortable[devIndex][1][i].lux))
@@ -617,7 +618,7 @@ end
 
 
 --Discussion
---The WaveLengthToRGB function is based on Dan Bruton's work (www.physics.sfasu.edu/astro/color.html) and is in the file SpectraLibrary.PAS, which is part of the download set:
+--The WaveLengthToRGB function is based on Dan Bruton's work (www.physics.sfasu.edu/astro/color.html)
 function wavelength2RGB(wavelength)
 
 	local r = 0 
