@@ -204,7 +204,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
 				}
-			else  printf("enabling bitbang mode on device %d Channel A\n", devCounter);
+			else  printf("enabling MPSSE mode on device %d Channel A\n", devCounter);
 			
 			iArrayPos ++;
 						
@@ -246,7 +246,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 					return -1;
 				}
 			
-			else  printf("enabling bitbang mode on device %d Channel B\n", devCounter);
+			else  printf("enabling MPSSE mode on device %d Channel B\n", devCounter);
 			
 			iArrayPos ++;
 			
