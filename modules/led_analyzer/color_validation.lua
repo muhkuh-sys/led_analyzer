@@ -2,7 +2,7 @@
 -- 0 : no warnings if test entries are missing for a device or test entries are missing for sensors
 -- 1 : prints out information about the failed sensors and info text 
 -- 2 : prints out warnings if test entries are missing for devices or sensors 
--- 3 : if test entries for devices miss we quit
+-- 3 : if test entries for devices miss we throw an error 
 
 DEBUG_OUTPUT = 1
 

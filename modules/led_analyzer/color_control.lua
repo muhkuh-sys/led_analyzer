@@ -95,10 +95,14 @@ function initDevices(numberOfDevices, gain, integrationtime)
 	
 	if gain == nil then 
 		lGain = TCS3472_GAIN_1X 
+	else 
+		lGain = gain 
 	end 
 	
 	if integrationtime == nil then 
 		lIntegrationtime = TCS3472_INTEGRATION_100ms
+	else 
+		lIntegrationtime = integrationtime
 	end 
 	
 	while(devIndex < numberOfDevices) do 
@@ -159,6 +163,7 @@ function startMeasurements(numberOfDevices)
 		
 		tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, 16)
 		print_color(devIndex, tColorTable, 16)
+		--print_color(devIndex, tColorTable, 16, "HSV")
 		
 		devIndex = devIndex + 1 
 		print("\n")
