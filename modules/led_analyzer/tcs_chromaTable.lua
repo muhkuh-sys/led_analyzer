@@ -20,12 +20,12 @@
 
 
 -- Spectral sensitivity data of TCS3472 was requested by AMS/TAOS
--- Original Data was given in 5 nanometer steps in RGB(C) steps 
--- The RGB(C) Values were interpolated using a combination o Spline and linear interpolation
+-- Original Data was given in 5 nanometer steps in RGB(C) color space 
+-- The RGB(C) Values were interpolated using a combination of Spline and linear interpolation
 -- The interpolated RGB data was converted into XYZ
 -- The interpolated  XYZ data was converted into Yxy 
 -- wavelengths corresponding to their x and y chromaticity values were saved into following table
-
+ 
 --interpolated spectral responsitivity data of tcs3472:
 tTCS_Chromaticity = {
 
