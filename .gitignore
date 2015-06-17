@@ -1,3 +1,4 @@
-/build_windows32/
-/build_windows64/
+/testfolder_32/
+/testfolder_64/
+/modules/led_analyzer/example device/
 Doxyfile
