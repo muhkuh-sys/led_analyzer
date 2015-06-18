@@ -21,9 +21,9 @@ INSTALL(FILES ${COCO_WIN32_INSTALL}/modules/led_analyzer/led_analyzerLUA_wrap.c
         DESTINATION windows_x86
 )
 
-INSTALL(FILES ${COCO_WIN32_INSTALL}/CoCoApp/coco.exe
-	DESTINATION windows_x86
-)
+#INSTALL(FILES ${COCO_WIN32_INSTALL}/CoCoApp/coco.exe
+#	DESTINATION windows_x86
+#)
 
 INSTALL(DIRECTORY ${COCO_WIN32_INSTALL}/doc
 	DESTINATION windows_x86
@@ -41,9 +41,9 @@ INSTALL(FILES ${COCO_WIN64_INSTALL}/modules/led_analyzer/led_analyzerLUA_wrap.c
         DESTINATION windows_amd64
 )
 
-INSTALL(FILES ${COCO_WIN64_INSTALL}/CoCoApp/coco.exe
-	DESTINATION windows_amd64
-)
+#INSTALL(FILES ${COCO_WIN64_INSTALL}/CoCoApp/coco.exe
+#	DESTINATION windows_amd64
+#)
 
 INSTALL(DIRECTORY ${COCO_WIN64_INSTALL}/doc
 	DESTINATION windows_amd64
