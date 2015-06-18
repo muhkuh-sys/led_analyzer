@@ -77,12 +77,13 @@ void ColorControlFrame::OnAbout(wxCommandEvent &event)
 
 void ColorControlFrame::OnScan(wxCommandEvent& event)
 {
-    wxString msg = wxT("Subhan Waizi you own!");
-    wxMessageBox(msg, _("Welcome to..."));
+    m_text->AppendText(wxT("You just clicked on Scan button\n"));
+
 }
 
-void ColorControlFrame::onConnect(wxCommandEvent& event)
+void ColorControlFrame::OnConnect(wxCommandEvent& event)
 {
+    m_text->AppendText(wxT("You just clicked on Connect buton\n"));
 
 }
 

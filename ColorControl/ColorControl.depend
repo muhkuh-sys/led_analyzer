@@ -1690,11 +1690,11 @@
 1412631244 c:\wxwidgets-3.0.2\include\wx\univ\theme.h
 	"wx/string.h"
 
-1434464910 c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.h
+1434639703 c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.h
 	"ColorControlApp.h"
 	"GUIFrame.h"
 
-1434552710 c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.h
+1434640051 c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -1715,11 +1715,11 @@
 	<wx/textctrl.h>
 	<wx/statbox.h>
 	<wx/radiobox.h>
+	<wx/scrolwin.h>
 	<wx/panel.h>
-	<wx/choice.h>
-	<wx/notebook.h>
 	<wx/statusbr.h>
 	<wx/frame.h>
+	<wx/checkbox.h>
 	<wx/msgdlg.h>
 
 1412631242 c:\wxwidgets-3.0.2\include\wx\artprov.h
@@ -2740,11 +2740,11 @@
 
 1412631244 c:\wxwidgets-3.0.2\include\wx\msw\rcdefs.h
 
-1434465765 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
+1434639708 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
 	"wx_pch.h"
 	"ColorControlMain.h"
 
-1434466395 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.cpp
+1434639652 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.cpp
 	"wx/wxprec.h"
 	<wx/wx.h>
 	"GuiFrame.h"
@@ -3262,4 +3262,139 @@
 	<dlfcn.h>
 	<dl.h>
 	<CodeFragments.h>
+
+1412631244 c:\wxwidgets-3.0.2\include\wx\propgrid\propgrid.h
+	"wx/defs.h"
+	"wx/thread.h"
+	"wx/dcclient.h"
+	"wx/control.h"
+	"wx/scrolwin.h"
+	"wx/tooltip.h"
+	"wx/datetime.h"
+	"wx/recguard.h"
+	"wx/propgrid/property.h"
+	"wx/propgrid/propgridiface.h"
+	"wx/propgrid/props.h"
+
+1412631244 c:\wxwidgets-3.0.2\include\wx\recguard.h
+	"wx/defs.h"
+
+1412631244 c:\wxwidgets-3.0.2\include\wx\propgrid\property.h
+	"wx/defs.h"
+	"wx/propgrid/propgriddefs.h"
+
+1412631244 c:\wxwidgets-3.0.2\include\wx\propgrid\propgriddefs.h
+	"wx/defs.h"
+	"wx/dynarray.h"
+	"wx/vector.h"
+	"wx/hashmap.h"
+	"wx/variant.h"
+	"wx/any.h"
+	"wx/longlong.h"
+	"wx/clntdata.h"
+	"wx/tokenzr.h"
+
+1412631244 c:\wxwidgets-3.0.2\include\wx\tokenzr.h
+	"wx/object.h"
+	"wx/string.h"
+	"wx/arrstr.h"
+
+1412631244 c:\wxwidgets-3.0.2\include\wx\propgrid\propgridiface.h
+	"wx/defs.h"
+	"wx/propgrid/property.h"
+	"wx/propgrid/propgridpagestate.h"
+
+1412631244 c:\wxwidgets-3.0.2\include\wx\propgrid\propgridpagestate.h
+	"wx/defs.h"
+	"wx/propgrid/property.h"
+
+1412631244 c:\wxwidgets-3.0.2\include\wx\propgrid\props.h
+	"wx/defs.h"
+	"wx/propgrid/editors.h"
+	"wx/filename.h"
+	"wx/dialog.h"
+	"wx/textctrl.h"
+	"wx/button.h"
+	"wx/listbox.h"
+	"wx/valtext.h"
+
+1412631244 c:\wxwidgets-3.0.2\include\wx\propgrid\editors.h
+	"wx/defs.h"
+
+1412631244 c:\wxwidgets-3.0.2\include\wx\propgrid\manager.h
+	"wx/defs.h"
+	"wx/propgrid/propgrid.h"
+	"wx/dcclient.h"
+	"wx/scrolwin.h"
+	"wx/toolbar.h"
+	"wx/stattext.h"
+	"wx/button.h"
+	"wx/textctrl.h"
+	"wx/dialog.h"
+	"wx/headerctrl.h"
+
+1412631242 c:\wxwidgets-3.0.2\include\wx\headerctrl.h
+	"wx/control.h"
+	"wx/dynarray.h"
+	"wx/vector.h"
+	"wx/headercol.h"
+	"wx/msw/headerctrl.h"
+	"wx/generic/headerctrlg.h"
+
+1412631244 c:\wxwidgets-3.0.2\include\wx\msw\headerctrl.h
+
+1412631242 c:\wxwidgets-3.0.2\include\wx\generic\headerctrlg.h
+	"wx/event.h"
+	"wx/vector.h"
+	"wx/overlay.h"
+
+1412631244 c:\wxwidgets-3.0.2\include\wx\overlay.h
+	"wx/defs.h"
+
+1412631244 c:\wxwidgets-3.0.2\include\wx\propgrid\advprops.h
+	"wx/defs.h"
+	"wx/propgrid/props.h"
+	"wx/image.h"
+	"wx/spinbutt.h"
+	"wx/propgrid/editors.h"
+
+1412631244 c:\wxwidgets-3.0.2\include\wx\spinbutt.h
+	"wx/defs.h"
+	"wx/control.h"
+	"wx/event.h"
+	"wx/range.h"
+	"wx/univ/spinbutt.h"
+	"wx/msw/spinbutt.h"
+	"wx/motif/spinbutt.h"
+	"wx/gtk/spinbutt.h"
+	"wx/gtk1/spinbutt.h"
+	"wx/osx/spinbutt.h"
+	"wx/cocoa/spinbutt.h"
+	"wx/os2/spinbutt.h"
+
+1412631244 c:\wxwidgets-3.0.2\include\wx\range.h
+	"wx/defs.h"
+
+1412631244 c:\wxwidgets-3.0.2\include\wx\univ\spinbutt.h
+	"wx/univ/scrarrow.h"
+
+1412631244 c:\wxwidgets-3.0.2\include\wx\msw\spinbutt.h
+	"wx/control.h"
+	"wx/event.h"
+
+1412631244 c:\wxwidgets-3.0.2\include\wx\motif\spinbutt.h
+
+1412631242 c:\wxwidgets-3.0.2\include\wx\gtk\spinbutt.h
+
+1412631242 c:\wxwidgets-3.0.2\include\wx\gtk1\spinbutt.h
+
+1412631244 c:\wxwidgets-3.0.2\include\wx\osx\spinbutt.h
+	"wx/control.h"
+	"wx/event.h"
+
+1412631242 c:\wxwidgets-3.0.2\include\wx\cocoa\spinbutt.h
+
+1412631244 c:\wxwidgets-3.0.2\include\wx\os2\spinbutt.h
+	"wx/control.h"
+	"wx/event.h"
 
