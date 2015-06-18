@@ -6,29 +6,29 @@
 			<Cursor1 position="507" topLine="4" />
 		</Cursor>
 	</File>
-	<File name="ColorControlApp.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="ColorControlApp.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="515" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="ColorControlMain.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1623" topLine="60" />
+			<Cursor1 position="466" topLine="48" />
 		</Cursor>
 	</File>
 	<File name="ColorControlMain.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="506" topLine="6" />
+			<Cursor1 position="484" topLine="6" />
 		</Cursor>
 	</File>
 	<File name="GUIFrame.cpp" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="13661" topLine="299" />
+			<Cursor1 position="15620" topLine="327" />
 		</Cursor>
 	</File>
 	<File name="GUIFrame.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1005" topLine="12" />
+			<Cursor1 position="979" topLine="12" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>
