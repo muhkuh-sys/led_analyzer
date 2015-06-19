@@ -27,13 +27,16 @@
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/statbox.h>
-#include <wx/radiobox.h>
 #include <wx/scrolwin.h>
+#include <wx/notebook.h>
 #include <wx/panel.h>
 #include <wx/statusbr.h>
 #include <wx/frame.h>
 #include <wx/checkbox.h>
+#include <wx/choice.h>
 #include <wx/msgdlg.h>
+#include <wx/log.h>
+
 ///////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -50,17 +53,14 @@ class GUIFrame : public wxFrame
 			wxID_MENUSAVE,
 			wxID_MENUOPEN,
 			wxID_TOLERANCES,
-			wxID_SENSORS,
 			wxID_NETX,
 			wxID_QUICKGUIDE,
 			wxID_BPCOCO,
 			wxID_SCAN,
 			wxID_CONNECT,
-			wxID_MODE,
 			wxID_GENERATE,
 			wxID_USE,
 			wxID_START,
-			wxID_SCROLLEDPANEL,
 			wxID_MYTEXT,
 			idStatusBar
 		};
@@ -81,15 +81,24 @@ class GUIFrame : public wxFrame
 		wxStaticText* m_stNumbConnected;
 		wxTextCtrl* m_textCtrlConnected;
 		wxStaticText* m_stHilscher;
-		wxRadioBox* m_rbHWType;
 		wxButton* m_buttonGenerate;
 		wxButton* m_buttonUseTestfile;
 		wxButton* m_buttonStart;
-		wxScrolledWindow* m_swData;
-		wxPanel* m_panelLog;
+		wxNotebook* m_nbData;
+		wxScrolledWindow* m_swColors;
+		wxDataViewListCtrl* m_dvlColors;
+		wxDataViewColumn* m_cSensorNo;
+		wxDataViewColumn* m_cWavelength;
+		wxDataViewColumn* m_cSaturation;
+		wxDataViewColumn* m_cIllumination;
+		wxDataViewColumn* m_cColor;
+		wxDataViewColumn* m_cGain;
+		wxDataViewColumn* m_cIntegration;
+		wxScrolledWindow* m_swTestdefinition;
+		wxScrolledWindow* m_swLog;
 		wxTextCtrl* m_text;
 		wxStatusBar* statusBar;
-
+		wxLog* m_pOldLogTarget;
 
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnScan( wxCommandEvent& event ) { event.Skip(); }
@@ -103,9 +112,38 @@ class GUIFrame : public wxFrame
 
 	public:
 
-		GUIFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("ColorControl"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 650,792 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		GUIFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("ColorControl"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 927,792 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 
 		~GUIFrame();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class PanelHeader
+///////////////////////////////////////////////////////////////////////////////
+class PanelHeader : public wxPanel
+{
+	private:
+
+	protected:
+		wxStaticText* m_stSensor;
+		wxStaticText* m_stName;
+		wxStaticText* m_stWavelength;
+		wxStaticText* m_stSaturation;
+		wxStaticText* m_stIllumination;
+		wxStaticText* m_stColor;
+		wxStaticText* m_stPintype;
+		wxStaticText* m_stPinNo;
+		wxStaticText* m_stPinvalue;
+		wxStaticText* m_stPinDefValue;
+		wxStaticText* m_tolWl;
+		wxStaticText* m_tolSat;
+		wxStaticText* m_tolLux;
+
+	public:
+
+		PanelHeader( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 932,35 ), long style = wxTAB_TRAVERSAL );
+		~PanelHeader();
 
 };
 
@@ -119,14 +157,14 @@ class PanelSensor : public wxPanel
 	protected:
 		wxTextCtrl* m_txtCtrlSensorNo;
 		wxCheckBox* m_cbUseSet1;
-		wxStaticBitmap* m_bmSet1;
-		wxStaticBitmap* m_bmClear1;
-		wxCheckBox* m_cbUseSet11;
-		wxStaticBitmap* m_bmSet11;
-		wxStaticBitmap* m_bmClear11;
-		wxCheckBox* m_cbUseSet12;
-		wxStaticBitmap* m_bmSet12;
-		wxStaticBitmap* m_bmClear12;
+		wxBitmapButton* m_bpButtonPaste1;
+		wxBitmapButton* m_bpButtonClear1;
+		wxCheckBox* m_cbUseSet2;
+		wxBitmapButton* m_bpButtonPaste2;
+		wxBitmapButton* m_bmButtonClear2;
+		wxCheckBox* m_cbUseSet3;
+		wxBitmapButton* m_bmButtonPaste3;
+		wxBitmapButton* m_bpButtonClear3;
 		wxTextCtrl* m_txtCtrlCurName;
 		wxTextCtrl* m_txtCtrlSpName1;
 		wxTextCtrl* m_txtCtrlSpName2;
@@ -139,10 +177,55 @@ class PanelSensor : public wxPanel
 		wxTextCtrl* m_txtCtrlSpSat1;
 		wxTextCtrl* m_txtCtrlSpSat2;
 		wxTextCtrl* m_txtCtrlSpSat3;
+		wxTextCtrl* m_txtCtrlCurIllu;
+		wxTextCtrl* m_txtCtrlSpIllu1;
+		wxTextCtrl* m_txtCtrlSpIllu2;
+		wxTextCtrl* m_txtCtrlSpIllu3;
+		wxTextCtrl* m_txtCtrlCurColor;
+		wxTextCtrl* m_txtCtrlSpColor1;
+		wxTextCtrl* m_txtCtrlSpColor2;
+		wxTextCtrl* m_txtCtrlSpColor3;
+		wxChoice* m_chCurPintype;
+		wxChoice* m_chSpPintype1;
+		wxChoice* m_chSpPintype2;
+		wxChoice* m_chSpPintype3;
+		wxTextCtrl* m_txtCtrlCurPinNo;
+		wxTextCtrl* m_txtCtrlSpPinNo1;
+		wxTextCtrl* m_txtCtrlSpPinNo2;
+		wxTextCtrl* m_txtCtrlSpPinNo3;
+		wxChoice* m_chCurPinValue;
+		wxChoice* m_choiceSpPinValue1;
+		wxChoice* m_choiceSpPinValue2;
+		wxChoice* m_choiceSpPinValue3;
+		wxChoice* m_chCurDefPinValue;
+		wxChoice* m_chSpDefPinValue1;
+		wxChoice* m_chSpDefPinValue2;
+		wxChoice* m_chSpDefPinValue3;
+		wxTextCtrl* m_txtCtrlTolNm;
+		wxTextCtrl* m_txtCtrlSpTolNm1;
+		wxTextCtrl* m_txtCtrlSpTolNm2;
+		wxTextCtrl* m_txtCtrlSpTolNm3;
+		wxTextCtrl* m_txtCtrlTolSat;
+		wxTextCtrl* m_txtCtrlSpTolSat1;
+		wxTextCtrl* m_txtCtrlSpTolSat2;
+		wxTextCtrl* m_txtCtrlSpTolSat3;
+		wxTextCtrl* m_txtCtrlTolIllu;
+		wxTextCtrl* m_txtCtrlSpTolIllu1;
+		wxTextCtrl* m_txtCtrlSpTolIllu2;
+		wxTextCtrl* m_txtCtrlSpTolIllu3;
+
+		// Virtual event handlers, overide them in your derived class
+		virtual void OnPasteSet1( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnClearSet1( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnPasteSet2( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnClearSet2( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnPasteSet3( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnClearSet3( wxCommandEvent& event ) { event.Skip(); }
+
 
 	public:
 
-		PanelSensor( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxTAB_TRAVERSAL );
+		PanelSensor( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 832,150 ), long style = wxTAB_TRAVERSAL );
 		~PanelSensor();
 
 };

@@ -49,10 +49,23 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 ColorControlFrame::ColorControlFrame(wxFrame *frame)
     : GUIFrame(frame)
 {
-#if wxUSE_STATUSBAR
-    statusBar->SetStatusText(_("Hello Code::Blocks user!"), 0);
-    statusBar->SetStatusText(wxbuildinfo(short_f), 1);
-#endif
+    // set new log target
+
+    m_pLogTarget = new wxLogTextCtrl(m_text);
+    m_pOldLogTarget = wxLog::SetActiveTarget(m_pLogTarget);
+
+    if( m_pOldLogTarget !=  NULL)
+    {
+        delete m_pOldLogTarget;
+    }
+
+
+    wxLog::SetVerbose(true);
+    wxLog::SetLogLevel(wxLOG_Debug );
+
+    wxLogMessage(wxT("Welcome to Color Control, where sugar grows on trees... \n"));
+
+
 }
 
 ColorControlFrame::~ColorControlFrame()

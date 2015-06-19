@@ -16,6 +16,7 @@
 
 
 #include "GUIFrame.h"
+#include "CSensorData.h"
 
 class ColorControlFrame: public GUIFrame
 {
@@ -28,6 +29,8 @@ class ColorControlFrame: public GUIFrame
         virtual void OnAbout(wxCommandEvent& event);
         virtual void OnScan(wxCommandEvent& event);
         virtual void OnConnect(wxCommandEvent& event);
+
+        wxLog *m_pLogTarget;
 
 
 };

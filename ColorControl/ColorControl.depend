@@ -1690,11 +1690,12 @@
 1412631244 c:\wxwidgets-3.0.2\include\wx\univ\theme.h
 	"wx/string.h"
 
-1434639703 c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.h
+1434723335 c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.h
 	"ColorControlApp.h"
 	"GUIFrame.h"
+	"CSensorData.h"
 
-1434640051 c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.h
+1434724593 c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -1714,13 +1715,15 @@
 	<wx/stattext.h>
 	<wx/textctrl.h>
 	<wx/statbox.h>
-	<wx/radiobox.h>
 	<wx/scrolwin.h>
+	<wx/notebook.h>
 	<wx/panel.h>
 	<wx/statusbr.h>
 	<wx/frame.h>
 	<wx/checkbox.h>
+	<wx/choice.h>
 	<wx/msgdlg.h>
+	<wx/log.h>
 
 1412631242 c:\wxwidgets-3.0.2\include\wx\artprov.h
 	"wx/string.h"
@@ -2740,11 +2743,11 @@
 
 1412631244 c:\wxwidgets-3.0.2\include\wx\msw\rcdefs.h
 
-1434639708 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
+1434723522 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
 	"wx_pch.h"
 	"ColorControlMain.h"
 
-1434639652 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.cpp
+1434724749 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.cpp
 	"wx/wxprec.h"
 	<wx/wx.h>
 	"GuiFrame.h"
@@ -3397,4 +3400,16 @@
 1412631244 c:\wxwidgets-3.0.2\include\wx\os2\spinbutt.h
 	"wx/control.h"
 	"wx/event.h"
+
+1434720893 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\cdatasensor.h
+	"GUIFrame.h"
+
+1434720603 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\cdatasensor.cpp
+	"CDataSensor.h"
+
+1434726186 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\csensordata.h
+	"../GUIFrame.h"
+
+1434725392 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\csensordata.cpp
+	"CSensorData.h"
 
