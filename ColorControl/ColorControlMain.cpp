@@ -17,6 +17,7 @@
 
 #include "ColorControlMain.h"
 
+
 //helper functions
 enum wxbuildinfoformat {
     short_f, long_f };
@@ -50,7 +51,6 @@ ColorControlFrame::ColorControlFrame(wxFrame *frame)
     : GUIFrame(frame)
 {
     // set new log target
-
     m_pLogTarget = new wxLogTextCtrl(m_text);
     m_pOldLogTarget = wxLog::SetActiveTarget(m_pLogTarget);
 
@@ -59,10 +59,8 @@ ColorControlFrame::ColorControlFrame(wxFrame *frame)
         delete m_pOldLogTarget;
     }
 
-
     wxLog::SetVerbose(true);
     wxLog::SetLogLevel(wxLOG_Debug );
-
     wxLogMessage(wxT("Welcome to Color Control, where sugar grows on trees... \n"));
 
 
@@ -70,6 +68,7 @@ ColorControlFrame::ColorControlFrame(wxFrame *frame)
 
 ColorControlFrame::~ColorControlFrame()
 {
+    delete[] m_device;
 }
 
 void ColorControlFrame::OnClose(wxCloseEvent &event)
@@ -90,14 +89,84 @@ void ColorControlFrame::OnAbout(wxCommandEvent &event)
 
 void ColorControlFrame::OnScan(wxCommandEvent& event)
 {
-    m_text->AppendText(wxT("You just clicked on Scan button\n"));
+
+    wxLogMessage(wxT("You just clicked on Scan Button"));
 
 }
 
 void ColorControlFrame::OnConnect(wxCommandEvent& event)
 {
-    m_text->AppendText(wxT("You just clicked on Connect buton\n"));
+
+   int number = 2;
+   if(m_device == NULL)
+   {
+        m_device = new CDevice[number];
+        this->CreateRows(number);
+        this->CreateTestPanels(number);
+   }
+
+   else wxLogMessage("You are already connected");
 
 }
 
 
+void ColorControlFrame::UpdateData()
+{
+
+}
+
+void ColorControlFrame::CreateRows(int numberOfDevices)
+{
+
+    for(int i = 0; i < numberOfDevices; i++)
+    {
+       for(int j = 0; j<16; j++)
+       {
+            wxVector<wxVariant> rowdata;
+            rowdata.push_back(i*16 + (j + 1)); // sensorno
+            rowdata.push_back(wxVariant(""));  // wavelength
+            rowdata.push_back(wxVariant(""));  // saturation
+            rowdata.push_back(wxVariant(""));  // illumination
+            rowdata.push_back(wxVariant(""));  // m_cColor
+            rowdata.push_back(wxVariant(""));  // gain
+            rowdata.push_back(wxVariant(""));  // inttime
+
+            m_dvlColors->AppendItem(rowdata);
+       }
+    }
+
+
+}
+
+
+void ColorControlFrame::CreateTestPanels(int numberOfDevices)
+{
+    wxBoxSizer* bSizerTestDefinition;
+
+
+    bSizerTestDefinition = new wxBoxSizer( wxVERTICAL );
+
+    for (int i = 0; i< numberOfDevices; i++)
+    {
+        for(int j = 0; j < 16; j++)
+        {
+            m_sensorPanels.push_back((new PanelSensor(m_swTestdefinition, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSTATIC_BORDER)));
+        }
+    }
+
+
+
+    for(int i = 0; i < numberOfDevices; i++)
+    {
+        for(int j = 0; j < 16; j++)
+        {
+           bSizerTestDefinition->Add(m_sensorPanels.at(i*16 + j), 1, wxEXPAND);
+        }
+    }
+
+
+    m_swTestdefinition->SetSizer(bSizerTestDefinition);
+    bSizerTestDefinition->Fit(m_swTestdefinition);
+    m_swTestdefinition->Layout();
+
+}

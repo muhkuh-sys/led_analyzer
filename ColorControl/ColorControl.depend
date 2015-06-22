@@ -3413,3 +3413,72 @@
 1434725392 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\csensordata.cpp
 	"CSensorData.h"
 
+1434645373 source:c:\led_analyzer\colorcontrol\colorcontrolapp.cpp
+	"wx_pch.h"
+	"ColorControlApp.h"
+	"ColorControlMain.h"
+
+1434813020 c:\led_analyzer\colorcontrol\colorcontrolapp.h
+	<wx/app.h>
+
+1434830814 c:\led_analyzer\colorcontrol\colorcontrolmain.h
+	"ColorControlApp.h"
+	"GUIFrame.h"
+	"CSensorData.h"
+	"CDevice.h"
+
+1434831112 c:\led_analyzer\colorcontrol\guiframe.h
+	<wx/artprov.h>
+	<wx/xrc/xmlres.h>
+	<wx/string.h>
+	<wx/bitmap.h>
+	<wx/image.h>
+	<wx/icon.h>
+	<wx/menu.h>
+	<wx/gdicmn.h>
+	<wx/font.h>
+	<wx/colour.h>
+	<wx/settings.h>
+	<wx/statbmp.h>
+	<wx/button.h>
+	<wx/dataview.h>
+	<wx/bmpbuttn.h>
+	<wx/sizer.h>
+	<wx/stattext.h>
+	<wx/textctrl.h>
+	<wx/statbox.h>
+	<wx/scrolwin.h>
+	<wx/notebook.h>
+	<wx/panel.h>
+	<wx/statusbr.h>
+	<wx/frame.h>
+	<wx/checkbox.h>
+	<wx/choice.h>
+	<wx/msgdlg.h>
+	<wx/log.h>
+	<wx/dynlib.h>
+
+1434811989 c:\led_analyzer\colorcontrol\include\csensordata.h
+	"../GUIFrame.h"
+
+1434831218 source:c:\led_analyzer\colorcontrol\colorcontrolmain.cpp
+	"wx_pch.h"
+	"ColorControlMain.h"
+
+1434831264 source:c:\led_analyzer\colorcontrol\guiframe.cpp
+	"wx/wxprec.h"
+	<wx/wx.h>
+	"GuiFrame.h"
+
+1434645374 source:c:\led_analyzer\colorcontrol\resource.rc
+	"wx/msw/wx.rc"
+
+1434822636 source:c:\led_analyzer\colorcontrol\src\cdevice.cpp
+	"CDevice.h"
+
+1434825814 c:\led_analyzer\colorcontrol\include\cdevice.h
+	"CSensorData.h"
+
+1434815873 source:c:\led_analyzer\colorcontrol\src\csensordata.cpp
+	"CSensorData.h"
+

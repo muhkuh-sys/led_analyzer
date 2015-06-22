@@ -25,6 +25,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	this->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INFOTEXT ) );
 	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
 
+
 	menuBarMain = new wxMenuBar( 0 );
 	mMenuFile = new wxMenu();
 	wxMenuItem* menuItem_save;
@@ -206,14 +207,14 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizerColors;
 	bSizerColors = new wxBoxSizer( wxVERTICAL );
 
-	m_dvlColors = new wxDataViewListCtrl( m_swColors, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
-	m_cSensorNo = m_dvlColors->AppendTextColumn( wxT("Sensor") );
-	m_cWavelength = m_dvlColors->AppendTextColumn( wxT("Wavelength") );
-	m_cSaturation = m_dvlColors->AppendTextColumn( wxT("Saturation") );
-	m_cIllumination = m_dvlColors->AppendTextColumn( wxT("Illumination") );
-	m_cColor = m_dvlColors->AppendTextColumn( wxT("Color") );
-	m_cGain = m_dvlColors->AppendTextColumn( wxT("Gain") );
-	m_cIntegration = m_dvlColors->AppendTextColumn( wxT("Integration Time") );
+	m_dvlColors = new wxDataViewListCtrl( m_swColors, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxDV_HORIZ_RULES | wxDV_VERT_RULES );
+	m_cSensorNo = m_dvlColors->AppendTextColumn( wxT("Sensor"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
+	m_cWavelength = m_dvlColors->AppendTextColumn( wxT("Wavelength"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
+	m_cSaturation = m_dvlColors->AppendTextColumn( wxT("Saturation"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
+	m_cIllumination = m_dvlColors->AppendTextColumn( wxT("Illumination"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
+	m_cColor = m_dvlColors->AppendTextColumn( wxT("Color"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
+	m_cGain = m_dvlColors->AppendTextColumn( wxT("Gain"), wxDATAVIEW_CELL_EDITABLE, -1, wxALIGN_CENTER );
+	m_cIntegration = m_dvlColors->AppendTextColumn( wxT("Integration Time"), wxDATAVIEW_CELL_EDITABLE, -1, wxALIGN_CENTER );
 	bSizerColors->Add( m_dvlColors, 1, wxEXPAND, 5 );
 
 
@@ -223,13 +224,10 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_nbData->AddPage( m_swColors, wxT("Colors"), false );
 	m_swTestdefinition = new wxScrolledWindow( m_nbData, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
 	m_swTestdefinition->SetScrollRate( 5, 5 );
-	wxBoxSizer* bSizerTestDefinition;
-	bSizerTestDefinition = new wxBoxSizer( wxVERTICAL );
+
+    m_panelHeader = new PanelHeader(m_swTestdefinition, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
 
 
-	m_swTestdefinition->SetSizer( bSizerTestDefinition );
-	m_swTestdefinition->Layout();
-	bSizerTestDefinition->Fit( m_swTestdefinition );
 	m_nbData->AddPage( m_swTestdefinition, wxT("Testdefinition"), true );
 
 	bSizerData->Add( m_nbData, 1, wxEXPAND | wxALL, 5 );
@@ -244,7 +242,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizerLog;
 	bSizerLog = new wxBoxSizer( wxVERTICAL );
 
-	m_text = new wxTextCtrl( m_swLog, wxID_MYTEXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_text = new wxTextCtrl( m_swLog, wxID_MYTEXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY );
 	m_text->SetMinSize( wxSize( -1,100 ) );
 
     m_pOldLogTarget = new wxLogTextCtrl(m_text);

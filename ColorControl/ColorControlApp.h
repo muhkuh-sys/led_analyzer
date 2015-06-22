@@ -19,6 +19,7 @@ class ColorControlApp : public wxApp
 
     private:
 
+
 };
 
 #endif // COLORCONTROLAPP_H

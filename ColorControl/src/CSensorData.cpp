@@ -12,6 +12,16 @@ CSensorData::~CSensorData()
     //dtor
 }
 
+void CSensorData::SetPosition(int pos)
+{
+    if((pos>0) && (pos<17)) m_posSensor = pos;
+    else
+    {
+       wxLogMessage(wxT("ERROR unknown sensor position"));
+       m_posSensor = 999;
+    }
+}
+
 void CSensorData::SetColor(unsigned char red, unsigned char green, unsigned char blue)
 {
     m_rgbColor.Set(red, green, blue);

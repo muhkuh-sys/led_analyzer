@@ -36,9 +36,36 @@
 #include <wx/choice.h>
 #include <wx/msgdlg.h>
 #include <wx/log.h>
+#include <wx/dynlib.h>
 
-///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+/// Class PanelHeader
+///////////////////////////////////////////////////////////////////////////////
+class PanelHeader : public wxPanel
+{
+	private:
 
+	protected:
+		wxStaticText* m_stSensor;
+		wxStaticText* m_stName;
+		wxStaticText* m_stWavelength;
+		wxStaticText* m_stSaturation;
+		wxStaticText* m_stIllumination;
+		wxStaticText* m_stColor;
+		wxStaticText* m_stPintype;
+		wxStaticText* m_stPinNo;
+		wxStaticText* m_stPinvalue;
+		wxStaticText* m_stPinDefValue;
+		wxStaticText* m_tolWl;
+		wxStaticText* m_tolSat;
+		wxStaticText* m_tolLux;
+
+	public:
+
+		PanelHeader( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 932,35 ), long style = wxTAB_TRAVERSAL );
+		~PanelHeader();
+
+};
 ///////////////////////////////////////////////////////////////////////////////
 /// Class GUIFrame
 ///////////////////////////////////////////////////////////////////////////////
@@ -100,6 +127,8 @@ class GUIFrame : public wxFrame
 		wxStatusBar* statusBar;
 		wxLog* m_pOldLogTarget;
 
+		PanelHeader* m_panelHeader;
+
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnScan( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSerialUp( wxCommandEvent& event ) { event.Skip(); }
@@ -118,34 +147,7 @@ class GUIFrame : public wxFrame
 
 };
 
-///////////////////////////////////////////////////////////////////////////////
-/// Class PanelHeader
-///////////////////////////////////////////////////////////////////////////////
-class PanelHeader : public wxPanel
-{
-	private:
 
-	protected:
-		wxStaticText* m_stSensor;
-		wxStaticText* m_stName;
-		wxStaticText* m_stWavelength;
-		wxStaticText* m_stSaturation;
-		wxStaticText* m_stIllumination;
-		wxStaticText* m_stColor;
-		wxStaticText* m_stPintype;
-		wxStaticText* m_stPinNo;
-		wxStaticText* m_stPinvalue;
-		wxStaticText* m_stPinDefValue;
-		wxStaticText* m_tolWl;
-		wxStaticText* m_tolSat;
-		wxStaticText* m_tolLux;
-
-	public:
-
-		PanelHeader( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 932,35 ), long style = wxTAB_TRAVERSAL );
-		~PanelHeader();
-
-};
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class PanelSensor

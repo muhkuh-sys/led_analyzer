@@ -17,6 +17,7 @@
 
 #include "GUIFrame.h"
 #include "CSensorData.h"
+#include "CDevice.h"
 
 class ColorControlFrame: public GUIFrame
 {
@@ -30,7 +31,15 @@ class ColorControlFrame: public GUIFrame
         virtual void OnScan(wxCommandEvent& event);
         virtual void OnConnect(wxCommandEvent& event);
 
+        void UpdateData();
+        void CreateRows(int numberOfDevices);
+        void CreateTestPanels(int numberOfDevices);
+
+        CDevice* m_device;
         wxLog *m_pLogTarget;
+        //PanelSensor* m_sensorPanels;
+        wxVector<PanelSensor*> m_sensorPanels;
+        //PanelHeader m_panelHeader;
 
 
 };
