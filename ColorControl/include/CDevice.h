@@ -10,6 +10,8 @@ class CColorController
         void SetValues(int pos[16], int wavelength[16], int saturation[16], float illuminatin[16],
                         wxColor color[16], tcs3472_gain_t gain[16], tcs3472_intTime_t intTime[16] );
         virtual ~CColorController();
+        bool IsConnected(){return m_isConnected;};
+        void ConnectDevice(int numberOfDevices){;};
     protected:
     private:
         CSensorData m_sensorData[16];

@@ -37,11 +37,12 @@ class ColorControlFrame: public GUIFrame
         void CreateTestPanels(int numberOfDevices);
         void ClearTestPanels();
 
+        int m_numberOfDevices;
         wxLog *m_pLogTarget;
-        CColorController *m_cocoDevice;
         CView* m_view;
+
         wxVector<PanelSensor*> m_sensorPanels;
-        //PanelHeader m_panelHeader;
+        wxVector<CColorController*> m_cocoDevices;
 
 };
 

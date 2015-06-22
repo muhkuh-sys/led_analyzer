@@ -19,10 +19,11 @@
 
 extern "C"
 {
-#define  lua_c
-#include "lua.h"
-#include "lauxlib.h"
-#include "lualib.h"
+    #define  lua_c
+    #include "lua.h"
+    #include "lualib.h"
+    #include "lauxlib.h"
+
 }
 
 
@@ -59,10 +60,13 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 ColorControlFrame::ColorControlFrame(wxFrame *frame)
     : GUIFrame(frame)
 {
+    m_numberOfDevices = 2;
     // View Class which updates refreshes and takes care about data to be shown
     // set new log target
     m_pLogTarget = new wxLogTextCtrl(m_text);
     m_pOldLogTarget = wxLog::SetActiveTarget(m_pLogTarget);
+    // Redirect your std::cout to the same text
+
 
     if( m_pOldLogTarget !=  NULL)
     {
@@ -78,7 +82,7 @@ ColorControlFrame::ColorControlFrame(wxFrame *frame)
 
 ColorControlFrame::~ColorControlFrame()
 {
-    delete[] m_cocoDevice;
+
 }
 
 void ColorControlFrame::OnClose(wxCloseEvent &event)
@@ -93,37 +97,51 @@ void ColorControlFrame::OnQuit(wxCommandEvent &event)
 
 void ColorControlFrame::OnAbout(wxCommandEvent &event)
 {
-   // lua_State *ptLuaState;
+    lua_State *ptLuaState = lua_open();
 
     wxString msg = wxbuildinfo(long_f);
     wxMessageBox(msg, _("Welcome to..."));
-
-    lua_State *ptLuaState = lua_open();
 
 }
 
 void ColorControlFrame::OnScan(wxCommandEvent& event)
 {
 
-    wxLogMessage(wxT("You just clicked on Scan Button"));
+    if(m_cocoDevices.empty())
+      {
+        for(int i = 0; i < m_numberOfDevices; i++)
+        {
+            m_cocoDevices.push_back(new CColorController);
+        }
 
+      }
+
+      //m_numberOfDevices ...
+
+    else wxLogMessage("Please Disconnect first");
 }
 
 void ColorControlFrame::OnConnect(wxCommandEvent& event)
 {
 
-   int number = 2;
-   if(m_cocoDevice == NULL)
-   {
-        m_cocoDevice = new CColorController[number];
-        this->CreateRows(number);
-        this->CreateTestPanels(number);
-   }
 
-   else
-   {
-       wxLogMessage("You are already connected");
-   }
+
+  if(m_cocoDevices.empty())
+  {
+    wxLogMessage("Please Scan for devices first");
+  }
+  else
+  {
+    wxLogMessage("Connecting ..");
+
+    for(int i = 0; i < m_numberOfDevices; i++)
+    {
+        m_cocoDevices.at(i)->ConnectDevice(5);
+    }
+    CreateRows(m_numberOfDevices);
+    CreateTestPanels(m_numberOfDevices);
+  }
+
 }
 
 
@@ -131,13 +149,14 @@ void ColorControlFrame::OnDisconnect(wxCommandEvent& event)
 {
     wxLogMessage("you clicked on disconnet");
 
-    if(m_cocoDevice != NULL)
-    {
-        delete[] m_cocoDevice;
-    }
 
+    // Clear your Color Controller List
+    if(!m_cocoDevices.empty()) m_cocoDevices.clear();
+
+    // Delete the rows in the table
     m_dvlColors->DeleteAllItems();
 
+    // Delete all the test panels
     if(!m_sensorPanels.empty())
     {
         this->ClearTestPanels();
@@ -165,16 +184,16 @@ void ColorControlFrame::CreateRows(int numberOfDevices)
        }
     }
 
-
 }
 
 void ColorControlFrame::CreateTestPanels(int numberOfDevices)
 {
-    m_swTestdefinition->Hide();
 
+    m_swTestdefinition->Hide();
     wxBoxSizer* bSizerTestDefinition;
+
     bSizerTestDefinition = new wxBoxSizer( wxVERTICAL );
-    m_panelHeader = new PanelHeader(m_swTestdefinition, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
+    m_panelHeader = new PanelHeader(m_swTestdefinition, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxALIGN_TOP);
 
 
     bSizerTestDefinition->Add(m_panelHeader, 0, wxEXPAND, 0);
