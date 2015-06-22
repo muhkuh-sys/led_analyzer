@@ -130,8 +130,11 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	bSizerCommunication->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_buttonConnect = new wxButton( this, wxID_CONNECT, wxT("CONNECT"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_buttonConnect   = new wxButton( this, wxID_CONNECT, wxT("CONNECT"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_buttonDisconnect = new wxButton( this, wxID_DISCONNECT, wxT("DISCONNECT"), wxDefaultPosition, wxDefaultSize, 0 );
+
 	bSizerCommunication->Add( m_buttonConnect, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+	bSizerCommunication->Add( m_buttonDisconnect, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
 	wxBoxSizer* bSizerConnected;
 	bSizerConnected = new wxBoxSizer( wxHORIZONTAL );
@@ -189,9 +192,30 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_buttonUseTestfile = new wxButton( this, wxID_USE, wxT("Use Testfile"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizerTestfile->Add( m_buttonUseTestfile, 0, wxALL|wxEXPAND, 5 );
 
+    wxStaticBoxSizer* sbSizerTestmode;
+    sbSizerTestmode = new wxStaticBoxSizer ( new wxStaticBox(this, wxID_ANY, wxT("Testmode" )  ), wxHORIZONTAL);
+
+    wxBoxSizer* bSizerSingleCont;
+    bSizerSingleCont = new wxBoxSizer(wxVERTICAL);
+
+	m_rbSingle = new wxRadioButton( this, wxID_ANY, wxT("Single"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_rbSingle->SetValue(true);
+    bSizerSingleCont->Add(m_rbSingle, 0, wxALL, 5);
+
+	m_rbContinuous = new wxRadioButton( this, wxID_ANY, wxT("Continuous"), wxDefaultPosition, wxDefaultSize, 0 );
+    bSizerSingleCont->Add(m_rbContinuous, 0, wxALL, 5);
+
+    sbSizerTestmode->Add(bSizerSingleCont);
+
+    wxString m_chTimeChoices[] = { wxT("0.5 sec"), wxT("1 sec"), wxT("2 sec"), wxT("5 sec"), wxT("10 sec") };
+	int m_chTimeNChoices = sizeof( m_chTimeChoices ) / sizeof( wxString );
+	m_chTime = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chTimeNChoices, m_chTimeChoices, 0 );
+	m_chTime->SetSelection( 0 );
+	sbSizerTestmode->Add( m_chTime, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5 );
+
 
 	bSizerButtons->Add( sbSizerTestfile, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
-
+    bSizerButtons->Add(sbSizerTestmode, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
 
 	bSizerButtons->Add( 0, 0, 1, wxEXPAND, 5 );
 
@@ -213,22 +237,40 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_cSaturation = m_dvlColors->AppendTextColumn( wxT("Saturation"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
 	m_cIllumination = m_dvlColors->AppendTextColumn( wxT("Illumination"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
 	m_cColor = m_dvlColors->AppendTextColumn( wxT("Color"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
-	m_cGain = m_dvlColors->AppendTextColumn( wxT("Gain"), wxDATAVIEW_CELL_EDITABLE, -1, wxALIGN_CENTER );
-	m_cIntegration = m_dvlColors->AppendTextColumn( wxT("Integration Time"), wxDATAVIEW_CELL_EDITABLE, -1, wxALIGN_CENTER );
+
+    wxArrayString astrGainchoices;
+    astrGainchoices.Add("GAIN_1X");
+    astrGainchoices.Add("GAIN_4X");
+    astrGainchoices.Add("GAIN_16X");
+    astrGainchoices.Add("GAIN_60X");
+    wxArrayString astrIntchoices;
+    astrIntchoices.Add("TIME_2_4ms");
+    astrIntchoices.Add("TIME_24ms");
+    astrIntchoices.Add("TIME_100ms");
+    astrIntchoices.Add("TIME_154ms");
+    astrIntchoices.Add("TIME_200ms");
+    astrIntchoices.Add("TIME_700ms");
+
+    m_dvcrGain = new wxDataViewChoiceRenderer(astrGainchoices, wxDATAVIEW_CELL_EDITABLE, wxALIGN_CENTER);
+    m_dvcrInt  = new wxDataViewChoiceRenderer(astrIntchoices, wxDATAVIEW_CELL_EDITABLE, wxALIGN_CENTER);
+	m_cGain = new wxDataViewColumn(wxT("Gain"), m_dvcrGain, 5, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
+	m_cIntegration = new wxDataViewColumn(wxT("Integration Time"), m_dvcrInt, 6, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
+    m_dvlColors->AppendColumn(m_cGain);
+    m_dvlColors->AppendColumn(m_cIntegration);
+
 	bSizerColors->Add( m_dvlColors, 1, wxEXPAND, 5 );
 
 
 	m_swColors->SetSizer( bSizerColors );
 	m_swColors->Layout();
 	bSizerColors->Fit( m_swColors );
-	m_nbData->AddPage( m_swColors, wxT("Colors"), false );
+	m_nbData->AddPage( m_swColors, wxT("Colors"), true );
 	m_swTestdefinition = new wxScrolledWindow( m_nbData, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
 	m_swTestdefinition->SetScrollRate( 5, 5 );
+	m_swTestdefinition->SetBackgroundColour ( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW));
 
-    m_panelHeader = new PanelHeader(m_swTestdefinition, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
 
-
-	m_nbData->AddPage( m_swTestdefinition, wxT("Testdefinition"), true );
+	m_nbData->AddPage( m_swTestdefinition, wxT("Testdefinition"), false );
 
 	bSizerData->Add( m_nbData, 1, wxEXPAND | wxALL, 5 );
 
@@ -267,6 +309,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_bpButtonUp->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnSerialUp ), NULL, this );
 	m_bpButtonDown->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnSerialDown ), NULL, this );
 	m_buttonConnect->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnConnect ), NULL, this );
+    m_buttonDisconnect->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnDisconnect ), NULL, this );
 	m_buttonGenerate->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnGenerateTest ), NULL, this );
 	m_buttonUseTestfile->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnUseTest ), NULL, this );
 	m_buttonStart->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnStart ), NULL, this );
@@ -279,6 +322,7 @@ GUIFrame::~GUIFrame()
 	m_bpButtonUp->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnSerialUp ), NULL, this );
 	m_bpButtonDown->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnSerialDown ), NULL, this );
 	m_buttonConnect->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnConnect ), NULL, this );
+    m_buttonDisconnect->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnDisconnect ), NULL, this );
 	m_buttonGenerate->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnGenerateTest ), NULL, this );
 	m_buttonUseTestfile->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnUseTest ), NULL, this );
 	m_buttonStart->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnStart ), NULL, this );
@@ -389,7 +433,7 @@ PanelHeader::~PanelHeader()
 {
 }
 
-PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
+PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, int sensornumber ) : wxPanel( parent, id, pos, size, style )
 {
 	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
 
@@ -402,7 +446,7 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerSensorNumber;
 	bSizerSensorNumber = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlSensorNo = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSensorNo = new wxTextCtrl( this, wxID_ANY, wxString::Format(wxT("%i"), sensornumber), wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_READONLY | wxTE_CENTER );
 	m_txtCtrlSensorNo->SetMaxSize( wxSize( 30,-1 ) );
 
 	bSizerSensorNumber->Add( m_txtCtrlSensorNo, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 2 );

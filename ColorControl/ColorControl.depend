@@ -4,7 +4,7 @@
 	"ColorControlApp.h"
 	"ColorControlMain.h"
 
-1434451613 c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolapp.h
+1434954087 c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolapp.h
 	<wx/app.h>
 
 1412631242 c:\wxwidgets-3.0.2\include\wx\app.h
@@ -1690,12 +1690,14 @@
 1412631244 c:\wxwidgets-3.0.2\include\wx\univ\theme.h
 	"wx/string.h"
 
-1434723335 c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.h
+1434985585 c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.h
 	"ColorControlApp.h"
 	"GUIFrame.h"
 	"CSensorData.h"
+	"CDevice.h"
+	"CView.h"
 
-1434724593 c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.h
+1434976957 c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -1724,6 +1726,8 @@
 	<wx/choice.h>
 	<wx/msgdlg.h>
 	<wx/log.h>
+	<wx/dynlib.h>
+	<wx/radiobut.h>
 
 1412631242 c:\wxwidgets-3.0.2\include\wx\artprov.h
 	"wx/string.h"
@@ -2743,11 +2747,14 @@
 
 1412631244 c:\wxwidgets-3.0.2\include\wx\msw\rcdefs.h
 
-1434723522 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
+1434986223 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
 	"wx_pch.h"
 	"ColorControlMain.h"
+	"lua.h"
+	"lauxlib.h"
+	"lualib.h"
 
-1434724749 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.cpp
+1434980169 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.cpp
 	"wx/wxprec.h"
 	<wx/wx.h>
 	"GuiFrame.h"
@@ -3410,7 +3417,7 @@
 1434726186 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\csensordata.h
 	"../GUIFrame.h"
 
-1434725392 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\csensordata.cpp
+1434954087 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\csensordata.cpp
 	"CSensorData.h"
 
 1434645373 source:c:\led_analyzer\colorcontrol\colorcontrolapp.cpp
@@ -3481,4 +3488,42 @@
 
 1434815873 source:c:\led_analyzer\colorcontrol\src\csensordata.cpp
 	"CSensorData.h"
+
+1434968011 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\cdevice.h
+	"CSensorData.h"
+
+1434979364 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\cdevice.cpp
+	"CDevice.h"
+
+1434975889 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\cview.h
+	"../GUIFrame.h"
+
+1434975794 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\cview.cpp
+	"CView.h"
+
+1430815698 c:\users\subhan\desktop\led_analyzer\lua\lib\lua-5.1.4\src\lua.h
+	<stdarg.h>
+	<stddef.h>
+	"luaconf.h"
+
+1430815698 c:\users\subhan\desktop\led_analyzer\lua\lib\lua-5.1.4\src\luaconf.h
+	<limits.h>
+	<stddef.h>
+	<unistd.h>
+	<io.h>
+	<stdio.h>
+	<stdio.h>
+	<readline/readline.h>
+	<readline/history.h>
+	<assert.h>
+	<math.h>
+	<unistd.h>
+
+1430815698 c:\users\subhan\desktop\led_analyzer\lua\lib\lua-5.1.4\src\lauxlib.h
+	<stddef.h>
+	<stdio.h>
+	"lua.h"
+
+1430815698 c:\users\subhan\desktop\led_analyzer\lua\lib\lua-5.1.4\src\lualib.h
+	"lua.h"
 

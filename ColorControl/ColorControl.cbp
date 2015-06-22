@@ -16,13 +16,16 @@
 					<Add option="-g" />
 					<Add directory="C:/wxWidgets-3.0.2/lib/gcc_dll/mswu" />
 					<Add directory="include" />
+					<Add directory="../lua/lib/lua-5.1.4/src" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="C:/wxWidgets-3.0.2/lib/gcc_dll/mswu" />
 				</ResourceCompiler>
 				<Linker>
 					<Add library="libwxmsw30u.a" />
+					<Add library="..\lua\lib\lua-5.1.4\liblua.dll.a" />
 					<Add directory="C:/wxWidgets-3.0.2/lib/gcc_dll" />
+					<Add directory="include" />
 				</Linker>
 			</Target>
 		</Build>
