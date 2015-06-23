@@ -10,11 +10,6 @@ CColorController::~CColorController()
 
 }
 
-const char* CColorController::GetSerialNumber()
-{
-    return m_serialNumber;
-}
-
 void CColorController::SetValues(int pos[16], int wavelength[16], int saturation[16], float illuminatin[16],
                                  wxColor color[16], tcs3472_gain_t gain[16], tcs3472_intTime_t intTime[16] )
 {
@@ -27,5 +22,6 @@ void CColorController::SetValues(int pos[16], int wavelength[16], int saturation
         m_sensorData[i].SetGain(gain[i]);
         m_sensorData[i].SetIntTime(intTime[i]);
         m_sensorData[i].SetColor(0xff, 0xff, 0xff);
+
     }
 }

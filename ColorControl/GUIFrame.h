@@ -188,6 +188,7 @@ class GUIFrame : public wxFrame
 		wxMenu* mMenuView;
 		wxMenu* mMenuSettings;
 		wxMenu* mMenuHelp;
+		wxMenuItem* menuItem_about;
 		wxStaticBitmap* m_bpCoco;
 		wxButton* m_buttonScan;
 		wxDataViewListCtrl* m_dataViewListSerials;
@@ -234,6 +235,7 @@ class GUIFrame : public wxFrame
 		virtual void OnGenerateTest( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnUseTest( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStart( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAbout( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:

@@ -10,15 +10,24 @@
 #ifndef COLORCONTROLMAIN_H
 #define COLORCONTROLMAIN_H
 
+extern "C"
+{
+    #define  lua_c
+    #include "lua.h"
+    #include "lualib.h"
+    #include "lauxlib.h"
 
+}
 
 #include "ColorControlApp.h"
-
-
 #include "GUIFrame.h"
 #include "CSensorData.h"
 #include "CDevice.h"
-#include "CView.h"
+
+#include <iostream>
+using namespace std;
+
+
 
 class ColorControlFrame: public GUIFrame
 {
@@ -37,11 +46,13 @@ class ColorControlFrame: public GUIFrame
         void CreateTestPanels(int numberOfDevices);
         void ClearTestPanels();
 
-        int m_numberOfDevices;
-        wxLog *m_pLogTarget;
-        CView* m_view;
+        int         m_numberOfDevices;
+        wxLog       *m_pLogTarget;
+        lua_State   *L;
 
+        /* vector contains panels for testfile generation */
         wxVector<PanelSensor*> m_sensorPanels;
+        /* vector contains entries for devices */
         wxVector<CColorController*> m_cocoDevices;
 
 };

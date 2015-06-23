@@ -1690,14 +1690,17 @@
 1412631244 c:\wxwidgets-3.0.2\include\wx\univ\theme.h
 	"wx/string.h"
 
-1434985585 c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.h
+1435062895 c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.h
+	"lua.h"
+	"lualib.h"
+	"lauxlib.h"
 	"ColorControlApp.h"
 	"GUIFrame.h"
 	"CSensorData.h"
 	"CDevice.h"
-	"CView.h"
+	<iostream>
 
-1434976957 c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.h
+1435047918 c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.h
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -2747,14 +2750,11 @@
 
 1412631244 c:\wxwidgets-3.0.2\include\wx\msw\rcdefs.h
 
-1434986223 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
+1435068416 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
 	"wx_pch.h"
 	"ColorControlMain.h"
-	"lua.h"
-	"lauxlib.h"
-	"lualib.h"
 
-1434980169 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.cpp
+1435047926 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.cpp
 	"wx/wxprec.h"
 	<wx/wx.h>
 	"GuiFrame.h"
@@ -3494,10 +3494,10 @@
 1434815873 source:c:\led_analyzer\colorcontrol\src\csensordata.cpp
 	"CSensorData.h"
 
-1434968011 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\cdevice.h
+1435054635 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\cdevice.h
 	"CSensorData.h"
 
-1434979364 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\cdevice.cpp
+1435054785 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\cdevice.cpp
 	"CDevice.h"
 
 1434975889 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\cview.h
@@ -3559,5 +3559,31 @@
 	"lua.h"
 
 1434645374 c:\led_analyzer\lua\lib\lua-5.1.4\src\lualib.h
+	"lua.h"
+
+1434981633 c:\users\subhan\desktop\org.muhkuh.lua-lua\lua-5.1.4\src\lua.h
+	<stdarg.h>
+	<stddef.h>
+	"luaconf.h"
+
+1434981633 c:\users\subhan\desktop\org.muhkuh.lua-lua\lua-5.1.4\src\luaconf.h
+	<limits.h>
+	<stddef.h>
+	<unistd.h>
+	<io.h>
+	<stdio.h>
+	<stdio.h>
+	<readline/readline.h>
+	<readline/history.h>
+	<assert.h>
+	<math.h>
+	<unistd.h>
+
+1434981633 c:\users\subhan\desktop\org.muhkuh.lua-lua\lua-5.1.4\src\lualib.h
+	"lua.h"
+
+1434981633 c:\users\subhan\desktop\org.muhkuh.lua-lua\lua-5.1.4\src\lauxlib.h
+	<stddef.h>
+	<stdio.h>
 	"lua.h"
 

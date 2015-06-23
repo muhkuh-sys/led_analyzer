@@ -9,8 +9,9 @@
 			<Target title="Debug">
 				<Option output="build/ColorControl" prefix_auto="1" extension_auto="1" />
 				<Option object_output="build/obj/" />
-				<Option type="0" />
+				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option use_console_runner="0" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-g" />
@@ -18,17 +19,17 @@
 					<Add option="-lliblua" />
 					<Add directory="C:/wxWidgets-3.0.2/lib/gcc_dll/mswu" />
 					<Add directory="include" />
-					<Add directory="../lua/lib/lua-5.1.4/src" />
+					<Add directory="../../org.muhkuh.lua-lua/lua-5.1.4/src" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="C:/wxWidgets-3.0.2/lib/gcc_dll/mswu" />
 				</ResourceCompiler>
 				<Linker>
 					<Add library="libwxmsw30u.a" />
-					<Add library="liblua.dll.a" />
+					<Add library="..\..\org.muhkuh.lua-lua\build_windows32\lua-5.1.4\liblua.dll.a" />
 					<Add directory="C:/wxWidgets-3.0.2/lib/gcc_dll" />
 					<Add directory="include" />
-					<Add directory="../build_win64/lua/lib/lua-5.1.4" />
+					<Add directory="../../org.muhkuh.lua-lua/build_windows32/lua-5.1.4" />
 				</Linker>
 			</Target>
 		</Build>

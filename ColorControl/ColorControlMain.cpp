@@ -17,14 +17,7 @@
 
 #include "ColorControlMain.h"
 
-extern "C"
-{
-    #define  lua_c
-    #include "lua.h"
-    #include "lualib.h"
-    #include "lauxlib.h"
 
-}
 
 
 
@@ -57,9 +50,16 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 }
 
 
+
+
+
 ColorControlFrame::ColorControlFrame(wxFrame *frame)
     : GUIFrame(frame)
 {
+    char buff[256];
+    char filename[] = "device_test.lua";
+    int error;
+    int number = 0;
     m_numberOfDevices = 2;
     // View Class which updates refreshes and takes care about data to be shown
     // set new log target
@@ -73,16 +73,27 @@ ColorControlFrame::ColorControlFrame(wxFrame *frame)
         delete m_pOldLogTarget;
     }
 
+
     wxLog::SetVerbose(true);
     wxLog::SetLogLevel(wxLOG_Debug );
-    wxLogMessage(wxT("Welcome to Color Control, where sugar grows on trees... \n"));
+    wxLogMessage(wxT("Welcome to Color Control...\n"));
 
+    wxStreamToTextRedirector redirect(m_text);
+
+    /* Open your main lua file where functions are stored */
+    L = lua_open();
+    luaL_openlibs(L);
+
+    if (luaL_loadfile(L, "lua/color_control.lua") || lua_pcall(L, 0, 0, 0))
+    {
+        wxLogMessage("Cannot open the main lua file");
+    }
 
 }
 
 ColorControlFrame::~ColorControlFrame()
 {
-
+ lua_close(L);
 }
 
 void ColorControlFrame::OnClose(wxCloseEvent &event)
@@ -97,7 +108,6 @@ void ColorControlFrame::OnQuit(wxCommandEvent &event)
 
 void ColorControlFrame::OnAbout(wxCommandEvent &event)
 {
-    lua_State *ptLuaState = lua_open();
 
     wxString msg = wxbuildinfo(long_f);
     wxMessageBox(msg, _("Welcome to..."));
@@ -113,17 +123,35 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
         {
             m_cocoDevices.push_back(new CColorController);
         }
-
       }
+    else wxLogMessage("Please Disconnect first");
+
+
+    lua_getglobal(L, "connectDevices");
+    if(lua_pcall(L, 0, 2, 0) != 0) cout << "error" << endl;
+
+
+    if(lua_isnumber(L, -1) != 0) cout << "error" << endl;
+    int test = lua_tonumber(L, -1);
+    //lua_pop(L, -1);
+
+    wxString** astrSerial = (wxString** )lua_touserdata(L, -2);
+    cout << astrSerial[0] << endl;
+
+
+
+
+
+
+
 
       //m_numberOfDevices ...
 
-    else wxLogMessage("Please Disconnect first");
+
 }
 
 void ColorControlFrame::OnConnect(wxCommandEvent& event)
 {
-
 
 
   if(m_cocoDevices.empty())
@@ -136,7 +164,7 @@ void ColorControlFrame::OnConnect(wxCommandEvent& event)
 
     for(int i = 0; i < m_numberOfDevices; i++)
     {
-        m_cocoDevices.at(i)->ConnectDevice(5);
+        //m_cocoDevices.at(i)->ConnectDevice(5);
     }
     CreateRows(m_numberOfDevices);
     CreateTestPanels(m_numberOfDevices);
@@ -190,6 +218,7 @@ void ColorControlFrame::CreateTestPanels(int numberOfDevices)
 {
 
     m_swTestdefinition->Hide();
+    m_swTestdefinition->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
     wxBoxSizer* bSizerTestDefinition;
 
     bSizerTestDefinition = new wxBoxSizer( wxVERTICAL );
@@ -202,7 +231,7 @@ void ColorControlFrame::CreateTestPanels(int numberOfDevices)
     {
         for(int j = 0; j < 16; j++)
         {
-            m_sensorPanels.push_back((new PanelSensor(m_swTestdefinition, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSTATIC_BORDER, i*16 + j)));
+            m_sensorPanels.push_back((new PanelSensor(m_swTestdefinition, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSTATIC_BORDER, i*16 + j + 1)));
         }
     }
 
@@ -217,14 +246,20 @@ void ColorControlFrame::CreateTestPanels(int numberOfDevices)
     }
 
     m_swTestdefinition->SetSizer(bSizerTestDefinition);
+    /* this will make the scroll bars show up right away */
+    m_swTestdefinition->FitInside();
     m_swTestdefinition->Layout();
-    bSizerTestDefinition->Fit(m_swTestdefinition);
+
+    //wxLogMessage("Currently selected page: %i", m_nbData->GetSelection());
+    if(m_nbData->GetSelection() == 1)m_swTestdefinition->Show();
+
 
 }
 
 void ColorControlFrame::ClearTestPanels()
 {
     m_swTestdefinition->Hide();
+    m_swTestdefinition->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
     for(int i = 0; i < 2; i++)
     {
