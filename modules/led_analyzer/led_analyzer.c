@@ -84,7 +84,7 @@ int scan_devices(char** asSerial, unsigned int asLength)
 			printf("... no color controller detected ... quitting.\n");
 			ftdi_list_free(&devlist);
 			ftdi_free(ftdi);
-			return -1;
+			return 0;
 		}
 
 	printf("\n");
