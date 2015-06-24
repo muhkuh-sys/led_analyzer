@@ -8,6 +8,10 @@
 #ifndef __GUIFRAME_H__
 #define __GUIFRAME_H__
 
+#include <iostream>
+using namespace std;
+
+
 #include <wx/artprov.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/string.h>
@@ -214,6 +218,7 @@ class GUIFrame : public wxFrame
 		wxDataViewColumn* m_cColor;
 		wxDataViewColumn* m_cGain;
 		wxDataViewColumn* m_cIntegration;
+		wxDataViewColumn* m_cExceededClear;
 		wxDataViewChoiceRenderer* m_dvcrGain;
 		wxDataViewChoiceRenderer* m_dvcrInt;
 		wxScrolledWindow* m_swTestdefinition;
@@ -236,6 +241,7 @@ class GUIFrame : public wxFrame
 		virtual void OnUseTest( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStart( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAbout( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnQuit( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:

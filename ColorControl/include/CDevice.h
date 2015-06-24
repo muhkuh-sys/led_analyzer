@@ -11,8 +11,9 @@ class CColorController
         void        SetValues(int pos[16], int wavelength[16], int saturation[16], float illuminatin[16],
                     wxColor color[16], tcs3472_gain_t gain[16], tcs3472_intTime_t intTime[16] );
         bool        IsConnected(){return m_isConnected;};
+        void        SetConnectivity(bool status){m_isConnected = status;};
         const char* GetSerialNumber(){return m_serialNumber;};
-        void        SetSerialNumber(const char strSerial[128]);
+        void        SetSerialNumber(const char strSerial[128]){strcpy(m_serialNumber, strSerial);};
 
     protected:
     private:

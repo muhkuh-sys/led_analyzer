@@ -10,24 +10,21 @@
 #ifndef COLORCONTROLMAIN_H
 #define COLORCONTROLMAIN_H
 
-extern "C"
-{
-    #define  lua_c
-    #include "lua.h"
-    #include "lualib.h"
-    #include "lauxlib.h"
-
-}
 
 #include "ColorControlApp.h"
 #include "GUIFrame.h"
 #include "CSensorData.h"
 #include "CDevice.h"
-
-#include <iostream>
-using namespace std;
+#include "CLua.h"
 
 
+/* System States */
+typedef enum e_state_t
+{
+    IS_INITIAL,
+    IS_SCANNED,
+    IS_CONNECTED
+};
 
 class ColorControlFrame: public GUIFrame
 {
@@ -41,14 +38,21 @@ class ColorControlFrame: public GUIFrame
         virtual void OnScan(wxCommandEvent& event);
         virtual void OnConnect(wxCommandEvent& event);
         virtual void OnDisconnect(wxCommandEvent& event);
+        virtual void OnSerialUp  (wxCommandEvent& event);
+        virtual void OnSerialDown(wxCommandEvent& event);
 
         void CreateRows(int numberOfDevices);
         void CreateTestPanels(int numberOfDevices);
         void ClearTestPanels();
+        void UpdateSerialList();
 
         int         m_numberOfDevices;
         wxLog       *m_pLogTarget;
-        lua_State   *L;
+        CLua*       m_pLua;
+        wxString*   m_aStrSerials;
+        e_state_t   m_eState;
+
+
 
         /* vector contains panels for testfile generation */
         wxVector<PanelSensor*> m_sensorPanels;

@@ -70,10 +70,9 @@ function astring2table(astring, numbOfSerials)
 
 	local tSerialnumbers = {}
 	
-	for i = 1, numbOfSerials do
-			
+	for i = 0, numbOfSerials do
 			if led_analyzer.astring_getitem(astring, i) ~= NULL then 
-				tSerialnumbers[i] = led_analyzer.astring_getitem(astring, i)
+				tSerialnumbers[i+1] = led_analyzer.astring_getitem(astring, i)
 			end 
 	end
 			

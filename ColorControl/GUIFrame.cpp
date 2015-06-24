@@ -107,21 +107,21 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_buttonScan = new wxButton( this, wxID_SCAN, wxT("SCAN"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerCommunication->Add( m_buttonScan, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
-	m_dataViewListSerials = new wxDataViewListCtrl( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	m_dataViewListSerials = new wxDataViewListCtrl( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxDV_HORIZ_RULES | wxDV_VERT_RULES );
 	m_dataViewListSerials->SetMinSize( wxSize( -1,150 ) );
 
-	m_dataViewListColumnNo = m_dataViewListSerials->AppendTextColumn( wxT("No.") );
-	m_dataViewListColumnSerial = m_dataViewListSerials->AppendTextColumn( wxT("Serial") );
+	m_dataViewListColumnNo = m_dataViewListSerials->AppendTextColumn( wxT("No."), wxDATAVIEW_CELL_INERT, 40, wxALIGN_CENTER);
+	m_dataViewListColumnSerial = m_dataViewListSerials->AppendTextColumn( wxT("Serial"), wxDATAVIEW_CELL_INERT, 110 );
 	bSizerCommunication->Add( m_dataViewListSerials, 2, wxALL|wxEXPAND, 5 );
 
 	wxBoxSizer* bSizerUpDown;
 	bSizerUpDown = new wxBoxSizer( wxHORIZONTAL );
 
-	m_bpButtonUp = new wxBitmapButton( this, wxID_ANY, wxArtProvider::GetBitmap( wxART_GO_DOWN  ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-	bSizerUpDown->Add( m_bpButtonUp, 1, wxALIGN_LEFT|wxALL, 5 );
+	m_bpButtonDown = new wxBitmapButton( this, wxID_ANY, wxArtProvider::GetBitmap( wxART_GO_DOWN  ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	bSizerUpDown->Add( m_bpButtonDown, 1, wxALIGN_LEFT|wxALL, 5 );
 
-	m_bpButtonDown = new wxBitmapButton( this, wxID_ANY, wxArtProvider::GetBitmap( wxART_GO_UP  ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-	bSizerUpDown->Add( m_bpButtonDown, 1, wxALIGN_RIGHT|wxALL, 5 );
+	m_bpButtonUp = new wxBitmapButton( this, wxID_ANY, wxArtProvider::GetBitmap( wxART_GO_UP  ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	bSizerUpDown->Add( m_bpButtonUp, 1, wxALIGN_RIGHT|wxALL, 5 );
 
 
 	bSizerCommunication->Add( bSizerUpDown, 1, wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5 );
@@ -236,6 +236,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_cSaturation = m_dvlColors->AppendTextColumn( wxT("Saturation"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
 	m_cIllumination = m_dvlColors->AppendTextColumn( wxT("Illumination"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
 	m_cColor = m_dvlColors->AppendTextColumn( wxT("Color"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
+    m_cExceededClear = m_dvlColors->AppendProgressColumn( wxT("Clear Level"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER);
 
     wxArrayString astrGainchoices;
     astrGainchoices.Add("GAIN_1X");
@@ -252,10 +253,11 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
     m_dvcrGain = new wxDataViewChoiceRenderer(astrGainchoices, wxDATAVIEW_CELL_EDITABLE, wxALIGN_CENTER);
     m_dvcrInt  = new wxDataViewChoiceRenderer(astrIntchoices, wxDATAVIEW_CELL_EDITABLE, wxALIGN_CENTER);
-	m_cGain = new wxDataViewColumn(wxT("Gain"), m_dvcrGain, 5, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
-	m_cIntegration = new wxDataViewColumn(wxT("Integration Time"), m_dvcrInt, 6, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
+	m_cGain = new wxDataViewColumn(wxT("Gain"), m_dvcrGain, 6, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
+	m_cIntegration = new wxDataViewColumn(wxT("Integration Time"), m_dvcrInt, 7, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
     m_dvlColors->AppendColumn(m_cGain);
     m_dvlColors->AppendColumn(m_cIntegration);
+
 
 	bSizerColors->Add( m_dvlColors, 1, wxEXPAND, 5 );
 
@@ -314,6 +316,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_buttonUseTestfile->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnUseTest ), NULL, this );
 	m_buttonStart->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnStart ), NULL, this );
 	this->Connect( menuItem_about->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnAbout ) );
+    this->Connect( wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnQuit ) );
 }
 
 GUIFrame::~GUIFrame()

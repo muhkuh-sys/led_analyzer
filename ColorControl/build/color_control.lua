@@ -49,6 +49,7 @@ local aucGains  		= led_analyzer.new_puchar(MAXSENSORS)
 local aucIntTimes 		= led_analyzer.new_puchar(MAXSENSORS)
 -- serial numbers of connected color controller(s) will be stored in asSerials --
 local asSerials 		= led_analyzer.new_astring(MAXSERIALS)
+local tStrSerials		= {}
 -- handle to all connected color controller(s) will be stored in apHandles (note 2 handles per device)
 local apHandles 		= led_analyzer.new_apvoid(MAXHANDLES)
 local numberOfDevices
@@ -60,24 +61,25 @@ local tTestSummary
 local ret 				 = 0
 
 
--- connects to color controller devices with serial numbers given in table tSerials
--- if tSerial doesn't exist, function will connect to all color controller devices 
--- taking the order of their serial numbers into account (serial number 20000 will have a smaller index than 20004)
-function connectDevices(tSerials)
-	
-	local numberOfDevices = 0 
-	local asTempSerials = led_analyzer.new_astring(MAXSERIALS)
-	
+
+function scanDevices()
 	numberOfDevices = led_analyzer.scan_devices(asSerials, MAXSERIALS)
+	tStrSerials = astring2table(asSerials, numberOfDevices)
+	return tStrSerials, numberOfDevices
+end 
+
+-- connects to color controller devices with serial numbers given in table tStrSerials
+-- if tOptionalSerials doesn't exist, function will connect to all color controller devices 
+-- taking the order of their serial numbers into account (serial number 20000 will have a smaller index than 20004)
+function connectDevices(tOptionalSerials)
 	
-	if tSerials == nil then 
-		numberOfDevices = led_analyzer.connect_to_devices(apHandles, MAXHANDLES, asSerials)
-		return numberOfDevices
+	if(tOptionalSerials == nil) then 
+		numberOfDevices = led_analyzer.connect_to_devices(apHandles, MAXHANDLES, table2astring(tStrSerials, asSerials))
 	else 
-		numberOfDevices = led_analyzer.connect_to_devices(apHandles, MAXHANDLES, table2astring(tSerials, asTempSerials))
-		led_analyzer.delete_astring(asTempSerials)
-		return numberOfDevices
+		numberOfDevices = led_analyzer.connect_to_devices(apHandles, MAXHANDLES, table2astring(tOptionalSerials, asSerials))
 	end 
+	
+	return numberOfDevices;
 end 
 
 
@@ -213,6 +215,19 @@ function OFF_validateLEDs(numberOfDevices, tDUT, lux_check_enable)
 	ret = OFF_validateTestSummary(numberOfDevices, tTestSummary)
 	return ret 
 end
+
+
+function swapUp(sCurSerial)
+	led_analyzer.swap_up(asSerials, sCurSerial)
+	tStrSerials = astring2table(asSerials, numberOfDevices)
+	return tStrSerials
+end 
+
+function swapDown(sCurSerial)
+	led_analyzer.swap_down(asSerials, sCurSerial)
+	tStrSerials = astring2table(asSerials, numberOfDevices)
+	return tStrSerials
+end 
 
 
 -- don't forget to clean up after every test -- 

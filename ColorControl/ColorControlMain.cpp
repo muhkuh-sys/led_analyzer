@@ -56,10 +56,6 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 ColorControlFrame::ColorControlFrame(wxFrame *frame)
     : GUIFrame(frame)
 {
-    char buff[256];
-    char filename[] = "device_test.lua";
-    int error;
-    int number = 0;
     m_numberOfDevices = 2;
     // View Class which updates refreshes and takes care about data to be shown
     // set new log target
@@ -67,6 +63,7 @@ ColorControlFrame::ColorControlFrame(wxFrame *frame)
     m_pOldLogTarget = wxLog::SetActiveTarget(m_pLogTarget);
     // Redirect your std::cout to the same text
 
+    wxStreamToTextRedirector redirect(m_text);
 
     if( m_pOldLogTarget !=  NULL)
     {
@@ -78,22 +75,24 @@ ColorControlFrame::ColorControlFrame(wxFrame *frame)
     wxLog::SetLogLevel(wxLOG_Debug );
     wxLogMessage(wxT("Welcome to Color Control...\n"));
 
-    wxStreamToTextRedirector redirect(m_text);
+    wxFileName::SetCwd(wxFileName::GetCwd()+"\\build");
 
-    /* Open your main lua file where functions are stored */
-    L = lua_open();
-    luaL_openlibs(L);
+    m_pLua = new CLua();
+    m_pLua->LoadAndRun("color_control.lua");
 
-    if (luaL_loadfile(L, "lua/color_control.lua") || lua_pcall(L, 0, 0, 0))
-    {
-        wxLogMessage("Cannot open the main lua file");
-    }
+
+    /* Allocate space for the array that will contain serial numbers */
+    m_aStrSerials = new wxString[128];
+
+    /* Set Initial State */
+    m_eState = IS_INITIAL;
+
 
 }
 
 ColorControlFrame::~ColorControlFrame()
 {
- lua_close(L);
+    delete[] m_aStrSerials;
 }
 
 void ColorControlFrame::OnClose(wxCloseEvent &event)
@@ -117,78 +116,155 @@ void ColorControlFrame::OnAbout(wxCommandEvent &event)
 void ColorControlFrame::OnScan(wxCommandEvent& event)
 {
 
-    if(m_cocoDevices.empty())
-      {
+    switch(m_eState)
+    {
+        case IS_INITIAL:
+        case IS_SCANNED:
+            /* Scan */
+            m_pLua->ScanDevices(m_numberOfDevices, m_aStrSerials);
+            if(m_numberOfDevices == 0)
+            {
+                wxLogMessage("No devices found ... please make sure the device is properly attached!");
+
+                if(!m_cocoDevices.empty()) m_cocoDevices.clear();
+                m_eState = IS_INITIAL;
+            }
+            else
+            {
+                for(int i = 0; i < m_numberOfDevices; i++)
+                {
+                    m_cocoDevices.push_back(new CColorController);
+                }
+                this->UpdateSerialList();
+                m_eState = IS_SCANNED;
+            }
+
+             break;
+
+        case IS_CONNECTED:
+            wxLogMessage("Please disconnect first.");
+            break;
+
+        default:
+            break;
+
+    }
+
+
+}
+
+void ColorControlFrame::UpdateSerialList()
+{
+    /* There are known Color Controllers until now */
+        /* Fill the serial gui list (clear before) */
+        m_dataViewListSerials->DeleteAllItems();
         for(int i = 0; i < m_numberOfDevices; i++)
         {
-            m_cocoDevices.push_back(new CColorController);
+            wxVector<wxVariant> rowData;
+            rowData.push_back(i+1); // Serial Number
+            rowData.push_back(m_aStrSerials[i]);
+            m_dataViewListSerials->AppendItem(rowData);
         }
-      }
-    else wxLogMessage("Please Disconnect first");
-
-
-    lua_getglobal(L, "connectDevices");
-    if(lua_pcall(L, 0, 2, 0) != 0) cout << "error" << endl;
-
-
-    if(lua_isnumber(L, -1) != 0) cout << "error" << endl;
-    int test = lua_tonumber(L, -1);
-    //lua_pop(L, -1);
-
-    wxString** astrSerial = (wxString** )lua_touserdata(L, -2);
-    cout << astrSerial[0] << endl;
-
-
-
-
-
-
-
-
-      //m_numberOfDevices ...
 
 
 }
 
 void ColorControlFrame::OnConnect(wxCommandEvent& event)
 {
-
-
-  if(m_cocoDevices.empty())
-  {
-    wxLogMessage("Please Scan for devices first");
-  }
-  else
-  {
-    wxLogMessage("Connecting ..");
-
-    for(int i = 0; i < m_numberOfDevices; i++)
+    switch(m_eState)
     {
-        //m_cocoDevices.at(i)->ConnectDevice(5);
+        case IS_INITIAL:
+            wxLogMessage("Please Scan for devices first.");
+            break;
+
+        case IS_SCANNED:
+
+            int temp;
+            m_pLua->ConnectDevices(temp);
+
+            /* Compare number of Found devices to number of devices we connected to, must be equal or errors occured */
+            if(temp == m_numberOfDevices)
+            {
+                wxLogMessage("Connecting to %d devices ..", temp);
+                for(int i = 0; i < m_numberOfDevices; i++)
+                {
+                    m_cocoDevices.at(i)->SetSerialNumber(m_aStrSerials[0]);
+                    m_cocoDevices.at(i)->SetConnectivity(true);
+                }
+
+                /* Create Rows for Colors*/
+                CreateRows(m_numberOfDevices);
+                /* Create Test Panels */
+                CreateTestPanels(m_numberOfDevices);
+
+                /* Change cell color of SerialNo to green because it's connected :)*/
+                for(int i = 0; i < m_numberOfDevices; i++)
+                {
+                    m_dataViewListSerials->SetValue((wxVariant)wxColor(10,10,10) ,i, 0); // wxVariant - row - column
+                }
+
+                /* Set System State to Connected */
+                m_eState = IS_CONNECTED;
+                wxLogMessage("Connected!");
+
+            }
+
+            if(temp < 0)
+            {
+                wxLogError("UPS");
+            }
+
+            break;
+
+        case IS_CONNECTED:
+
+            break;
+
+        default:
+            break;
+
     }
-    CreateRows(m_numberOfDevices);
-    CreateTestPanels(m_numberOfDevices);
-  }
 
 }
 
 
 void ColorControlFrame::OnDisconnect(wxCommandEvent& event)
 {
-    wxLogMessage("you clicked on disconnet");
-
-
-    // Clear your Color Controller List
-    if(!m_cocoDevices.empty()) m_cocoDevices.clear();
-
-    // Delete the rows in the table
-    m_dvlColors->DeleteAllItems();
-
-    // Delete all the test panels
-    if(!m_sensorPanels.empty())
+    switch(m_eState)
     {
-        this->ClearTestPanels();
+        case IS_INITIAL:
+            // Do nothing
+            break;
+
+        case IS_SCANNED:
+            // Do nothing
+            break;
+
+        case IS_CONNECTED:
+            // Clean up and clear everything
+            wxLogMessage("Disconnecting ..");
+
+            /* Remove color controller devices from vector */
+            m_cocoDevices.clear();
+
+            /* Clear Serial Numbers */
+            m_dataViewListSerials->DeleteAllItems();
+
+            /* Clear Rows for Colors */
+            m_dvlColors->DeleteAllItems();
+
+            /* Clear Test Panels */
+            this->ClearTestPanels();
+
+            m_eState = IS_INITIAL;
+            wxLogMessage("Disconnected!");
+            break;
+
+        default:
+            break;
+
     }
+
 
 }
 
@@ -205,6 +281,7 @@ void ColorControlFrame::CreateRows(int numberOfDevices)
             rowdata.push_back(wxVariant(""));  // saturation
             rowdata.push_back(wxVariant(""));  // illumination
             rowdata.push_back(wxVariant(""));  // m_cColor
+            rowdata.push_back(wxVariant(""));            // m_Clear Level
             rowdata.push_back(wxVariant(""));  // gain
             rowdata.push_back(wxVariant(""));  // inttime
 
@@ -261,7 +338,7 @@ void ColorControlFrame::ClearTestPanels()
     m_swTestdefinition->Hide();
     m_swTestdefinition->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
-    for(int i = 0; i < 2; i++)
+    for(int i = 0; i < m_numberOfDevices; i++)
     {
         for(int j = 0; j < 16; j++)
         {
@@ -271,4 +348,21 @@ void ColorControlFrame::ClearTestPanels()
     m_sensorPanels.clear();
     m_swTestdefinition->Show();
     m_swTestdefinition->Layout();
+}
+
+
+void ColorControlFrame::OnSerialUp(wxCommandEvent& event)
+{
+    int iRowIndex = m_dataViewListSerials->GetSelectedRow();
+    if( iRowIndex == wxNOT_FOUND) return;
+    m_pLua->SwapUp(m_aStrSerials, m_aStrSerials[iRowIndex], m_numberOfDevices );
+    this->UpdateSerialList();
+}
+
+void ColorControlFrame::OnSerialDown(wxCommandEvent& event)
+{
+    int iRowIndex = m_dataViewListSerials->GetSelectedRow();
+    if( iRowIndex == wxNOT_FOUND) return;
+    m_pLua->SwapDown(m_aStrSerials, m_aStrSerials[iRowIndex], m_numberOfDevices );
+    this->UpdateSerialList();
 }
