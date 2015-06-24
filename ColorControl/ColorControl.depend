@@ -3426,14 +3426,15 @@
 1434813020 c:\led_analyzer\colorcontrol\colorcontrolapp.h
 	<wx/app.h>
 
-1434996531 c:\led_analyzer\colorcontrol\colorcontrolmain.h
+1435172702 c:\led_analyzer\colorcontrol\colorcontrolmain.h
 	"ColorControlApp.h"
 	"GUIFrame.h"
 	"CSensorData.h"
 	"CDevice.h"
-	"CView.h"
+	"CLua.h"
 
-1434993982 c:\led_analyzer\colorcontrol\guiframe.h
+1435165780 c:\led_analyzer\colorcontrol\guiframe.h
+	<iostream>
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
 	<wx/string.h>
@@ -3468,14 +3469,11 @@
 1434811989 c:\led_analyzer\colorcontrol\include\csensordata.h
 	"../GUIFrame.h"
 
-1435003124 source:c:\led_analyzer\colorcontrol\colorcontrolmain.cpp
+1435175082 source:c:\led_analyzer\colorcontrol\colorcontrolmain.cpp
 	"wx_pch.h"
 	"ColorControlMain.h"
-	"lua.h"
-	"lauxlib.h"
-	"lualib.h"
 
-1434993982 source:c:\led_analyzer\colorcontrol\guiframe.cpp
+1435174439 source:c:\led_analyzer\colorcontrol\guiframe.cpp
 	"wx/wxprec.h"
 	<wx/wx.h>
 	"GuiFrame.h"
@@ -3483,10 +3481,10 @@
 1434645374 source:c:\led_analyzer\colorcontrol\resource.rc
 	"wx/msw/wx.rc"
 
-1434998077 source:c:\led_analyzer\colorcontrol\src\cdevice.cpp
+1435076491 source:c:\led_analyzer\colorcontrol\src\cdevice.cpp
 	"CDevice.h"
 
-1434998858 c:\led_analyzer\colorcontrol\include\cdevice.h
+1435165780 c:\led_analyzer\colorcontrol\include\cdevice.h
 	"CSensorData.h"
 
 1434815873 source:c:\led_analyzer\colorcontrol\src\csensordata.cpp
@@ -3592,5 +3590,40 @@
 	"../GUIFrame.h"
 
 1435156544 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\clua.cpp
+	"CLua.h"
+
+1435165780 c:\led_analyzer\colorcontrol\include\clua.h
+	"lua.h"
+	"lualib.h"
+	"lauxlib.h"
+	"../GUIFrame.h"
+
+1434981633 c:\org.muhkuh.lua-lua\lua-5.1.4\src\lua.h
+	<stdarg.h>
+	<stddef.h>
+	"luaconf.h"
+
+1434981633 c:\org.muhkuh.lua-lua\lua-5.1.4\src\luaconf.h
+	<limits.h>
+	<stddef.h>
+	<unistd.h>
+	<io.h>
+	<stdio.h>
+	<stdio.h>
+	<readline/readline.h>
+	<readline/history.h>
+	<assert.h>
+	<math.h>
+	<unistd.h>
+
+1434981633 c:\org.muhkuh.lua-lua\lua-5.1.4\src\lualib.h
+	"lua.h"
+
+1434981633 c:\org.muhkuh.lua-lua\lua-5.1.4\src\lauxlib.h
+	<stddef.h>
+	<stdio.h>
+	"lua.h"
+
+1435165780 source:c:\led_analyzer\colorcontrol\src\clua.cpp
 	"CLua.h"
 

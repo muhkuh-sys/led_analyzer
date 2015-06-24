@@ -108,7 +108,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizerCommunication->Add( m_buttonScan, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
 	m_dataViewListSerials = new wxDataViewListCtrl( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxDV_HORIZ_RULES | wxDV_VERT_RULES );
-	m_dataViewListSerials->SetMinSize( wxSize( -1,150 ) );
+	m_dataViewListSerials->SetMinSize( wxSize( -1,120 ) );
 
 	m_dataViewListColumnNo = m_dataViewListSerials->AppendTextColumn( wxT("No."), wxDATAVIEW_CELL_INERT, 40, wxALIGN_CENTER);
 	m_dataViewListColumnSerial = m_dataViewListSerials->AppendTextColumn( wxT("Serial"), wxDATAVIEW_CELL_INERT, 110 );
@@ -142,7 +142,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_stNumbConnected->Wrap( -1 );
 	bSizerConnected->Add( m_stNumbConnected, 0, wxALL|wxEXPAND, 5 );
 
-	m_textCtrlConnected = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 30,20 ), 0 );
+	m_textCtrlConnected = new wxTextCtrl( this, wxID_ANY, wxT("0"), wxDefaultPosition, wxSize( 30,20 ), wxTE_CENTER | wxTE_READONLY );
 	m_textCtrlConnected->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
 	m_textCtrlConnected->SetMaxSize( wxSize( 30,30 ) );
 
@@ -286,7 +286,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizerLog = new wxBoxSizer( wxVERTICAL );
 
 	m_text = new wxTextCtrl( m_swLog, wxID_MYTEXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY );
-	m_text->SetMinSize( wxSize( -1,100 ) );
+	m_text->SetMinSize( wxSize( -1,90 ) );
 
     m_pOldLogTarget = new wxLogTextCtrl(m_text);
 
@@ -526,7 +526,7 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerName;
 	bSizerName = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlCurName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlCurName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_CENTER );
 	m_txtCtrlCurName->SetMaxSize( wxSize( 70,-1 ) );
 
 	bSizerName->Add( m_txtCtrlCurName, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 2 );

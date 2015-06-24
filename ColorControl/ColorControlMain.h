@@ -18,6 +18,9 @@
 #include "CLua.h"
 
 
+#define MYGREEN {0, 200, 0}
+
+
 /* System States */
 typedef enum e_state_t
 {

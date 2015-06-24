@@ -56,7 +56,8 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 ColorControlFrame::ColorControlFrame(wxFrame *frame)
     : GUIFrame(frame)
 {
-    m_numberOfDevices = 2;
+    /* Initialize number of devices with 0 */
+    m_numberOfDevices = 0;
     // View Class which updates refreshes and takes care about data to be shown
     // set new log target
     m_pLogTarget = new wxLogTextCtrl(m_text);
@@ -86,6 +87,9 @@ ColorControlFrame::ColorControlFrame(wxFrame *frame)
 
     /* Set Initial State */
     m_eState = IS_INITIAL;
+
+    /* Set the value of textctrl_connected to 0 */
+    // m_textCtrlConnected->SetValue(m_numberOfDevices);
 
 
 }
@@ -197,14 +201,14 @@ void ColorControlFrame::OnConnect(wxCommandEvent& event)
                 /* Create Test Panels */
                 CreateTestPanels(m_numberOfDevices);
 
-                /* Change cell color of SerialNo to green because it's connected :)*/
-                for(int i = 0; i < m_numberOfDevices; i++)
-                {
-                    m_dataViewListSerials->SetValue((wxVariant)wxColor(10,10,10) ,i, 0); // wxVariant - row - column
-                }
 
                 /* Set System State to Connected */
                 m_eState = IS_CONNECTED;
+
+                /* Show It in the textCtrl for connected devices */
+                m_textCtrlConnected->SetBackgroundColour( MYGREEN );
+                m_textCtrlConnected->Clear();
+                *m_textCtrlConnected << m_numberOfDevices;
                 wxLogMessage("Connected!");
 
             }
@@ -241,6 +245,7 @@ void ColorControlFrame::OnDisconnect(wxCommandEvent& event)
             break;
 
         case IS_CONNECTED:
+
             // Clean up and clear everything
             wxLogMessage("Disconnecting ..");
 
@@ -255,9 +260,25 @@ void ColorControlFrame::OnDisconnect(wxCommandEvent& event)
 
             /* Clear Test Panels */
             this->ClearTestPanels();
+            m_swColors->Layout();
 
-            m_eState = IS_INITIAL;
+            /* Reset the color of textctrl Connected */
+            m_textCtrlConnected->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
+
+
+            /* Set number of devices to zero -- ONLY AT THE END OF A BLOCK */
+            m_numberOfDevices = 0;
+
+            /* Flush and write zero */
+            m_textCtrlConnected->Clear();
+            *m_textCtrlConnected << m_numberOfDevices;
             wxLogMessage("Disconnected!");
+
+
+            /* Set Initial System State */
+            m_eState = IS_INITIAL;
+
+
             break;
 
         default:

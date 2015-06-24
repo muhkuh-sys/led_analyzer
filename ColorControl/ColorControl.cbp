@@ -59,11 +59,13 @@
 		<Unit filename="GUIFrame.h" />
 		<Unit filename="WxWizFrame.fbp" />
 		<Unit filename="include/CDevice.h" />
+		<Unit filename="include/CLua.h" />
 		<Unit filename="include/CSensorData.h" />
 		<Unit filename="resource.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
 		<Unit filename="src/CDevice.cpp" />
+		<Unit filename="src/CLua.cpp" />
 		<Unit filename="src/CSensorData.cpp" />
 		<Extensions>
 			<code_completion />
