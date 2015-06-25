@@ -41,6 +41,7 @@ class ColorControlFrame: public GUIFrame
         virtual void OnScan(wxCommandEvent& event);
         virtual void OnConnect(wxCommandEvent& event);
         virtual void OnDisconnect(wxCommandEvent& event);
+        virtual void OnStart(wxCommandEvent& event);
         virtual void OnSerialUp  (wxCommandEvent& event);
         virtual void OnSerialDown(wxCommandEvent& event);
 
@@ -48,6 +49,7 @@ class ColorControlFrame: public GUIFrame
         void CreateTestPanels(int numberOfDevices);
         void ClearTestPanels();
         void UpdateSerialList();
+        void UpdateRows(int iNumberOfDevices);
 
         int         m_numberOfDevices;
         wxLog       *m_pLogTarget;

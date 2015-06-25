@@ -211,11 +211,14 @@ void ColorControlFrame::OnConnect(wxCommandEvent& event)
                 *m_textCtrlConnected << m_numberOfDevices;
                 wxLogMessage("Connected!");
 
+
             }
 
+            /* Some Exception happened in the lua code (i2c/ftdi/led_analyzer functions in led_analyzer.dll) */
             if(temp < 0)
             {
-                wxLogError("UPS");
+                wxLogError("Something went wrong, please retry Scan and Connect!");
+                m_eState = IS_INITIAL;
             }
 
             break;
@@ -231,9 +234,11 @@ void ColorControlFrame::OnConnect(wxCommandEvent& event)
 
 }
 
-
 void ColorControlFrame::OnDisconnect(wxCommandEvent& event)
 {
+
+
+
     switch(m_eState)
     {
         case IS_INITIAL:
@@ -289,6 +294,17 @@ void ColorControlFrame::OnDisconnect(wxCommandEvent& event)
 
 }
 
+void ColorControlFrame::OnStart(wxCommandEvent& event)
+{
+    wxMilliSleep(700);
+
+    m_pLua->StartMeasurements(m_numberOfDevices);
+
+    m_pLua->ReadColours(m_numberOfDevices, m_cocoDevices);
+
+    this->UpdateRows(m_numberOfDevices);
+}
+
 void ColorControlFrame::CreateRows(int numberOfDevices)
 {
 
@@ -303,6 +319,36 @@ void ColorControlFrame::CreateRows(int numberOfDevices)
             rowdata.push_back(wxVariant(""));  // illumination
             rowdata.push_back(wxVariant(""));  // m_cColor
             rowdata.push_back(wxVariant(""));            // m_Clear Level
+            rowdata.push_back(wxVariant(""));  // gain
+            rowdata.push_back(wxVariant(""));  // inttime
+
+            m_dvlColors->AppendItem(rowdata);
+       }
+    }
+
+}
+
+void ColorControlFrame::UpdateRows(int iNumberOfDevices)
+{
+    /* First Clear your Rows */
+    m_dvlColors->DeleteAllItems();
+    //this->CreateRows(iNumberOfDevices);
+
+    wxVariant test;
+
+
+    for(int i = 0; i < iNumberOfDevices; i++)
+    {
+       for(int j = 0; j<16; j++)
+       {
+            wxVector<wxVariant> rowdata;
+            rowdata.push_back(i*16 + (j + 1)); // sensorno
+            rowdata.push_back(m_cocoDevices.at(i)->GetWavelength(j));  // wavelength
+            rowdata.push_back(m_cocoDevices.at(i)->GetSaturation(j));// saturation
+            rowdata.push_back(m_cocoDevices.at(i)->GetIllumination(j));  // illumination
+            rowdata.push_back(wxVariant(""));  // m_cColor
+            //m_dvcrGain->
+            rowdata.push_back(wxVariant(""));// m_Clear Level
             rowdata.push_back(wxVariant(""));  // gain
             rowdata.push_back(wxVariant(""));  // inttime
 
@@ -370,7 +416,6 @@ void ColorControlFrame::ClearTestPanels()
     m_swTestdefinition->Show();
     m_swTestdefinition->Layout();
 }
-
 
 void ColorControlFrame::OnSerialUp(wxCommandEvent& event)
 {

@@ -148,11 +148,16 @@ function aus2colorTable(clear, red, green, blue, cct, lux, length)
 			-- Wavelength and saturation 
 			tWavelength[i+1] = { nm  = 0,
 							     sat = 0,
-								 lux = lLUX}
+								 lux = lLUX,
+								 r   = 0,
+								 g   = 0,
+								 b   = 0}
 							
 			tHSV[i+1] = { H = 0,
 						  S = 0,
 						  V = 0 }
+						  
+
 						  
 		else 
 			r_n = lRed   / lClear
@@ -181,12 +186,16 @@ function aus2colorTable(clear, red, green, blue, cct, lux, length)
 						  y = y }
 						  
 			local wavelength, saturation = Yxy2wavelength(x, y)
+			local wR, wG, wB = wavelength2RGB(wavelength)
 			
 			
 			-- Wavelength Saturation Brightness table 
 			tWavelength[i+1] = {nm = math.floor(wavelength+0.5),
 						        sat = saturation * 100,
-								lux = lLUX
+								lux = lLUX,
+								r   = wR,
+								g   = wG,
+								b   = wB
 								}
 			-- HSV (Hue Saturation Value)
 			

@@ -10,6 +10,8 @@ CColorController::~CColorController()
 
 }
 
+/*
+
 void CColorController::SetValues(int pos[16], int wavelength[16], int saturation[16], float illuminatin[16],
                                  wxColor color[16], tcs3472_gain_t gain[16], tcs3472_intTime_t intTime[16] )
 {
@@ -24,4 +26,36 @@ void CColorController::SetValues(int pos[16], int wavelength[16], int saturation
         m_sensorData[i].SetColor(0xff, 0xff, 0xff);
 
     }
+}
+
+*/
+
+void CColorController::SetWavelength(int iSensorIndex, int iWavelength)
+{
+	m_sensorData[iSensorIndex].SetWavelength(iWavelength);
+}
+
+void CColorController::SetSaturation(int iSensorIndex, int iSaturation)
+{
+	m_sensorData[iSensorIndex].SetSaturation(iSaturation);
+}
+
+void CColorController::SetIllumination(int iSensorIndex, int iIllumination)
+{
+	m_sensorData[iSensorIndex].SetIllumination(iIllumination);
+}
+
+void CColorController::SetColour(int iSensorIndex, int r, int g, int b)
+{
+    m_sensorData[iSensorIndex].SetColor(r, g, b);
+}
+
+void CColorController::SetGain(int iSensorIndex, tcs3472_gain_t tGain)
+{
+	m_sensorData[iSensorIndex].SetGain(tGain);
+}
+
+void CColorController::SetIntTime(int iSensorIndex, tcs3472_intTime_t tIntTime)
+{
+	m_sensorData[iSensorIndex].SetIntTime(tIntTime);
 }

@@ -41,8 +41,9 @@ using namespace std;
 #include <wx/msgdlg.h>
 #include <wx/log.h>
 #include <wx/dynlib.h>
-#include <wx/radiobut.h>
-
+#include <wx/radiobut.h> //
+#include <wx/colordlg.h>
+#include <wx/imaglist.h>
 ///////////////////////////////////////////////////////////////////////////////
 /// Class PanelHeader
 ///////////////////////////////////////////////////////////////////////////////
@@ -251,6 +252,8 @@ class GUIFrame : public wxFrame
 		~GUIFrame();
 
 };
+
+
 
 
 #endif //__GUIFRAME_H__

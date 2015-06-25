@@ -8,12 +8,20 @@ class CColorController
     public:
         CColorController();
         virtual     ~CColorController();
-        void        SetValues(int pos[16], int wavelength[16], int saturation[16], float illuminatin[16],
-                    wxColor color[16], tcs3472_gain_t gain[16], tcs3472_intTime_t intTime[16] );
-        bool        IsConnected(){return m_isConnected;};
         void        SetConnectivity(bool status){m_isConnected = status;};
+        bool        IsConnected(){return m_isConnected;};
         const char* GetSerialNumber(){return m_serialNumber;};
         void        SetSerialNumber(const char strSerial[128]){strcpy(m_serialNumber, strSerial);};
+        void        SetWavelength(int iSensorIndex, int iWavelength);
+        void        SetSaturation(int iSensorIndex, int iSaturation);
+        void        SetIllumination(int iSensorIndex, int iIllumination);
+        void        SetColour(int iSensorIndex, int r, int g, int b);
+        void        SetGain(int iSensorIndex, tcs3472_gain_t tGain);
+        void        SetIntTime(int iSensorIndex, tcs3472_intTime_t tIntTime);
+
+        int         GetWavelength(int iSensorIndex){return m_sensorData[iSensorIndex].GetWavelength();};
+        int         GetSaturation(int iSensorIndex){return m_sensorData[iSensorIndex].GetSaturation();};
+        int         GetIllumination(int iSensorIndex){return m_sensorData[iSensorIndex].GetIllumination();};
 
     protected:
     private:

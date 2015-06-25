@@ -52,9 +52,9 @@ local asSerials 		= led_analyzer.new_astring(MAXSERIALS)
 local tStrSerials		= {}
 -- handle to all connected color controller(s) will be stored in apHandles (note 2 handles per device)
 local apHandles 		= led_analyzer.new_apvoid(MAXHANDLES)
-local numberOfDevices
--- table contains all color and light related data
-local tColorTable
+local numberOfDevices	= 0
+-- global table contains all color and light related data / global for easy access by C 
+tColorTable = {}
 -- table that contains a test summary for each device --
 local tTestSummary
 

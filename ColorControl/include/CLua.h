@@ -11,6 +11,7 @@ extern "C"
 }
 
 #include "../GUIFrame.h"
+#include "CDevice.h"
 
 class CLua
 {
@@ -24,19 +25,21 @@ class CLua
         int  SwapUp  (wxString* aStrSerials, wxString strCurSerial, int iNumberOfDevices);
         int  SwapDown(wxString* aStrSerials, wxString strCurSerial, int iNumberOfDevices);
         bool IsLoaded(){return m_ColorControlLoaded;};
-
-
+        int  StartMeasurements(int iNumberOfDevices);
+        void ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorDevices);
 //        int lua_load
     protected:
     private:
         bool m_ColorControlLoaded;
         lua_State* m_pLuaState;
 
-
-        char   *GetField(int   iIndex);
-        int    GetField(char* strIndex);
+        lua_CFunction   Panic(){};
+        char   *GetStrField  (int   iIndex);
+        int     GetIntField  (char* strKey);
+        int     GetIntField  (int   iIndex);
+        void    GetTableField(int iIndex);
         /* Define your panic function with CFunctions as parameters */
-        // void Panic(){lua_atpanic(this->m_pLuaState());};
+
 };
 
 #endif // CLUA_H

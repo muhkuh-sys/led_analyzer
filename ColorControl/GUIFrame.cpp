@@ -17,6 +17,9 @@
 
 #include "GuiFrame.h"
 
+
+
+
 ///////////////////////////////////////////////////////////////////////////
 
 GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
@@ -235,7 +238,11 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_cWavelength = m_dvlColors->AppendTextColumn( wxT("Wavelength"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
 	m_cSaturation = m_dvlColors->AppendTextColumn( wxT("Saturation"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
 	m_cIllumination = m_dvlColors->AppendTextColumn( wxT("Illumination"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
-	m_cColor = m_dvlColors->AppendTextColumn( wxT("Color"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
+	//m_cColor = m_dvlColors->AppendTextColumn( wxT("Color"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
+
+    m_cColor = new wxDataViewColumn("Color", new wxDataViewTextRenderer, 4, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
+    m_dvlColors->AppendColumn(m_cColor);
+
     m_cExceededClear = m_dvlColors->AppendProgressColumn( wxT("Clear Level"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER);
 
     wxArrayString astrGainchoices;
@@ -251,8 +258,8 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
     astrIntchoices.Add("TIME_200ms");
     astrIntchoices.Add("TIME_700ms");
 
-    m_dvcrGain = new wxDataViewChoiceRenderer(astrGainchoices, wxDATAVIEW_CELL_EDITABLE, wxALIGN_CENTER);
-    m_dvcrInt  = new wxDataViewChoiceRenderer(astrIntchoices, wxDATAVIEW_CELL_EDITABLE, wxALIGN_CENTER);
+    m_dvcrGain = new wxDataViewChoiceRenderer(astrGainchoices, wxDATAVIEW_CELL_EDITABLE, wxALIGN_LEFT);
+    m_dvcrInt  = new wxDataViewChoiceRenderer(astrIntchoices, wxDATAVIEW_CELL_EDITABLE, wxALIGN_LEFT);
 	m_cGain = new wxDataViewColumn(wxT("Gain"), m_dvcrGain, 6, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
 	m_cIntegration = new wxDataViewColumn(wxT("Integration Time"), m_dvcrInt, 7, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
     m_dvlColors->AppendColumn(m_cGain);
@@ -910,3 +917,4 @@ PanelSensor::~PanelSensor()
 	m_bpButtonClear3->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( PanelSensor::OnClearSet3 ), NULL, this );
 
 }
+
