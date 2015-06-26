@@ -50,9 +50,6 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 }
 
 
-
-
-
 ColorControlFrame::ColorControlFrame(wxFrame *frame)
     : GUIFrame(frame)
 {
@@ -88,9 +85,10 @@ ColorControlFrame::ColorControlFrame(wxFrame *frame)
     /* Set Initial State */
     m_eState = IS_INITIAL;
 
-    /* Set the value of textctrl_connected to 0 */
-    // m_textCtrlConnected->SetValue(m_numberOfDevices);
 
+    /* Try out the timer */
+    m_pTimer = new wxTimer(this, wxID_TIMER);
+    //m_pTimer->Start(1000);
 
 }
 
@@ -189,7 +187,7 @@ void ColorControlFrame::OnConnect(wxCommandEvent& event)
             /* Compare number of Found devices to number of devices we connected to, must be equal or errors occured */
             if(temp == m_numberOfDevices)
             {
-                wxLogMessage("Connecting to %d devices ..", temp);
+                wxLogMessage("Connecting..");
                 for(int i = 0; i < m_numberOfDevices; i++)
                 {
                     m_cocoDevices.at(i)->SetSerialNumber(m_aStrSerials[0]);
@@ -205,12 +203,14 @@ void ColorControlFrame::OnConnect(wxCommandEvent& event)
                 /* Set System State to Connected */
                 m_eState = IS_CONNECTED;
 
+                /* Init the devices */
+                m_pLua->InitDevices(m_numberOfDevices);
+
                 /* Show It in the textCtrl for connected devices */
                 m_textCtrlConnected->SetBackgroundColour( MYGREEN );
                 m_textCtrlConnected->Clear();
                 *m_textCtrlConnected << m_numberOfDevices;
                 wxLogMessage("Connected!");
-
 
             }
 
@@ -296,13 +296,70 @@ void ColorControlFrame::OnDisconnect(wxCommandEvent& event)
 
 void ColorControlFrame::OnStart(wxCommandEvent& event)
 {
-    wxMilliSleep(700);
+    switch(m_eState)
+    {
+        case IS_INITIAL:
+            wxLogMessage("Please Scan and Connect first.");
+            break;
 
-    m_pLua->StartMeasurements(m_numberOfDevices);
+        case IS_SCANNED:
+            wxLogMessage("Please Connect first");
+            break;
 
-    m_pLua->ReadColours(m_numberOfDevices, m_cocoDevices);
+        case IS_CONNECTED:
+            /* Now Check if we Make Single or Continuous Measurements */
 
-    this->UpdateRows(m_numberOfDevices);
+            if(m_rbSingle->GetValue() == true)
+            {
+                m_pLua->StartMeasurements(m_numberOfDevices);
+
+                m_pLua->ReadColours(m_numberOfDevices, m_cocoDevices);
+
+                this->UpdateRows(m_numberOfDevices);
+            }
+
+            if(m_rbContinuous->GetValue() == true)
+            {
+                /* STOP BUTTON CHANGES TO START BUTTON - TIMER STOPS */
+                if(m_buttonStart->GetLabel().IsSameAs("STOP"))
+                {
+                    m_pTimer->Stop();
+                    m_buttonStart->SetLabel("START");
+                }
+
+                else
+                {
+                    int iTimerValue;
+                    switch(m_chTime->GetCurrentSelection())
+                    {
+                        case TESTMODE_TIME_0_5SEC:
+                            iTimerValue = 500;
+                            break;
+                        case TESTMODE_TIME_1SEC:
+                            iTimerValue = 1000;
+                            break;
+                        case TESTMODE_TIME_2SEC:
+                            iTimerValue = 2000;
+                            break;
+                        case TESTMODE_TIME_5SEC:
+                            iTimerValue = 5000;
+                            break;
+                        case TESTMODE_TIME_10SEC:
+                            iTimerValue = 10000;
+                            break;
+                        default:
+                            iTimerValue = 1000;
+                            break;
+                    }
+                    m_pTimer->Start(iTimerValue);
+                    m_buttonStart->SetLabel("STOP");
+                }
+            }
+
+
+    }
+
+
 }
 
 void ColorControlFrame::CreateRows(int numberOfDevices)
@@ -318,7 +375,7 @@ void ColorControlFrame::CreateRows(int numberOfDevices)
             rowdata.push_back(wxVariant(""));  // saturation
             rowdata.push_back(wxVariant(""));  // illumination
             rowdata.push_back(wxVariant(""));  // m_cColor
-            rowdata.push_back(wxVariant(""));            // m_Clear Level
+            rowdata.push_back(0);// m_clearRatio;
             rowdata.push_back(wxVariant(""));  // gain
             rowdata.push_back(wxVariant(""));  // inttime
 
@@ -334,7 +391,8 @@ void ColorControlFrame::UpdateRows(int iNumberOfDevices)
     m_dvlColors->DeleteAllItems();
     //this->CreateRows(iNumberOfDevices);
 
-    wxVariant test;
+    /* Hide and Show */
+    m_swTestdefinition->Hide();
 
 
     for(int i = 0; i < iNumberOfDevices; i++)
@@ -346,16 +404,20 @@ void ColorControlFrame::UpdateRows(int iNumberOfDevices)
             rowdata.push_back(m_cocoDevices.at(i)->GetWavelength(j));  // wavelength
             rowdata.push_back(m_cocoDevices.at(i)->GetSaturation(j));// saturation
             rowdata.push_back(m_cocoDevices.at(i)->GetIllumination(j));  // illumination
-            rowdata.push_back(wxVariant(""));  // m_cColor
+            rowdata.push_back((wxVariant)wxColor(100,100,100));  // m_cColor
             //m_dvcrGain->
-            rowdata.push_back(wxVariant(""));// m_Clear Level
+            rowdata.push_back(m_cocoDevices.at(i)->GetClearRatio(j)); // clearRatio
             rowdata.push_back(wxVariant(""));  // gain
             rowdata.push_back(wxVariant(""));  // inttime
 
             m_dvlColors->AppendItem(rowdata);
+
+            m_sensorPanels.at(i*16 + j)->SetColour(m_sensorPanels.at(i*16 + j)->m_txtCtrlCurColor, m_cocoDevices.at(i)->GetColour(j));
+
        }
     }
 
+    if(m_nbData->GetSelection() == 1)  m_swTestdefinition->Show();
 }
 
 void ColorControlFrame::CreateTestPanels(int numberOfDevices)
@@ -375,7 +437,7 @@ void ColorControlFrame::CreateTestPanels(int numberOfDevices)
     {
         for(int j = 0; j < 16; j++)
         {
-            m_sensorPanels.push_back((new PanelSensor(m_swTestdefinition, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSTATIC_BORDER, i*16 + j + 1)));
+            m_sensorPanels.push_back(new PanelSensor(m_swTestdefinition, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSTATIC_BORDER, i*16 + j + 1));
         }
     }
 
@@ -385,7 +447,6 @@ void ColorControlFrame::CreateTestPanels(int numberOfDevices)
         for(int j = 0; j < 16; j++)
         {
            bSizerTestDefinition->Add(m_sensorPanels.at(i*16 + j), 0, wxEXPAND);
-
         }
     }
 
@@ -404,6 +465,8 @@ void ColorControlFrame::ClearTestPanels()
 {
     m_swTestdefinition->Hide();
     m_swTestdefinition->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
+
+    if(m_panelHeader != NULL) m_panelHeader->Destroy();
 
     for(int i = 0; i < m_numberOfDevices; i++)
     {
@@ -431,4 +494,27 @@ void ColorControlFrame::OnSerialDown(wxCommandEvent& event)
     if( iRowIndex == wxNOT_FOUND) return;
     m_pLua->SwapDown(m_aStrSerials, m_aStrSerials[iRowIndex], m_numberOfDevices );
     this->UpdateSerialList();
+}
+
+/* Only Gets Called when there's a change in the chosen radio button */
+void ColorControlFrame::OnTestmode(wxCommandEvent& event)
+{
+    /* Prevent Switching Testmode while Timer is Running */
+    if(m_pTimer->IsRunning())
+    {
+        wxBell();
+        wxLogMessage("Can't change Testmode. Stop First!");
+        m_rbContinuous->SetValue(true);
+    }
+
+}
+
+
+void ColorControlFrame::OnTimeout(wxTimerEvent& event)
+{
+
+    m_pLua->StartMeasurements(m_numberOfDevices);
+    m_pLua->ReadColours(m_numberOfDevices, m_cocoDevices);
+    this->UpdateRows(m_numberOfDevices);
+
 }

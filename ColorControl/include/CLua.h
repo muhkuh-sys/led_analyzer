@@ -26,6 +26,7 @@ class CLua
         int  SwapDown(wxString* aStrSerials, wxString strCurSerial, int iNumberOfDevices);
         bool IsLoaded(){return m_ColorControlLoaded;};
         int  StartMeasurements(int iNumberOfDevices);
+        int  InitDevices(int iNumberOfDevices);
         void ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorDevices);
 //        int lua_load
     protected:

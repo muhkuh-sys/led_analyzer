@@ -18,11 +18,12 @@ class CColorController
         void        SetColour(int iSensorIndex, int r, int g, int b);
         void        SetGain(int iSensorIndex, tcs3472_gain_t tGain);
         void        SetIntTime(int iSensorIndex, tcs3472_intTime_t tIntTime);
-
+        void        SetClearRatio(int iSensorIndex, int iRatio);
         int         GetWavelength(int iSensorIndex){return m_sensorData[iSensorIndex].GetWavelength();};
         int         GetSaturation(int iSensorIndex){return m_sensorData[iSensorIndex].GetSaturation();};
         int         GetIllumination(int iSensorIndex){return m_sensorData[iSensorIndex].GetIllumination();};
-
+        int         GetClearRatio(int iSensorIndex){return m_sensorData[iSensorIndex].GetClearRatio();};
+        wxColor     GetColour(int iSensorIndex){return m_sensorData[iSensorIndex].GetColour();};
     protected:
     private:
         CSensorData m_sensorData[16];

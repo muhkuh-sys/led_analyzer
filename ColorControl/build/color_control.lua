@@ -62,6 +62,7 @@ local ret 				 = 0
 
 
 
+
 function scanDevices()
 	numberOfDevices = led_analyzer.scan_devices(asSerials, MAXSERIALS)
 	tStrSerials = astring2table(asSerials, numberOfDevices)
@@ -84,36 +85,17 @@ end
 
 
 
--- initializes all connected devices with gain and integration time settings given in the parameters
--- if any of the sensor specific settings like gain or integration time is not given the value will 
--- be set to a default value (gain 1x and integration time 100 ms)
-function initDevices(numberOfDevices, gain, integrationtime)
+-- Initializes the devices, by turning them on, clearing flags and identifying them
+function initDevices(numberOfDevices)
 -- iterate over all devices and perform initialization -- 
 	local devIndex = 0
 	local error_counter = 0 
 	local ret = 0
 	
-	local lGain = 0 
-	local lIntegrationtime = 0 
-	
-	if gain == nil then 
-		lGain = TCS3472_GAIN_1X 
-	else 
-		lGain = gain 
-	end 
-	
-	if integrationtime == nil then 
-		lIntegrationtime = TCS3472_INTEGRATION_100ms
-	else 
-		lIntegrationtime = integrationtime
-	end 
-	
 	while(devIndex < numberOfDevices) do 
 
-
-		led_analyzer.set_gain(apHandles, devIndex, lGain)
-		led_analyzer.set_intTime(apHandles, devIndex, lIntegrationtime)
-		
+		--led_analyzer.set_intTime(apHandles, devIndex, 0xD6)
+	
 		while(error_counter < INIT_MAXERROR) do
 			ret = led_analyzer.init_sensors(apHandles, devIndex)
 			if ret ~= 0 then
@@ -149,8 +131,9 @@ function startMeasurements(numberOfDevices)
 	while(devIndex < numberOfDevices) do 
 		print(string.format("\n------------------ Device %d -------------------- ", devIndex))
 			
+		-- Get Colours --
 		while(error_counter < READ_MAXERROR) do		
-			ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX)
+			ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, aucIntTimes, aucGains)
 			if ret ~= 0 then
 				error_counter = error_counter + 1
 			else
@@ -164,7 +147,8 @@ function startMeasurements(numberOfDevices)
 			error_counter = 0
 		end 
 		
-		tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, 16)
+		
+		tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, aucIntTimes, aucGains, MAXSENSORS)
 		print_color(devIndex, tColorTable, 16)
 		--print_color(devIndex, tColorTable, 16, "HSV")
 		

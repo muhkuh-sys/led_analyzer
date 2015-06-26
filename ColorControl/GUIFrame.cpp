@@ -19,6 +19,67 @@
 
 
 
+// ----------------------------------------------------------------------------
+// MyCustomRenderer for Colours in wxDataViewListCtrl
+// ----------------------------------------------------------------------------
+
+class MyCustomRenderer: public wxDataViewCustomRenderer
+{
+public:
+    MyCustomRenderer()
+        : wxDataViewCustomRenderer("string",
+                                   wxDATAVIEW_CELL_ACTIVATABLE,
+                                   wxALIGN_CENTER)
+       { }
+
+    virtual bool Render( wxRect rect, wxDC *dc, int state )
+    {
+        dc->SetBrush( *wxLIGHT_GREY_BRUSH );
+        dc->SetPen( *wxTRANSPARENT_PEN );
+
+        rect.Deflate(2);
+        dc->DrawRoundedRectangle( rect, 5 );
+
+        RenderText("chello",
+                   0, // no offset
+                   wxRect(dc->GetTextExtent(m_value)).CentreIn(rect),
+                   dc,
+                   state);
+        return true;
+    }
+
+    virtual bool ActivateCell(const wxRect& WXUNUSED(cell),
+                              wxDataViewModel *WXUNUSED(model),
+                              const wxDataViewItem &WXUNUSED(item),
+                              unsigned int WXUNUSED(col),
+                              const wxMouseEvent *mouseEvent)
+    {
+        wxString position;
+        if ( mouseEvent )
+            position = wxString::Format("via mouse at %d, %d", mouseEvent->m_x, mouseEvent->m_y);
+        else
+            position = "from keyboard";
+        wxLogMessage("MyCustomRenderer ActivateCell() %s", position);
+        return false;
+    }
+
+    virtual wxSize GetSize() const
+    {
+        return wxSize(60,20);
+    }
+
+    virtual bool SetValue( const wxVariant &value )
+    {
+        m_value = value.GetString();
+        return true;
+    }
+
+    virtual bool GetValue( wxVariant &WXUNUSED(value) ) const { return true; }
+
+private:
+    wxString m_value;
+};
+
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -200,11 +261,11 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
     wxBoxSizer* bSizerSingleCont;
     bSizerSingleCont = new wxBoxSizer(wxVERTICAL);
 
-	m_rbSingle = new wxRadioButton( this, wxID_ANY, wxT("Single"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_rbSingle = new wxRadioButton( this, wxID_TESTMODE, wxT("Single"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_rbSingle->SetValue(true);
     bSizerSingleCont->Add(m_rbSingle, 0, wxALL, 5);
 
-	m_rbContinuous = new wxRadioButton( this, wxID_ANY, wxT("Continuous"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_rbContinuous = new wxRadioButton( this, wxID_TESTMODE, wxT("Continuous"), wxDefaultPosition, wxDefaultSize, 0 );
     bSizerSingleCont->Add(m_rbContinuous, 0, wxALL, 5);
 
     sbSizerTestmode->Add(bSizerSingleCont);
@@ -240,7 +301,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_cIllumination = m_dvlColors->AppendTextColumn( wxT("Illumination"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
 	//m_cColor = m_dvlColors->AppendTextColumn( wxT("Color"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
 
-    m_cColor = new wxDataViewColumn("Color", new wxDataViewTextRenderer, 4, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
+    m_cColor = new wxDataViewColumn("Color", new MyCustomRenderer, 4, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
     m_dvlColors->AppendColumn(m_cColor);
 
     m_cExceededClear = m_dvlColors->AppendProgressColumn( wxT("Clear Level"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER);
@@ -258,8 +319,8 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
     astrIntchoices.Add("TIME_200ms");
     astrIntchoices.Add("TIME_700ms");
 
-    m_dvcrGain = new wxDataViewChoiceRenderer(astrGainchoices, wxDATAVIEW_CELL_EDITABLE, wxALIGN_LEFT);
-    m_dvcrInt  = new wxDataViewChoiceRenderer(astrIntchoices, wxDATAVIEW_CELL_EDITABLE, wxALIGN_LEFT);
+    m_dvcrGain = new wxDataViewChoiceRenderer(astrGainchoices, wxDATAVIEW_CELL_EDITABLE, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
+    m_dvcrInt  = new wxDataViewChoiceRenderer(astrIntchoices, wxDATAVIEW_CELL_EDITABLE, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
 	m_cGain = new wxDataViewColumn(wxT("Gain"), m_dvcrGain, 6, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
 	m_cIntegration = new wxDataViewColumn(wxT("Integration Time"), m_dvcrInt, 7, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
     m_dvlColors->AppendColumn(m_cGain);
@@ -324,6 +385,8 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_buttonStart->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnStart ), NULL, this );
 	this->Connect( menuItem_about->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnAbout ) );
     this->Connect( wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnQuit ) );
+    this->Connect( wxID_TESTMODE, wxEVT_RADIOBUTTON, wxCommandEventHandler( GUIFrame::OnTestmode ) );
+    this->Connect( wxID_TIMER, wxEVT_TIMER, wxTimerEventHandler ( GUIFrame::OnTimeout ) );
 }
 
 GUIFrame::~GUIFrame()
@@ -337,6 +400,10 @@ GUIFrame::~GUIFrame()
 	m_buttonGenerate->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnGenerateTest ), NULL, this );
 	m_buttonUseTestfile->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnUseTest ), NULL, this );
 	m_buttonStart->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnStart ), NULL, this );
+    this->Disconnect( wxEVT_RADIOBUTTON, wxCommandEventHandler( GUIFrame::OnTestmode ), NULL, this );
+    this->Disconnect( wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnQuit ), NULL, this );
+    this->Disconnect( wxEVT_TIMER, wxTimerEventHandler (GUIFrame::OnTimeout ), NULL, this );
+
     //this->Disconnect( menuItem_about->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnAbout ) );
 
 
@@ -445,6 +512,7 @@ PanelHeader::PanelHeader( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 PanelHeader::~PanelHeader()
 {
 }
+
 
 PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, int sensornumber ) : wxPanel( parent, id, pos, size, style )
 {

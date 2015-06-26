@@ -28,6 +28,7 @@ class CSensorData
         int               m_posSensor;
         int               m_wavelength;
         int               m_saturation;
+        int               m_clearRatio;
         float             m_illumination;
         wxColor           m_rgbColor;
         tcs3472_gain_t    m_gain;
@@ -46,11 +47,13 @@ class CSensorData
         void SetColor(unsigned char red, unsigned char green, unsigned char blue);
         void SetGain(tcs3472_gain_t gain){m_gain = gain;};
         void SetIntTime(tcs3472_intTime_t intTime){m_intTime = intTime;};
-
+        void SetClearRatio(int iClearRatio){m_clearRatio = iClearRatio;};
 
         int     GetPosition(){return m_posSensor;};
         int     GetWavelength(){return m_wavelength;};
         int     GetSaturation(){return m_saturation;};
+        int     GetClearRatio(){return m_clearRatio;};
+        wxColour GetColour(){return m_rgbColor;};
         float   GetIllumination(){return m_illumination;};
         wxColor GetColor(){return m_rgbColor;};
         tcs3472_gain_t    GetGain(){return m_gain;};

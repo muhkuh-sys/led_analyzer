@@ -173,6 +173,47 @@ int CLua::ConnectDevices(int &iNumberOfDevices)
     return iRetval;
 }
 
+
+int CLua::InitDevices(int iNumberOfDevices)
+{
+    /* Be pessimistic */
+    int iRetval = 1;
+
+    if(!(this->IsLoaded()))
+    {
+        wxLogMessage("Color Control is not loaded!");
+        return -1;
+    }
+
+    /* Load Init Function */
+    lua_getglobal(this->m_pLuaState, "initDevices");
+
+    /* Push number of devices as first argument onto the stack */
+    lua_pushnumber(this->m_pLuaState, iNumberOfDevices);
+
+    /* Run Init Function */
+    if( lua_pcall(this->m_pLuaState, 1, 1, 0) != 0)
+    {
+        wxLogMessage("Error Running Function %s", lua_tostring(this->m_pLuaState, -1));
+        return iRetval;
+    }
+
+    /* Get the result (0 if everything fine) */
+    if(!lua_isnumber(this->m_pLuaState, -1))
+    {
+        wxLogMessage("Retval (int) expected, got something else");
+        return iRetval;
+    }
+
+    /* Get the result */
+    iRetval = lua_tonumber(this->m_pLuaState, -1);
+
+    /* Pop the result from the stack */
+    lua_pop(this->m_pLuaState, 1);
+
+    return iRetval;
+}
+
 int CLua::StartMeasurements(int iNumberOfDevices)
 {
     /* Be pessimistic */
@@ -210,8 +251,6 @@ int CLua::StartMeasurements(int iNumberOfDevices)
     /* Pop the result from the stack */
     lua_pop(this->m_pLuaState, 1);
 
-    /* Successfull */
-    iRetval = 0; /* The global color tables are filled and can be accessed now */
 
     return iRetval;
 
@@ -232,7 +271,7 @@ void CLua::ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorD
     /* Iterate Over Devices (THERE MUST BE DEVICES) otherwise LUA will error !!! */
     for(int i = 0; i < iNumberOfDevices; i++)
     {
-        /* Load tColorTable[0] = device */
+        /* Load tColorTable[i] = device */
         this->GetTableField(i);
 
         /* Iterate Over Sensors (16 per device -- sensortable index starts at 1) */
@@ -252,6 +291,7 @@ void CLua::ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorD
             vectorDevices.at(i)->SetColour      ( j-1, this->GetIntField("r"),
                                                        this->GetIntField("g"),
                                                        this->GetIntField("b"));
+            vectorDevices.at(i)->SetClearRatio  ( j-1, this->GetIntField("clear_ratio"));
 
 
             /* Pop sensor Table */

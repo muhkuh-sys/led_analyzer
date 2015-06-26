@@ -29,12 +29,23 @@ typedef enum e_state_t
     IS_CONNECTED
 };
 
+
 class ColorControlFrame: public GUIFrame
 {
     public:
         ColorControlFrame(wxFrame *frame);
         ~ColorControlFrame();
     private:
+
+        enum e_TIME_TESTMODE
+        {
+            TESTMODE_TIME_0_5SEC,
+            TESTMODE_TIME_1SEC,
+            TESTMODE_TIME_2SEC,
+            TESTMODE_TIME_5SEC,
+            TESTMODE_TIME_10SEC
+        };
+
         virtual void OnClose(wxCloseEvent& event);
         virtual void OnQuit(wxCommandEvent& event);
         virtual void OnAbout(wxCommandEvent& event);
@@ -44,6 +55,8 @@ class ColorControlFrame: public GUIFrame
         virtual void OnStart(wxCommandEvent& event);
         virtual void OnSerialUp  (wxCommandEvent& event);
         virtual void OnSerialDown(wxCommandEvent& event);
+        virtual void OnTestmode (wxCommandEvent& event);
+        virtual void OnTimeout(wxTimerEvent& event);
 
         void CreateRows(int numberOfDevices);
         void CreateTestPanels(int numberOfDevices);
@@ -51,11 +64,14 @@ class ColorControlFrame: public GUIFrame
         void UpdateSerialList();
         void UpdateRows(int iNumberOfDevices);
 
+
+
         int         m_numberOfDevices;
         wxLog       *m_pLogTarget;
-        CLua*       m_pLua;
-        wxString*   m_aStrSerials;
+        CLua        *m_pLua;
+        wxString    *m_aStrSerials;
         e_state_t   m_eState;
+
 
 
 

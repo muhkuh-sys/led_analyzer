@@ -44,6 +44,8 @@ using namespace std;
 #include <wx/radiobut.h> //
 #include <wx/colordlg.h>
 #include <wx/imaglist.h>
+#include <wx/timer.h>
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Class PanelHeader
 ///////////////////////////////////////////////////////////////////////////////
@@ -82,8 +84,6 @@ class PanelHeader : public wxPanel
 class PanelSensor : public wxPanel
 {
 	private:
-
-	protected:
 		wxTextCtrl* m_txtCtrlSensorNo;
 		wxCheckBox* m_cbUseSet1;
 		wxBitmapButton* m_bpButtonPaste1;
@@ -110,7 +110,7 @@ class PanelSensor : public wxPanel
 		wxTextCtrl* m_txtCtrlSpIllu1;
 		wxTextCtrl* m_txtCtrlSpIllu2;
 		wxTextCtrl* m_txtCtrlSpIllu3;
-		wxTextCtrl* m_txtCtrlCurColor;
+		//wxTextCtrl* m_txtCtrlCurColor;
 		wxTextCtrl* m_txtCtrlSpColor1;
 		wxTextCtrl* m_txtCtrlSpColor2;
 		wxTextCtrl* m_txtCtrlSpColor3;
@@ -153,11 +153,14 @@ class PanelSensor : public wxPanel
 
 
 	public:
-
+        wxTextCtrl* m_txtCtrlCurColor;
 		PanelSensor( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 832,150 ), long style = wxTAB_TRAVERSAL, int sensornumber = 0 );
 		~PanelSensor();
-        wxTextCtrl* GetSensorNumber(){return m_txtCtrlSensorNo;};
-
+        //wxTextCtrl* GetSensorNumber(){return m_txtCtrlSensorNo;};
+        void SetColour(wxTextCtrl* textCtrl, wxColour colour)
+            {
+                textCtrl->SetBackgroundColour(colour);
+            };
 };
 
 
@@ -185,8 +188,12 @@ class GUIFrame : public wxFrame
 			wxID_USE,
 			wxID_START,
 			wxID_MYTEXT,
+			wxID_TESTMODE,
+			wxID_TIMER,
 			idStatusBar
 		};
+
+        wxTimer* m_pTimer;
 
 		wxMenuBar* menuBarMain;
 		wxMenu* mMenuFile;
@@ -243,7 +250,8 @@ class GUIFrame : public wxFrame
 		virtual void OnStart( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAbout( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnQuit( wxCommandEvent& event ) { event.Skip(); }
-
+		virtual void OnTestmode (wxCommandEvent& event ) { event.Skip(); };
+        virtual void OnTimeout( wxTimerEvent& event ) { event.Skip(); };
 
 	public:
 

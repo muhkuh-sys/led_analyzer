@@ -98,7 +98,7 @@ end
 
 -- Convert the Colors given as parameters into various color spaces (RGB, HSV, XYZ, Yxy, Wavelength)
 -- and save the values of the color spaces into tables 
-function aus2colorTable(clear, red, green, blue, cct, lux, length)
+function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, length)
 
 	-- tables containing colors in different color spaces 
 	local tRGB = {}
@@ -106,11 +106,13 @@ function aus2colorTable(clear, red, green, blue, cct, lux, length)
 	local tYxy = {}
 	local tWavelength = {}
 	local tHSV = {}
+	local tSetings = {}
 	local tColorTable = {}
 	
 	-- local values for clear, red, green and blue channel 
 	local lClear, lRed, lGreen, lBlue 
 	local r_n, g_n, b_n 
+	local lGain, lIntTime
 	
 	for i = 0, length - 1 do 
 	
@@ -121,6 +123,10 @@ function aus2colorTable(clear, red, green, blue, cct, lux, length)
 		lBlue  = led_analyzer.ushort_getitem(blue,  i)
 		lCCT   = led_analyzer.ushort_getitem(cct,   i)
 		lLUX   = led_analyzer.afloat_getitem(lux,   i)
+		
+		-- Settings like Gain and Integration Time 
+		lGain    = led_analyzer.puchar_getitem(gain, i)
+		lIntTime = led_analyzer.puchar_getitem(intTimes, i)
 				
 		-- to avoid a later division by zero and to have more stable readings and no unneccessary
 		-- outputs from channels that are not reading any LEDs we set a minum lux level
@@ -131,9 +137,9 @@ function aus2colorTable(clear, red, green, blue, cct, lux, length)
 		if(lLUX <= MIN_LUX or lClear == 0) then 
 			-- RGB table 
 			tRGB[i+1] = {clear = 0,
-						 red = 0,
+						 red   = 0,
 						 green = 0,
-						 blue = 0 }
+						 blue  = 0 }
 						 
 			-- RGB normalized
 			tXYZ[i+1] = { X = 0,
@@ -151,11 +157,16 @@ function aus2colorTable(clear, red, green, blue, cct, lux, length)
 								 lux = lLUX,
 								 r   = 0,
 								 g   = 0,
-								 b   = 0}
+								 b   = 0,
+								 clear_ratio = 100*lClear/maxClear(lIntTime) }
 							
 			tHSV[i+1] = { H = 0,
 						  S = 0,
 						  V = 0 }
+						  
+			
+			tSettings = { gain    = lGain,
+						  intTime = lIntTime } 
 						  
 
 						  
@@ -195,9 +206,9 @@ function aus2colorTable(clear, red, green, blue, cct, lux, length)
 								lux = lLUX,
 								r   = wR,
 								g   = wG,
-								b   = wB
+								b   = wB,
+								clear_ratio = 100*lClear/maxClear(lIntTime)
 								}
-			-- HSV (Hue Saturation Value)
 			
 			local H, S, V = RGB2HSV(r_n, g_n, b_n)
 			
@@ -206,18 +217,55 @@ function aus2colorTable(clear, red, green, blue, cct, lux, length)
 						  S = S,
 						  V = V }
 						  
+			-- Settings --
+			tSettings = { gain    = lGain,
+						  intTime = lIntTime } 
+						  
+						  
 		end 
 	end 
 	
 	tColorTable [1] = tWavelength 
 	tColorTable [2] = tRGB
-	tColorTable [3]  = tXYZ 
+	tColorTable [3] = tXYZ 
 	tColorTable [4] = tYxy 
 	tColorTable [5] = tHSV 	
+	tColorTable [6] = tSettings 
+	
 	
 	return tColorTable
 			
 end 
+
+
+-- Gets the maximum clear level corresponding to a given integration time of the tcs3472 sensor 
+function maxClear(integrationTime)
+
+	if     integrationTime == TCS3472_INTEGRATION_2_4ms then 
+		return 1024
+		
+	elseif integrationTime == TCS3472_INTEGRATION_24ms then 
+		return 10240
+		
+	elseif integrationTime == TCS3472_INTEGRATION_100ms then 
+		return 43007
+		
+	elseif integrationTime == TCS3472_INTEGRATION_154ms then 
+		return 65535
+	
+	elseif integrationTime == TCS3472_INTEGRATION_200ms then 
+		return 65535
+		
+	elseif integrationTime == TCS3472_INTEGRATION_700ms then 
+		return 65535
+		
+	else
+		print(string.format("Unknown Integration Time - we take default 65535"))
+		return 65535
+	end 
+
+end 
+
 
 -- Convert XYZ to LAB --
 function XYZToLAB(x, y, z)

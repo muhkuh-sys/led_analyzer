@@ -59,3 +59,8 @@ void CColorController::SetIntTime(int iSensorIndex, tcs3472_intTime_t tIntTime)
 {
 	m_sensorData[iSensorIndex].SetIntTime(tIntTime);
 }
+
+void CColorController::SetClearRatio(int iSensorIndex, int iClearRatio)
+{
+    m_sensorData[iSensorIndex].SetClearRatio(iClearRatio);
+}
