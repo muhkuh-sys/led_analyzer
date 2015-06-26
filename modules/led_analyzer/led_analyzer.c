@@ -389,17 +389,15 @@ LUX level in an array. This level is calculated by a formula given in AMS / TAOS
 
 */
 int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsigned short* ausRed,
-				unsigned short* ausGreen, unsigned short* ausBlue, unsigned short* CCT, float* afLUX)
+				unsigned short* ausGreen, unsigned short* ausBlue, unsigned short* CCT, float* afLUX, 
+				unsigned char* aucIntegrationtime, unsigned char* aucGain)
 {
 	int iHandleLength = get_number_of_handles(apHandles);
 	
 	unsigned char aucTempbuffer[16];
-	unsigned char aucIntegrationtime[16];
-	unsigned char aucGain[16];
 
 	
 	int handleIndex = devIndex * 2;
-	int gainDivisor = 0;
 	
 	int i;
 	int errorcode = 0;
