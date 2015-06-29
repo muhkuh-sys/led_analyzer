@@ -46,6 +46,8 @@ using namespace std;
 #include <wx/imaglist.h>
 #include <wx/timer.h>
 
+#include "logo_hilscher.xpm"
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Class PanelHeader
 ///////////////////////////////////////////////////////////////////////////////
@@ -75,6 +77,53 @@ class PanelHeader : public wxPanel
 
 };
 
+
+
+// ----------------------------------------------------------------------------
+// MyCustomChoiceRenderer for gain and integration time
+// ----------------------------------------------------------------------------
+
+class MyCustomChoiceRenderer: public wxDataViewChoiceRenderer
+{
+public:
+        MyCustomChoiceRenderer(wxArrayString astrChoices)
+            : wxDataViewChoiceRenderer(astrChoices,
+                                       wxDATAVIEW_CELL_EDITABLE, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT
+                                       )
+        { }
+
+
+
+};
+
+
+class MyDataViewListModel: public wxDataViewListModel
+{
+    public:
+        MyDataViewListModel();
+
+        ~MyDataViewListModel();
+
+    virtual unsigned int GetColumnCount() const;
+
+    virtual wxString GetColumnType( unsigned int col ) const;
+
+    virtual void GetValueByRow( wxVariant &variant,
+                                unsigned int row, unsigned int col ) const;
+    virtual bool GetAttrByRow( unsigned int row, unsigned int col,
+                               wxDataViewItemAttr &attr ) const;
+    virtual bool SetValueByRow( const wxVariant &variant,
+                                unsigned int row, unsigned int col );
+
+    virtual unsigned int GetRow(const wxDataViewItem& children) const ;
+
+    virtual unsigned int GetCount() const;
+
+    virtual unsigned int GetChildren( const wxDataViewItem& item, wxDataViewItemArray& children) const;
+
+    private:
+        int m_test;
+};
 
 
 
@@ -154,11 +203,12 @@ class PanelSensor : public wxPanel
 
 	public:
         wxTextCtrl* m_txtCtrlCurColor;
-		PanelSensor( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 832,150 ), long style = wxTAB_TRAVERSAL, int sensornumber = 0 );
+		PanelSensor( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 832,150 ), long style = wxSTATIC_BORDER, int sensornumber = 0 );
 		~PanelSensor();
         //wxTextCtrl* GetSensorNumber(){return m_txtCtrlSensorNo;};
         void SetColour(wxTextCtrl* textCtrl, wxColour colour)
             {
+                //m_txtCtrlCurColor->SetBackgroundColour(colour);
                 textCtrl->SetBackgroundColour(colour);
             };
 };
@@ -227,8 +277,8 @@ class GUIFrame : public wxFrame
 		wxDataViewColumn* m_cGain;
 		wxDataViewColumn* m_cIntegration;
 		wxDataViewColumn* m_cExceededClear;
-		wxDataViewChoiceRenderer* m_dvcrGain;
-		wxDataViewChoiceRenderer* m_dvcrInt;
+		MyCustomChoiceRenderer* m_mccrGain;
+		MyCustomChoiceRenderer* m_mccrInt;
 		wxScrolledWindow* m_swTestdefinition;
 		wxScrolledWindow* m_swLog;
 		wxTextCtrl* m_text;
@@ -238,6 +288,12 @@ class GUIFrame : public wxFrame
         wxRadioButton* m_rbContinuous;
         wxChoice* m_chTime;
         PanelHeader* m_panelHeader;
+
+        wxArrayString astrGainchoices;
+        wxArrayString astrIntchoices;
+
+        wxDataViewListModel* m_mdvl_model;
+
 
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnScan( wxCommandEvent& event ) { event.Skip(); }
@@ -252,6 +308,11 @@ class GUIFrame : public wxFrame
 		virtual void OnQuit( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTestmode (wxCommandEvent& event ) { event.Skip(); };
         virtual void OnTimeout( wxTimerEvent& event ) { event.Skip(); };
+        virtual void OnShowLog( wxCommandEvent& event ) { event.Skip(); };
+        virtual void OnHideLog( wxCommandEvent& event ) { event.Skip(); };
+        virtual void OnClearLog( wxCommandEvent& event ) { event.Skip(); };
+        virtual void OnShowChromaticity( wxCommandEvent& event ) { event.Skip(); };
+
 
 	public:
 

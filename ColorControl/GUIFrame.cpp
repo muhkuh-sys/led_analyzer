@@ -81,6 +81,58 @@ private:
 };
 
 
+
+
+MyDataViewListModel::MyDataViewListModel() : wxDataViewListModel()
+{
+    m_test = 0;
+}
+
+MyDataViewListModel::~MyDataViewListModel()
+{
+
+}
+
+unsigned int MyDataViewListModel::GetColumnCount() const
+{
+
+}
+
+wxString MyDataViewListModel::GetColumnType(unsigned int col) const
+{
+
+}
+
+void MyDataViewListModel::GetValueByRow(wxVariant& variant, unsigned int row, unsigned int col) const
+{
+
+}
+
+bool MyDataViewListModel::GetAttrByRow(unsigned int row, unsigned int col, wxDataViewItemAttr &attr) const
+{
+
+}
+
+bool MyDataViewListModel::SetValueByRow(const wxVariant &variant, unsigned int row, unsigned int col)
+{
+
+}
+
+unsigned int MyDataViewListModel::GetRow(const wxDataViewItem& children) const
+{
+
+}
+
+unsigned int MyDataViewListModel::GetCount() const
+{
+
+}
+
+unsigned int MyDataViewListModel::GetChildren( const wxDataViewItem& item, wxDataViewItemArray& children) const
+{
+
+}
+
 ///////////////////////////////////////////////////////////////////////////
 
 GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
@@ -124,7 +176,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	mMenuView->AppendSeparator();
 
 	wxMenuItem* menuDiagram;
-	menuDiagram = new wxMenuItem( mMenuView, wxID_ANY, wxString( wxT("Show Chromaticity Diagram") ) + wxT('\t') + wxT("Strg-R"), wxT("Show CIE 1931 chromaticity curves"), wxITEM_NORMAL );
+	menuDiagram = new wxMenuItem( mMenuView, wxID_ANY, wxString( wxT("Show Chromaticity Diagram") ) + wxT('\t') + wxT("Strg-R"), wxT("Show CIE 1931 chromaticity diagram"), wxITEM_NORMAL );
 	mMenuView->Append( menuDiagram );
 
 	menuBarMain->Append( mMenuView, wxT("View") );
@@ -161,9 +213,11 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizerHW;
 	bSizerHW = new wxBoxSizer( wxVERTICAL );
 
-	bSizerHW->SetMinSize( wxSize( 70,-1 ) );
-	m_bpCoco = new wxStaticBitmap( this, wxID_BPCOCO, wxBitmap( wxT("pic/logo_hilscher.bmp"), wxBITMAP_TYPE_ANY ), wxDefaultPosition, wxSize( 90,90 ), 0 );
+
+	bSizerHW->SetMinSize( wxSize( -1,-1 ) );
+	m_bpCoco = new wxStaticBitmap( this, wxID_BPCOCO, wxBitmap( logo_hilscher_xpm , wxBITMAP_TYPE_XPM) , wxDefaultPosition, wxSize( 123,90 ), 0 );
 	bSizerHW->Add( m_bpCoco, 0, wxALIGN_CENTER|wxALL|wxTOP, 9 );
+
 
 	wxStaticBoxSizer* bSizerCommunication;
 	bSizerCommunication = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Communication") ), wxVERTICAL );
@@ -295,6 +349,10 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizerColors = new wxBoxSizer( wxVERTICAL );
 
 	m_dvlColors = new wxDataViewListCtrl( m_swColors, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxDV_HORIZ_RULES | wxDV_VERT_RULES );
+	m_mdvl_model = new MyDataViewListModel;
+
+    //m_dvlColors->AssociateModel( m_mdvl_model );
+
 	m_cSensorNo = m_dvlColors->AppendTextColumn( wxT("Sensor"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
 	m_cWavelength = m_dvlColors->AppendTextColumn( wxT("Wavelength"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
 	m_cSaturation = m_dvlColors->AppendTextColumn( wxT("Saturation"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
@@ -319,10 +377,10 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
     astrIntchoices.Add("TIME_200ms");
     astrIntchoices.Add("TIME_700ms");
 
-    m_dvcrGain = new wxDataViewChoiceRenderer(astrGainchoices, wxDATAVIEW_CELL_EDITABLE, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
-    m_dvcrInt  = new wxDataViewChoiceRenderer(astrIntchoices, wxDATAVIEW_CELL_EDITABLE, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
-	m_cGain = new wxDataViewColumn(wxT("Gain"), m_dvcrGain, 6, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
-	m_cIntegration = new wxDataViewColumn(wxT("Integration Time"), m_dvcrInt, 7, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
+    m_mccrGain = new MyCustomChoiceRenderer(astrGainchoices);
+    m_mccrInt  = new MyCustomChoiceRenderer(astrIntchoices);
+	m_cGain = new wxDataViewColumn(wxT("Gain"), m_mccrGain, 6, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
+	m_cIntegration = new wxDataViewColumn(wxT("Integration Time"), m_mccrInt, 7, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
     m_dvlColors->AppendColumn(m_cGain);
     m_dvlColors->AppendColumn(m_cIntegration);
 
@@ -387,6 +445,10 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
     this->Connect( wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnQuit ) );
     this->Connect( wxID_TESTMODE, wxEVT_RADIOBUTTON, wxCommandEventHandler( GUIFrame::OnTestmode ) );
     this->Connect( wxID_TIMER, wxEVT_TIMER, wxTimerEventHandler ( GUIFrame::OnTimeout ) );
+    this->Connect( menuItem_showLog->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler ( GUIFrame::OnShowLog ) );
+    this->Connect( menuItem_hideLog->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler ( GUIFrame::OnHideLog ) );
+    this->Connect( menuItem_clearLog->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler ( GUIFrame::OnClearLog ) );
+    this->Connect( menuDiagram->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler (GUIFrame::OnShowChromaticity ) );
 }
 
 GUIFrame::~GUIFrame()
@@ -403,6 +465,9 @@ GUIFrame::~GUIFrame()
     this->Disconnect( wxEVT_RADIOBUTTON, wxCommandEventHandler( GUIFrame::OnTestmode ), NULL, this );
     this->Disconnect( wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnQuit ), NULL, this );
     this->Disconnect( wxEVT_TIMER, wxTimerEventHandler (GUIFrame::OnTimeout ), NULL, this );
+    this->Disconnect( wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnShowLog ), NULL, this);
+    this->Disconnect( wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnClearLog ), NULL, this);
+    this->Disconnect( wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnShowChromaticity ), NULL, this);
 
     //this->Disconnect( menuItem_about->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnAbout ) );
 

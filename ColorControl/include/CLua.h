@@ -16,7 +16,7 @@ extern "C"
 class CLua
 {
     public:
-        CLua();
+        CLua(char* filename);
         virtual ~CLua();
         int  ScanDevices(int &iNumberOfDevices, wxString *aStrSerials);
         int  ConnectDevices(int &iNumberOfDevices);
@@ -27,8 +27,9 @@ class CLua
         bool IsLoaded(){return m_ColorControlLoaded;};
         int  StartMeasurements(int iNumberOfDevices);
         int  InitDevices(int iNumberOfDevices);
-        void ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorDevices);
-//        int lua_load
+        int  ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorDevices);
+        void CleanUp();
+
     protected:
     private:
         bool m_ColorControlLoaded;

@@ -106,7 +106,7 @@ function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, lengt
 	local tYxy = {}
 	local tWavelength = {}
 	local tHSV = {}
-	local tSetings = {}
+	local tSettings = {}
 	local tColorTable = {}
 	
 	-- local values for clear, red, green and blue channel 
@@ -165,8 +165,8 @@ function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, lengt
 						  V = 0 }
 						  
 			
-			tSettings = { gain    = lGain,
-						  intTime = lIntTime } 
+			tSettings[i+1] = { gain    = lGain,
+							   intTime = lIntTime } 
 						  
 
 						  
@@ -218,8 +218,8 @@ function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, lengt
 						  V = V }
 						  
 			-- Settings --
-			tSettings = { gain    = lGain,
-						  intTime = lIntTime } 
+			tSettings[i+1] = { gain    = lGain,
+							   intTime = lIntTime } 
 						  
 						  
 		end 

@@ -19,6 +19,7 @@
 
 
 #define MYGREEN {0, 200, 0}
+#define MYRED   {255, 0, 0}
 
 
 /* System States */
@@ -57,12 +58,19 @@ class ColorControlFrame: public GUIFrame
         virtual void OnSerialDown(wxCommandEvent& event);
         virtual void OnTestmode (wxCommandEvent& event);
         virtual void OnTimeout(wxTimerEvent& event);
+        virtual void OnShowLog(wxCommandEvent& event);
+        virtual void OnHideLog(wxCommandEvent& event);
+        virtual void OnClearLog(wxCommandEvent& event);
+        virtual void OnShowChromaticity(wxCommandEvent& event);
+
 
         void CreateRows(int numberOfDevices);
         void CreateTestPanels(int numberOfDevices);
         void ClearTestPanels();
         void UpdateSerialList();
         void UpdateRows(int iNumberOfDevices);
+        void UpdateConnectedField(wxColour colour);
+
 
 
 

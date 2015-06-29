@@ -63,7 +63,7 @@ local ret 				 = 0
 
 
 
-function scanDevices()
+function scanDevices() 
 	numberOfDevices = led_analyzer.scan_devices(asSerials, MAXSERIALS)
 	tStrSerials = astring2table(asSerials, numberOfDevices)
 	return tStrSerials, numberOfDevices

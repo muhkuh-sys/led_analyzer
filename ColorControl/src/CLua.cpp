@@ -1,7 +1,7 @@
 #include "CLua.h"
 
 
-int OMGPanic(lua_State* state)
+int Panic(lua_State* state)
 {
 
     wxLogMessage("LUA PANIC FUNCTION ERROR OCCURED!!!!");
@@ -10,17 +10,23 @@ int OMGPanic(lua_State* state)
 
 
 
-CLua::CLua()
+CLua::CLua(char* filename)
 {
     m_pLuaState = lua_open();
     luaL_openlibs(m_pLuaState);
 
+    /* Initially false */
     m_ColorControlLoaded = false;
+
+    /* This function will set m_colorControlLoaded to true if successful */
+    this->LoadAndRun(filename);
+
 }
 
 
 CLua::~CLua()
 {
+    this->CleanUp();
     lua_close(m_pLuaState);
 }
 
@@ -257,9 +263,19 @@ int CLua::StartMeasurements(int iNumberOfDevices)
 
 }
 
-void CLua::ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorDevices)
+int CLua::ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorDevices)
 {
+
+    /* Be pessimistic */
+    int iRetVal = 1;
     /* push your global table onto the stack */
+
+    if(!(this->IsLoaded()))
+    {
+        wxLogMessage("Color Control is not loaded!");
+        return -1;
+    }
+
     lua_getglobal(this->m_pLuaState, "tColorTable");
 
     /* check if it is a table */
@@ -274,12 +290,12 @@ void CLua::ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorD
         /* Load tColorTable[i] = device */
         this->GetTableField(i);
 
-        /* Iterate Over Sensors (16 per device -- sensortable index starts at 1) */
+        /* Load tColorTable[i][1] = device(wavelength) */
+        this->GetTableField(1);
+
+        /* Iterate over sensors (16 per device -- sensortable index starts at 1) */
         for(int j = 1; j <= 16; j++)
         {
-
-            /* Load tColorTable[i][1] = device(wavelength) */
-            this->GetTableField(1);
 
             /* Load tColorTable[i][1][j] = device(wavelength(sensor)) */
             this->GetTableField(j);
@@ -297,10 +313,33 @@ void CLua::ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorD
             /* Pop sensor Table */
             lua_pop(this->m_pLuaState, 1);
 
-            /* Pop wavelength Table */
+        }
+
+        /* Pop wavelength Table */
+        lua_pop(this->m_pLuaState, 1);
+
+        /* Load tColorTable[i][6] = device(settings) */
+        this->GetTableField(6);
+
+        /* Iterate over sensors (16 per device -- sensor table index starts at 1 */
+        for(int j=1; j<= 16; j++)
+        {
+            /* Load tColorTable[i][6][j] = device(settings(sensor)) */
+            this->GetTableField(j);
+
+            /* Set your gain */
+            vectorDevices.at(i)->SetGain( j-1, (tcs3472_gain_t)this->GetIntField("gain"));
+
+            /* Set your integration time */
+            vectorDevices.at(i)->SetIntTime( j-1, (tcs3472_intTime_t)this->GetIntField("intTime"));
+
+            /* Pop current sensortable */
             lua_pop(this->m_pLuaState, 1);
 
         }
+
+        /* Pop settings table */
+        lua_pop(this->m_pLuaState, 1);
 
         /* Pop Device Table */
         lua_pop(this->m_pLuaState, 1);
@@ -489,4 +528,25 @@ int CLua::SwapDown(wxString* aStrSerials, wxString strCurSerial, int iNumberOfDe
 
 
     return iRetval;
+}
+
+void CLua::CleanUp()
+{
+
+    if(!(this->IsLoaded()))
+    {
+        wxLogMessage("Color Control is not loaded!");
+    }
+
+    lua_getglobal(this->m_pLuaState, "free");
+
+    /* Call the function with 0 argument and zero return values */
+    if (lua_pcall(this->m_pLuaState, 0, 0, 0) != 0)
+    {
+        wxLogMessage("Error Running Function %s", lua_tostring(this->m_pLuaState, -1));
+    }
+
+    /* Set it the attribute to unloaded */
+    m_ColorControlLoaded = false;
+
 }

@@ -1690,14 +1690,14 @@
 1412631244 c:\wxwidgets-3.0.2\include\wx\univ\theme.h
 	"wx/string.h"
 
-1435325762 c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.h
+1435576206 c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.h
 	"ColorControlApp.h"
 	"GUIFrame.h"
 	"CSensorData.h"
 	"CDevice.h"
 	"CLua.h"
 
-1435324039 c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.h
+1435588523 c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.h
 	<iostream>
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
@@ -1732,6 +1732,7 @@
 	<wx/colordlg.h>
 	<wx/imaglist.h>
 	<wx/timer.h>
+	"logo_hilscher.xpm"
 
 1412631242 c:\wxwidgets-3.0.2\include\wx\artprov.h
 	"wx/string.h"
@@ -2751,11 +2752,11 @@
 
 1412631244 c:\wxwidgets-3.0.2\include\wx\msw\rcdefs.h
 
-1435324570 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
+1435589276 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
 	"wx_pch.h"
 	"ColorControlMain.h"
 
-1435324072 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.cpp
+1435589400 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.cpp
 	"wx/wxprec.h"
 	<wx/wx.h>
 	"GuiFrame.h"
@@ -3493,7 +3494,7 @@
 1434815873 source:c:\led_analyzer\colorcontrol\src\csensordata.cpp
 	"CSensorData.h"
 
-1435313247 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\cdevice.h
+1435588399 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\cdevice.h
 	"CSensorData.h"
 
 1435306871 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\cdevice.cpp
@@ -3586,14 +3587,14 @@
 	<stdio.h>
 	"lua.h"
 
-1435300692 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\clua.h
+1435572590 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\clua.h
 	"lua.h"
 	"lualib.h"
 	"lauxlib.h"
 	"../GUIFrame.h"
 	"CDevice.h"
 
-1435307061 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\clua.cpp
+1435579447 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\clua.cpp
 	"CLua.h"
 
 1435165780 c:\led_analyzer\colorcontrol\include\clua.h
@@ -3654,4 +3655,6 @@
 1412631242 c:\wxwidgets-3.0.2\include\wx\generic\colrdlgg.h
 	"wx/gdicmn.h"
 	"wx/dialog.h"
+
+1435567944 c:\users\subhan\desktop\led_analyzer\colorcontrol\logo_hilscher.xpm
 
