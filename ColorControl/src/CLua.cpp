@@ -10,7 +10,7 @@ int Panic(lua_State* state)
 
 
 
-CLua::CLua(char* filename)
+CLua::CLua(const char* filename)
 {
     m_pLuaState = lua_open();
     luaL_openlibs(m_pLuaState);
@@ -62,7 +62,7 @@ void CLua::StackDump()
 }
 
 
-int  CLua::LoadAndRun(char* pcFilename)
+int  CLua::LoadAndRun(const char* pcFilename)
 {
     /* Be pessimistic */
     int iRetVal = 1;
@@ -266,10 +266,7 @@ int CLua::StartMeasurements(int iNumberOfDevices)
 int CLua::ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorDevices)
 {
 
-    /* Be pessimistic */
-    int iRetVal = 1;
     /* push your global table onto the stack */
-
     if(!(this->IsLoaded()))
     {
         wxLogMessage("Color Control is not loaded!");
@@ -349,6 +346,8 @@ int CLua::ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorDe
     lua_pop(this->m_pLuaState, 1);
 
     /* Leave */
+
+    return 0;
 
 }
 
@@ -450,7 +449,7 @@ int CLua::SetIntTimeX(int iDeviceIndex, int iSensorIndex, tcs3472_intTime_t intT
 }
 
 /* Assumes table is at top of stack, returns table[strKey] */
-int CLua::GetIntField(char* strKey)
+int CLua::GetIntField(const char* strKey)
 {
     int iValue;
     /* push your key onto the stack */

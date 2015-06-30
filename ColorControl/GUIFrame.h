@@ -95,10 +95,12 @@ public:
         virtual wxString GetChoice(size_t WXUNUSED(index))
         {
             wxLogMessage("HELLO!");
+            return "bla";
         }
 
 
 };
+
 
 /*
 class MyDataViewListModel: public wxDataViewModel

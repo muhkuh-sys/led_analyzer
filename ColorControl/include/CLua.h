@@ -17,11 +17,11 @@ extern "C"
 class CLua
 {
     public:
-        CLua(char* filename);
+        CLua(const char* filename);
         virtual ~CLua();
         int  ScanDevices(int &iNumberOfDevices, wxString *aStrSerials);
         int  ConnectDevices(int &iNumberOfDevices);
-        int  LoadAndRun(char* filename);
+        int  LoadAndRun(const char* filename);
         void StackDump();
         int  SwapUp  (wxString* aStrSerials, wxString strCurSerial, int iNumberOfDevices);
         int  SwapDown(wxString* aStrSerials, wxString strCurSerial, int iNumberOfDevices);
@@ -39,9 +39,9 @@ class CLua
         bool m_ColorControlLoaded;
         lua_State* m_pLuaState;
 
-        lua_CFunction   Panic(){};
+        lua_CFunction   Panic(){return 0;};
         char   *GetStrField  (int   iIndex);
-        int     GetIntField  (char* strKey);
+        int     GetIntField  (const char* strKey);
         int     GetIntField  (int   iIndex);
         void    GetTableField(int iIndex);
         /* Define your panic function with CFunctions as parameters */

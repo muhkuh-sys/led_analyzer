@@ -108,7 +108,7 @@ void ColorControlFrame::OnQuit(wxCommandEvent &event)
 void ColorControlFrame::OnAbout(wxCommandEvent &event)
 {
 
-    wxString msg = wxbuildinfo(long_f);
+    wxString msg = "Subhan Waizi - Bachelorarbeit. BOOYA.";
     wxMessageBox(msg, _("Welcome to..."));
 
 }
@@ -127,6 +127,7 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
             m_textCtrlConnected->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
             m_textCtrlConnected->Clear();
             *m_textCtrlConnected << m_numberOfDevices;
+            m_dataViewListSerials->DeleteAllItems();
 
             m_eState = IS_SCANNED;
 
@@ -140,7 +141,9 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
                 wxLogMessage("No device detected ... please make sure the device is properly attached!");
 
                 if(!m_cocoDevices.empty()) m_cocoDevices.clear();
+
                 m_eState = IS_INITIAL;
+
                 delete m_pLua;
             }
             else
@@ -279,7 +282,6 @@ void ColorControlFrame::OnDisconnect(wxCommandEvent& event)
             this->ClearTestPanels();
             m_swColors->Layout();
 
-
             /* Set number of devices to zero -- ONLY AT THE END OF A BLOCK */
             m_numberOfDevices = 0;
 
@@ -287,10 +289,11 @@ void ColorControlFrame::OnDisconnect(wxCommandEvent& event)
             /* Reset the color of textctrl Connected */
             this->UpdateConnectedField(wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
 
-            /* If the timer is Running Stop It*/
+            /* If the timer is Running Stop and transform Stop button into Start button It*/
             if(m_pTimer->IsRunning())
             {
                 m_pTimer->Stop();
+                m_buttonStart->SetLabel("START");
             }
 
             /* Close the current Lua State (color_control.lua) */
@@ -611,38 +614,44 @@ void ColorControlFrame::OnSensorSettingsChanged(wxDataViewEvent& event )
     /* Event came because an item in integration time column changed */
     if(m_cIntegration == event.GetDataViewColumn())
     {
+        tcs3472_intTime_t intTime = (tcs3472_intTime_t)StrToRegisterContent(m_dvlColors->GetTextValue(iIndex, 7));
+        m_pLua->SetIntTimeX(iDeviceIndex, iSensorIndex, intTime);
         wxLogMessage("Came from IntTime from row %d", iIndex);
     }
 
 
 }
 
+
 int ColorControlFrame::IntegrationToIndex(tcs3472_intTime_t intTime)
 {
     switch(intTime)
     {
-    case 0xFF:
+    case TCS3472_INTEGRATION_2_4ms:
         return 0;
         break;
-    case 0xF6:
+    case TCS3472_INTEGRATION_24ms:
         return 1;
         break;
-    case 0xD6:
+    case TCS3472_INTEGRATION_100ms:
         return 2;
         break;
-    case 0xAD:
+    case TCS3472_INTEGRATION_154ms:
         return 3;
         break;
-    case 0xC0:
+    case TCS3472_INTEGRATION_200ms:
         return 4;
         break;
-    case 0x00:
+    case TCS3472_INTEGRATION_700ms:
         return 5;
         break;
     default:
         wxLogMessage("Cannot return Int Time Index, Int Time not found!");
         break;
     }
+
+    /* Shouldn't arrive here */
+    return -1;
 }
 
 
@@ -660,15 +669,13 @@ int ColorControlFrame::StrToRegisterContent(const wxString strSetting)
     if(strSetting.Left(4).IsSameAs("TIME"))
     {
         if(strSetting.IsSameAs("TIME_2_4ms")) return TCS3472_INTEGRATION_2_4ms;
-        if(strSetting.IsSameAs("TIME_24ms")) return TCS3472_INTEGRATION_24ms;
+        if(strSetting.IsSameAs("TIME_24ms"))  return TCS3472_INTEGRATION_24ms;
         if(strSetting.IsSameAs("TIME_100ms")) return TCS3472_INTEGRATION_100ms;
         if(strSetting.IsSameAs("TIME_154ms")) return TCS3472_INTEGRATION_154ms;
         if(strSetting.IsSameAs("TIME_200ms")) return TCS3472_INTEGRATION_200ms;
         if(strSetting.IsSameAs("TIME_700ms")) return TCS3472_INTEGRATION_700ms;
 
     }
-
-    wxLogMessage("hello");
 
     /* Should Not arrive here */
     return -1;

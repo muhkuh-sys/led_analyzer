@@ -3422,7 +3422,7 @@
 1435223241 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\csensordata.cpp
 	"CSensorData.h"
 
-1434645373 source:c:\led_analyzer\colorcontrol\colorcontrolapp.cpp
+1435690692 source:c:\led_analyzer\colorcontrol\colorcontrolapp.cpp
 	"wx_pch.h"
 	"ColorControlApp.h"
 	"ColorControlMain.h"
@@ -3430,14 +3430,14 @@
 1434813020 c:\led_analyzer\colorcontrol\colorcontrolapp.h
 	<wx/app.h>
 
-1435172702 c:\led_analyzer\colorcontrol\colorcontrolmain.h
+1435694030 c:\led_analyzer\colorcontrol\colorcontrolmain.h
 	"ColorControlApp.h"
 	"GUIFrame.h"
 	"CSensorData.h"
 	"CDevice.h"
 	"CLua.h"
 
-1435165780 c:\led_analyzer\colorcontrol\guiframe.h
+1435694355 c:\led_analyzer\colorcontrol\guiframe.h
 	<iostream>
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
@@ -3469,15 +3469,19 @@
 	<wx/log.h>
 	<wx/dynlib.h>
 	<wx/radiobut.h>
+	<wx/colordlg.h>
+	<wx/imaglist.h>
+	<wx/timer.h>
+	"logo_hilscher.xpm"
 
-1434811989 c:\led_analyzer\colorcontrol\include\csensordata.h
+1435690692 c:\led_analyzer\colorcontrol\include\csensordata.h
 	"../GUIFrame.h"
 
-1435175082 source:c:\led_analyzer\colorcontrol\colorcontrolmain.cpp
+1435694270 source:c:\led_analyzer\colorcontrol\colorcontrolmain.cpp
 	"wx_pch.h"
 	"ColorControlMain.h"
 
-1435174439 source:c:\led_analyzer\colorcontrol\guiframe.cpp
+1435690692 source:c:\led_analyzer\colorcontrol\guiframe.cpp
 	"wx/wxprec.h"
 	<wx/wx.h>
 	"GuiFrame.h"
@@ -3485,10 +3489,10 @@
 1434645374 source:c:\led_analyzer\colorcontrol\resource.rc
 	"wx/msw/wx.rc"
 
-1435076491 source:c:\led_analyzer\colorcontrol\src\cdevice.cpp
+1435336842 source:c:\led_analyzer\colorcontrol\src\cdevice.cpp
 	"CDevice.h"
 
-1435165780 c:\led_analyzer\colorcontrol\include\cdevice.h
+1435690692 c:\led_analyzer\colorcontrol\include\cdevice.h
 	"CSensorData.h"
 
 1434815873 source:c:\led_analyzer\colorcontrol\src\csensordata.cpp
@@ -3597,11 +3601,12 @@
 1435672906 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\clua.cpp
 	"CLua.h"
 
-1435165780 c:\led_analyzer\colorcontrol\include\clua.h
+1435694418 c:\led_analyzer\colorcontrol\include\clua.h
 	"lua.h"
 	"lualib.h"
 	"lauxlib.h"
 	"../GUIFrame.h"
+	"CDevice.h"
 
 1434981633 c:\org.muhkuh.lua-lua\lua-5.1.4\src\lua.h
 	<stdarg.h>
@@ -3629,7 +3634,7 @@
 	<stdio.h>
 	"lua.h"
 
-1435165780 source:c:\led_analyzer\colorcontrol\src\clua.cpp
+1435694513 source:c:\led_analyzer\colorcontrol\src\clua.cpp
 	"CLua.h"
 
 1412631242 c:\wxwidgets-3.0.2\include\wx\colordlg.h
@@ -3657,4 +3662,6 @@
 	"wx/dialog.h"
 
 1435567944 c:\users\subhan\desktop\led_analyzer\colorcontrol\logo_hilscher.xpm
+
+1435690692 c:\led_analyzer\colorcontrol\logo_hilscher.xpm
 

@@ -23,7 +23,7 @@
 
 
 /* System States */
-typedef enum e_state_t
+enum e_state_t
 {
     IS_INITIAL,
     IS_SCANNED,
