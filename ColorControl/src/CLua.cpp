@@ -352,6 +352,103 @@ int CLua::ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorDe
 
 }
 
+/** Set the Integration time for one sensor on one device */
+int CLua::SetGainX(int iDeviceIndex, int iSensorIndex, tcs3472_gain_t gain)
+{
+    /* Be pessimistic */
+    int iRetVal = 1;
+    /* push your global table onto the stack */
+
+    if(!(this->IsLoaded()))
+    {
+        wxLogMessage("Color Control is not loaded!");
+        return -1;
+    }
+
+    /* Get your global Set Gain Function */
+    lua_getglobal(this->m_pLuaState, "setGainX");
+
+    /* Push your first argument = DeviceIndex */
+    lua_pushnumber(this->m_pLuaState, iDeviceIndex);
+
+    /* Push your second argument = SensorIndex */
+    lua_pushnumber(this->m_pLuaState, iSensorIndex);
+
+    /* Push your third argument = gain */
+    lua_pushnumber(this->m_pLuaState, gain);
+
+    /* Now run the function */
+    if (lua_pcall(this->m_pLuaState, 3,1,0) != 0)
+    {
+        wxLogMessage("Error Running Function %s", lua_tostring(this->m_pLuaState, -1));
+        return iRetVal;
+    }
+
+    /* Get your result .. if successful it's zero */
+    if (!lua_isnumber(this->m_pLuaState, -1))
+    {
+        wxLogMessage("Retval (int) expected, got something else!");
+    }
+
+    /* Retrieve it */
+    iRetVal = lua_tonumber(this->m_pLuaState, -1);
+
+    /* Pop the retrieved value */
+    lua_pop(this->m_pLuaState, 1);
+
+    /* return */
+    return iRetVal;
+
+}
+
+/** Set the Integration time for one sensor on one device */
+int CLua::SetIntTimeX(int iDeviceIndex, int iSensorIndex, tcs3472_intTime_t intTime)
+{
+    /* Be pessimistic */
+    int iRetVal = 1;
+    /* push your global table onto the stack */
+
+    if(!(this->IsLoaded()))
+    {
+        wxLogMessage("Color Control is not loaded!");
+        return -1;
+    }
+
+    /* Get your global Set Gain Function */
+    lua_getglobal(this->m_pLuaState, "setIntTimeX");
+
+    /* Push your first argument = DeviceIndex */
+    lua_pushnumber(this->m_pLuaState, iDeviceIndex);
+
+    /* Push your second argument = SensorIndex */
+    lua_pushnumber(this->m_pLuaState, iSensorIndex);
+
+    /* Push your third argument = gain */
+    lua_pushnumber(this->m_pLuaState, intTime);
+
+    /* Now run the function */
+    if (lua_pcall(this->m_pLuaState, 3,1,0) != 0)
+    {
+        wxLogMessage("Error Running Function %s", lua_tostring(this->m_pLuaState, -1));
+        return iRetVal;
+    }
+
+    /* Get your result .. if successful it's zero */
+    if (!lua_isnumber(this->m_pLuaState, -1))
+    {
+        wxLogMessage("Retval (int) expected, got something else!");
+    }
+
+    /* Retrieve it */
+    iRetVal = lua_tonumber(this->m_pLuaState, -1);
+
+    /* Pop the retrieved value */
+    lua_pop(this->m_pLuaState, 1);
+
+    /* return */
+    return iRetVal;
+}
+
 /* Assumes table is at top of stack, returns table[strKey] */
 int CLua::GetIntField(char* strKey)
 {

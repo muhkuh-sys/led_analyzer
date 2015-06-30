@@ -31,8 +31,12 @@ typedef enum e_state_t
 };
 
 
+// in the header file
+DECLARE_VARIANT_OBJECT(wxChoice);
+
 class ColorControlFrame: public GUIFrame
 {
+
     public:
         ColorControlFrame(wxFrame *frame);
         ~ColorControlFrame();
@@ -62,6 +66,7 @@ class ColorControlFrame: public GUIFrame
         virtual void OnHideLog(wxCommandEvent& event);
         virtual void OnClearLog(wxCommandEvent& event);
         virtual void OnShowChromaticity(wxCommandEvent& event);
+        virtual void OnSensorSettingsChanged(wxDataViewEvent& event);
 
 
         void CreateRows(int numberOfDevices);
@@ -70,8 +75,8 @@ class ColorControlFrame: public GUIFrame
         void UpdateSerialList();
         void UpdateRows(int iNumberOfDevices);
         void UpdateConnectedField(wxColour colour);
-
-
+        int  IntegrationToIndex(tcs3472_intTime_t intTime);
+        int  StrToRegisterContent(const wxString strSetting);
 
 
         int         m_numberOfDevices;

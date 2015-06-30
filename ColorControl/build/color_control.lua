@@ -213,6 +213,13 @@ function swapDown(sCurSerial)
 	return tStrSerials
 end 
 
+function setGainX(iDeviceIndex, iSensorIndex, gain)
+	return led_analyzer.set_gain_x(apHandles, iDeviceIndex, gain, iSensorIndex)
+end 
+
+function setIntTimeX(iDeviceIndex, iSensorIndex, intTime)
+	return led_analyzer.set_intTime_x(apHandles, iDeviceIndex, intTime, iSensorIndex)
+end
 
 -- don't forget to clean up after every test -- 
 function free()

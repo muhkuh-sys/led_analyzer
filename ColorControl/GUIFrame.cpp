@@ -18,6 +18,18 @@
 #include "GuiFrame.h"
 
 
+class MyCustomChoice: public wxChoice
+{
+    wxDECLARE_DYNAMIC_CLASS(MyCustomChoice);
+public:
+    MyCustomChoice(wxWindow* parent, wxWindowID id, const wxPoint &pos,
+                   const wxSize& size, int n, const wxString choices[]) : wxChoice(parent, id, pos, size, n, choices)
+    {
+
+    }
+
+
+};
 
 // ----------------------------------------------------------------------------
 // MyCustomRenderer for Colours in wxDataViewListCtrl
@@ -34,13 +46,13 @@ public:
 
     virtual bool Render( wxRect rect, wxDC *dc, int state )
     {
-        dc->SetBrush( *wxLIGHT_GREY_BRUSH );
+        dc->SetBrush( wxBrush(wxColour(0xff,0xff,0xff)) );
         dc->SetPen( *wxTRANSPARENT_PEN );
 
         rect.Deflate(2);
         dc->DrawRoundedRectangle( rect, 5 );
 
-        RenderText("chello",
+        RenderText("",
                    0, // no offset
                    wxRect(dc->GetTextExtent(m_value)).CentreIn(rect),
                    dc,
@@ -81,9 +93,9 @@ private:
 };
 
 
+/*
 
-
-MyDataViewListModel::MyDataViewListModel() : wxDataViewListModel()
+MyDataViewListModel::MyDataViewListModel() : wxDataViewModel()
 {
     m_test = 0;
 }
@@ -133,6 +145,7 @@ unsigned int MyDataViewListModel::GetChildren( const wxDataViewItem& item, wxDat
 
 }
 
+*/
 ///////////////////////////////////////////////////////////////////////////
 
 GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
@@ -145,38 +158,38 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	menuBarMain = new wxMenuBar( 0 );
 	mMenuFile = new wxMenu();
 	wxMenuItem* menuItem_save;
-	menuItem_save = new wxMenuItem( mMenuFile, wxID_MENUSAVE, wxString( wxT("Save Session") ) + wxT('\t') + wxT("Strg-S"), wxT("Save a session to work on it later"), wxITEM_NORMAL );
+	menuItem_save = new wxMenuItem( mMenuFile, wxID_MENUSAVE, wxString( wxT("Save Session") ) + wxT('\t') + wxT("CTRL-S"), wxT("Save a session to work on it later"), wxITEM_NORMAL );
 	mMenuFile->Append( menuItem_save );
 
 	wxMenuItem* menuItem_open;
-	menuItem_open = new wxMenuItem( mMenuFile, wxID_MENUOPEN, wxString( wxT("Open Session") ) + wxT('\t') + wxT("Strg-O"), wxT("Open a session to continue working on it"), wxITEM_NORMAL );
+	menuItem_open = new wxMenuItem( mMenuFile, wxID_MENUOPEN, wxString( wxT("Open Session") ) + wxT('\t') + wxT("CTRL-O"), wxT("Open a session to continue working on it"), wxITEM_NORMAL );
 	mMenuFile->Append( menuItem_open );
 
 	mMenuFile->AppendSeparator();
 
 	wxMenuItem* menuItem_exit;
-	menuItem_exit = new wxMenuItem( mMenuFile, wxID_EXIT, wxString( wxT("Exit") ) + wxT('\t') + wxT("Strg-Q"), wxT("Close app ..."), wxITEM_NORMAL );
+	menuItem_exit = new wxMenuItem( mMenuFile, wxID_EXIT, wxString( wxT("Exit") ) + wxT('\t') + wxT("CTRL-Q"), wxT("Close app ..."), wxITEM_NORMAL );
 	mMenuFile->Append( menuItem_exit );
 
 	menuBarMain->Append( mMenuFile, wxT("File") );
 
 	mMenuView = new wxMenu();
 	wxMenuItem* menuItem_showLog;
-	menuItem_showLog = new wxMenuItem( mMenuView, wxID_ANY, wxString( wxT("Show Log") ) + wxT('\t') + wxT("Strg-L"), wxT("Show extended output"), wxITEM_NORMAL );
+	menuItem_showLog = new wxMenuItem( mMenuView, wxID_ANY, wxString( wxT("Show Log") ) + wxT('\t') + wxT("CTRL-L"), wxT("Show extended output"), wxITEM_NORMAL );
 	mMenuView->Append( menuItem_showLog );
 
 	wxMenuItem* menuItem_clearLog;
-	menuItem_clearLog = new wxMenuItem( mMenuView, wxID_ANY, wxString( wxT("Clear Log") ) + wxT('\t') + wxT("Strg-P"), wxT("Flush output"), wxITEM_NORMAL );
+	menuItem_clearLog = new wxMenuItem( mMenuView, wxID_ANY, wxString( wxT("Clear Log") ) + wxT('\t') + wxT("CTRL-P"), wxT("Flush output"), wxITEM_NORMAL );
 	mMenuView->Append( menuItem_clearLog );
 
 	wxMenuItem* menuItem_hideLog;
-	menuItem_hideLog = new wxMenuItem( mMenuView, wxID_ANY, wxString( wxT("Hide Log") ) + wxT('\t') + wxT("Strg-H"), wxT("Hide extended output"), wxITEM_NORMAL );
+	menuItem_hideLog = new wxMenuItem( mMenuView, wxID_ANY, wxString( wxT("Hide Log") ) + wxT('\t') + wxT("CTRL-H"), wxT("Hide extended output"), wxITEM_NORMAL );
 	mMenuView->Append( menuItem_hideLog );
 
 	mMenuView->AppendSeparator();
 
 	wxMenuItem* menuDiagram;
-	menuDiagram = new wxMenuItem( mMenuView, wxID_ANY, wxString( wxT("Show Chromaticity Diagram") ) + wxT('\t') + wxT("Strg-R"), wxT("Show CIE 1931 chromaticity diagram"), wxITEM_NORMAL );
+	menuDiagram = new wxMenuItem( mMenuView, wxID_ANY, wxString( wxT("Show Chromaticity Diagram") ) + wxT('\t') + wxT("CTRL-D"), wxT("Show CIE 1931 chromaticity diagram"), wxITEM_NORMAL );
 	mMenuView->Append( menuDiagram );
 
 	menuBarMain->Append( mMenuView, wxT("View") );
@@ -348,10 +361,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizerColors;
 	bSizerColors = new wxBoxSizer( wxVERTICAL );
 
-	m_dvlColors = new wxDataViewListCtrl( m_swColors, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxDV_HORIZ_RULES | wxDV_VERT_RULES );
-	m_mdvl_model = new MyDataViewListModel;
-
-    //m_dvlColors->AssociateModel( m_mdvl_model );
+	m_dvlColors = new wxDataViewListCtrl( m_swColors, wxID_COLORS, wxDefaultPosition, wxDefaultSize, wxDV_HORIZ_RULES | wxDV_VERT_RULES );
 
 	m_cSensorNo = m_dvlColors->AppendTextColumn( wxT("Sensor"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
 	m_cWavelength = m_dvlColors->AppendTextColumn( wxT("Wavelength"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
@@ -364,12 +374,12 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
     m_cExceededClear = m_dvlColors->AppendProgressColumn( wxT("Clear Level"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER);
 
-    wxArrayString astrGainchoices;
+
     astrGainchoices.Add("GAIN_1X");
     astrGainchoices.Add("GAIN_4X");
     astrGainchoices.Add("GAIN_16X");
     astrGainchoices.Add("GAIN_60X");
-    wxArrayString astrIntchoices;
+
     astrIntchoices.Add("TIME_2_4ms");
     astrIntchoices.Add("TIME_24ms");
     astrIntchoices.Add("TIME_100ms");
@@ -449,6 +459,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
     this->Connect( menuItem_hideLog->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler ( GUIFrame::OnHideLog ) );
     this->Connect( menuItem_clearLog->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler ( GUIFrame::OnClearLog ) );
     this->Connect( menuDiagram->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler (GUIFrame::OnShowChromaticity ) );
+    this->Connect( m_dvlColors->GetId(), wxEVT_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler (GUIFrame::OnSensorSettingsChanged ) );
 }
 
 GUIFrame::~GUIFrame()
@@ -468,8 +479,7 @@ GUIFrame::~GUIFrame()
     this->Disconnect( wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnShowLog ), NULL, this);
     this->Disconnect( wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnClearLog ), NULL, this);
     this->Disconnect( wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnShowChromaticity ), NULL, this);
-
-    //this->Disconnect( menuItem_about->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnAbout ) );
+    this->Disconnect( wxEVT_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler ( GUIFrame::OnSensorSettingsChanged ), NULL, this);
 
 
 }
@@ -481,14 +491,14 @@ PanelHeader::PanelHeader( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizer98;
 	bSizer98 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_stSensor = new wxStaticText( this, wxID_ANY, wxT("Sensor"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stSensor = new wxStaticText( this, wxID_ANY, wxT("        Sensor        "), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stSensor->Wrap( -1 );
 	bSizer98->Add( m_stSensor, 0, wxALL, 5 );
 
 
 	bSizer98->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_stName = new wxStaticText( this, wxID_ANY, wxT("Name"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stName = new wxStaticText( this, wxID_ANY, wxT(" Name "), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stName->Wrap( -1 );
 	bSizer98->Add( m_stName, 0, wxALL, 5 );
 
@@ -666,22 +676,22 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerName;
 	bSizerName = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlCurName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_CENTER );
+	m_txtCtrlCurName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER );
 	m_txtCtrlCurName->SetMaxSize( wxSize( 70,-1 ) );
 
 	bSizerName->Add( m_txtCtrlCurName, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 2 );
 
-	m_txtCtrlSpName1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpName1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER );
 	m_txtCtrlSpName1->SetMaxSize( wxSize( 70,-1 ) );
 
 	bSizerName->Add( m_txtCtrlSpName1, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpName2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpName2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER );
 	m_txtCtrlSpName2->SetMaxSize( wxSize( 70,-1 ) );
 
 	bSizerName->Add( m_txtCtrlSpName2, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpName3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpName3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER );
 	m_txtCtrlSpName3->SetMaxSize( wxSize( 70,-1 ) );
 
 	bSizerName->Add( m_txtCtrlSpName3, 1, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 2 );
@@ -695,22 +705,22 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerWL;
 	bSizerWL = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlCurWL = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlCurWL = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS ) );
 	m_txtCtrlCurWL->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerWL->Add( m_txtCtrlCurWL, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpWL1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpWL1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS ) );
 	m_txtCtrlSpWL1->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerWL->Add( m_txtCtrlSpWL1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpWL2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpWL2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS ) );
 	m_txtCtrlSpWL2->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerWL->Add( m_txtCtrlSpWL2, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpWL3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpWL3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS ) );
 	m_txtCtrlSpWL3->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerWL->Add( m_txtCtrlSpWL3, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
@@ -724,22 +734,22 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerSat;
 	bSizerSat = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlCurSat = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlCurSat = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS )  );
 	m_txtCtrlCurSat->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerSat->Add( m_txtCtrlCurSat, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpSat1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpSat1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS )  );
 	m_txtCtrlSpSat1->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerSat->Add( m_txtCtrlSpSat1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpSat2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpSat2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS )  );
 	m_txtCtrlSpSat2->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerSat->Add( m_txtCtrlSpSat2, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpSat3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpSat3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS )  );
 	m_txtCtrlSpSat3->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerSat->Add( m_txtCtrlSpSat3, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
@@ -753,22 +763,22 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerIllu;
 	bSizerIllu = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlCurIllu = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlCurIllu = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS )  );
 	m_txtCtrlCurIllu->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerIllu->Add( m_txtCtrlCurIllu, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpIllu1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpIllu1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS )  );
 	m_txtCtrlSpIllu1->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerIllu->Add( m_txtCtrlSpIllu1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpIllu2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpIllu2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS ) );
 	m_txtCtrlSpIllu2->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerIllu->Add( m_txtCtrlSpIllu2, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpIllu3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpIllu3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS ) );
 	m_txtCtrlSpIllu3->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerIllu->Add( m_txtCtrlSpIllu3, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
@@ -782,22 +792,26 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerColor;
 	bSizerColor = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlCurColor = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlCurColor = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_READONLY );
+	m_txtCtrlCurColor->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 	m_txtCtrlCurColor->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerColor->Add( m_txtCtrlCurColor, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpColor1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpColor1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_READONLY );
+	m_txtCtrlSpColor1->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 	m_txtCtrlSpColor1->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerColor->Add( m_txtCtrlSpColor1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpColor2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpColor2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_READONLY );
+	m_txtCtrlSpColor2->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 	m_txtCtrlSpColor2->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerColor->Add( m_txtCtrlSpColor2, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpColor3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpColor3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_READONLY);
+	m_txtCtrlSpColor3->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 	m_txtCtrlSpColor3->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerColor->Add( m_txtCtrlSpColor3, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
@@ -875,7 +889,7 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 
 	wxString m_chCurPinValueChoices[] = { wxT("0"), wxT("1") };
 	int m_chCurPinValueNChoices = sizeof( m_chCurPinValueChoices ) / sizeof( wxString );
-	m_chCurPinValue = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chCurPinValueNChoices, m_chCurPinValueChoices, 0 );
+	m_chCurPinValue = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chCurPinValueNChoices, m_chCurPinValueChoices, 0);
 	m_chCurPinValue->SetSelection( 0 );
 	bSizerPinValue->Add( m_chCurPinValue, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 2 );
 
@@ -939,7 +953,7 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerTolNm;
 	bSizerTolNm = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlTolNm = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlTolNm = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_READONLY );
 	m_txtCtrlTolNm->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 	m_txtCtrlTolNm->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
 	m_txtCtrlTolNm->SetMaxSize( wxSize( 50,-1 ) );
@@ -970,24 +984,24 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerTolSat;
 	bSizerTolSat = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlTolSat = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlTolSat = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_READONLY );
 	m_txtCtrlTolSat->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 	m_txtCtrlTolSat->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
 	m_txtCtrlTolSat->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerTolSat->Add( m_txtCtrlTolSat, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpTolSat1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpTolSat1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS ) );
 	m_txtCtrlSpTolSat1->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerTolSat->Add( m_txtCtrlSpTolSat1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpTolSat2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpTolSat2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS ) );
 	m_txtCtrlSpTolSat2->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerTolSat->Add( m_txtCtrlSpTolSat2, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpTolSat3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpTolSat3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS ) );
 	m_txtCtrlSpTolSat3->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerTolSat->Add( m_txtCtrlSpTolSat3, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
@@ -1001,24 +1015,24 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerTolIllu;
 	bSizerTolIllu = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlTolIllu = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlTolIllu = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_READONLY );
 	m_txtCtrlTolIllu->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 	m_txtCtrlTolIllu->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
 	m_txtCtrlTolIllu->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerTolIllu->Add( m_txtCtrlTolIllu, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpTolIllu1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpTolIllu1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS ) );
 	m_txtCtrlSpTolIllu1->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerTolIllu->Add( m_txtCtrlSpTolIllu1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpTolIllu2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpTolIllu2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS ) );
 	m_txtCtrlSpTolIllu2->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerTolIllu->Add( m_txtCtrlSpTolIllu2, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpTolIllu3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpTolIllu3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS ) );
 	m_txtCtrlSpTolIllu3->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerTolIllu->Add( m_txtCtrlSpTolIllu3, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
@@ -1038,6 +1052,144 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	m_bmButtonPaste3->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( PanelSensor::OnPasteSet3 ), NULL, this );
 	m_bpButtonClear3->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( PanelSensor::OnClearSet3 ), NULL, this );
 }
+
+void PanelSensor::OnPasteSet1(wxCommandEvent& event){
+    /* Paste the name */
+    if(!m_txtCtrlCurName->IsEmpty())
+    {
+        this->SetName_1(this->GetName());
+    }
+    /* Paste the wavelength */
+    if(!m_txtCtrlCurWL->IsEmpty())
+    {
+        this->SetWavelength_1(this->GetWavelength());
+    }
+    /* Paste the current Saturation */
+    if(!m_txtCtrlCurSat->IsEmpty())
+    {
+        this->SetSaturation_1(this->GetSaturation());
+    }
+    /* Paste the current illumination */
+    if(!m_txtCtrlCurIllu->IsEmpty())
+    {
+        this->SetIllumination_1(this->GetIllumination());
+    }
+    /* Paste the current colour, if it's black the test entry is not valid */
+    if(this->GetColour() != wxColour(0x00, 0x00, 0x00))
+    {
+        this->SetColour_1(this->GetColour());
+    }
+    else
+    {
+        wxLogMessage("You test for a black LED !");
+        wxBell();
+    }
+
+}
+
+void PanelSensor::OnPasteSet2(wxCommandEvent& event)
+{
+    /* Paste the name */
+    if(!m_txtCtrlCurName->IsEmpty())
+    {
+        this->SetName_2(this->GetName());
+    }
+    /* Paste the wavelength */
+    if(!m_txtCtrlCurWL->IsEmpty())
+    {
+        this->SetWavelength_2(this->GetWavelength());
+    }
+    /* Paste the current Saturation */
+    if(!m_txtCtrlCurSat->IsEmpty())
+    {
+        this->SetSaturation_2(this->GetSaturation());
+    }
+    /* Paste the current illumination */
+    if(!m_txtCtrlCurIllu->IsEmpty())
+    {
+        this->SetIllumination_2(this->GetIllumination());
+    }
+    /* Paste the current colour, if it's black the test entry is not valid */
+    if(this->GetColour() != wxColour(0x00, 0x00, 0x00))
+    {
+        this->SetColour_2(this->GetColour());
+    }
+    else
+    {
+        wxLogMessage("You test for a black LED !");
+        wxBell();
+    }
+
+}
+
+void PanelSensor::OnPasteSet3(wxCommandEvent& event)
+{
+    /* Paste the name */
+    if(!m_txtCtrlCurName->IsEmpty())
+    {
+        this->SetName_3(this->GetName());
+    }
+    /* Paste the wavelength */
+    if(!m_txtCtrlCurWL->IsEmpty())
+    {
+        this->SetWavelength_3(this->GetWavelength());
+    }
+    /* Paste the current Saturation */
+    if(!m_txtCtrlCurSat->IsEmpty())
+    {
+        this->SetSaturation_3(this->GetSaturation());
+    }
+    /* Paste the current illumination */
+    if(!m_txtCtrlCurIllu->IsEmpty())
+    {
+        this->SetIllumination_3(this->GetIllumination());
+    }
+    /* Paste the current colour, if it's black the test entry is not valid */
+    if(this->GetColour() != wxColour(0x00, 0x00, 0x00))
+    {
+        this->SetColour_3(this->GetColour());
+    }
+    else
+    {
+        wxLogMessage("You test for a black LED !");
+        wxBell();
+    }
+
+}
+
+void PanelSensor::OnClearSet1(wxCommandEvent& event)
+{
+    /* Empty all the entries in this row */
+    m_txtCtrlSpName1->Clear();
+    m_txtCtrlSpWL1->Clear();
+    m_txtCtrlSpSat1->Clear();
+    m_txtCtrlSpIllu1->Clear();
+    this->SetColour_1(wxColour(0xff,0xff,0xff));
+    /* MISSING netX Data Defaults */
+}
+
+void PanelSensor::OnClearSet2(wxCommandEvent& event)
+{
+    /* Empty all the entries in this row */
+    m_txtCtrlSpName2->Clear();
+    m_txtCtrlSpWL2->Clear();
+    m_txtCtrlSpSat2->Clear();
+    m_txtCtrlSpIllu2->Clear();
+    this->SetColour_2(wxColour(0xff,0xff,0xff));
+    /* MISSING netX Data Defaults */
+}
+
+void PanelSensor::OnClearSet3(wxCommandEvent& event)
+{
+    /* Empty all the entries in this row */
+    m_txtCtrlSpName3->Clear();
+    m_txtCtrlSpWL3->Clear();
+    m_txtCtrlSpSat3->Clear();
+    m_txtCtrlSpIllu3->Clear();
+    this->SetColour_3(wxColour(0xff,0xff,0xff));
+    /* MISSING netX Data Defaults */
+}
+
 
 PanelSensor::~PanelSensor()
 {

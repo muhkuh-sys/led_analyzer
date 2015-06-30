@@ -92,12 +92,16 @@ public:
                                        )
         { }
 
+        virtual wxString GetChoice(size_t WXUNUSED(index))
+        {
+            wxLogMessage("HELLO!");
+        }
 
 
 };
 
-
-class MyDataViewListModel: public wxDataViewListModel
+/*
+class MyDataViewListModel: public wxDataViewModel
 {
     public:
         MyDataViewListModel();
@@ -124,7 +128,7 @@ class MyDataViewListModel: public wxDataViewListModel
     private:
         int m_test;
 };
-
+*/
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -159,7 +163,7 @@ class PanelSensor : public wxPanel
 		wxTextCtrl* m_txtCtrlSpIllu1;
 		wxTextCtrl* m_txtCtrlSpIllu2;
 		wxTextCtrl* m_txtCtrlSpIllu3;
-		//wxTextCtrl* m_txtCtrlCurColor;
+		wxTextCtrl* m_txtCtrlCurColor;
 		wxTextCtrl* m_txtCtrlSpColor1;
 		wxTextCtrl* m_txtCtrlSpColor2;
 		wxTextCtrl* m_txtCtrlSpColor3;
@@ -192,25 +196,98 @@ class PanelSensor : public wxPanel
 		wxTextCtrl* m_txtCtrlSpTolIllu2;
 		wxTextCtrl* m_txtCtrlSpTolIllu3;
 
-		// Virtual event handlers, overide them in your derived class
-		virtual void OnPasteSet1( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnClearSet1( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnPasteSet2( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnClearSet2( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnPasteSet3( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnClearSet3( wxCommandEvent& event ) { event.Skip(); }
+
+		void OnPasteSet1( wxCommandEvent& event );
+		void OnClearSet1( wxCommandEvent& event );
+		void OnPasteSet2( wxCommandEvent& event );
+		void OnClearSet2( wxCommandEvent& event );
+		void OnPasteSet3( wxCommandEvent& event );
+		void OnClearSet3( wxCommandEvent& event );
 
 
 	public:
-        wxTextCtrl* m_txtCtrlCurColor;
+	    /* First Block */
+        bool IsActivated_1() {return m_cbUseSet1->GetValue();};
+        bool IsActivated_2() {return m_cbUseSet2->GetValue();};
+        bool IsActivated_3() {return m_cbUseSet3->GetValue();};
+
+
+        /* Second Block - Name */
+        wxString GetName()               {return m_txtCtrlCurName->GetValue();};
+        void     SetName(wxString name)  {m_txtCtrlCurName->Clear();
+                                          m_txtCtrlCurName->SetValue(name);};
+
+        wxString Getname_1()             {return m_txtCtrlSpName1->GetValue();};
+        void     SetName_1(wxString name){m_txtCtrlSpName1->Clear();
+                                          m_txtCtrlSpName1->SetValue(name);};
+        wxString Getname_2()             {return m_txtCtrlSpName2->GetValue();};
+        void     SetName_2(wxString name){m_txtCtrlSpName2->Clear();
+                                          m_txtCtrlSpName2->SetValue(name);};
+        wxString Getname_3()             {return m_txtCtrlSpName1->GetValue();};
+        void     SetName_3(wxString name){m_txtCtrlSpName3->Clear();
+                                          m_txtCtrlSpName3->SetValue(name);};
+
+
+        /* Third Block - Wavelength */
+        int GetWavelength()           {return wxAtoi(m_txtCtrlCurWL->GetValue());};
+        int GetWavelength_1()         {return wxAtoi(m_txtCtrlSpWL1->GetValue());};
+        int GetWavelength_2()         {return wxAtoi(m_txtCtrlSpWL2->GetValue());};
+        int GetWavelength_3()         {return wxAtoi(m_txtCtrlSpWL2->GetValue());};
+
+        void     SetWavelength(int wl)     {m_txtCtrlCurWL->SetValue(wxString::Format(wxT("%i"), wl));};
+        void     SetWavelength_1(int wl)   {m_txtCtrlSpWL1->SetValue(wxString::Format(wxT("%i"), wl));};
+        void     SetWavelength_2(int wl)   {m_txtCtrlSpWL2->SetValue(wxString::Format(wxT("%i"), wl));};
+        void     SetWavelength_3(int wl)   {m_txtCtrlSpWL3->SetValue(wxString::Format(wxT("%i"), wl));};
+
+        /* Fourth Block - Saturation */
+        int GetSaturation()            {return wxAtoi(m_txtCtrlCurSat->GetValue()); };
+        int GetSaturation_1()          {return wxAtoi(m_txtCtrlSpSat1->GetValue()); };
+        int GetSaturation_2()          {return wxAtoi(m_txtCtrlSpSat2->GetValue()); };
+        int GetSaturation_3()          {return wxAtoi(m_txtCtrlSpSat3->GetValue()); };
+
+        void SetSaturation(int sat)      {m_txtCtrlCurSat->SetValue(wxString::Format(wxT("%i"), sat));};
+        void SetSaturation_1(int sat)    {m_txtCtrlSpSat1->SetValue(wxString::Format(wxT("%i"), sat));};
+        void SetSaturation_2(int sat)    {m_txtCtrlSpSat2->SetValue(wxString::Format(wxT("%i"), sat));};
+        void SetSaturation_3(int sat)    {m_txtCtrlSpSat3->SetValue(wxString::Format(wxT("%i"), sat));};
+
+        /* Fifth Block Illumination */
+        int GetIllumination()              {return wxAtoi(m_txtCtrlCurIllu->GetValue());};
+        int GetIllumination_1()            {return wxAtoi(m_txtCtrlSpIllu1->GetValue());};
+        int GetIllumination_2()            {return wxAtoi(m_txtCtrlSpIllu2->GetValue());};
+        int GetIllumination_3()            {return wxAtoi(m_txtCtrlSpIllu3->GetValue());};
+
+        void SetIllumination(int illu)     {m_txtCtrlCurIllu->SetValue(wxString::Format(wxT("%i"), illu));};
+        void SetIllumination_1(int illu)   {m_txtCtrlSpIllu1->SetValue(wxString::Format(wxT("%i"), illu));};
+        void SetIllumination_2(int illu)   {m_txtCtrlSpIllu2->SetValue(wxString::Format(wxT("%i"), illu));};
+        void SetIllumination_3(int illu)   {m_txtCtrlSpIllu3->SetValue(wxString::Format(wxT("%i"), illu));};
+
+
+        /* Sixth Block Colour */
+        void SetColour(wxColour colour)    {m_txtCtrlCurColor->SetBackgroundColour(colour);
+                                            m_txtCtrlCurColor->Clear();};
+        void SetColour_1(wxColour colour)  {m_txtCtrlSpColor1->SetBackgroundColour(colour);
+                                            m_txtCtrlSpColor1->Clear();};
+        void SetColour_2(wxColour colour)  {m_txtCtrlSpColor2->SetBackgroundColour(colour);
+                                            m_txtCtrlSpColor2->Clear();};
+        void SetColour_3(wxColour colour)  {m_txtCtrlSpColor3->SetBackgroundColour(colour);
+                                            m_txtCtrlSpColor3->Clear();};
+
+        wxColour GetColour()               {return m_txtCtrlCurColor->GetBackgroundColour();};
+        wxColour GetColour_1()             {return m_txtCtrlSpColor1->GetBackgroundColour();};
+        wxColour GetColour_2()             {return m_txtCtrlSpColor2->GetBackgroundColour();};
+        wxColour GetColour_3()             {return m_txtCtrlSpColor3->GetBackgroundColour();};
+
+
 		PanelSensor( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 832,150 ), long style = wxSTATIC_BORDER, int sensornumber = 0 );
 		~PanelSensor();
         //wxTextCtrl* GetSensorNumber(){return m_txtCtrlSensorNo;};
+        /*
         void SetColour(wxTextCtrl* textCtrl, wxColour colour)
             {
                 //m_txtCtrlCurColor->SetBackgroundColour(colour);
                 textCtrl->SetBackgroundColour(colour);
             };
+        */
 };
 
 
@@ -240,6 +317,7 @@ class GUIFrame : public wxFrame
 			wxID_MYTEXT,
 			wxID_TESTMODE,
 			wxID_TIMER,
+			wxID_COLORS,
 			idStatusBar
 		};
 
@@ -292,8 +370,6 @@ class GUIFrame : public wxFrame
         wxArrayString astrGainchoices;
         wxArrayString astrIntchoices;
 
-        wxDataViewListModel* m_mdvl_model;
-
 
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnScan( wxCommandEvent& event ) { event.Skip(); }
@@ -312,7 +388,7 @@ class GUIFrame : public wxFrame
         virtual void OnHideLog( wxCommandEvent& event ) { event.Skip(); };
         virtual void OnClearLog( wxCommandEvent& event ) { event.Skip(); };
         virtual void OnShowChromaticity( wxCommandEvent& event ) { event.Skip(); };
-
+        virtual void OnSensorSettingsChanged( wxDataViewEvent& event) {event.Skip(); };
 
 	public:
 

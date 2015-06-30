@@ -13,6 +13,7 @@ extern "C"
 #include "../GUIFrame.h"
 #include "CDevice.h"
 
+
 class CLua
 {
     public:
@@ -28,6 +29,9 @@ class CLua
         int  StartMeasurements(int iNumberOfDevices);
         int  InitDevices(int iNumberOfDevices);
         int  ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorDevices);
+        int  SetGainX(int iDeviceIndex, int iSensorIndex, tcs3472_gain_t gain);
+        int  SetIntTimeX(int iDeviceIndex, int iSensorIndex, tcs3472_intTime_t intTime);
+
         void CleanUp();
 
     protected:

@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1434455033 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolapp.cpp
+1435658713 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolapp.cpp
 	"wx_pch.h"
 	"ColorControlApp.h"
 	"ColorControlMain.h"
@@ -1690,14 +1690,14 @@
 1412631244 c:\wxwidgets-3.0.2\include\wx\univ\theme.h
 	"wx/string.h"
 
-1435576206 c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.h
+1435673811 c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.h
 	"ColorControlApp.h"
 	"GUIFrame.h"
 	"CSensorData.h"
 	"CDevice.h"
 	"CLua.h"
 
-1435588523 c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.h
+1435671324 c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.h
 	<iostream>
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
@@ -2752,11 +2752,11 @@
 
 1412631244 c:\wxwidgets-3.0.2\include\wx\msw\rcdefs.h
 
-1435589276 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
+1435674570 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
 	"wx_pch.h"
 	"ColorControlMain.h"
 
-1435589400 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.cpp
+1435671584 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.cpp
 	"wx/wxprec.h"
 	<wx/wx.h>
 	"GuiFrame.h"
@@ -3416,7 +3416,7 @@
 1434720603 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\cdatasensor.cpp
 	"CDataSensor.h"
 
-1435313323 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\csensordata.h
+1435674029 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\csensordata.h
 	"../GUIFrame.h"
 
 1435223241 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\csensordata.cpp
@@ -3494,7 +3494,7 @@
 1434815873 source:c:\led_analyzer\colorcontrol\src\csensordata.cpp
 	"CSensorData.h"
 
-1435588399 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\cdevice.h
+1435666237 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\cdevice.h
 	"CSensorData.h"
 
 1435306871 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\cdevice.cpp
@@ -3587,14 +3587,14 @@
 	<stdio.h>
 	"lua.h"
 
-1435572590 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\clua.h
+1435672868 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\clua.h
 	"lua.h"
 	"lualib.h"
 	"lauxlib.h"
 	"../GUIFrame.h"
 	"CDevice.h"
 
-1435579447 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\clua.cpp
+1435672906 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\clua.cpp
 	"CLua.h"
 
 1435165780 c:\led_analyzer\colorcontrol\include\clua.h

@@ -24,13 +24,18 @@ class CColorController
         int         GetIllumination(int iSensorIndex){return m_sensorData[iSensorIndex].GetIllumination();};
         int         GetClearRatio(int iSensorIndex){return m_sensorData[iSensorIndex].GetClearRatio();};
         wxColor     GetColour(int iSensorIndex){return m_sensorData[iSensorIndex].GetColour();};
-        tcs3472_gain_t GetGain(int iSensorIndex) {return m_sensorData[iSensorIndex].GetGain();};
+        tcs3472_gain_t    GetGain(int iSensorIndex) {return m_sensorData[iSensorIndex].GetGain();};
+        tcs3472_intTime_t GetIntTime(int iSensorIndex) {return m_sensorData[iSensorIndex].GetIntTime();};
     protected:
     private:
         CSensorData m_sensorData[16];
         char        m_serialNumber[128];
         bool        m_isConnected;
         int         m_deviceNumber;
+
+        int         IntegrationToIndex(tcs3472_intTime_t intTime);
+
+
 
 
 

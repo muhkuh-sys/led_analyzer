@@ -87,6 +87,7 @@ ColorControlFrame::ColorControlFrame(wxFrame *frame)
     m_pTimer = new wxTimer(this, wxID_TIMER);
     //m_pTimer->Start(1000);
 
+
 }
 
 ColorControlFrame::~ColorControlFrame()
@@ -136,7 +137,7 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
             m_pLua->ScanDevices(m_numberOfDevices, m_aStrSerials);
             if(m_numberOfDevices == 0)
             {
-                wxLogMessage("No device ... please make sure the device is properly attached!");
+                wxLogMessage("No device detected ... please make sure the device is properly attached!");
 
                 if(!m_cocoDevices.empty()) m_cocoDevices.clear();
                 m_eState = IS_INITIAL;
@@ -286,6 +287,12 @@ void ColorControlFrame::OnDisconnect(wxCommandEvent& event)
             /* Reset the color of textctrl Connected */
             this->UpdateConnectedField(wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
 
+            /* If the timer is Running Stop It*/
+            if(m_pTimer->IsRunning())
+            {
+                m_pTimer->Stop();
+            }
+
             /* Close the current Lua State (color_control.lua) */
             delete m_pLua;
 
@@ -314,7 +321,7 @@ void ColorControlFrame::OnStart(wxCommandEvent& event)
             break;
 
         case IS_SCANNED:
-            wxLogMessage("Please Connect first");
+            wxLogMessage("Please Connect first.");
             break;
 
         case IS_CONNECTED:
@@ -404,7 +411,7 @@ void ColorControlFrame::UpdateRows(int iNumberOfDevices)
     //this->CreateRows(iNumberOfDevices);
 
     /* Hide and Show */
-    m_swTestdefinition->Hide();
+    // m_swTestdefinition->Hide();
 
     wxVariant variant;
 
@@ -413,32 +420,30 @@ void ColorControlFrame::UpdateRows(int iNumberOfDevices)
     {
        for(int j = 0; j<16; j++)
        {
+
+            /* First Panel = Colors */
             wxVector<wxVariant> rowdata;
             rowdata.push_back(i*16 + (j + 1)); // sensorno
             rowdata.push_back(m_cocoDevices.at(i)->GetWavelength(j));  // wavelength
             rowdata.push_back(m_cocoDevices.at(i)->GetSaturation(j));   // saturation
             rowdata.push_back(m_cocoDevices.at(i)->GetIllumination(j));  // illumination
-            rowdata.push_back((wxVariant)wxColor(100,100,100));          // m_cColor
-            //m_dvcrGain->
+            rowdata.push_back("");          // m_cColor
             rowdata.push_back(m_cocoDevices.at(i)->GetClearRatio(j)); // clearRatio
-            rowdata.push_back(0);                                      // gain
-            //wxLogMessage("gain: %d", astrGainchoices.Item(1));                                      // gain
-
-            rowdata.push_back(wxVariant(""));  // inttime
+            rowdata.push_back(astrGainchoices.Item(m_cocoDevices.at(i)->GetGain(j)));                                     // gain
+            rowdata.push_back(astrIntchoices.Item(IntegrationToIndex(m_cocoDevices.at(i)->GetIntTime(j))));                           // inttime
 
             m_dvlColors->AppendItem(rowdata);
 
-            m_sensorPanels.at(i*16 + j)->SetColour(m_sensorPanels.at(i*16 + j)->m_txtCtrlCurColor, m_cocoDevices.at(i)->GetColour(j));
+            /* Second Panel = Testdefinition */
+            m_sensorPanels.at(i*16 + j)->SetName("");
+            m_sensorPanels.at(i*16 + j)->SetWavelength(m_cocoDevices.at(i)->GetWavelength(j));
+            m_sensorPanels.at(i*16 + j)->SetSaturation(m_cocoDevices.at(i)->GetSaturation(j));
+            m_sensorPanels.at(i*16 + j)->SetIllumination(m_cocoDevices.at(i)->GetIllumination(j));
+            m_sensorPanels.at(i*16 + j)->SetColour(m_cocoDevices.at(i)->GetColour(j));
+
 
        }
     }
-
-    wxVariant test;
-    m_dvlColors->GetValue(test, 0, 6);
-
-
-
-    //(wxChoice)test->SetSelection(2);
 
     if(m_nbData->GetSelection() == 1)  m_swTestdefinition->Show();
 }
@@ -479,6 +484,8 @@ void ColorControlFrame::CreateTestPanels(int numberOfDevices)
            bSizerTestDefinition->Add(m_sensorPanels.at(i*16 + j), 0, wxEXPAND);
         }
     }
+
+
 
     m_swTestdefinition->SetSizer(bSizerTestDefinition);
     /* this will make the scroll bars show up right away */
@@ -579,5 +586,91 @@ void ColorControlFrame::OnClearLog(wxCommandEvent& event)
 void ColorControlFrame::OnShowChromaticity(wxCommandEvent& event)
 {
 
+}
+
+void ColorControlFrame::OnSensorSettingsChanged(wxDataViewEvent& event )
+{
+    wxLogMessage("Something changed.");
+    int iIndex = m_dvlColors->ItemToRow(event.GetItem());
+
+    int iDeviceIndex, iSensorIndex;
+
+    iDeviceIndex = (int)(iIndex / 16);
+    iSensorIndex = iIndex % 16;
+
+    /* Event came because an item in gain column changed */
+    if(m_cGain == event.GetDataViewColumn())
+    {
+        tcs3472_gain_t gain = (tcs3472_gain_t)StrToRegisterContent(m_dvlColors->GetTextValue(iIndex, 6));
+        m_pLua->SetGainX(iDeviceIndex, iSensorIndex, gain);
+        //wxLogMessage("item data: %s", m_dvlColors->GetTextValue(iIndex, 6));
+        //wxLogMessage("item: %d", event.GetItem());
+        wxLogMessage("Came from gain from row %d", iIndex);
+    }
+
+    /* Event came because an item in integration time column changed */
+    if(m_cIntegration == event.GetDataViewColumn())
+    {
+        wxLogMessage("Came from IntTime from row %d", iIndex);
+    }
+
+
+}
+
+int ColorControlFrame::IntegrationToIndex(tcs3472_intTime_t intTime)
+{
+    switch(intTime)
+    {
+    case 0xFF:
+        return 0;
+        break;
+    case 0xF6:
+        return 1;
+        break;
+    case 0xD6:
+        return 2;
+        break;
+    case 0xAD:
+        return 3;
+        break;
+    case 0xC0:
+        return 4;
+        break;
+    case 0x00:
+        return 5;
+        break;
+    default:
+        wxLogMessage("Cannot return Int Time Index, Int Time not found!");
+        break;
+    }
+}
+
+
+int ColorControlFrame::StrToRegisterContent(const wxString strSetting)
+{
+    if(strSetting.Left(4).IsSameAs("GAIN"))
+    {
+        if(strSetting.IsSameAs("GAIN_1X")) return TCS3472_GAIN_1X;
+        if(strSetting.IsSameAs("GAIN_4X")) return TCS3472_GAIN_4X;
+        if(strSetting.IsSameAs("GAIN_16X")) return TCS3472_GAIN_16X;
+        if(strSetting.IsSameAs("GAIN_60X")) return TCS3472_GAIN_60X;
+
+    }
+
+    if(strSetting.Left(4).IsSameAs("TIME"))
+    {
+        if(strSetting.IsSameAs("TIME_2_4ms")) return TCS3472_INTEGRATION_2_4ms;
+        if(strSetting.IsSameAs("TIME_24ms")) return TCS3472_INTEGRATION_24ms;
+        if(strSetting.IsSameAs("TIME_100ms")) return TCS3472_INTEGRATION_100ms;
+        if(strSetting.IsSameAs("TIME_154ms")) return TCS3472_INTEGRATION_154ms;
+        if(strSetting.IsSameAs("TIME_200ms")) return TCS3472_INTEGRATION_200ms;
+        if(strSetting.IsSameAs("TIME_700ms")) return TCS3472_INTEGRATION_700ms;
+
+    }
+
+    wxLogMessage("hello");
+
+    /* Should Not arrive here */
+    return -1;
 }
 

@@ -21,8 +21,6 @@
 
 IMPLEMENT_APP(ColorControlApp);
 
-
-
 bool ColorControlApp::OnInit()
 {
     ColorControlFrame* frame = new ColorControlFrame(0L);
