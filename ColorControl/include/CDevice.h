@@ -3,6 +3,7 @@
 
 #include "CSensorData.h"
 
+
 class CColorController
 {
     public:
@@ -18,6 +19,7 @@ class CColorController
         void        SetColour(int iSensorIndex, int r, int g, int b);
         void        SetGain(int iSensorIndex, tcs3472_gain_t tGain);
         void        SetIntTime(int iSensorIndex, tcs3472_intTime_t tIntTime);
+        void        SetState(int iErrorCode);
         void        SetClearRatio(int iSensorIndex, int iRatio);
         void        SetTolNm(int tolNm);
         void        SetTolSat(int tolSat);
@@ -32,6 +34,7 @@ class CColorController
         wxColor     GetColour(int iSensorIndex){return m_sensorData[iSensorIndex].GetColour();};
         tcs3472_gain_t    GetGain(int iSensorIndex) {return m_sensorData[iSensorIndex].GetGain();};
         tcs3472_intTime_t GetIntTime(int iSensorIndex) {return m_sensorData[iSensorIndex].GetIntTime();};
+        const wxString    GetState(int iSensorIndex) {return m_sensorData[iSensorIndex].GetState();};
     protected:
     private:
         CSensorData m_sensorData[16];

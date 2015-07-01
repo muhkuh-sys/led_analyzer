@@ -46,11 +46,11 @@ class ColorControlFrame: public GUIFrame
 
         enum e_TIME_TESTMODE
         {
+            TESTMODE_TIME_0_2SEC,
             TESTMODE_TIME_0_5SEC,
             TESTMODE_TIME_1SEC,
             TESTMODE_TIME_2SEC,
             TESTMODE_TIME_5SEC,
-            TESTMODE_TIME_10SEC
         };
 
         virtual void OnClose(wxCloseEvent& event);

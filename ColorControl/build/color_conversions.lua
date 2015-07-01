@@ -1,6 +1,6 @@
 require("tcs_chromaTable")
 
-local MIN_LUX = 8.0
+local MIN_LUX = 5.0
 
 -- a helper to print a colortable which contains values in RGB, XYZ, HSV, Yxy and wavelength color space 
 -- parameter space determines which space should be printed out 
@@ -227,13 +227,13 @@ function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, error
 		end 
 	end 
 	
-	tColorTable [1] = tWavelength 
-	tColorTable [2] = tRGB
-	tColorTable [3] = tXYZ 
-	tColorTable [4] = tYxy 
-	tColorTable [5] = tHSV 	
-	tColorTable [6] = tSettings 
-	tColorTable [7] = errorcode 
+	tColorTable [ENTRY_WAVELENGTH] = tWavelength 
+	tColorTable [ENTRY_RGB] = tRGB
+	tColorTable [ENTRY_XYZ] = tXYZ 
+	tColorTable [ENTRY_Yxy] = tYxy 
+	tColorTable [ENTRY_HSV] = tHSV 	
+	tColorTable [ENTRY_SETTINGS] = tSettings 
+	tColorTable [ENTRY_ERRORCODE] = errorcode 
 	
 	return tColorTable
 			

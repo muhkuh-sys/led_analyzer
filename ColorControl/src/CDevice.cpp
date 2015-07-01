@@ -76,3 +76,70 @@ void CColorController::SetTolIllu(int tolIllu)
 
     else m_tolillu = 50;
 }
+
+void CColorController::SetState(int iErrorCode)
+{
+    /* Everything went well */
+    if( iErrorCode == SENSOR_OK)
+    {
+        /* Validate the Errorcode and set the sensor states accordingly */
+        for(int i = 0; i < 16; i++)
+        {
+            m_sensorData[i].SetState(SENSOR_OK);
+        }
+
+    }
+
+    /* An Id Error occured */
+    if( iErrorCode & SENSOR_ID_ERROR )
+    {
+        /* Validate the Errorcode and set the sensor states accordingly */
+        for(int i = 0; i < 16; i++)
+        {
+            if(iErrorCode & (1<<i))
+            {
+                m_sensorData[i].SetState(SENSOR_ID_ERROR);
+            }
+        }
+    }
+
+    /* The conversions were not complete when the registers were read */
+    if( iErrorCode & SENSOR_INCOMPLETE_CONVERSION)
+    {
+        /* Validate the Errorcode and set the sensor states accordingly */
+        for ( int i = 0; i < 16; i++ )
+        {
+            if(iErrorCode & (1<<i))
+            {
+                m_sensorData[i].SetState(SENSOR_INCOMPLETE_CONVERSION);
+            }
+        }
+    }
+
+    /* Maximum clear levels got exceed, thus the readings are not valid */
+    if( iErrorCode & SENSOR_EXCEEDED_CLEAR )
+    {
+        /* Validate the Errorcode and set the sensor states accordingly */
+        for( int i = 0; i < 16; i++ )
+        {
+            if(iErrorCode & (1<<i))
+            {
+                m_sensorData[i].SetState(SENSOR_EXCEEDED_CLEAR);
+            }
+        }
+    }
+
+    /* RGBC values were not valid (for whatever reason that might be) */
+    if( iErrorCode & SENSOR_RGBC_INVALID )
+    {
+        /* Validate the Errorcode and set the sensor state accordingly */
+        for (int i = 0; i < 16; i++ )
+        {
+            if(iErrorCode & (1<<i))
+            {
+                m_sensorData[i].SetState(SENSOR_RGBC_INVALID);
+            }
+        }
+    }
+
+}

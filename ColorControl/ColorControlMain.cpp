@@ -368,6 +368,9 @@ void ColorControlFrame::OnStart(wxCommandEvent& event)
                     int iTimerValue;
                     switch(m_chTime->GetCurrentSelection())
                     {
+                        case TESTMODE_TIME_0_2SEC:
+                            iTimerValue = 200;
+                            break;
                         case TESTMODE_TIME_0_5SEC:
                             iTimerValue = 500;
                             break;
@@ -379,9 +382,6 @@ void ColorControlFrame::OnStart(wxCommandEvent& event)
                             break;
                         case TESTMODE_TIME_5SEC:
                             iTimerValue = 5000;
-                            break;
-                        case TESTMODE_TIME_10SEC:
-                            iTimerValue = 10000;
                             break;
                         default:
                             iTimerValue = 1000;
@@ -412,9 +412,10 @@ void ColorControlFrame::CreateRows(int numberOfDevices)
             rowdata.push_back(wxVariant(""));  // saturation
             rowdata.push_back(wxVariant(""));  // illumination
             rowdata.push_back(wxVariant(""));  // m_cColor
-            rowdata.push_back("");// m_clearRatio;
-            rowdata.push_back("");  // gain
+            rowdata.push_back("");             // m_clearRatio;
+            rowdata.push_back("");             // gain
             rowdata.push_back(wxVariant(""));  // inttime
+            rowdata.push_back("");             // status
 
             m_dvlColors->AppendItem(rowdata);
 
@@ -445,7 +446,7 @@ void ColorControlFrame::UpdateRows(int iNumberOfDevices)
             rowdata.push_back(m_cocoDevices.at(i)->GetClearRatio(j)); // clearRatio
             rowdata.push_back(astrGainchoices.Item(m_cocoDevices.at(i)->GetGain(j)));                                     // gain
             rowdata.push_back(astrIntchoices.Item(IntegrationToIndex(m_cocoDevices.at(i)->GetIntTime(j))));                           // inttime
-
+            rowdata.push_back(m_cocoDevices.at(i)->GetState(j));
             m_dvlColors->AppendItem(rowdata);
 
             /* Second Panel = Testdefinition */
@@ -566,7 +567,12 @@ void ColorControlFrame::OnTimeout(wxTimerEvent& event)
 {
 
     m_pLua->StartMeasurements(m_numberOfDevices);
-    m_pLua->ReadColours(m_numberOfDevices, m_cocoDevices);
+    /* If the result of readColours is not zero, something went wrong => stop the measurements */
+    if(m_pLua->ReadColours(m_numberOfDevices, m_cocoDevices) != 0)
+    {
+        m_pTimer->Stop();
+        if(m_buttonStart->GetLabel().IsSameAs("STOP")) m_buttonStart->SetLabel("START");
+    }
     this->UpdateRows(m_numberOfDevices);
 
 }
@@ -687,4 +693,5 @@ int ColorControlFrame::StrToRegisterContent(const wxString strSetting)
     /* Should Not arrive here */
     return -1;
 }
+
 

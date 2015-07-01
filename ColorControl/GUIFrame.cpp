@@ -337,7 +337,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
     sbSizerTestmode->Add(bSizerSingleCont);
 
-    wxString m_chTimeChoices[] = { wxT("0.5 sec"), wxT("1 sec"), wxT("2 sec"), wxT("5 sec"), wxT("10 sec") };
+    wxString m_chTimeChoices[] = { wxT("0.2 sec"), wxT("0.5 sec"), wxT("1 sec"), wxT("2 sec"), wxT("5 sec")};
 	int m_chTimeNChoices = sizeof( m_chTimeChoices ) / sizeof( wxString );
 	m_chTime = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chTimeNChoices, m_chTimeChoices, 0 );
 	m_chTime->SetSelection( 0 );
@@ -363,16 +363,15 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	m_dvlColors = new wxDataViewListCtrl( m_swColors, wxID_COLORS, wxDefaultPosition, wxDefaultSize, wxDV_HORIZ_RULES | wxDV_VERT_RULES );
 
-	m_cSensorNo = m_dvlColors->AppendTextColumn( wxT("Sensor"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
+	m_cSensorNo = m_dvlColors->AppendTextColumn( wxT("Sensor"), wxDATAVIEW_CELL_INERT, 50, wxALIGN_CENTER );
 	m_cWavelength = m_dvlColors->AppendTextColumn( wxT("Wavelength"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
 	m_cSaturation = m_dvlColors->AppendTextColumn( wxT("Saturation"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
 	m_cIllumination = m_dvlColors->AppendTextColumn( wxT("Illumination"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
-	//m_cColor = m_dvlColors->AppendTextColumn( wxT("Color"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER );
 
     m_cColor = new wxDataViewColumn("Color", new MyCustomRenderer, 4, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
     m_dvlColors->AppendColumn(m_cColor);
 
-    m_cExceededClear = m_dvlColors->AppendProgressColumn( wxT("Clear Level"), wxDATAVIEW_CELL_INERT, -1, wxALIGN_CENTER);
+    m_cExceededClear = m_dvlColors->AppendProgressColumn( wxT("Clear Level"), wxDATAVIEW_CELL_INERT, 100, wxALIGN_CENTER);
 
 
     astrGainchoices.Add("GAIN_1X");
@@ -393,6 +392,9 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_cIntegration = new wxDataViewColumn(wxT("Integration Time"), m_mccrInt, 7, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
     m_dvlColors->AppendColumn(m_cGain);
     m_dvlColors->AppendColumn(m_cIntegration);
+
+   	m_cSensorState = m_dvlColors->AppendTextColumn( wxT("Status"), wxDATAVIEW_CELL_INERT, 100, wxALIGN_CENTER );
+
 
 
 	bSizerColors->Add( m_dvlColors, 1, wxEXPAND, 5 );

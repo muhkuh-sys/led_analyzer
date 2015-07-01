@@ -48,4 +48,24 @@ void CSensorData::SetIllumination(float illumination)
     else m_illumination = 0.;
 }
 
-
+const wxString CSensorData::StateToString(sensor_state_t state)
+{
+    switch(state)
+    {
+        case SENSOR_OK:
+            return "OK";
+            break;
+        case SENSOR_ID_ERROR:
+            return "ID ERROR";
+            break;
+        case SENSOR_INCOMPLETE_CONVERSION:
+            return "INCOMPL. CONV.";
+            break;
+        case SENSOR_EXCEEDED_CLEAR:
+            return "MAXIMUM CLEAR";
+            break;
+        case SENSOR_RGBC_INVALID:
+            return "RGBC INVALID";
+            break;
+    }
+}

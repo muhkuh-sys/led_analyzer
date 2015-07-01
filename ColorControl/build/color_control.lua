@@ -37,6 +37,15 @@ TCS3472_INTEGRATION_200ms	    = 0xAD
 TCS3472_INTEGRATION_154ms 		= 0xC0
 TCS3472_INTEGRATION_700ms       = 0x00
 
+ENTRY_WAVELENGTH = 1
+ENTRY_RGB 		 = 2
+ENTRY_XYZ 		 = 3
+ENTRY_Yxy 		 = 4
+ENTRY_HSV 		 = 5
+ENTRY_SETTINGS 	 = 6
+ENTRY_ERRORCODE  = 7
+
+
 -- Color and light related data from the TCS3472 will be stored in following arrays -- 
 local ausClear  		= led_analyzer.new_ushort(MAXSENSORS)
 local ausRed    		= led_analyzer.new_ushort(MAXSENSORS)
@@ -106,15 +115,14 @@ function initDevices(numberOfDevices)
 		end 
 		if error_counter == INIT_MAXERROR then
 			print(string.format("%d initialization errors in a row, test aborting ...", error_counter))
-			return ret
 		else 
 			error_counter = 0 
 		end 
-				
+		
 		devIndex = devIndex + 1 
 	end 
 	
-	return 0 
+	return ret
 end 
 
 
@@ -148,14 +156,14 @@ function startMeasurements(numberOfDevices)
 		
 		
 		tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, aucIntTimes, aucGains, ret, MAXSENSORS)
-		print_color(devIndex, tColorTable, 16)
+		--print_color(devIndex, tColorTable, 16)
 		--print_color(devIndex, tColorTable, 16, "HSV")
 		
 		devIndex = devIndex + 1 
 		print("\n")
 	end 
 	
-	return 0 
+	return ret 
 end 
 
 -- function compares the color sets read from the devices to the testtable given in tDUT

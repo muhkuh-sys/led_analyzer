@@ -380,6 +380,7 @@ class GUIFrame : public wxFrame
 		wxDataViewColumn* m_cGain;
 		wxDataViewColumn* m_cIntegration;
 		wxDataViewColumn* m_cExceededClear;
+		wxDataViewColumn* m_cSensorState;
 		MyCustomChoiceRenderer* m_mccrGain;
 		MyCustomChoiceRenderer* m_mccrInt;
 		wxScrolledWindow* m_swTestdefinition;

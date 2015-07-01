@@ -21,6 +21,14 @@ enum tcs3472_gain_t
     TCS3472_GAIN_60X = 0x03
 };
 
+enum sensor_state_t
+{
+    SENSOR_OK = 0,
+    SENSOR_ID_ERROR = 0x80000000,
+    SENSOR_INCOMPLETE_CONVERSION = 0x40000000,
+    SENSOR_EXCEEDED_CLEAR = 0x20000000,
+    SENSOR_RGBC_INVALID = 0x10000000
+};
 
 class CSensorData
 {
@@ -31,6 +39,7 @@ class CSensorData
         int               m_clearRatio;
         float             m_illumination;
         wxColor           m_rgbColor;
+        wxString          m_sensorState;
         tcs3472_gain_t    m_gain;
         tcs3472_intTime_t m_intTime;
 
@@ -47,8 +56,8 @@ class CSensorData
         void SetColor(unsigned char red, unsigned char green, unsigned char blue);
         void SetGain(tcs3472_gain_t gain){m_gain = gain;};
         void SetIntTime(tcs3472_intTime_t intTime){m_intTime = intTime;};
+        void SetState(sensor_state_t state){m_sensorState = this->StateToString(state);};
         void SetClearRatio(int iClearRatio){m_clearRatio = iClearRatio;};
-
         int     GetPosition(){return m_posSensor;};
         int     GetWavelength(){return m_wavelength;};
         int     GetSaturation(){return m_saturation;};
@@ -58,6 +67,8 @@ class CSensorData
         wxColor GetColor(){return m_rgbColor;};
         tcs3472_gain_t    GetGain(){return m_gain;};
         tcs3472_intTime_t GetIntTime(){return m_intTime;};
+        const wxString GetState(){return m_sensorState;};
+        const wxString StateToString(sensor_state_t state);
 
 
 };

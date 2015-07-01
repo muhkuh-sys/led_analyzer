@@ -94,7 +94,7 @@ int CLua::ScanDevices(int &iNumberOfDevices, wxString *aStrSerials)
 {
 
     /* Be pessimistic */
-    int iRetval = 1;
+    int iRetVal = 1;
 
     if(!(this->IsLoaded()))
     {
@@ -107,14 +107,14 @@ int CLua::ScanDevices(int &iNumberOfDevices, wxString *aStrSerials)
     if (lua_pcall(this->m_pLuaState, 0, 2, 0) != 0)
     {
         wxLogMessage("Error Running Function %s", lua_tostring(this->m_pLuaState, -1));
-        return iRetval;
+        return iRetVal;
     }
 
     /* First return value must be a number (number of connected devices) */
     if (!lua_isnumber(this->m_pLuaState, -1))
     {
         wxLogMessage("Number of devices expected got sth else!");
-        return iRetval;
+        return iRetVal;
     }
 
     iNumberOfDevices = lua_tonumber(this->m_pLuaState, -1);
@@ -127,7 +127,7 @@ int CLua::ScanDevices(int &iNumberOfDevices, wxString *aStrSerials)
     if(!lua_istable(this->m_pLuaState, -1))
     {
         wxLogMessage("Table expected, got sth else!");
-        return iRetval;
+        return iRetVal;
     }
 
     for(int i = 0; i < iNumberOfDevices; i++)
@@ -138,15 +138,15 @@ int CLua::ScanDevices(int &iNumberOfDevices, wxString *aStrSerials)
     /* Pop the table */
     lua_pop(this->m_pLuaState, 1);
 
-    iRetval = 0;
+    iRetVal = 0;
 
-    return iRetval;
+    return iRetVal;
 }
 
 int CLua::ConnectDevices(int &iNumberOfDevices)
 {
     /* Be pessimistic */
-    int iRetval = 1;
+    int iRetVal = 1;
 
     if(!(this->IsLoaded()))
     {
@@ -159,14 +159,14 @@ int CLua::ConnectDevices(int &iNumberOfDevices)
     if (lua_pcall(this->m_pLuaState, 0, 1, 0) != 0)
     {
         wxLogMessage("Error Running Function %s", lua_tostring(this->m_pLuaState, -1));
-        return iRetval;
+        return iRetVal;
     }
 
     /* First return value must be a number (number of device we connected to) */
     if (!lua_isnumber(this->m_pLuaState, -1))
     {
         wxLogMessage("Number of devices expected got sth else!");
-        return iRetval;
+        return iRetVal;
     }
 
     iNumberOfDevices = lua_tonumber(this->m_pLuaState, -1);
@@ -175,15 +175,15 @@ int CLua::ConnectDevices(int &iNumberOfDevices)
     lua_pop(this->m_pLuaState, 1);
 
     /* As we have no return values, we can successfully finish */
-    iRetval = 0;
-    return iRetval;
+    iRetVal = 0;
+    return iRetVal;
 }
 
 
 int CLua::InitDevices(int iNumberOfDevices)
 {
     /* Be pessimistic */
-    int iRetval = 1;
+    int iRetVal = 1;
 
     if(!(this->IsLoaded()))
     {
@@ -201,29 +201,29 @@ int CLua::InitDevices(int iNumberOfDevices)
     if( lua_pcall(this->m_pLuaState, 1, 1, 0) != 0)
     {
         wxLogMessage("Error Running Function %s", lua_tostring(this->m_pLuaState, -1));
-        return iRetval;
+        return iRetVal;
     }
 
     /* Get the result (0 if everything fine) */
     if(!lua_isnumber(this->m_pLuaState, -1))
     {
         wxLogMessage("Retval (int) expected, got something else");
-        return iRetval;
+        return iRetVal;
     }
 
     /* Get the result */
-    iRetval = lua_tonumber(this->m_pLuaState, -1);
+    iRetVal = lua_tonumber(this->m_pLuaState, -1);
 
     /* Pop the result from the stack */
     lua_pop(this->m_pLuaState, 1);
 
-    return iRetval;
+    return iRetVal;
 }
 
 int CLua::StartMeasurements(int iNumberOfDevices)
 {
     /* Be pessimistic */
-    int iRetval = 1;
+    int iRetVal = 1;
 
     if(!(this->IsLoaded()))
     {
@@ -241,30 +241,32 @@ int CLua::StartMeasurements(int iNumberOfDevices)
     if( lua_pcall(this->m_pLuaState, 1, 1, 0) != 0)
     {
         wxLogMessage("Error Running Function %s", lua_tostring(this->m_pLuaState, -1));
-        return iRetval;
+        return iRetVal;
     }
 
     /* Get the result (0 if everything fine) */
     if(!lua_isnumber(this->m_pLuaState, -1))
     {
         wxLogMessage("Retval (int) expected, got something else!");
-        return iRetval;
+        return iRetVal;
     }
 
     /* Get the result */
-    iRetval = lua_tonumber(this->m_pLuaState, -1);
+    iRetVal = lua_tonumber(this->m_pLuaState, -1);
 
     /* Pop the result from the stack */
     lua_pop(this->m_pLuaState, 1);
 
 
-    return iRetval;
+    return iRetVal;
 
 
 }
 
 int CLua::ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorDevices)
 {
+    /* Be pessimistic */
+    int iRetVal = 1;
 
     /* push your global table onto the stack */
     if(!(this->IsLoaded()))
@@ -340,9 +342,9 @@ int CLua::ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorDe
 
 
         /* Get your result .. if successful it's zero, if not zero its an errorcode with flags
-           indicating what kind of error occured at what sensor(s) */
-
-        wxLogMessage("Errorcode: %x", this->GetIntField(7));
+           indicating what kind of error occured with what sensor(s) */
+        iRetVal = this->GetIntField(7);
+        vectorDevices.at(i)->SetState(iRetVal);
 
         /* Pop Device Table */
         lua_pop(this->m_pLuaState, 1);
@@ -353,7 +355,7 @@ int CLua::ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorDe
 
     /* Leave */
 
-    return 0;
+    return iRetVal;
 
 }
 
