@@ -106,7 +106,7 @@ function initDevices(numberOfDevices)
 		end 
 		if error_counter == INIT_MAXERROR then
 			print(string.format("%d initialization errors in a row, test aborting ...", error_counter))
-			return TEST_RESULT_DEVICE_FAILED
+			return ret
 		else 
 			error_counter = 0 
 		end 
@@ -142,13 +142,12 @@ function startMeasurements(numberOfDevices)
 		end 
 		if error_counter == READ_MAXERROR then
 			print(string.format("%d color reading errors in a row, test aborting ...", error_counter))
-			return TEST_RESULT_DEVICE_FAILED  
 		else 
 			error_counter = 0
 		end 
 		
 		
-		tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, aucIntTimes, aucGains, MAXSENSORS)
+		tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, aucIntTimes, aucGains, ret, MAXSENSORS)
 		print_color(devIndex, tColorTable, 16)
 		--print_color(devIndex, tColorTable, 16, "HSV")
 		

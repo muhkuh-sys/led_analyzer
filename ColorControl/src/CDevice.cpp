@@ -3,6 +3,7 @@
 CColorController::CColorController()
 {
     m_isConnected = false;
+
 }
 
 CColorController::~CColorController()
@@ -10,25 +11,6 @@ CColorController::~CColorController()
 
 }
 
-/*
-
-void CColorController::SetValues(int pos[16], int wavelength[16], int saturation[16], float illuminatin[16],
-                                 wxColor color[16], tcs3472_gain_t gain[16], tcs3472_intTime_t intTime[16] )
-{
-    for(int i = 0; i<16; i++)
-    {
-        m_sensorData[i].SetPosition(pos[i]);
-        m_sensorData[i].SetWavelength(wavelength[i]);
-        m_sensorData[i].SetSaturation(saturation[i]);
-        m_sensorData[i].SetIllumination(illuminatin[i]);
-        m_sensorData[i].SetGain(gain[i]);
-        m_sensorData[i].SetIntTime(intTime[i]);
-        m_sensorData[i].SetColor(0xff, 0xff, 0xff);
-
-    }
-}
-
-*/
 
 void CColorController::SetWavelength(int iSensorIndex, int iWavelength)
 {
@@ -63,4 +45,34 @@ void CColorController::SetIntTime(int iSensorIndex, tcs3472_intTime_t tIntTime)
 void CColorController::SetClearRatio(int iSensorIndex, int iClearRatio)
 {
     m_sensorData[iSensorIndex].SetClearRatio(iClearRatio);
+}
+
+void CColorController::SetTolNm(int tolNm)
+{
+    if(tolNm > 0)
+    {
+        m_tolnm = tolNm;
+    }
+
+    else m_tolnm = 10; // Default wavelength tolerance
+}
+
+void CColorController::SetTolSat(int tolSat)
+{
+    if(tolSat > 0)
+    {
+        m_tolsat = tolSat;
+    }
+
+    else m_tolsat = 10; // Default saturation tolerance
+}
+
+void CColorController::SetTolIllu(int tolIllu)
+{
+    if(tolIllu > 0)
+    {
+        m_tolillu = tolIllu;
+    }
+
+    else m_tolillu = 50;
 }

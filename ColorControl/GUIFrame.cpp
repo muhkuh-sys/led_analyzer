@@ -953,24 +953,24 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerTolNm;
 	bSizerTolNm = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlTolNm = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_READONLY );
-	m_txtCtrlTolNm->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
+	m_txtCtrlTolNm = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_READONLY | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS )   );
+	//m_txtCtrlTolNm->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 	m_txtCtrlTolNm->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
 	m_txtCtrlTolNm->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerTolNm->Add( m_txtCtrlTolNm, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpTolNm1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpTolNm1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS ) );
 	m_txtCtrlSpTolNm1->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerTolNm->Add( m_txtCtrlSpTolNm1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpTolNm2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpTolNm2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS ) );
 	m_txtCtrlSpTolNm2->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerTolNm->Add( m_txtCtrlSpTolNm2, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpTolNm3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpTolNm3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS ) );
 	m_txtCtrlSpTolNm3->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerTolNm->Add( m_txtCtrlSpTolNm3, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
@@ -984,8 +984,8 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerTolSat;
 	bSizerTolSat = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlTolSat = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_READONLY );
-	m_txtCtrlTolSat->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
+	m_txtCtrlTolSat = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_READONLY | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS )   );
+	//m_txtCtrlTolSat->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 	m_txtCtrlTolSat->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
 	m_txtCtrlTolSat->SetMaxSize( wxSize( 50,-1 ) );
 
@@ -1015,8 +1015,8 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerTolIllu;
 	bSizerTolIllu = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlTolIllu = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_READONLY );
-	m_txtCtrlTolIllu->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
+	m_txtCtrlTolIllu = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_READONLY | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS )  );
+	//m_txtCtrlTolIllu->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 	m_txtCtrlTolIllu->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
 	m_txtCtrlTolIllu->SetMaxSize( wxSize( 50,-1 ) );
 
@@ -1074,6 +1074,12 @@ void PanelSensor::OnPasteSet1(wxCommandEvent& event){
     {
         this->SetIllumination_1(this->GetIllumination());
     }
+    /* Paste the default tolerances (Can be varied in Settings) */
+    this->SetTolWavelength_1(this->GetTolWavelength());
+    this->SetTolSaturation_1(this->GetTolSaturation());
+    this->SetTolIllumination_1(this->GetTolIllumination());
+
+
     /* Paste the current colour, if it's black the test entry is not valid */
     if(this->GetColour() != wxColour(0x00, 0x00, 0x00))
     {
@@ -1084,6 +1090,8 @@ void PanelSensor::OnPasteSet1(wxCommandEvent& event){
         wxLogMessage("You test for a black LED !");
         wxBell();
     }
+
+
 
 }
 
@@ -1109,6 +1117,12 @@ void PanelSensor::OnPasteSet2(wxCommandEvent& event)
     {
         this->SetIllumination_2(this->GetIllumination());
     }
+
+    /* Paste the default tolerances (Can be varied in Settings) */
+    this->SetTolWavelength_2(this->GetTolWavelength());
+    this->SetTolSaturation_2(this->GetTolSaturation());
+    this->SetTolIllumination_2(this->GetTolIllumination());
+
     /* Paste the current colour, if it's black the test entry is not valid */
     if(this->GetColour() != wxColour(0x00, 0x00, 0x00))
     {
@@ -1144,6 +1158,12 @@ void PanelSensor::OnPasteSet3(wxCommandEvent& event)
     {
         this->SetIllumination_3(this->GetIllumination());
     }
+
+    /* Paste the default tolerances (Can be varied in Settings) */
+    this->SetTolWavelength_3(this->GetTolWavelength());
+    this->SetTolSaturation_3(this->GetTolSaturation());
+    this->SetTolIllumination_3(this->GetTolIllumination());
+
     /* Paste the current colour, if it's black the test entry is not valid */
     if(this->GetColour() != wxColour(0x00, 0x00, 0x00))
     {
@@ -1165,6 +1185,9 @@ void PanelSensor::OnClearSet1(wxCommandEvent& event)
     m_txtCtrlSpSat1->Clear();
     m_txtCtrlSpIllu1->Clear();
     this->SetColour_1(wxColour(0xff,0xff,0xff));
+    m_txtCtrlSpTolNm1->Clear();
+    m_txtCtrlSpTolSat1->Clear();
+    m_txtCtrlSpTolIllu1->Clear();
     /* MISSING netX Data Defaults */
 }
 
@@ -1176,6 +1199,9 @@ void PanelSensor::OnClearSet2(wxCommandEvent& event)
     m_txtCtrlSpSat2->Clear();
     m_txtCtrlSpIllu2->Clear();
     this->SetColour_2(wxColour(0xff,0xff,0xff));
+    m_txtCtrlSpTolNm2->Clear();
+    m_txtCtrlSpTolSat2->Clear();
+    m_txtCtrlSpTolIllu2->Clear();
     /* MISSING netX Data Defaults */
 }
 
@@ -1187,6 +1213,9 @@ void PanelSensor::OnClearSet3(wxCommandEvent& event)
     m_txtCtrlSpSat3->Clear();
     m_txtCtrlSpIllu3->Clear();
     this->SetColour_3(wxColour(0xff,0xff,0xff));
+    m_txtCtrlSpTolNm2->Clear();
+    m_txtCtrlSpTolSat2->Clear();
+    m_txtCtrlSpTolIllu2->Clear();
     /* MISSING netX Data Defaults */
 }
 

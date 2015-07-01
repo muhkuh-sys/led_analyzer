@@ -45,6 +45,8 @@ using namespace std;
 #include <wx/colordlg.h>
 #include <wx/imaglist.h>
 #include <wx/timer.h>
+#include <wx/fileconf.h>
+
 
 #include "logo_hilscher.xpm"
 
@@ -235,33 +237,60 @@ class PanelSensor : public wxPanel
         int GetWavelength_1()         {return wxAtoi(m_txtCtrlSpWL1->GetValue());};
         int GetWavelength_2()         {return wxAtoi(m_txtCtrlSpWL2->GetValue());};
         int GetWavelength_3()         {return wxAtoi(m_txtCtrlSpWL2->GetValue());};
+        int GetTolWavelength()        {return wxAtoi(m_txtCtrlTolNm->GetValue());};
+        int GetTolWavelength_1()      {return wxAtoi(m_txtCtrlSpTolNm1->GetValue());};
+        int GetTolWavelength_2()      {return wxAtoi(m_txtCtrlSpTolNm2->GetValue());};
+        int GetTolWavelength_3()      {return wxAtoi(m_txtCtrlSpTolNm3->GetValue());};
 
-        void     SetWavelength(int wl)     {m_txtCtrlCurWL->SetValue(wxString::Format(wxT("%i"), wl));};
-        void     SetWavelength_1(int wl)   {m_txtCtrlSpWL1->SetValue(wxString::Format(wxT("%i"), wl));};
-        void     SetWavelength_2(int wl)   {m_txtCtrlSpWL2->SetValue(wxString::Format(wxT("%i"), wl));};
-        void     SetWavelength_3(int wl)   {m_txtCtrlSpWL3->SetValue(wxString::Format(wxT("%i"), wl));};
+        void     SetWavelength(int wl)      {m_txtCtrlCurWL->SetValue(wxString::Format(wxT("%i"), wl));};
+        void     SetWavelength_1(int wl)    {m_txtCtrlSpWL1->SetValue(wxString::Format(wxT("%i"), wl));};
+        void     SetWavelength_2(int wl)    {m_txtCtrlSpWL2->SetValue(wxString::Format(wxT("%i"), wl));};
+        void     SetWavelength_3(int wl)    {m_txtCtrlSpWL3->SetValue(wxString::Format(wxT("%i"), wl));};
+        void     SetTolWavelength  (int tolnm){m_txtCtrlTolNm->SetValue(wxString::Format(wxT("%i"), tolnm));}
+        void     SetTolWavelength_1(int tolnm){m_txtCtrlSpTolNm1->SetValue(wxString::Format(wxT("%i"), tolnm));}
+        void     SetTolWavelength_2(int tolnm){m_txtCtrlSpTolNm2->SetValue(wxString::Format(wxT("%i"), tolnm));}
+        void     SetTolWavelength_3(int tolnm){m_txtCtrlSpTolNm3->SetValue(wxString::Format(wxT("%i"), tolnm));}
 
         /* Fourth Block - Saturation */
         int GetSaturation()            {return wxAtoi(m_txtCtrlCurSat->GetValue()); };
         int GetSaturation_1()          {return wxAtoi(m_txtCtrlSpSat1->GetValue()); };
         int GetSaturation_2()          {return wxAtoi(m_txtCtrlSpSat2->GetValue()); };
         int GetSaturation_3()          {return wxAtoi(m_txtCtrlSpSat3->GetValue()); };
+        int GetTolSaturation()         {return wxAtoi(m_txtCtrlTolSat->GetValue()); };
+        int GetTolSaturation_1()       {return wxAtoi(m_txtCtrlSpTolSat1->GetValue()); };
+        int GetTolSaturation_2()       {return wxAtoi(m_txtCtrlSpTolSat2->GetValue()); };
+        int GetTolSaturation_3()       {return wxAtoi(m_txtCtrlSpTolSat3->GetValue()); };
+
 
         void SetSaturation(int sat)      {m_txtCtrlCurSat->SetValue(wxString::Format(wxT("%i"), sat));};
         void SetSaturation_1(int sat)    {m_txtCtrlSpSat1->SetValue(wxString::Format(wxT("%i"), sat));};
         void SetSaturation_2(int sat)    {m_txtCtrlSpSat2->SetValue(wxString::Format(wxT("%i"), sat));};
         void SetSaturation_3(int sat)    {m_txtCtrlSpSat3->SetValue(wxString::Format(wxT("%i"), sat));};
+        void SetTolSaturation  (int tolsat){m_txtCtrlTolSat->SetValue(wxString::Format(wxT("%i"), tolsat));};
+        void SetTolSaturation_1(int tolsat){m_txtCtrlSpTolSat1->SetValue(wxString::Format(wxT("%i"), tolsat));};
+        void SetTolSaturation_2(int tolsat){m_txtCtrlSpTolSat2->SetValue(wxString::Format(wxT("%i"), tolsat));};
+        void SetTolSaturation_3(int tolsat){m_txtCtrlSpTolSat3->SetValue(wxString::Format(wxT("%i"), tolsat));};
+
+
 
         /* Fifth Block Illumination */
         int GetIllumination()              {return wxAtoi(m_txtCtrlCurIllu->GetValue());};
         int GetIllumination_1()            {return wxAtoi(m_txtCtrlSpIllu1->GetValue());};
         int GetIllumination_2()            {return wxAtoi(m_txtCtrlSpIllu2->GetValue());};
         int GetIllumination_3()            {return wxAtoi(m_txtCtrlSpIllu3->GetValue());};
+        int GetTolIllumination()           {return wxAtoi(m_txtCtrlTolIllu->GetValue());};
+        int GetTolIllumination_1()         {return wxAtoi(m_txtCtrlSpTolIllu1->GetValue());};
+        int GetTolIllumination_2()         {return wxAtoi(m_txtCtrlSpTolIllu2->GetValue());};
+        int GetTolIllumination_3()         {return wxAtoi(m_txtCtrlSpTolIllu3->GetValue());};
 
         void SetIllumination(int illu)     {m_txtCtrlCurIllu->SetValue(wxString::Format(wxT("%i"), illu));};
         void SetIllumination_1(int illu)   {m_txtCtrlSpIllu1->SetValue(wxString::Format(wxT("%i"), illu));};
         void SetIllumination_2(int illu)   {m_txtCtrlSpIllu2->SetValue(wxString::Format(wxT("%i"), illu));};
         void SetIllumination_3(int illu)   {m_txtCtrlSpIllu3->SetValue(wxString::Format(wxT("%i"), illu));};
+        void SetTolIllumination  (int tolillu){m_txtCtrlTolIllu->SetValue(wxString::Format(wxT("%i"), tolillu));};
+        void SetTolIllumination_1(int tolillu){m_txtCtrlSpTolIllu1->SetValue(wxString::Format(wxT("%i"), tolillu));};
+        void SetTolIllumination_2(int tolillu){m_txtCtrlSpTolIllu2->SetValue(wxString::Format(wxT("%i"), tolillu));};
+        void SetTolIllumination_3(int tolillu){m_txtCtrlSpTolIllu3->SetValue(wxString::Format(wxT("%i"), tolillu));};
 
 
         /* Sixth Block Colour */
@@ -282,14 +311,8 @@ class PanelSensor : public wxPanel
 
 		PanelSensor( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 832,150 ), long style = wxSTATIC_BORDER, int sensornumber = 0 );
 		~PanelSensor();
-        //wxTextCtrl* GetSensorNumber(){return m_txtCtrlSensorNo;};
-        /*
-        void SetColour(wxTextCtrl* textCtrl, wxColour colour)
-            {
-                //m_txtCtrlCurColor->SetBackgroundColour(colour);
-                textCtrl->SetBackgroundColour(colour);
-            };
-        */
+
+
 };
 
 
@@ -324,7 +347,7 @@ class GUIFrame : public wxFrame
 		};
 
         wxTimer* m_pTimer;
-
+        wxFileConfig* m_fileConfig;
 		wxMenuBar* menuBarMain;
 		wxMenu* mMenuFile;
 		wxMenu* mMenuView;

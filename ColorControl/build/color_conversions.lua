@@ -1,6 +1,6 @@
 require("tcs_chromaTable")
 
-local MIN_LUX = 11.0 
+local MIN_LUX = 8.0
 
 -- a helper to print a colortable which contains values in RGB, XYZ, HSV, Yxy and wavelength color space 
 -- parameter space determines which space should be printed out 
@@ -98,7 +98,7 @@ end
 
 -- Convert the Colors given as parameters into various color spaces (RGB, HSV, XYZ, Yxy, Wavelength)
 -- and save the values of the color spaces into tables 
-function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, length)
+function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, errorcode, length)
 
 	-- tables containing colors in different color spaces 
 	local tRGB = {}
@@ -165,8 +165,9 @@ function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, lengt
 						  V = 0 }
 						  
 			
-			tSettings[i+1] = { gain    = lGain,
-							   intTime = lIntTime } 
+			tSettings[i+1] = { gain      = lGain,
+							   intTime   = lIntTime
+							   } 
 						  
 
 						  
@@ -218,8 +219,9 @@ function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, lengt
 						  V = V }
 						  
 			-- Settings --
-			tSettings[i+1] = { gain    = lGain,
-							   intTime = lIntTime } 
+			tSettings[i+1] = { gain      = lGain,
+							   intTime   = lIntTime
+							   } 
 						  
 						  
 		end 
@@ -231,7 +233,7 @@ function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, lengt
 	tColorTable [4] = tYxy 
 	tColorTable [5] = tHSV 	
 	tColorTable [6] = tSettings 
-	
+	tColorTable [7] = errorcode 
 	
 	return tColorTable
 			

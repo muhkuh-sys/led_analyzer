@@ -60,7 +60,6 @@ ColorControlFrame::ColorControlFrame(wxFrame *frame)
     m_pLogTarget = new wxLogTextCtrl(m_text);
     m_pOldLogTarget = wxLog::SetActiveTarget(m_pLogTarget);
     // Redirect your std::cout to the same text
-
     wxStreamToTextRedirector redirect(m_text);
 
     if( m_pOldLogTarget !=  NULL)
@@ -68,31 +67,38 @@ ColorControlFrame::ColorControlFrame(wxFrame *frame)
         delete m_pOldLogTarget;
     }
 
-
     wxLog::SetVerbose(true);
     wxLog::SetLogLevel(wxLOG_Debug );
     wxLogMessage(wxT("Welcome to Color Control...\n"));
 
+
     wxFileName::SetCwd(wxFileName::GetCwd()+"\\build");
 
+
+
+
+    m_fileConfig = new wxFileConfig(wxEmptyString, wxEmptyString,
+                                    wxFileName::GetCwd()+"/config.ini", wxEmptyString,
+                                    wxCONFIG_USE_LOCAL_FILE);
+
+
+    //wxLogMessage("%s", m_fileConfig->GetLocalFileName(NULL, 0));
 
     /* Allocate space for the array that will contain serial numbers */
     m_aStrSerials = new wxString[128];
 
-    /* Set Initial State */
-    m_eState = IS_INITIAL;
-
-
-    /* Try out the timer */
+    /* Initialize the timer */
     m_pTimer = new wxTimer(this, wxID_TIMER);
     //m_pTimer->Start(1000);
 
-
+    /* Set Initial State */
+    m_eState = IS_INITIAL;
 }
 
 ColorControlFrame::~ColorControlFrame()
 {
     delete[] m_aStrSerials;
+    delete m_fileConfig;
 }
 
 void ColorControlFrame::OnClose(wxCloseEvent &event)
@@ -148,9 +154,18 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
             }
             else
             {
+                /* Get the default Tolerance Values from the Configuration files */
+                int tol_nm, tol_sat, tol_illu;
+                m_fileConfig->Read(wxT("DEFAULT_TOLERANCES/tol_nm"), &tol_nm);
+                m_fileConfig->Read(wxT("DEFAULT_TOLERANCES/tol_sat"), &tol_sat);
+                m_fileConfig->Read(wxT("DEFAULT_TOLERANCES/tol_illu"), &tol_illu);
+
                 for(int i = 0; i < m_numberOfDevices; i++)
                 {
-                    m_cocoDevices.push_back(new CColorController);
+                    m_cocoDevices.push_back(new CColorController());
+                    m_cocoDevices.at(i)->SetTolNm(tol_nm);
+                    m_cocoDevices.at(i)->SetTolSat(tol_sat);
+                    m_cocoDevices.at(i)->SetTolIllu(tol_illu);
                 }
                 this->UpdateSerialList();
                 m_eState = IS_SCANNED;
@@ -373,6 +388,7 @@ void ColorControlFrame::OnStart(wxCommandEvent& event)
                             break;
                     }
                     m_pTimer->Start(iTimerValue);
+
                     m_buttonStart->SetLabel("STOP");
                 }
             }
@@ -413,11 +429,6 @@ void ColorControlFrame::UpdateRows(int iNumberOfDevices)
     m_dvlColors->DeleteAllItems();
     //this->CreateRows(iNumberOfDevices);
 
-    /* Hide and Show */
-    // m_swTestdefinition->Hide();
-
-    wxVariant variant;
-
 
     for(int i = 0; i < iNumberOfDevices; i++)
     {
@@ -443,8 +454,9 @@ void ColorControlFrame::UpdateRows(int iNumberOfDevices)
             m_sensorPanels.at(i*16 + j)->SetSaturation(m_cocoDevices.at(i)->GetSaturation(j));
             m_sensorPanels.at(i*16 + j)->SetIllumination(m_cocoDevices.at(i)->GetIllumination(j));
             m_sensorPanels.at(i*16 + j)->SetColour(m_cocoDevices.at(i)->GetColour(j));
-
-
+            m_sensorPanels.at(i*16 + j)->SetTolWavelength(m_cocoDevices.at(i)->GetTolNm());
+            m_sensorPanels.at(i*16 + j)->SetTolSaturation(m_cocoDevices.at(i)->GetTolSat());
+            m_sensorPanels.at(i*16 + j)->SetTolIllumination(m_cocoDevices.at(i)->GetTolIllu());
        }
     }
 
@@ -593,7 +605,6 @@ void ColorControlFrame::OnShowChromaticity(wxCommandEvent& event)
 
 void ColorControlFrame::OnSensorSettingsChanged(wxDataViewEvent& event )
 {
-    wxLogMessage("Something changed.");
     int iIndex = m_dvlColors->ItemToRow(event.GetItem());
 
     int iDeviceIndex, iSensorIndex;
@@ -606,9 +617,6 @@ void ColorControlFrame::OnSensorSettingsChanged(wxDataViewEvent& event )
     {
         tcs3472_gain_t gain = (tcs3472_gain_t)StrToRegisterContent(m_dvlColors->GetTextValue(iIndex, 6));
         m_pLua->SetGainX(iDeviceIndex, iSensorIndex, gain);
-        //wxLogMessage("item data: %s", m_dvlColors->GetTextValue(iIndex, 6));
-        //wxLogMessage("item: %d", event.GetItem());
-        wxLogMessage("Came from gain from row %d", iIndex);
     }
 
     /* Event came because an item in integration time column changed */
@@ -616,7 +624,6 @@ void ColorControlFrame::OnSensorSettingsChanged(wxDataViewEvent& event )
     {
         tcs3472_intTime_t intTime = (tcs3472_intTime_t)StrToRegisterContent(m_dvlColors->GetTextValue(iIndex, 7));
         m_pLua->SetIntTimeX(iDeviceIndex, iSensorIndex, intTime);
-        wxLogMessage("Came from IntTime from row %d", iIndex);
     }
 
 
@@ -659,8 +666,8 @@ int ColorControlFrame::StrToRegisterContent(const wxString strSetting)
 {
     if(strSetting.Left(4).IsSameAs("GAIN"))
     {
-        if(strSetting.IsSameAs("GAIN_1X")) return TCS3472_GAIN_1X;
-        if(strSetting.IsSameAs("GAIN_4X")) return TCS3472_GAIN_4X;
+        if(strSetting.IsSameAs("GAIN_1X"))  return TCS3472_GAIN_1X;
+        if(strSetting.IsSameAs("GAIN_4X"))  return TCS3472_GAIN_4X;
         if(strSetting.IsSameAs("GAIN_16X")) return TCS3472_GAIN_16X;
         if(strSetting.IsSameAs("GAIN_60X")) return TCS3472_GAIN_60X;
 

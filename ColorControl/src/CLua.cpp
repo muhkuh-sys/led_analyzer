@@ -338,6 +338,12 @@ int CLua::ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorDe
         /* Pop settings table */
         lua_pop(this->m_pLuaState, 1);
 
+
+        /* Get your result .. if successful it's zero, if not zero its an errorcode with flags
+           indicating what kind of error occured at what sensor(s) */
+
+        wxLogMessage("Errorcode: %x", this->GetIntField(7));
+
         /* Pop Device Table */
         lua_pop(this->m_pLuaState, 1);
     }
