@@ -38,6 +38,23 @@ provides the functions which are required for the application CoCo App.
 /** Maximum Length of characters a descriptor in the ftdi2232h eeprom can have */
 #define MAX_DESCLENGTH 128
 
+/** \brief Contains Flags which indicate what kind of error occured
+
+This flag indicates what kind of error occured during a measurement. These flags indicate the kind,
+internal sensorflags which are set in the functions itself specify which sensor failed */
+
+enum ERROR_FLAGS
+{
+	/** Identification error occured, e.g. the ID register value couldn't be read */
+	IDENTIFICATION_ERROR = 0x800000000,
+	/** The conversion was not complete at the time the ADC register was accessed */
+	INCOMPLETE_CONVERSION_ERROR = 0x40000000,
+	/** The maximum amount of clear level was reached, i.e. the sensor got digitally saturated */
+	EXCEEDED_CLEAR_ERROR = 0x20000000,
+	/** For some reason, the RGBC register contents are not valid */
+	RGBC_INVALID_ERROR = 0x10000000
+};
+
 /** \brief scans for connected color controller devices and stores their serial numbers in an array.
 
 Functions scans for all color controller devices with a given VID and PID that are connected via USB. A device which has "COLOR-CTRL" 
@@ -355,7 +372,7 @@ int init_sensors(void** apHandles, int devIndex)
 		
 	if((errorcode = tcs_identify(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer)) != 0)
 	{
-		return errorcode;
+		return (errorcode | IDENTIFICATION_ERROR);
 	}
 	
 	
@@ -424,7 +441,7 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	/* Check if sensors' ADCs have completed conversion */
 	if((errorcode = tcs_waitForData(apHandles[handleIndex], apHandles[handleIndex+1])) != 0)
 		{
-			return errorcode;
+			return (errorcode | INCOMPLETE_CONVERSION_ERROR);
 		}
 		
 	tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntegrationtime);
@@ -437,12 +454,12 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 
 	if((errorcode = tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, aucIntegrationtime)) != 0)
 	{		
-		return errorcode;
+		return (errorcode | EXCEEDED_CLEAR_ERROR);
 	}
 	
 	if((errorcode = tcs_rgbcInvalid(apHandles[handleIndex], apHandles[handleIndex+1])) != 0)
 	{
-		return errorcode;
+		return (errorcode | RGBC_INVALID_ERROR);
 	}
 	
 	tcs_calculate_CCT_Lux(aucGain, aucIntegrationtime, ausClear, ausRed, ausGreen, ausBlue, CCT, afLUX);
