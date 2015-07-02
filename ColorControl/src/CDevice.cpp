@@ -91,7 +91,7 @@ void CColorController::SetState(int iErrorCode)
     }
 
     /* An Id Error occured */
-    if( iErrorCode & SENSOR_ID_ERROR )
+    else if( iErrorCode & SENSOR_ID_ERROR )
     {
         /* Validate the Errorcode and set the sensor states accordingly */
         for(int i = 0; i < 16; i++)
@@ -104,7 +104,7 @@ void CColorController::SetState(int iErrorCode)
     }
 
     /* The conversions were not complete when the registers were read */
-    if( iErrorCode & SENSOR_INCOMPLETE_CONVERSION)
+    else if( iErrorCode & SENSOR_INCOMPLETE_CONVERSION)
     {
         /* Validate the Errorcode and set the sensor states accordingly */
         for ( int i = 0; i < 16; i++ )
@@ -117,7 +117,7 @@ void CColorController::SetState(int iErrorCode)
     }
 
     /* Maximum clear levels got exceed, thus the readings are not valid */
-    if( iErrorCode & SENSOR_EXCEEDED_CLEAR )
+    else if( iErrorCode & SENSOR_EXCEEDED_CLEAR )
     {
         /* Validate the Errorcode and set the sensor states accordingly */
         for( int i = 0; i < 16; i++ )
@@ -130,7 +130,7 @@ void CColorController::SetState(int iErrorCode)
     }
 
     /* RGBC values were not valid (for whatever reason that might be) */
-    if( iErrorCode & SENSOR_RGBC_INVALID )
+    else if( iErrorCode & SENSOR_RGBC_INVALID )
     {
         /* Validate the Errorcode and set the sensor state accordingly */
         for (int i = 0; i < 16; i++ )

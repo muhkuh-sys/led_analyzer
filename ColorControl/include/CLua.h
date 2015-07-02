@@ -27,7 +27,7 @@ class CLua
         int  SwapDown(wxString* aStrSerials, wxString strCurSerial, int iNumberOfDevices);
         bool IsLoaded(){return m_ColorControlLoaded;};
         int  StartMeasurements(int iNumberOfDevices);
-        int  InitDevices(int iNumberOfDevices);
+        int  InitDevices(int iNumberOfDevices, wxVector<CColorController*> vectorDevices);
         int  ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorDevices);
         int  SetGainX(int iDeviceIndex, int iSensorIndex, tcs3472_gain_t gain);
         int  SetIntTimeX(int iDeviceIndex, int iSensorIndex, tcs3472_intTime_t intTime);

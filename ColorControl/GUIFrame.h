@@ -46,7 +46,9 @@ using namespace std;
 #include <wx/imaglist.h>
 #include <wx/timer.h>
 #include <wx/fileconf.h>
-
+#include <wx/propgrid/propgrid.h>
+#include <wx/propgrid/advprops.h>
+#include <wx/textfile.h>
 
 #include "logo_hilscher.xpm"
 
@@ -309,6 +311,52 @@ class PanelSensor : public wxPanel
         wxColour GetColour_3()             {return m_txtCtrlSpColor3->GetBackgroundColour();};
 
 
+        /* Pintype */
+        //const wxString GetPintype(){return m_chCurPintype->GetString(m_chCurPintype->GetSelection()); };
+        int            GetPintype(){return m_chCurPintype->GetSelection();};
+        const wxString GetPintype_1(){return m_chSpPintype1->GetString(m_chSpPintype1->GetSelection()); };
+        const wxString GetPintype_2(){return m_chSpPintype2->GetString(m_chSpPintype2->GetSelection()); };
+        const wxString GetPintype_3(){return m_chSpPintype3->GetString(m_chSpPintype3->GetSelection()); };
+
+        void SetPintype(int iSelection){m_chCurPintype->SetSelection(iSelection);};
+        void SetPintype_1(int iSelection){m_chSpPintype1->SetSelection(iSelection);};
+        void SetPintype_2(int iSelection){m_chSpPintype2->SetSelection(iSelection);};
+        void SetPintype_3(int iSelection){m_chSpPintype3->SetSelection(iSelection);};
+
+        /* Pin Number */
+        int GetPinNumber()  {return wxAtoi(m_txtCtrlCurPinNo->GetValue());}
+        int GetPinNumber_1(){return wxAtoi(m_txtCtrlSpPinNo1->GetValue());};
+        int GetPinNumber_2(){return wxAtoi(m_txtCtrlSpPinNo2->GetValue());};
+        int GetPinNumber_3(){return wxAtoi(m_txtCtrlSpPinNo3->GetValue());};
+
+        void SetPinNumber  (int iNumber){m_txtCtrlCurPinNo->SetValue(wxString::Format(wxT("%i"), iNumber));};
+        void SetPinNumber_1(int iNumber){m_txtCtrlSpPinNo1->SetValue(wxString::Format(wxT("%i"), iNumber)); };
+        void SetPinNumber_2(int iNumber){m_txtCtrlSpPinNo2->SetValue(wxString::Format(wxT("%i"), iNumber)); };
+        void SetPinNumber_3(int iNumber){m_txtCtrlSpPinNo3->SetValue(wxString::Format(wxT("%i"), iNumber)); };
+
+		/* Pin Value */
+		int GetPinValue()  {return m_chCurPinValue->GetSelection(); };
+		int GetPinValue_1(){return m_choiceSpPinValue1->GetSelection(); };
+		int GetPinValue_2(){return m_choiceSpPinValue2->GetSelection(); };
+		int GetPinValue_3(){return m_choiceSpPinValue3->GetSelection(); };
+
+        void SetPinValue(int iValue) {m_chCurPinValue->SetSelection(iValue);};
+        void SetPinValue_1(int iValue) {m_choiceSpPinValue1->SetSelection(iValue); };
+        void SetPinValue_2(int iValue) {m_choiceSpPinValue2->SetSelection(iValue); };
+        void SetPinValue_3(int iValue) {m_choiceSpPinValue3->SetSelection(iValue); };
+
+        /* Pin Default Value */
+        int GetPinDefValue()   {return m_chCurDefPinValue->GetSelection(); };
+        int GetPinDefValue_1() {return m_chSpDefPinValue1->GetSelection(); };
+        int GetPinDefValue_2() {return m_chSpDefPinValue2->GetSelection(); };
+        int GetPinDefValue_3() {return m_chSpDefPinValue3->GetSelection(); };
+
+        void SetPinDefValue(int iDefValue)  {m_chCurDefPinValue->SetSelection(iDefValue);};
+        void SetPinDefValue_1(int iDefValue){m_chSpDefPinValue1->SetSelection(iDefValue);};
+        void SetPinDefValue_2(int iDefValue){m_chSpDefPinValue2->SetSelection(iDefValue);};
+        void SetPinDefValue_3(int iDefValue){m_chSpDefPinValue3->SetSelection(iDefValue);};
+
+
 		PanelSensor( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 832,150 ), long style = wxSTATIC_BORDER, int sensornumber = 0 );
 		~PanelSensor();
 
@@ -415,6 +463,7 @@ class GUIFrame : public wxFrame
         virtual void OnClearLog( wxCommandEvent& event ) { event.Skip(); };
         virtual void OnShowChromaticity( wxCommandEvent& event ) { event.Skip(); };
         virtual void OnSensorSettingsChanged( wxDataViewEvent& event) {event.Skip(); };
+        virtual void OnSystemSettings( wxCommandEvent& event) {event.Skip(); };
 
 	public:
 
@@ -424,7 +473,25 @@ class GUIFrame : public wxFrame
 
 };
 
+///////////////////////////////////////////////////////////////////////////////
+/// Class DialogPropGrid
+///////////////////////////////////////////////////////////////////////////////
+class DialogPropGrid : public wxDialog
+{
+	private:
+		wxPropertyGrid* m_propGrid;
+		wxPGProperty* m_pgiTolnm;
+		wxPGProperty* m_pgiTolsat;
+		wxPGProperty* m_pgiTolillu;
+		wxPGProperty* m_pgiNetxtype;
 
+	protected:
 
+	public:
+
+		DialogPropGrid( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE );
+		~DialogPropGrid();
+
+};
 
 #endif //__GUIFRAME_H__

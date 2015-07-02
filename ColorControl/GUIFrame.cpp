@@ -195,13 +195,9 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	menuBarMain->Append( mMenuView, wxT("View") );
 
 	mMenuSettings = new wxMenu();
-	wxMenuItem* menuItem_tolerances;
-	menuItem_tolerances = new wxMenuItem( mMenuSettings, wxID_TOLERANCES, wxString( wxT("Tolerances") ) , wxEmptyString, wxITEM_NORMAL );
-	mMenuSettings->Append( menuItem_tolerances );
-
-	wxMenuItem* menuItem_netXType;
-	menuItem_netXType = new wxMenuItem( mMenuSettings, wxID_NETX, wxString( wxT("netX Type") ) , wxEmptyString, wxITEM_NORMAL );
-	mMenuSettings->Append( menuItem_netXType );
+	wxMenuItem* menuItem_SystemSettings;
+	menuItem_SystemSettings = new wxMenuItem( mMenuSettings, wxID_TOLERANCES, wxString( wxT("System Settings") ) , wxT("Change default tolerances and netX type"), wxITEM_NORMAL );
+	mMenuSettings->Append( menuItem_SystemSettings );
 
 	menuBarMain->Append( mMenuSettings, wxT("Settings") );
 
@@ -462,6 +458,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
     this->Connect( menuItem_clearLog->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler ( GUIFrame::OnClearLog ) );
     this->Connect( menuDiagram->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler (GUIFrame::OnShowChromaticity ) );
     this->Connect( m_dvlColors->GetId(), wxEVT_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler (GUIFrame::OnSensorSettingsChanged ) );
+    this->Connect( menuItem_SystemSettings->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler (GUIFrame::OnSystemSettings ) );
 }
 
 GUIFrame::~GUIFrame()
@@ -827,28 +824,28 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerPintype;
 	bSizerPintype = new wxBoxSizer( wxVERTICAL );
 
-	wxString m_chCurPintypeChoices[] = { wxT("MMIO"), wxT("XMIO"), wxT("GPIO"), wxT("PIO") };
+	wxString m_chCurPintypeChoices[] = { wxT("MMIO"), wxT("XMIO"), wxT("GPIO"), wxT("PIO"), wxEmptyString };
 	int m_chCurPintypeNChoices = sizeof( m_chCurPintypeChoices ) / sizeof( wxString );
 	m_chCurPintype = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chCurPintypeNChoices, m_chCurPintypeChoices, 0 );
-	m_chCurPintype->SetSelection( 0 );
+	m_chCurPintype->SetSelection( 4 );
 	bSizerPintype->Add( m_chCurPintype, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 2 );
 
 	wxString m_chSpPintype1Choices[] = { wxT("MMIO"), wxT("XMIO"), wxT("GPIO"), wxT("PIO"), wxEmptyString };
 	int m_chSpPintype1NChoices = sizeof( m_chSpPintype1Choices ) / sizeof( wxString );
 	m_chSpPintype1 = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chSpPintype1NChoices, m_chSpPintype1Choices, 0 );
-	m_chSpPintype1->SetSelection( 0 );
+	m_chSpPintype1->SetSelection( 4 );
 	bSizerPintype->Add( m_chSpPintype1, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	wxString m_chSpPintype2Choices[] = { wxT("MMIO"), wxT("XMIO"), wxT("GPIO"), wxT("PIO") };
+	wxString m_chSpPintype2Choices[] = { wxT("MMIO"), wxT("XMIO"), wxT("GPIO"), wxT("PIO"), wxEmptyString };
 	int m_chSpPintype2NChoices = sizeof( m_chSpPintype2Choices ) / sizeof( wxString );
 	m_chSpPintype2 = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chSpPintype2NChoices, m_chSpPintype2Choices, 0 );
-	m_chSpPintype2->SetSelection( 0 );
+	m_chSpPintype2->SetSelection( 4 );
 	bSizerPintype->Add( m_chSpPintype2, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	wxString m_chSpPintype3Choices[] = { wxT("MMIO"), wxT("XMIO"), wxT("GPIO"), wxT("PIO") };
+	wxString m_chSpPintype3Choices[] = { wxT("MMIO"), wxT("XMIO"), wxT("GPIO"), wxT("PIO"), wxEmptyString };
 	int m_chSpPintype3NChoices = sizeof( m_chSpPintype3Choices ) / sizeof( wxString );
 	m_chSpPintype3 = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chSpPintype3NChoices, m_chSpPintype3Choices, 0 );
-	m_chSpPintype3->SetSelection( 0 );
+	m_chSpPintype3->SetSelection( 4 );
 	bSizerPintype->Add( m_chSpPintype3, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 2 );
 
 
@@ -860,22 +857,22 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerPinNo;
 	bSizerPinNo = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlCurPinNo = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlCurPinNo = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS ) );
 	m_txtCtrlCurPinNo->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerPinNo->Add( m_txtCtrlCurPinNo, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpPinNo1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpPinNo1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS ) );
 	m_txtCtrlSpPinNo1->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerPinNo->Add( m_txtCtrlSpPinNo1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpPinNo2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpPinNo2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS ) );
 	m_txtCtrlSpPinNo2->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerPinNo->Add( m_txtCtrlSpPinNo2, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
-	m_txtCtrlSpPinNo3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlSpPinNo3 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTEXT_ALIGNMENT_CENTER | wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS ) );
 	m_txtCtrlSpPinNo3->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerPinNo->Add( m_txtCtrlSpPinNo3, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
@@ -1081,6 +1078,17 @@ void PanelSensor::OnPasteSet1(wxCommandEvent& event){
     this->SetTolSaturation_1(this->GetTolSaturation());
     this->SetTolIllumination_1(this->GetTolIllumination());
 
+    /* Paste the netX Data */
+    this->SetPintype_1    (this->GetPintype());
+
+    if(!m_txtCtrlCurPinNo->IsEmpty())
+    {
+        this->SetPinNumber_1  (this->GetPinNumber());
+    }
+
+    this->SetPinValue_1   (this->GetPinValue());
+    this->SetPinDefValue_1(this->GetPinDefValue());
+
 
     /* Paste the current colour, if it's black the test entry is not valid */
     if(this->GetColour() != wxColour(0x00, 0x00, 0x00))
@@ -1125,6 +1133,18 @@ void PanelSensor::OnPasteSet2(wxCommandEvent& event)
     this->SetTolSaturation_2(this->GetTolSaturation());
     this->SetTolIllumination_2(this->GetTolIllumination());
 
+    /* Paste the netX Data */
+    this->SetPintype_2    (this->GetPintype());
+
+    if(!m_txtCtrlCurPinNo->IsEmpty())
+    {
+        this->SetPinNumber_2  (this->GetPinNumber());
+    }
+
+    this->SetPinValue_2   (this->GetPinValue());
+    this->SetPinDefValue_2(this->GetPinDefValue());
+
+
     /* Paste the current colour, if it's black the test entry is not valid */
     if(this->GetColour() != wxColour(0x00, 0x00, 0x00))
     {
@@ -1165,6 +1185,19 @@ void PanelSensor::OnPasteSet3(wxCommandEvent& event)
     this->SetTolWavelength_3(this->GetTolWavelength());
     this->SetTolSaturation_3(this->GetTolSaturation());
     this->SetTolIllumination_3(this->GetTolIllumination());
+
+    /* Paste the netX Data */
+    this->SetPintype_3    (this->GetPintype());
+
+
+    if(!m_txtCtrlCurPinNo->IsEmpty())
+    {
+        this->SetPinNumber_3  (this->GetPinNumber());
+    }
+
+    this->SetPinValue_3   (this->GetPinValue());
+    this->SetPinDefValue_3(this->GetPinDefValue());
+
 
     /* Paste the current colour, if it's black the test entry is not valid */
     if(this->GetColour() != wxColour(0x00, 0x00, 0x00))
@@ -1234,3 +1267,45 @@ PanelSensor::~PanelSensor()
 
 }
 
+///////////////////////////////////////////////////////////////////////////
+
+DialogPropGrid::DialogPropGrid( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizerPropGrid;
+	bSizerPropGrid = new wxBoxSizer( wxVERTICAL );
+
+	m_propGrid = new wxPropertyGrid(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPG_DEFAULT_STYLE | wxPG_SPLITTER_AUTO_CENTER);
+	m_propGrid->SetExtraStyle(wxPG_EX_HELP_AS_TOOLTIPS);
+
+    m_propGrid->Append( new wxPropertyCategory(wxT("Default Tolerances"), wxPG_LABEL) );
+	m_pgiTolnm = m_propGrid->Append( new wxIntProperty( wxT("Wavelength +/-"), wxT("tol_nm") ) );
+	m_propGrid->SetPropertyHelpString( m_pgiTolnm, wxT("Default tolerance for wavelength (in nm)") );
+	m_pgiTolsat = m_propGrid->Append( new wxIntProperty( wxT("Saturation    +/-"), wxT("tol_sat") ) );
+	m_propGrid->SetPropertyHelpString( m_pgiTolsat, wxT("Default tolerance for saturation  (in %)") );
+	m_pgiTolillu = m_propGrid->Append( new wxIntProperty( wxT("Illumination +/-"), wxT("tol_illu") ) );
+	m_propGrid->SetPropertyHelpString( m_pgiTolillu, wxT("Default tolerance for illumination (in Lux)") );
+    m_propGrid->Append( new wxPropertyCategory(wxT("Hardware Type"), wxPG_LABEL) );
+
+	wxArrayString astrNetxTypes;
+	astrNetxTypes.Add("netX 10");
+	astrNetxTypes.Add("netX 50");
+	astrNetxTypes.Add("netX 51/52");
+	astrNetxTypes.Add("netX 100/500");
+
+	m_pgiNetxtype = m_propGrid->Append( new wxEnumProperty( wxT("netX Type"), wxPG_LABEL, astrNetxTypes ) );
+	m_propGrid->SetPropertyHelpString( m_pgiNetxtype, wxT("Connected netX type") );
+	bSizerPropGrid->Add( m_propGrid, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( bSizerPropGrid );
+	m_propGrid->FitColumns();
+	this->Layout();
+    bSizerPropGrid->Fit( this );
+	this->Centre( wxBOTH );
+}
+
+DialogPropGrid::~DialogPropGrid()
+{
+}

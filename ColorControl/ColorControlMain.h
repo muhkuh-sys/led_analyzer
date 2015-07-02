@@ -69,6 +69,10 @@ class ColorControlFrame: public GUIFrame
         virtual void OnClearLog(wxCommandEvent& event);
         virtual void OnShowChromaticity(wxCommandEvent& event);
         virtual void OnSensorSettingsChanged(wxDataViewEvent& event);
+        virtual void OnSystemSettings( wxCommandEvent& event);
+        virtual void OnGenerateTest( wxCommandEvent& event);
+        virtual void OnUseTest( wxCommandEvent& event);
+
 
 
         void CreateRows(int numberOfDevices);

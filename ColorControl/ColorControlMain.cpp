@@ -55,6 +55,8 @@ ColorControlFrame::ColorControlFrame(wxFrame *frame)
 {
     /* Initialize number of devices with 0 */
     m_numberOfDevices = 0;
+
+
     // View Class which updates refreshes and takes care about data to be shown
     // set new log target
     m_pLogTarget = new wxLogTextCtrl(m_text);
@@ -71,19 +73,17 @@ ColorControlFrame::ColorControlFrame(wxFrame *frame)
     wxLog::SetLogLevel(wxLOG_Debug );
     wxLogMessage(wxT("Welcome to Color Control...\n"));
 
-
-    wxFileName::SetCwd(wxFileName::GetCwd()+"\\build");
-
-
+    /* Set the working directory to the build folder if it is not already the build folder */
+    if(!wxFileName::GetCwd().EndsWith("build"))
+    {
+        /* Set the working directory */
+        wxFileName::SetCwd(wxFileName::GetCwd()+"\\build");
+    }
 
 
     m_fileConfig = new wxFileConfig(wxEmptyString, wxEmptyString,
                                     wxFileName::GetCwd()+"/config.ini", wxEmptyString,
                                     wxCONFIG_USE_LOCAL_FILE);
-
-
-    //wxLogMessage("%s", m_fileConfig->GetLocalFileName(NULL, 0));
-
     /* Allocate space for the array that will contain serial numbers */
     m_aStrSerials = new wxString[128];
 
@@ -220,24 +220,22 @@ void ColorControlFrame::OnConnect(wxCommandEvent& event)
                 wxLogMessage("Connecting..");
                 for(int i = 0; i < m_numberOfDevices; i++)
                 {
-                    m_cocoDevices.at(i)->SetSerialNumber(m_aStrSerials[0]);
+                    m_cocoDevices.at(i)->SetSerialNumber(m_aStrSerials[i]);
                     m_cocoDevices.at(i)->SetConnectivity(true);
                 }
 
+                /* Init the devices */
+                m_pLua->InitDevices(m_numberOfDevices, m_cocoDevices);
                 /* Create Rows for Colors*/
                 CreateRows(m_numberOfDevices);
                 /* Create Test Panels */
                 CreateTestPanels(m_numberOfDevices);
 
-
                 /* Set System State to Connected */
                 m_eState = IS_CONNECTED;
-
-                /* Init the devices */
-                m_pLua->InitDevices(m_numberOfDevices);
-
                 /* Show It in the textCtrl for connected devices */
                 this->UpdateConnectedField(MYGREEN);
+
                 wxLogMessage("Connected!");
 
             }
@@ -415,12 +413,13 @@ void ColorControlFrame::CreateRows(int numberOfDevices)
             rowdata.push_back("");             // m_clearRatio;
             rowdata.push_back("");             // gain
             rowdata.push_back(wxVariant(""));  // inttime
-            rowdata.push_back("");             // status
+            rowdata.push_back(m_cocoDevices.at(i)->GetState(j)); // status
 
             m_dvlColors->AppendItem(rowdata);
 
        }
     }
+
 
 }
 
@@ -428,8 +427,6 @@ void ColorControlFrame::UpdateRows(int iNumberOfDevices)
 {
     /* First Clear your Rows */
     m_dvlColors->DeleteAllItems();
-    //this->CreateRows(iNumberOfDevices);
-
 
     for(int i = 0; i < iNumberOfDevices; i++)
     {
@@ -458,10 +455,13 @@ void ColorControlFrame::UpdateRows(int iNumberOfDevices)
             m_sensorPanels.at(i*16 + j)->SetTolWavelength(m_cocoDevices.at(i)->GetTolNm());
             m_sensorPanels.at(i*16 + j)->SetTolSaturation(m_cocoDevices.at(i)->GetTolSat());
             m_sensorPanels.at(i*16 + j)->SetTolIllumination(m_cocoDevices.at(i)->GetTolIllu());
+
        }
     }
 
+
     if(m_nbData->GetSelection() == 1)  m_swTestdefinition->Show();
+    //if(m_nbData->GetSelection() == 0)  m_swColors->Show();
 }
 
 void ColorControlFrame::UpdateConnectedField(wxColour colour)
@@ -535,18 +535,53 @@ void ColorControlFrame::ClearTestPanels()
 
 void ColorControlFrame::OnSerialUp(wxCommandEvent& event)
 {
-    int iRowIndex = m_dataViewListSerials->GetSelectedRow();
-    if( iRowIndex == wxNOT_FOUND) return;
-    m_pLua->SwapUp(m_aStrSerials, m_aStrSerials[iRowIndex], m_numberOfDevices );
-    this->UpdateSerialList();
+    int iRowIndex;
+
+    switch(m_eState)
+    {
+        case IS_INITIAL:
+            break;
+
+        case IS_SCANNED:
+            iRowIndex = m_dataViewListSerials->GetSelectedRow();
+            if( iRowIndex == wxNOT_FOUND) return;
+            m_pLua->SwapUp(m_aStrSerials, m_aStrSerials[iRowIndex], m_numberOfDevices );
+            this->UpdateSerialList();
+            break;
+
+        case IS_CONNECTED:
+            wxLogMessage("Cannot reorder serial numbers - disconnect first.");
+            break;
+
+        default:
+            break;
+    }
+
 }
 
 void ColorControlFrame::OnSerialDown(wxCommandEvent& event)
 {
-    int iRowIndex = m_dataViewListSerials->GetSelectedRow();
-    if( iRowIndex == wxNOT_FOUND) return;
-    m_pLua->SwapDown(m_aStrSerials, m_aStrSerials[iRowIndex], m_numberOfDevices );
-    this->UpdateSerialList();
+    int iRowIndex;
+
+    switch(m_eState)
+    {
+        case IS_INITIAL:
+            break;
+
+        case IS_SCANNED:
+            iRowIndex = m_dataViewListSerials->GetSelectedRow();
+            if( iRowIndex == wxNOT_FOUND) return;
+            m_pLua->SwapDown(m_aStrSerials, m_aStrSerials[iRowIndex], m_numberOfDevices );
+            this->UpdateSerialList();
+            break;
+
+        case IS_CONNECTED:
+            wxLogMessage("Cannot reorder serial numbers - disconnect first.");
+            break;
+
+        default:
+            break;
+    }
 }
 
 /* Only Gets Called when there's a change in the chosen radio button */
@@ -694,4 +729,79 @@ int ColorControlFrame::StrToRegisterContent(const wxString strSetting)
     return -1;
 }
 
+//DialogPropGrid::DialogPropGrid( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+
+void ColorControlFrame::OnSystemSettings(wxCommandEvent& event)
+{
+    wxLogMessage("hi");
+    DialogPropGrid* m_test = new DialogPropGrid(this, wxID_ANY, "Color Controller Settings", wxDefaultPosition, wxSize(300,400), wxRESIZE_BORDER| wxCLOSE_BOX | wxCAPTION );//, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL,  "bla");
+    m_test->Show();
+}
+
+
+void ColorControlFrame::OnGenerateTest(wxCommandEvent& event)
+{
+    wxLogMessage("Generating Testfile.. ");
+    wxTextFile tFile("MyTest.lua");
+    const wxString   strFileName = tFile.GetName();
+    int iUserInput = wxID_OK;
+
+    wxMessageDialog* modal_dialog;
+
+    /* If the file already exists ask if it should be overwritten, if not create it */
+    if(tFile.Exists())
+    {
+        modal_dialog = new wxMessageDialog(this, strFileName + " already exits. Do you really want to overwrite it?",
+                            "Generate Testfile", wxSTAY_ON_TOP | wxYES_NO | wxNO_DEFAULT | wxCANCEL );
+        iUserInput = modal_dialog->ShowModal();
+
+        /* Return if cancelled or No */
+        if ((iUserInput == wxID_CANCEL) || (iUserInput == wxID_NO))
+        {
+            wxLogMessage("Abort.");
+            return;
+        }
+
+        /* Otherwise Open the file and Clear it */
+        else
+            {
+                tFile.Open();
+                tFile.Clear();
+            }
+    }
+    /* File doesn't exist, just create it and open it */
+    else        {
+            if(!tFile.Create()) wxLogMessage("Couldn't create test file.");
+            if(!tFile.Open())   wxLogMessage("Couldn't open test file.");
+        }
+
+
+    /* Write the testfile */
+
+    for(int i = 0; i < m_numberOfDevices; i++)
+    {
+
+
+    }
+
+
+    if(!tFile.Close()) wxLogMessage("Couldn't close test file.");
+    wxLogMessage("Generated %s.", strFileName);
+}
+
+void ColorControlFrame::OnUseTest(wxCommandEvent& event)
+{
+    wxTextFile tFile;
+    wxString   str;
+    if(tFile.Open("MyTest.lua") == true)
+    {
+        wxLogMessage("Opening succeeded");
+        while(!tFile.Eof())
+        {
+            wxLogMessage("%s", tFile.GetNextLine());
+        }
+    }
+
+    tFile.Close();
+}
 

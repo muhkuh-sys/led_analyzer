@@ -1,6 +1,6 @@
 require("tcs_chromaTable")
 
-local MIN_LUX = 5.0
+local MIN_LUX = 7.0
 
 -- a helper to print a colortable which contains values in RGB, XYZ, HSV, Yxy and wavelength color space 
 -- parameter space determines which space should be printed out 

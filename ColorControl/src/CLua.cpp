@@ -180,7 +180,7 @@ int CLua::ConnectDevices(int &iNumberOfDevices)
 }
 
 
-int CLua::InitDevices(int iNumberOfDevices)
+int CLua::InitDevices(int iNumberOfDevices, wxVector<CColorController*> vectorDevices)
 {
     /* Be pessimistic */
     int iRetVal = 1;
@@ -208,13 +208,30 @@ int CLua::InitDevices(int iNumberOfDevices)
     if(!lua_isnumber(this->m_pLuaState, -1))
     {
         wxLogMessage("Retval (int) expected, got something else");
-        return iRetVal;
     }
 
     /* Get the result */
     iRetVal = lua_tonumber(this->m_pLuaState, -1);
 
     /* Pop the result from the stack */
+    lua_pop(this->m_pLuaState, 1);
+
+    /* Now validate the errorcodes */
+
+    lua_getglobal(this->m_pLuaState, "tColorTable");
+
+    for(int i = 0; i <iNumberOfDevices; i++)
+    {
+        /* Load tColorTable[i] = device */
+        this->GetTableField(i);
+
+        vectorDevices.at(i)->SetState(this->GetIntField(7));
+
+        /* Pop the device table from the stack */
+        lua_pop(this->m_pLuaState, 1);
+    }
+
+    /* Pop the colorTable */
     lua_pop(this->m_pLuaState, 1);
 
     return iRetVal;

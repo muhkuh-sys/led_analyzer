@@ -118,7 +118,8 @@ function initDevices(numberOfDevices)
 		else 
 			error_counter = 0 
 		end 
-		
+		tColorTable[devIndex] = {}
+		tColorTable[devIndex][ENTRY_ERRORCODE] = ret
 		devIndex = devIndex + 1 
 	end 
 	
