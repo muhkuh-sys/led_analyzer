@@ -16,6 +16,7 @@
 #include "CSensorData.h"
 #include "CDevice.h"
 #include "CLua.h"
+#include "PanelSensor.h"
 
 
 #define MYGREEN {0, 200, 0}

@@ -741,6 +741,9 @@ void ColorControlFrame::OnSystemSettings(wxCommandEvent& event)
 
 void ColorControlFrame::OnGenerateTest(wxCommandEvent& event)
 {
+
+    int iDevCounter = 0;
+
     wxLogMessage("Generating Testfile.. ");
     wxTextFile tFile("MyTest.lua");
     const wxString   strFileName = tFile.GetName();
@@ -775,15 +778,26 @@ void ColorControlFrame::OnGenerateTest(wxCommandEvent& event)
             if(!tFile.Open())   wxLogMessage("Couldn't open test file.");
         }
 
-
-    /* Write the testfile */
-
-    for(int i = 0; i < m_numberOfDevices; i++)
+    /* Get Testrow 1 */
+    for(int i = 0; i < m_sensorPanels.size(); i++)
     {
+        if ( i == 0) tFile.AddLine(wxT("tTestSet1 = {\n"));
 
+
+        if( i%16 == 0) tFile.AddLine(wxString::Format(wxT("[%2i] = {\n"), iDevCounter++));
+
+        tFile.AddLine(m_sensorPanels.at(i)->GetTestRow1(i));
+        if (i%16 == 15)
+        {
+            if(i == (m_sensorPanels.size() - 1)) tFile.AddLine(wxT("       }\n }"));
+
+            else tFile.AddLine(wxT("       },\n"));
+        }
 
     }
 
+    /* Write the testfile */
+    tFile.Write();
 
     if(!tFile.Close()) wxLogMessage("Couldn't close test file.");
     wxLogMessage("Generated %s.", strFileName);
@@ -795,10 +809,10 @@ void ColorControlFrame::OnUseTest(wxCommandEvent& event)
     wxString   str;
     if(tFile.Open("MyTest.lua") == true)
     {
-        wxLogMessage("Opening succeeded");
-        while(!tFile.Eof())
+        wxLogMessage("Reading MyTest.lua");
+        for ( str = tFile.GetFirstLine(); !tFile.Eof(); str = tFile.GetNextLine() )
         {
-            wxLogMessage("%s", tFile.GetNextLine());
+            wxLogMessage("%s", str);
         }
     }
 

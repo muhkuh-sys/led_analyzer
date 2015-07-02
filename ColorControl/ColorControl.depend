@@ -3434,14 +3434,15 @@
 1434813020 c:\led_analyzer\colorcontrol\colorcontrolapp.h
 	<wx/app.h>
 
-1435780732 c:\led_analyzer\colorcontrol\colorcontrolmain.h
+1435858676 c:\led_analyzer\colorcontrol\colorcontrolmain.h
 	"ColorControlApp.h"
 	"GUIFrame.h"
 	"CSensorData.h"
 	"CDevice.h"
 	"CLua.h"
+	"PanelSensor.h"
 
-1435775716 c:\led_analyzer\colorcontrol\guiframe.h
+1435858590 c:\led_analyzer\colorcontrol\guiframe.h
 	<iostream>
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
@@ -3477,16 +3478,19 @@
 	<wx/imaglist.h>
 	<wx/timer.h>
 	<wx/fileconf.h>
+	<wx/propgrid/propgrid.h>
+	<wx/propgrid/advprops.h>
+	<wx/textfile.h>
 	"logo_hilscher.xpm"
 
 1435777339 c:\led_analyzer\colorcontrol\include\csensordata.h
 	"../GUIFrame.h"
 
-1435780725 source:c:\led_analyzer\colorcontrol\colorcontrolmain.cpp
+1435865098 source:c:\led_analyzer\colorcontrol\colorcontrolmain.cpp
 	"wx_pch.h"
 	"ColorControlMain.h"
 
-1435781176 source:c:\led_analyzer\colorcontrol\guiframe.cpp
+1435858620 source:c:\led_analyzer\colorcontrol\guiframe.cpp
 	"wx/wxprec.h"
 	<wx/wx.h>
 	"GuiFrame.h"
@@ -3494,7 +3498,7 @@
 1434645374 source:c:\led_analyzer\colorcontrol\resource.rc
 	"wx/msw/wx.rc"
 
-1435775474 source:c:\led_analyzer\colorcontrol\src\cdevice.cpp
+1435856882 source:c:\led_analyzer\colorcontrol\src\cdevice.cpp
 	"CDevice.h"
 
 1435777366 c:\led_analyzer\colorcontrol\include\cdevice.h
@@ -3606,7 +3610,7 @@
 1435839896 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\clua.cpp
 	"CLua.h"
 
-1435779378 c:\led_analyzer\colorcontrol\include\clua.h
+1435856882 c:\led_analyzer\colorcontrol\include\clua.h
 	"lua.h"
 	"lualib.h"
 	"lauxlib.h"
@@ -3639,7 +3643,7 @@
 	<stdio.h>
 	"lua.h"
 
-1435779366 source:c:\led_analyzer\colorcontrol\src\clua.cpp
+1435856882 source:c:\led_analyzer\colorcontrol\src\clua.cpp
 	"CLua.h"
 
 1412631242 c:\wxwidgets-3.0.2\include\wx\colordlg.h
@@ -3716,4 +3720,10 @@
 	"wx/defs.h"
 
 1412631244 c:\wxwidgets-3.0.2\include\wx\os2\iniconf.h
+
+1435859312 c:\led_analyzer\colorcontrol\include\panelsensor.h
+	"../GUIFrame.h"
+
+1435865851 source:c:\led_analyzer\colorcontrol\src\panelsensor.cpp
+	"PanelSensor.h"
 
