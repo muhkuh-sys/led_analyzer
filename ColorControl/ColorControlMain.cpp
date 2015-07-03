@@ -433,9 +433,6 @@ void ColorControlFrame::UpdateRows(int iNumberOfDevices)
     /* First Clear your Rows */
     m_dvlColors->DeleteAllItems();
 
-
-    wxLogMessage("Clear Ratio: %d", m_cocoDevices.at(0)->GetClearRatio(0));
-
     for(int i = 0; i < iNumberOfDevices; i++)
     {
        for(int j = 0; j<16; j++)
