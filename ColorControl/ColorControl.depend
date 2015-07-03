@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1435740579 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolapp.cpp
+1435925421 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolapp.cpp
 	"wx_pch.h"
 	"ColorControlApp.h"
 	"ColorControlMain.h"
@@ -1690,14 +1690,15 @@
 1412631244 c:\wxwidgets-3.0.2\include\wx\univ\theme.h
 	"wx/string.h"
 
-1435845186 c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.h
+1435912722 c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.h
 	"ColorControlApp.h"
 	"GUIFrame.h"
 	"CSensorData.h"
 	"CDevice.h"
 	"CLua.h"
+	"PanelSensor.h"
 
-1435844537 c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.h
+1435916815 c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.h
 	<iostream>
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
@@ -1736,6 +1737,8 @@
 	<wx/propgrid/propgrid.h>
 	<wx/propgrid/advprops.h>
 	<wx/textfile.h>
+	<wx/dirdlg.h>
+	<wx/filedlg.h>
 	"logo_hilscher.xpm"
 
 1412631242 c:\wxwidgets-3.0.2\include\wx\artprov.h
@@ -2756,11 +2759,11 @@
 
 1412631244 c:\wxwidgets-3.0.2\include\wx\msw\rcdefs.h
 
-1435848712 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
+1435928887 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
 	"wx_pch.h"
 	"ColorControlMain.h"
 
-1435844171 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.cpp
+1435927957 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.cpp
 	"wx/wxprec.h"
 	<wx/wx.h>
 	"GuiFrame.h"
@@ -3716,4 +3719,10 @@
 	"wx/defs.h"
 
 1412631244 c:\wxwidgets-3.0.2\include\wx\os2\iniconf.h
+
+1435916707 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\panelsensor.h
+	"../GUIFrame.h"
+
+1435916700 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\panelsensor.cpp
+	"PanelSensor.h"
 

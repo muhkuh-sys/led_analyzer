@@ -16,6 +16,7 @@
 #include "CSensorData.h"
 #include "CDevice.h"
 #include "CLua.h"
+#include "PanelSensor.h"
 
 
 #define MYGREEN {0, 200, 0}
@@ -83,7 +84,8 @@ class ColorControlFrame: public GUIFrame
         void UpdateConnectedField(wxColour colour);
         int  IntegrationToIndex(tcs3472_intTime_t intTime);
         int  StrToRegisterContent(const wxString strSetting);
-
+        void GenerateColorTestTable(wxTextFile* tFile);
+        void GenerateNetXTestTable(wxTextFile* tFile);
 
         int         m_numberOfDevices;
         wxLog       *m_pLogTarget;

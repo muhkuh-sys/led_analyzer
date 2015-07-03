@@ -400,6 +400,8 @@ void ColorControlFrame::OnStart(wxCommandEvent& event)
 void ColorControlFrame::CreateRows(int numberOfDevices)
 {
 
+    wxVariant test;
+
     for(int i = 0; i < numberOfDevices; i++)
     {
        for(int j = 0; j<16; j++)
@@ -409,7 +411,8 @@ void ColorControlFrame::CreateRows(int numberOfDevices)
             rowdata.push_back(wxVariant(""));  // wavelength
             rowdata.push_back(wxVariant(""));  // saturation
             rowdata.push_back(wxVariant(""));  // illumination
-            rowdata.push_back(wxVariant(""));  // m_cColor
+            rowdata.push_back(wxVariant("255255255"));// m_cColor
+            rowdata.push_back(wxVariant(""));
             rowdata.push_back("");             // m_clearRatio;
             rowdata.push_back("");             // gain
             rowdata.push_back(wxVariant(""));  // inttime
@@ -425,25 +428,34 @@ void ColorControlFrame::CreateRows(int numberOfDevices)
 
 void ColorControlFrame::UpdateRows(int iNumberOfDevices)
 {
+    wxVariant variant;
+    wxColour  colour;
     /* First Clear your Rows */
     m_dvlColors->DeleteAllItems();
+
+
+    wxLogMessage("Clear Ratio: %d", m_cocoDevices.at(0)->GetClearRatio(0));
 
     for(int i = 0; i < iNumberOfDevices; i++)
     {
        for(int j = 0; j<16; j++)
        {
+            colour = m_cocoDevices.at(i)->GetColour(j);
+            variant = wxString::Format(wxT("%3i%3i%3i"), colour.Red(), colour.Green(), colour.Blue());
 
             /* First Panel = Colors */
             wxVector<wxVariant> rowdata;
             rowdata.push_back(i*16 + (j + 1)); // sensorno
-            rowdata.push_back(m_cocoDevices.at(i)->GetWavelength(j));  // wavelength
-            rowdata.push_back(m_cocoDevices.at(i)->GetSaturation(j));   // saturation
+            rowdata.push_back(m_cocoDevices.at(i)->GetWavelength(j));    // wavelength
+            rowdata.push_back(m_cocoDevices.at(i)->GetSaturation(j));    // saturation
             rowdata.push_back(m_cocoDevices.at(i)->GetIllumination(j));  // illumination
-            rowdata.push_back("");          // m_cColor
-            rowdata.push_back(m_cocoDevices.at(i)->GetClearRatio(j)); // clearRatio
+            rowdata.push_back(variant);                                  // m_cColor
+            rowdata.push_back(m_cocoDevices.at(i)->GetClearRatio(j));    // clearRatio
             rowdata.push_back(astrGainchoices.Item(m_cocoDevices.at(i)->GetGain(j)));                                     // gain
             rowdata.push_back(astrIntchoices.Item(IntegrationToIndex(m_cocoDevices.at(i)->GetIntTime(j))));                           // inttime
             rowdata.push_back(m_cocoDevices.at(i)->GetState(j));
+
+
             m_dvlColors->AppendItem(rowdata);
 
             /* Second Panel = Testdefinition */
@@ -741,67 +753,187 @@ void ColorControlFrame::OnSystemSettings(wxCommandEvent& event)
 
 void ColorControlFrame::OnGenerateTest(wxCommandEvent& event)
 {
+    wxString   strPath, strDefaultDir; // Full Path with dir + name
+
+    if(!m_fileConfig->Read("DEFAULT_PATHS/path_generate_testfile", &strDefaultDir))
+        strDefaultDir = wxEmptyString;
+
+    wxFileDialog    *save_fileDialog;
+
     wxLogMessage("Generating Testfile.. ");
-    wxTextFile tFile("MyTest.lua");
-    const wxString   strFileName = tFile.GetName();
-    int iUserInput = wxID_OK;
 
-    wxMessageDialog* modal_dialog;
+    save_fileDialog = new wxFileDialog(this, "Choose output directory",
+                                       strDefaultDir,
+                                       "", "LUA files (*.lua) |*.lua",
+                                       wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
-    /* If the file already exists ask if it should be overwritten, if not create it */
-    if(tFile.Exists())
+    if(save_fileDialog->ShowModal() == wxID_CANCEL)
     {
-        modal_dialog = new wxMessageDialog(this, strFileName + " already exits. Do you really want to overwrite it?",
-                            "Generate Testfile", wxSTAY_ON_TOP | wxYES_NO | wxNO_DEFAULT | wxCANCEL );
-        iUserInput = modal_dialog->ShowModal();
-
-        /* Return if cancelled or No */
-        if ((iUserInput == wxID_CANCEL) || (iUserInput == wxID_NO))
-        {
-            wxLogMessage("Abort.");
-            return;
-        }
-
-        /* Otherwise Open the file and Clear it */
-        else
-            {
-                tFile.Open();
-                tFile.Clear();
-            }
+        wxLogMessage("Abort.");
+        return;
     }
-    /* File doesn't exist, just create it and open it */
-    else        {
-            if(!tFile.Create()) wxLogMessage("Couldn't create test file.");
-            if(!tFile.Open())   wxLogMessage("Couldn't open test file.");
-        }
 
+    /* Get the name and path */
+    strPath = save_fileDialog->GetPath();
+
+    /* Save the Directory as a default directory in the ini file */
+    m_fileConfig->Write("DEFAULT_PATHS/path_generate_testfile", save_fileDialog->GetDirectory());
+
+
+    /* the file either exists or must be created */
+    wxTextFile tFile(strPath);
+
+    if(!tFile.Exists()) tFile.Create();
+
+    if(!tFile.Open()) wxLogMessage("Couldn't open test file.");
+
+    this->GenerateColorTestTable(&tFile);
+    this->GenerateNetXTestTable(&tFile);
 
     /* Write the testfile */
-
-    for(int i = 0; i < m_numberOfDevices; i++)
-    {
-
-
-    }
-
+    tFile.Write();
 
     if(!tFile.Close()) wxLogMessage("Couldn't close test file.");
-    wxLogMessage("Generated %s.", strFileName);
+    wxLogMessage("Generated %s.", strPath);
 }
 
 void ColorControlFrame::OnUseTest(wxCommandEvent& event)
 {
-    wxTextFile tFile;
-    wxString   str;
-    if(tFile.Open("MyTest.lua") == true)
+    wxFileDialog*  open_fileDialog;
+    wxString       strDefaultDir;
+    wxString       strPath;
+
+
+    if(!m_fileConfig->Read("DEFAULT_PATHS/path_use_testfile", &strDefaultDir))
+        strDefaultDir = wxEmptyString;
+
+    open_fileDialog = new wxFileDialog(this, "Choose the input test file ..",
+                                       strDefaultDir,
+                                       "", "LUA files (*.lua) |*.lua",
+                                       wxFD_DEFAULT_STYLE | wxFD_FILE_MUST_EXIST);
+
+    if(open_fileDialog->ShowModal() == wxID_CANCEL)
     {
-        wxLogMessage("Opening succeeded");
-        while(!tFile.Eof())
-        {
-            wxLogMessage("%s", tFile.GetNextLine());
-        }
+        wxLogMessage("Abort.");
+        return;
+    }
+
+    strPath = open_fileDialog->GetPath();
+
+    wxLogMessage("Using Testfile %s", strPath);
+
+    m_fileConfig->Write("DEFAULT_PATHS/path_use_testfile", open_fileDialog->GetDirectory());
+
+    wxTextFile tFile(strPath);
+
+
+    if(!tFile.Open())
+    {
+        wxLogMessage("Couldn't open testfile.");
+        return;
+    }
+
+    wxLogMessage("Opening succeeded");
+    while(!tFile.Eof())
+    {
+        wxLogMessage("%s", tFile.GetNextLine());
     }
 
     tFile.Close();
+}
+
+
+void ColorControlFrame::GenerateColorTestTable(wxTextFile* tFile)
+{
+    int iDevCounter = 0;
+
+    tFile->AddLine(" ---------------------- ColorControl LEDs under test ---------------------- ");
+
+
+    /* Get Testrow 1 */
+    for(int i = 0; i < m_sensorPanels.size(); i++)
+    {
+        if ( i == 0) tFile->AddLine(wxT("tTestSet1 = {\n"));
+
+
+        if( i%16 == 0) tFile->AddLine(wxString::Format(wxT("[%2i] = {\n"), iDevCounter++));
+
+        tFile->AddLine(m_sensorPanels.at(i)->GetTestSet1(i));
+        if (i%16 == 15)
+        {
+            if(i == (m_sensorPanels.size() - 1)) tFile->AddLine(wxT("       }\n }"));
+
+            else tFile->AddLine(wxT("       },\n"));
+        }
+
+    }
+    /* Rest device counter */
+    iDevCounter = 0;
+
+    /* Get Testrow 2 */
+    for(int i = 0; i < m_sensorPanels.size(); i++)
+    {
+        if ( i == 0) tFile->AddLine(wxT("tTestSet2 = {\n"));
+
+
+        if( i%16 == 0) tFile->AddLine(wxString::Format(wxT("[%2i] = {\n"), iDevCounter++));
+
+        tFile->AddLine(m_sensorPanels.at(i)->GetTestSet2(i));
+        if (i%16 == 15)
+        {
+            if(i == (m_sensorPanels.size() - 1)) tFile->AddLine(wxT("       }\n }"));
+
+            else tFile->AddLine(wxT("       },\n"));
+        }
+
+    }
+    /* Rest device counter */
+    iDevCounter = 0;
+
+    /* Get Testrow 3 */
+    for(int i = 0; i < m_sensorPanels.size(); i++)
+    {
+        if ( i == 0) tFile->AddLine(wxT("tTestSet3 = {\n"));
+
+
+        if( i%16 == 0) tFile->AddLine(wxString::Format(wxT("[%2i] = {\n"), iDevCounter++));
+
+        tFile->AddLine(m_sensorPanels.at(i)->GetTestSet3(i));
+        if (i%16 == 15)
+        {
+            if(i == (m_sensorPanels.size() - 1)) tFile->AddLine(wxT("       }\n }"));
+
+            else tFile->AddLine(wxT("       },\n"));
+        }
+
+    }
+    /* Rest device counter */
+    iDevCounter = 0;
+
+    /* Put the testsets into one table */
+
+    tFile->AddLine(wxT("\ntTestSet = {\ntTestSet1,\ntTestSet2, \ntTestSet3\n}"));
+}
+
+
+void ColorControlFrame::GenerateNetXTestTable(wxTextFile* tFile)
+{
+    tFile->AddLine(" --------------------------- netX I/O Table ---------------------------\n ");
+    tFile->AddLine(" local atPinsUnderTest = {\n");
+
+    for(int i = 0; i < m_sensorPanels.size(); i++)
+    {
+        /* Last Entry Needs No comma */
+        if(i == (m_sensorPanels.size() - 1 ))
+        {
+
+        }
+        else
+        {
+            tFile->AddLine(m_sensorPanels.at(i)->GetNetXData());
+        }
+
+
+    }
 }
 

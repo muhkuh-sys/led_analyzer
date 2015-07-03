@@ -118,6 +118,7 @@ function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, error
 	
 	    -- Get your current colors and save them into tables 
 		lClear = led_analyzer.ushort_getitem(clear, i)
+		print(lClear)
 		lRed   = led_analyzer.ushort_getitem(red,   i)
 		lGreen = led_analyzer.ushort_getitem(green, i)
 		lBlue  = led_analyzer.ushort_getitem(blue,  i)
