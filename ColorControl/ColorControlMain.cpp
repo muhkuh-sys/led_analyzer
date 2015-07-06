@@ -859,7 +859,7 @@ void ColorControlFrame::GenerateColorTestTable(wxTextFile* tFile)
 
         if( i%16 == 0) tFile->AddLine(wxString::Format(wxT("[%2i] = {\n"), iDevCounter++));
 
-        tFile->AddLine(m_sensorPanels.at(i)->GetTestSet1(i));
+        //tFile->AddLine(m_sensorPanels.at(i)->GetTestSet1(i));
         if (i%16 == 15)
         {
             if(i == (m_sensorPanels.size() - 1)) tFile->AddLine(wxT("       }\n }"));
@@ -879,7 +879,7 @@ void ColorControlFrame::GenerateColorTestTable(wxTextFile* tFile)
 
         if( i%16 == 0) tFile->AddLine(wxString::Format(wxT("[%2i] = {\n"), iDevCounter++));
 
-        tFile->AddLine(m_sensorPanels.at(i)->GetTestSet2(i));
+        //tFile->AddLine(m_sensorPanels.at(i)->GetTestSet2(i));
         if (i%16 == 15)
         {
             if(i == (m_sensorPanels.size() - 1)) tFile->AddLine(wxT("       }\n }"));
@@ -900,7 +900,7 @@ void ColorControlFrame::GenerateColorTestTable(wxTextFile* tFile)
 
         if( i%16 == 0) tFile->AddLine(wxString::Format(wxT("[%2i] = {\n"), iDevCounter++));
 
-        tFile->AddLine(m_sensorPanels.at(i)->GetTestSet3(i));
+        //tFile->AddLine(m_sensorPanels.at(i)->GetTestSet3(i));
         if (i%16 == 15)
         {
             if(i == (m_sensorPanels.size() - 1)) tFile->AddLine(wxT("       }\n }"));
@@ -937,7 +937,7 @@ void ColorControlFrame::GenerateNetXTestTable(wxTextFile* tFile)
         }
         else
         {
-            tFile->AddLine(m_sensorPanels.at(i)->GetNetXData());
+            //tFile->AddLine(m_sensorPanels.at(i)->GetNetXData());
 
         }
     }

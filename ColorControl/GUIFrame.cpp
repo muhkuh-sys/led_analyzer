@@ -560,11 +560,6 @@ PanelHeader::~PanelHeader()
 }
 
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> c935472bab98e9d9f2769051662c8270b75ca3d5
 ///////////////////////////////////////////////////////////////////////////
 
 DialogPropGrid::DialogPropGrid( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )

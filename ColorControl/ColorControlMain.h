@@ -34,8 +34,7 @@ enum e_state_t
 };
 
 
-// in the header file
-DECLARE_VARIANT_OBJECT(wxChoice);
+
 
 class ColorControlFrame: public GUIFrame
 {
