@@ -52,7 +52,7 @@ local asSerials 		= led_analyzer.new_astring(MAXSERIALS)
 local apHandles 		= led_analyzer.new_apvoid(MAXHANDLES)
 local numberOfDevices
 -- table contains all color and light related data
-local tColorTable
+local tColorTable = {}
 -- table that contains a test summary for each device --
 local tTestSummary
 

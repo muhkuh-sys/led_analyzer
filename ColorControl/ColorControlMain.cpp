@@ -750,12 +750,16 @@ void ColorControlFrame::OnSystemSettings(wxCommandEvent& event)
 
 void ColorControlFrame::OnGenerateTest(wxCommandEvent& event)
 {
+
     wxString   strPath, strDefaultDir; // Full Path with dir + name
 
     if(!m_fileConfig->Read("DEFAULT_PATHS/path_generate_testfile", &strDefaultDir))
         strDefaultDir = wxEmptyString;
 
     wxFileDialog    *save_fileDialog;
+
+    int iDevCounter = 0;
+
 
     wxLogMessage("Generating Testfile.. ");
 
@@ -883,6 +887,7 @@ void ColorControlFrame::GenerateColorTestTable(wxTextFile* tFile)
             else tFile->AddLine(wxT("       },\n"));
         }
 
+
     }
     /* Rest device counter */
     iDevCounter = 0;
@@ -901,15 +906,19 @@ void ColorControlFrame::GenerateColorTestTable(wxTextFile* tFile)
             if(i == (m_sensorPanels.size() - 1)) tFile->AddLine(wxT("       }\n }"));
 
             else tFile->AddLine(wxT("       },\n"));
-        }
 
+        }
     }
     /* Rest device counter */
     iDevCounter = 0;
 
-    /* Put the testsets into one table */
 
+    /* Write the testfile */
     tFile->AddLine(wxT("\ntTestSet = {\ntTestSet1,\ntTestSet2, \ntTestSet3\n}"));
+
+    tFile->Write();
+
+
 }
 
 
@@ -920,6 +929,7 @@ void ColorControlFrame::GenerateNetXTestTable(wxTextFile* tFile)
 
     for(int i = 0; i < m_sensorPanels.size(); i++)
     {
+
         /* Last Entry Needs No comma */
         if(i == (m_sensorPanels.size() - 1 ))
         {
@@ -928,9 +938,7 @@ void ColorControlFrame::GenerateNetXTestTable(wxTextFile* tFile)
         else
         {
             tFile->AddLine(m_sensorPanels.at(i)->GetNetXData());
+
         }
-
-
     }
 }
-
