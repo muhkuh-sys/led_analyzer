@@ -650,6 +650,8 @@ void ColorControlFrame::OnClearLog(wxCommandEvent& event)
 
 void ColorControlFrame::OnShowChromaticity(wxCommandEvent& event)
 {
+    FrameChromaticity* chromaticityFrame = new FrameChromaticity(this, wxID_ANY, "CIE 1931 Chromaticity Diagram");
+    chromaticityFrame->Show();
 
 }
 

@@ -65,59 +65,6 @@ private:
 };
 
 
-/*
-
-MyDataViewListModel::MyDataViewListModel() : wxDataViewModel()
-{
-    m_test = 0;
-}
-
-MyDataViewListModel::~MyDataViewListModel()
-{
-
-}
-
-unsigned int MyDataViewListModel::GetColumnCount() const
-{
-
-}
-
-wxString MyDataViewListModel::GetColumnType(unsigned int col) const
-{
-
-}
-
-void MyDataViewListModel::GetValueByRow(wxVariant& variant, unsigned int row, unsigned int col) const
-{
-
-}
-
-bool MyDataViewListModel::GetAttrByRow(unsigned int row, unsigned int col, wxDataViewItemAttr &attr) const
-{
-
-}
-
-bool MyDataViewListModel::SetValueByRow(const wxVariant &variant, unsigned int row, unsigned int col)
-{
-
-}
-
-unsigned int MyDataViewListModel::GetRow(const wxDataViewItem& children) const
-{
-
-}
-
-unsigned int MyDataViewListModel::GetCount() const
-{
-
-}
-
-unsigned int MyDataViewListModel::GetChildren( const wxDataViewItem& item, wxDataViewItemArray& children) const
-{
-
-}
-
-*/
 ///////////////////////////////////////////////////////////////////////////
 
 GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )

@@ -83,6 +83,31 @@ class PanelHeader : public wxPanel
 
 };
 
+/// Class Chromaticity Frame
+
+class FrameChromaticity : public wxFrame
+{
+private:
+    wxStaticBitmap* m_bmChromaticity;
+
+public:
+    FrameChromaticity (wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize)
+            : wxFrame(parent, id, title, pos, size, wxCLOSE_BOX | wxMINIMIZE_BOX | wxCLIP_CHILDREN | wxCAPTION )
+        {
+            this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_BACKGROUND ) );
+
+            wxBoxSizer* bSizer;
+            bSizer = new wxBoxSizer(wxVERTICAL),
+
+            m_bmChromaticity = new wxStaticBitmap( this, wxID_ANY, wxBitmap( wxT("pic\\CIE1931.bmp"), wxBITMAP_TYPE_ANY ), wxDefaultPosition, wxDefaultSize, 0 );
+            bSizer->Add(m_bmChromaticity, 0, wxALL, 5);
+
+            this->SetSizer(bSizer);
+            this->Layout();
+            bSizer->Fit(this);
+        }
+};
+
 
 
 // ----------------------------------------------------------------------------
@@ -100,8 +125,7 @@ public:
 
         virtual wxString GetChoice(size_t WXUNUSED(index))
         {
-            wxLogMessage("HELLO!");
-            return "bla";
+
         }
 
 

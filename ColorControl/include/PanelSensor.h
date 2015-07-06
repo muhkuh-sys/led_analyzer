@@ -105,7 +105,7 @@ class PanelSensor : public wxPanel
         void SetPinDefValue(int iDefValue)  {m_chCurDefPinValue->SetSelection(iDefValue);};
 
 		void OnAddTestRow( wxCommandEvent& event );
-		void OnButtonRemove( wxCommandEvent& event);
+		void OnButtonRemove( wxCommandEvent& event );
 
 	public:
 

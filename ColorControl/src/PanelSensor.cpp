@@ -251,11 +251,24 @@ void PanelSensor::OnAddTestRow(wxCommandEvent& event)
     m_vectorTestrow.push_back(new PanelTestrow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, m_sensorNumber, iCurVectorSize  ));
     bSizerRows->Add(m_vectorTestrow.at(m_vectorTestrow.size()-1), 1, wxEXPAND, 5);
 
-    m_hashRemove[m_vectorTestrow.back()->GetButtonRemoveId()] = m_vectorTestrow.size()-1;
+    m_hashRemove[m_vectorTestrow.back()->GetButtonRemoveId()] = (m_vectorTestrow.size()-1);
 
-    wxLogMessage("hash id: %d", m_vectorTestrow.back()->GetButtonRemoveId());
+    wxLogMessage("key id: %d", m_vectorTestrow.back()->GetButtonRemoveId());
 
-    wxLogMessage("hash: %d",  m_hashRemove[m_vectorTestrow.back()->GetButtonRemoveId()]);
+    wxLogMessage("value: %d",  m_hashRemove[m_vectorTestrow.back()->GetButtonRemoveId()]);
+
+
+// iterate over all the elements in the class
+Hash_wxWindowID_UnsignedLong::iterator it;
+int key, value;
+
+for( it = m_hashRemove.begin(); it != m_hashRemove.end(); ++it )
+{
+    key = it->first;
+    value = it->second;
+    wxLogMessage("key: %d value: %d", key, value);
+
+}
 
     this->GetParent()->FitInside();
     this->GetParent()->Layout();
@@ -264,18 +277,17 @@ void PanelSensor::OnAddTestRow(wxCommandEvent& event)
 
 void PanelSensor::OnButtonRemove( wxCommandEvent& event)
 {
-    wxLogMessage("hello");
-    wxLogMessage("event.GetId(): %d", event.GetId());
+    //wxLogMessage("event.GetId(): %d", event.GetId());
 
-     wxLogMessage("value: %d",  m_hashRemove[event.GetId()]);
+    Hash_wxWindowID_UnsignedLong::iterator it;
+    int key, value;
+    for( it = m_hashRemove.begin(); it != m_hashRemove.end(); ++it )
+    {
+        key = it->first;
+        value = it->second;
+        wxLogMessage("key: %d value: %d", key, value);
 
-
-
-    unsigned int iRow;
-    unsigned int iSensor;
-
-
-
+    }
 
 }
 
