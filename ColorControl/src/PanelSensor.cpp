@@ -51,7 +51,7 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerName;
 	bSizerName = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlCurName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlCurName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_CENTER );
 	m_txtCtrlCurName->SetMaxSize( wxSize( 70,-1 ) );
 
 	bSizerName->Add( m_txtCtrlCurName, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 2 );
@@ -65,7 +65,7 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerWL;
 	bSizerWL = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlCurWL = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlCurWL = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS) );
 	m_txtCtrlCurWL->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerWL->Add( m_txtCtrlCurWL, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
@@ -79,7 +79,9 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerSat;
 	bSizerSat = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlCurSat = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+
+
+	m_txtCtrlCurSat = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS)  );
 	m_txtCtrlCurSat->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerSat->Add( m_txtCtrlCurSat, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
@@ -93,7 +95,7 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerIllu;
 	bSizerIllu = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlCurIllu = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlCurIllu = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS) );
 	m_txtCtrlCurIllu->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerIllu->Add( m_txtCtrlCurIllu, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
@@ -107,8 +109,9 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerColor;
 	bSizerColor = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlCurColor = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlCurColor = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_READONLY );
 	m_txtCtrlCurColor->SetMaxSize( wxSize( 50,-1 ) );
+    m_txtCtrlCurColor->SetBackgroundColour( wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW ) );
 
 	bSizerColor->Add( m_txtCtrlCurColor, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
@@ -136,7 +139,7 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerPinNo;
 	bSizerPinNo = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlCurPinNo = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtCtrlCurPinNo = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_CENTER, wxTextValidator(wxFILTER_DIGITS) );
 	m_txtCtrlCurPinNo->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerPinNo->Add( m_txtCtrlCurPinNo, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
@@ -150,7 +153,7 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerPinValue;
 	bSizerPinValue = new wxBoxSizer( wxVERTICAL );
 
-	wxString m_chCurPinValueChoices[] = { wxT("0"), wxT("1") };
+	wxString m_chCurPinValueChoices[] = { wxT("0"), wxT("1"), wxT("Input") };
 	int m_chCurPinValueNChoices = sizeof( m_chCurPinValueChoices ) / sizeof( wxString );
 	m_chCurPinValue = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chCurPinValueNChoices, m_chCurPinValueChoices, 0 );
 	m_chCurPinValue->SetSelection( 0 );
@@ -165,7 +168,7 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerDefPinValue;
 	bSizerDefPinValue = new wxBoxSizer( wxVERTICAL );
 
-	wxString m_chCurDefPinValueChoices[] = { wxT("0"), wxT("1") };
+	wxString m_chCurDefPinValueChoices[] = { wxT("0"), wxT("1"), wxT("Input") };
 	int m_chCurDefPinValueNChoices = sizeof( m_chCurDefPinValueChoices ) / sizeof( wxString );
 	m_chCurDefPinValue = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chCurDefPinValueNChoices, m_chCurDefPinValueChoices, 0 );
 	m_chCurDefPinValue->SetSelection( 0 );
@@ -179,10 +182,7 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 
 	wxBoxSizer* bSizerTolNm;
 	bSizerTolNm = new wxBoxSizer( wxVERTICAL );
-
-	m_txtCtrlTolNm = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
-	m_txtCtrlTolNm->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
-	m_txtCtrlTolNm->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
+	m_txtCtrlTolNm = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_CENTER | wxTE_READONLY , wxTextValidator(wxFILTER_DIGITS) );
 	m_txtCtrlTolNm->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerTolNm->Add( m_txtCtrlTolNm, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
@@ -196,9 +196,7 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerTolSat;
 	bSizerTolSat = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlTolSat = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
-	m_txtCtrlTolSat->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
-	m_txtCtrlTolSat->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
+	m_txtCtrlTolSat = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_CENTER | wxTE_READONLY , wxTextValidator(wxFILTER_DIGITS) );
 	m_txtCtrlTolSat->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerTolSat->Add( m_txtCtrlTolSat, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
@@ -212,9 +210,8 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerTolIllu;
 	bSizerTolIllu = new wxBoxSizer( wxVERTICAL );
 
-	m_txtCtrlTolIllu = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
-	m_txtCtrlTolIllu->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
-	m_txtCtrlTolIllu->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
+	m_txtCtrlTolIllu = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_CENTER | wxTE_READONLY  , wxTextValidator(wxFILTER_DIGITS) );
+
 	m_txtCtrlTolIllu->SetMaxSize( wxSize( 50,-1 ) );
 
 	bSizerTolIllu->Add( m_txtCtrlTolIllu, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
@@ -246,289 +243,116 @@ PanelSensor::~PanelSensor()
 void PanelSensor::OnAddTestRow(wxCommandEvent& event)
 {
     this->GetParent()->Hide();
+    int iCurVectorSize;
 
-    int iCurVectorSize = m_vectorTestrow.size();
-    m_vectorTestrow.push_back(new PanelTestrow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, m_sensorNumber, iCurVectorSize  ));
-    bSizerRows->Add(m_vectorTestrow.at(m_vectorTestrow.size()-1), 1, wxEXPAND, 5);
+    m_vectorTestrow.push_back(new PanelTestrow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL ));
 
-    m_hashRemove[m_vectorTestrow.back()->GetButtonRemoveId()] = (m_vectorTestrow.size()-1);
+    iCurVectorSize = m_vectorTestrow.size();
 
-    wxLogMessage("key id: %d", m_vectorTestrow.back()->GetButtonRemoveId());
+    bSizerRows->Add(m_vectorTestrow.at(iCurVectorSize-1), 1, wxEXPAND, 5);
 
-    wxLogMessage("value: %d",  m_hashRemove[m_vectorTestrow.back()->GetButtonRemoveId()]);
-
-
-// iterate over all the elements in the class
-Hash_wxWindowID_UnsignedLong::iterator it;
-int key, value;
-
-for( it = m_hashRemove.begin(); it != m_hashRemove.end(); ++it )
-{
-    key = it->first;
-    value = it->second;
-    wxLogMessage("key: %d value: %d", key, value);
-
-}
+    /* Hash the remove Button ID */
+    m_hashRemove[m_vectorTestrow.back()->GetButtonRemoveID()] = (iCurVectorSize-1);
+    /* Hash the clear button ID */
+    m_hashClear[m_vectorTestrow.back()->GetButtonClearID()] = (iCurVectorSize-1);
+    /* Hash the paste button ID */
+    m_hashPaste[m_vectorTestrow.back()->GetButtonPasteID()] = (iCurVectorSize-1);
 
     this->GetParent()->FitInside();
     this->GetParent()->Layout();
     this->GetParent()->Show();
 }
 
-void PanelSensor::OnButtonRemove( wxCommandEvent& event)
+void PanelSensor::OnButtonRemove( wxCommandEvent& event )
 {
-    //wxLogMessage("event.GetId(): %d", event.GetId());
+    /* Get the index of the vector to be deleted */
+    int iVectorIndex = m_hashRemove[event.GetId()];
 
-    Hash_wxWindowID_UnsignedLong::iterator it;
-    int key, value;
-    for( it = m_hashRemove.begin(); it != m_hashRemove.end(); ++it )
+    wxLogMessage("size before erase: %d", m_vectorTestrow.size());
+    /* Remove the item in the vector */
+
+    /* Destroy the panel */
+    m_vectorTestrow.at(iVectorIndex)->Destroy();
+
+    /* Clear all hashes for this panel */
+    m_hashClear.erase(m_vectorTestrow.at(iVectorIndex)->GetButtonClearID());
+
+    m_hashPaste.erase(m_vectorTestrow.at(iVectorIndex)->GetButtonPasteID());
+
+    m_hashRemove.erase(event.GetId());
+
+    /* Remove the item from the vector */
+    m_vectorTestrow.erase(iVectorIndex);
+
+    /* First delete all existent hashes as the assignment to the vector index has changed */
+    m_hashClear.clear();
+    m_hashPaste.clear();
+    m_hashRemove.clear();
+
+    int iNewVectorIndex = 0;
+    /* Refill the hash table with the right value for the new vector index */
+    for(wxVector<PanelTestrow*>::iterator it=m_vectorTestrow.begin(); it != m_vectorTestrow.end(); it++)
     {
-        key = it->first;
-        value = it->second;
-        wxLogMessage("key: %d value: %d", key, value);
-
+        m_hashRemove[(*it)->GetButtonRemoveID()] = iNewVectorIndex;
+        m_hashClear[(*it)->GetButtonClearID()] = iNewVectorIndex;
+        m_hashPaste[(*it)->GetButtonPasteID()] = iNewVectorIndex;
+        iNewVectorIndex++;
     }
 
+    /* Update the View */
+    this->GetParent()->FitInside();
+    this->GetParent()->Layout();
+
 }
 
-///////////////////////////////////////////////////////////////////////////
-
-PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, unsigned int sensor, unsigned int vectorsize ) : wxPanel( parent, id, pos, size, style )
+void PanelSensor::OnClearSet ( wxCommandEvent& event)
 {
-	Hash_wxWindowID_UnsignedLong myHashRemove;
+    /* Get the index of the vector to be deleted */
+    int iVectorIndex = m_hashClear[event.GetId()];
 
-	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
+    m_vectorTestrow.at(iVectorIndex)->ClearRow();
 
-	wxBoxSizer* bSizerSensorPanel;
-	bSizerSensorPanel = new wxBoxSizer( wxHORIZONTAL );
-
-	wxBoxSizer* bSizerNo;
-	bSizerNo = new wxBoxSizer( wxVERTICAL );
-
-	wxBoxSizer* bSizerButtons1;
-	bSizerButtons1 = new wxBoxSizer( wxHORIZONTAL );
-
-	m_cbUseSet1 = new wxCheckBox( this, wxID_ANY, wxT("Use"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizerButtons1->Add( m_cbUseSet1, 0, wxALIGN_CENTER|wxALIGN_CENTER_VERTICAL|wxALL, 2 );
-
-	m_bpButtonPaste = new wxBitmapButton( this, wxID_ANY, wxArtProvider::GetBitmap( wxART_PASTE ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-	m_bpButtonPaste->SetMaxSize( wxSize( 20,20 ) );
-
-	bSizerButtons1->Add( m_bpButtonPaste, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP, 2 );
-
-	m_bpButtonClear = new wxBitmapButton( this, wxID_ANY, wxArtProvider::GetBitmap( wxART_MISSING_IMAGE ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-	m_bpButtonClear->SetMaxSize( wxSize( 20,20 ) );
-
-	bSizerButtons1->Add( m_bpButtonClear, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL |wxTOP, 2 );
-
-	m_bpButtonRemove = new wxBitmapButton( this, wxIdManager::ReserveId(1), wxArtProvider::GetBitmap( wxART_MINUS ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-	m_bpButtonRemove->SetMaxSize( wxSize( 20,20 ) );
-
-
-
-	bSizerButtons1->Add( m_bpButtonRemove, 0, wxALIGN_CENTER|wxALIGN_CENTER_VERTICAL | wxLEFT|wxTOP, 2 );
-
-
-	bSizerNo->Add( bSizerButtons1, 1, wxALIGN_CENTER_HORIZONTAL, 2 );
-
-
-	bSizerSensorPanel->Add( bSizerNo, 0, 0, 5 );
-
-
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizerName;
-	bSizerName = new wxBoxSizer( wxVERTICAL );
-
-	m_txtCtrlSpName1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
-	m_txtCtrlSpName1->SetMaxSize( wxSize( 70,-1 ) );
-
-	bSizerName->Add( m_txtCtrlSpName1, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
-
-
-	bSizerSensorPanel->Add( bSizerName, 0, 0, 5 );
-
-
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizerWL;
-	bSizerWL = new wxBoxSizer( wxVERTICAL );
-
-	m_txtCtrlSpWL1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
-	m_txtCtrlSpWL1->SetMaxSize( wxSize( 50,-1 ) );
-
-	bSizerWL->Add( m_txtCtrlSpWL1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
-
-
-	bSizerSensorPanel->Add( bSizerWL, 0, 0, 5 );
-
-
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizerSat;
-	bSizerSat = new wxBoxSizer( wxVERTICAL );
-
-	m_txtCtrlSpSat1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
-	m_txtCtrlSpSat1->SetMaxSize( wxSize( 50,-1 ) );
-
-	bSizerSat->Add( m_txtCtrlSpSat1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
-
-
-	bSizerSensorPanel->Add( bSizerSat, 0, 0, 5 );
-
-
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizerIllu;
-	bSizerIllu = new wxBoxSizer( wxVERTICAL );
-
-	m_txtCtrlSpIllu1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
-	m_txtCtrlSpIllu1->SetMaxSize( wxSize( 50,-1 ) );
-
-	bSizerIllu->Add( m_txtCtrlSpIllu1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
-
-
-	bSizerSensorPanel->Add( bSizerIllu, 0, 0, 5 );
-
-
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizerColor;
-	bSizerColor = new wxBoxSizer( wxVERTICAL );
-
-	m_txtCtrlSpColor1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
-	m_txtCtrlSpColor1->SetMaxSize( wxSize( 50,-1 ) );
-
-	bSizerColor->Add( m_txtCtrlSpColor1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
-
-
-	bSizerSensorPanel->Add( bSizerColor, 0, 0, 5 );
-
-
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizerPintype;
-	bSizerPintype = new wxBoxSizer( wxVERTICAL );
-
-	wxString m_chSpPintype1Choices[] = { wxT("MMIO"), wxT("XMIO"), wxT("GPIO"), wxT("PIO"), wxEmptyString };
-	int m_chSpPintype1NChoices = sizeof( m_chSpPintype1Choices ) / sizeof( wxString );
-	m_chSpPintype1 = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chSpPintype1NChoices, m_chSpPintype1Choices, 0 );
-	m_chSpPintype1->SetSelection( 0 );
-	bSizerPintype->Add( m_chSpPintype1, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 2 );
-
-
-	bSizerSensorPanel->Add( bSizerPintype, 0, 0, 5 );
-
-
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizerPinNo;
-	bSizerPinNo = new wxBoxSizer( wxVERTICAL );
-
-	m_txtCtrlSpPinNo1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
-	m_txtCtrlSpPinNo1->SetMaxSize( wxSize( 50,-1 ) );
-
-	bSizerPinNo->Add( m_txtCtrlSpPinNo1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
-
-
-	bSizerSensorPanel->Add( bSizerPinNo, 0, 0, 5 );
-
-
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizerPinValue;
-	bSizerPinValue = new wxBoxSizer( wxVERTICAL );
-
-	wxString m_choiceSpPinValue1Choices[] = { wxT("0"), wxT("1") };
-	int m_choiceSpPinValue1NChoices = sizeof( m_choiceSpPinValue1Choices ) / sizeof( wxString );
-	m_choiceSpPinValue1 = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceSpPinValue1NChoices, m_choiceSpPinValue1Choices, 0 );
-	m_choiceSpPinValue1->SetSelection( 0 );
-	bSizerPinValue->Add( m_choiceSpPinValue1, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 2 );
-
-
-	bSizerSensorPanel->Add( bSizerPinValue, 0, 0, 5 );
-
-
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizerDefPinValue;
-	bSizerDefPinValue = new wxBoxSizer( wxVERTICAL );
-
-	wxString m_chSpDefPinValue1Choices[] = { wxT("0"), wxT("1") };
-	int m_chSpDefPinValue1NChoices = sizeof( m_chSpDefPinValue1Choices ) / sizeof( wxString );
-	m_chSpDefPinValue1 = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chSpDefPinValue1NChoices, m_chSpDefPinValue1Choices, 0 );
-	m_chSpDefPinValue1->SetSelection( 0 );
-	bSizerDefPinValue->Add( m_chSpDefPinValue1, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 2 );
-
-
-	bSizerSensorPanel->Add( bSizerDefPinValue, 0, 0, 5 );
-
-
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizerTolNm;
-	bSizerTolNm = new wxBoxSizer( wxVERTICAL );
-
-	m_txtCtrlSpTolNm1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
-	m_txtCtrlSpTolNm1->SetMaxSize( wxSize( 50,-1 ) );
-
-	bSizerTolNm->Add( m_txtCtrlSpTolNm1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
-
-
-	bSizerSensorPanel->Add( bSizerTolNm, 0, 0, 5 );
-
-
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizerTolSat;
-	bSizerTolSat = new wxBoxSizer( wxVERTICAL );
-
-	m_txtCtrlSpTolSat1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
-	m_txtCtrlSpTolSat1->SetMaxSize( wxSize( 50,-1 ) );
-
-	bSizerTolSat->Add( m_txtCtrlSpTolSat1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
-
-
-	bSizerSensorPanel->Add( bSizerTolSat, 0, 0, 5 );
-
-
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizerTolIllu;
-	bSizerTolIllu = new wxBoxSizer( wxVERTICAL );
-
-	m_txtCtrlSpTolIllu1 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0 );
-	m_txtCtrlSpTolIllu1->SetMaxSize( wxSize( 50,-1 ) );
-
-	bSizerTolIllu->Add( m_txtCtrlSpTolIllu1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
-
-
-	bSizerSensorPanel->Add( bSizerTolIllu, 0, 0, 5 );
-
-
-
-	this->SetSizer( bSizerSensorPanel );
-	this->Layout();
-	bSizerSensorPanel->Fit( this );
-
-
-	// Connect Events
-	m_bpButtonRemove->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( PanelSensor::OnButtonRemove ), NULL, this );
-	m_bpButtonPaste->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( PanelTestrow::OnPasteSet ), NULL, this );
-	m_bpButtonClear->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( PanelTestrow::OnClearSet ), NULL, this );
+    /* Update the View */
+    this->GetParent()->FitInside();
+    this->GetParent()->Layout();
 }
 
-PanelTestrow::~PanelTestrow()
+
+void PanelSensor::OnPasteSet ( wxCommandEvent& event)
 {
-	// Disconnect Events
-	/* Remove allocated IDs */
-    //wxIdManager::UnreserveId(m_bpButtonRemove->GetId(), 1);
+    /* Get the index of the vector to be deleted */
+    int iVectorIndex = m_hashPaste[event.GetId()];
 
-	m_bpButtonRemove->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( PanelSensor::OnButtonRemove ), NULL, this );
-	m_bpButtonPaste->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( PanelTestrow::OnPasteSet ), NULL, this );
-	m_bpButtonClear->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( PanelTestrow::OnClearSet ), NULL, this );
+    /* Name */
+    m_vectorTestrow.at(iVectorIndex)->SetName(this->GetName());
+    /* Wavelength */
+    m_vectorTestrow.at(iVectorIndex)->SetWavelength(this->GetWavelength());
+    /* Saturation */
+    m_vectorTestrow.at(iVectorIndex)->SetSaturation(this->GetSaturation());
+    /* Illumination */
+    m_vectorTestrow.at(iVectorIndex)->SetIllumination(this->GetIllumination());
+    /* Colour */
+    m_vectorTestrow.at(iVectorIndex)->SetColour(this->GetColour());
+    /* Pintype */
+    m_vectorTestrow.at(iVectorIndex)->SetPintype(this->GetPintype());
+    /* Pin Number */
+    if(!this->m_txtCtrlCurPinNo->IsEmpty())
+    m_vectorTestrow.at(iVectorIndex)->SetPinNumber(this->GetPinNumber());
+    /* Pin Value */
+    m_vectorTestrow.at(iVectorIndex)->SetPinValue(this->GetPinValue());
+    /* Pin Default Value */
+    m_vectorTestrow.at(iVectorIndex)->SetPinDefValue(this->GetPinDefValue());
+    /* Tolerance Wavelength */
+    m_vectorTestrow.at(iVectorIndex)->SetTolWavelength(this->GetTolWavelength());
+    /* Tolerance Saturation */
+    m_vectorTestrow.at(iVectorIndex)->SetTolSaturation(this->GetTolSaturation());
+    /* Tolerance Illumination */
+    m_vectorTestrow.at(iVectorIndex)->SetTolIllumination(this->GetTolIllumination());
 
+
+
+
+    /* Update the View */
+    this->GetParent()->FitInside();
+    this->GetParent()->Layout();
 }
-
-
-

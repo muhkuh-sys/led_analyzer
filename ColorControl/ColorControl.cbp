@@ -62,6 +62,7 @@
 		<Unit filename="include/CLua.h" />
 		<Unit filename="include/CSensorData.h" />
 		<Unit filename="include/PanelSensor.h" />
+		<Unit filename="include/PanelTestrow.h" />
 		<Unit filename="resource.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
@@ -69,6 +70,7 @@
 		<Unit filename="src/CLua.cpp" />
 		<Unit filename="src/CSensorData.cpp" />
 		<Unit filename="src/PanelSensor.cpp" />
+		<Unit filename="src/PanelTestrow.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

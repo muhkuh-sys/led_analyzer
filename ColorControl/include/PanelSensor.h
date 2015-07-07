@@ -3,51 +3,10 @@
 
 
 #include "../GUIFrame.h"
+#include "PanelTestrow.h"
 
 
 WX_DECLARE_HASH_MAP( wxWindowID, unsigned int, wxIntegerHash, wxIntegerEqual, Hash_wxWindowID_UnsignedLong );
-
-///////////////////////////////////////////////////////////////////////////////
-/// Class PanelTestrow
-///////////////////////////////////////////////////////////////////////////////
-class PanelTestrow : public wxPanel
-{
-	private:
-		wxCheckBox* m_cbUseSet1;
-		wxBitmapButton* m_bpButtonRemove;
-		wxBitmapButton* m_bpButtonPaste;
-		wxBitmapButton* m_bpButtonClear;
-		wxTextCtrl* m_txtCtrlSpName1;
-		wxTextCtrl* m_txtCtrlSpWL1;
-		wxTextCtrl* m_txtCtrlSpSat1;
-		wxTextCtrl* m_txtCtrlSpIllu1;
-		wxTextCtrl* m_txtCtrlSpColor1;
-		wxChoice* m_chSpPintype1;
-		wxTextCtrl* m_txtCtrlSpPinNo1;
-		wxChoice* m_choiceSpPinValue1;
-		wxChoice* m_chSpDefPinValue1;
-		wxTextCtrl* m_txtCtrlSpTolNm1;
-		wxTextCtrl* m_txtCtrlSpTolSat1;
-		wxTextCtrl* m_txtCtrlSpTolIllu1;
-
-
-
-
-		// Virtual event handlers, overide them in your derived class
-		virtual void OnButtonRemove( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnPasteSet    ( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnClearSet    ( wxCommandEvent& event ) { event.Skip(); }
-
-
-	public:
-
-		PanelTestrow( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxTAB_TRAVERSAL, unsigned int sensornumber = 0, unsigned int vectorsize = 0 );
-        wxWindowID GetButtonRemoveId(){return m_bpButtonRemove->GetId();};
-
-		~PanelTestrow();
-
-};
-
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -75,6 +34,9 @@ class PanelSensor : public wxPanel
 
 		wxVector<PanelTestrow*> m_vectorTestrow;
 		Hash_wxWindowID_UnsignedLong m_hashRemove;
+		Hash_wxWindowID_UnsignedLong m_hashClear;
+		Hash_wxWindowID_UnsignedLong m_hashPaste;
+
 
     public:
         wxString GetName()              {return m_txtCtrlCurName->GetValue();};
@@ -104,10 +66,14 @@ class PanelSensor : public wxPanel
         int GetPinDefValue()                {return m_chCurDefPinValue->GetSelection(); };
         void SetPinDefValue(int iDefValue)  {m_chCurDefPinValue->SetSelection(iDefValue);};
 
-		void OnAddTestRow( wxCommandEvent& event );
-		void OnButtonRemove( wxCommandEvent& event );
 
-	public:
+        void OnAddTestRow( wxCommandEvent& event );
+		void OnButtonRemove( wxCommandEvent& event );
+        void OnClearSet( wxCommandEvent& event);
+        void OnPasteSet( wxCommandEvent& event);
+
+
+
 
 		PanelSensor( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxTAB_TRAVERSAL, int sensornumber = 0 );
 		~PanelSensor();

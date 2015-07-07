@@ -744,9 +744,8 @@ int ColorControlFrame::StrToRegisterContent(const wxString strSetting)
 
 void ColorControlFrame::OnSystemSettings(wxCommandEvent& event)
 {
-    wxLogMessage("hi");
-    DialogPropGrid* m_test = new DialogPropGrid(this, wxID_ANY, "Color Controller Settings", wxDefaultPosition, wxSize(300,400), wxRESIZE_BORDER| wxCLOSE_BOX | wxCAPTION );//, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL,  "bla");
-    m_test->Show();
+    DialogPropGrid* m_test = new DialogPropGrid(this, wxID_ANY, "Color Controller Settings", wxDefaultPosition, wxDefaultSize, wxRESIZE_BORDER| wxCLOSE_BOX | wxCAPTION, m_fileConfig);//, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL,  "bla");
+    m_test->ShowModal();
 }
 
 

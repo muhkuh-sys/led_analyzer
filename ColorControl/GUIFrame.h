@@ -106,6 +106,8 @@ public:
             this->Layout();
             bSizer->Fit(this);
         }
+
+        ~FrameChromaticity(){if(m_bmChromaticity != NULL) delete m_bmChromaticity; };
 };
 
 
@@ -273,6 +275,7 @@ class GUIFrame : public wxFrame
 
 };
 
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Class DialogPropGrid
 ///////////////////////////////////////////////////////////////////////////////
@@ -284,12 +287,21 @@ class DialogPropGrid : public wxDialog
 		wxPGProperty* m_pgiTolsat;
 		wxPGProperty* m_pgiTolillu;
 		wxPGProperty* m_pgiNetxtype;
+        wxButton* m_buttonSave;
+		wxButton* m_buttonCancel;
+		wxFileConfig* m_myFileConfig;
+		wxArrayString m_astrNetxTypes;
+
+		wxFileConfig* m_pFileConfig;
+
+		void OnSave( wxCommandEvent& event );
+		void OnCancel( wxCommandEvent& event );
 
 	protected:
 
 	public:
 
-		DialogPropGrid( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE );
+		DialogPropGrid( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE, wxFileConfig* pFileConfig = NULL );
 		~DialogPropGrid();
 
 };

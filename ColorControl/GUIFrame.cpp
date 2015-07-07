@@ -509,43 +509,92 @@ PanelHeader::~PanelHeader()
 
 ///////////////////////////////////////////////////////////////////////////
 
-DialogPropGrid::DialogPropGrid( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+DialogPropGrid::DialogPropGrid( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style, wxFileConfig* pFileConfig) : wxDialog( parent, id, title, pos, size, style )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
 	wxBoxSizer* bSizerPropGrid;
 	bSizerPropGrid = new wxBoxSizer( wxVERTICAL );
 
-	m_propGrid = new wxPropertyGrid(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPG_DEFAULT_STYLE | wxPG_SPLITTER_AUTO_CENTER);
+	m_propGrid = new wxPropertyGrid(this, wxID_ANY, wxDefaultPosition, wxSize(300,-1), wxPG_DEFAULT_STYLE | wxPG_SPLITTER_AUTO_CENTER);
 	m_propGrid->SetExtraStyle(wxPG_EX_HELP_AS_TOOLTIPS);
 
     m_propGrid->Append( new wxPropertyCategory(wxT("Default Tolerances"), wxPG_LABEL) );
 	m_pgiTolnm = m_propGrid->Append( new wxIntProperty( wxT("Wavelength +/-"), wxT("tol_nm") ) );
+	m_pgiTolnm->SetValidator(wxTextValidator(wxFILTER_DIGITS));
 	m_propGrid->SetPropertyHelpString( m_pgiTolnm, wxT("Default tolerance for wavelength (in nm)") );
 	m_pgiTolsat = m_propGrid->Append( new wxIntProperty( wxT("Saturation    +/-"), wxT("tol_sat") ) );
+	m_pgiTolsat->SetValidator(wxTextValidator(wxFILTER_DIGITS));
 	m_propGrid->SetPropertyHelpString( m_pgiTolsat, wxT("Default tolerance for saturation  (in %)") );
 	m_pgiTolillu = m_propGrid->Append( new wxIntProperty( wxT("Illumination +/-"), wxT("tol_illu") ) );
+	m_pgiTolillu->SetValidator(wxTextValidator(wxFILTER_DIGITS));
 	m_propGrid->SetPropertyHelpString( m_pgiTolillu, wxT("Default tolerance for illumination (in Lux)") );
     m_propGrid->Append( new wxPropertyCategory(wxT("Hardware Type"), wxPG_LABEL) );
 
-	wxArrayString astrNetxTypes;
-	astrNetxTypes.Add("netX 10");
-	astrNetxTypes.Add("netX 50");
-	astrNetxTypes.Add("netX 51/52");
-	astrNetxTypes.Add("netX 100/500");
 
-	m_pgiNetxtype = m_propGrid->Append( new wxEnumProperty( wxT("netX Type"), wxPG_LABEL, astrNetxTypes ) );
+	m_astrNetxTypes.Add("netX 10");
+	m_astrNetxTypes.Add("netX 50");
+	m_astrNetxTypes.Add("netX 51/52");
+	m_astrNetxTypes.Add("netX 100/500");
+
+	m_pgiNetxtype = m_propGrid->Append( new wxEnumProperty( wxT("netX Type"), wxPG_LABEL, m_astrNetxTypes ) );
 	m_propGrid->SetPropertyHelpString( m_pgiNetxtype, wxT("Connected netX type") );
 	bSizerPropGrid->Add( m_propGrid, 1, wxEXPAND, 5 );
 
+    bSizerPropGrid->Add(0, 0, 1, wxEXPAND, 5 );
+
+    m_buttonSave = new wxButton( this, wxID_ANY, wxT("Save Settings"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_buttonCancel = new wxButton( this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0);
+
+    bSizerPropGrid->Add(m_buttonSave, 0, wxEXPAND, 0);
+    bSizerPropGrid->Add(m_buttonCancel, 0, wxEXPAND, 0);
 
 	this->SetSizer( bSizerPropGrid );
 	m_propGrid->FitColumns();
 	this->Layout();
     bSizerPropGrid->Fit( this );
 	this->Centre( wxBOTH );
+
+
+    /* Store the handle of the config file */
+    m_pFileConfig = pFileConfig;
+
+	/* Add save and cancel button */
+
+	m_buttonSave->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DialogPropGrid::OnSave ), NULL, this);
+    m_buttonCancel->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DialogPropGrid::OnCancel ), NULL, this);
+}
+
+void DialogPropGrid::OnSave( wxCommandEvent& event)
+{
+    /* Get your values to be saved into the ini file */
+
+    unsigned int tol_nm, tol_sat, tol_illu, iIndex;
+
+    tol_nm  = m_pgiTolnm->GetValue().GetInteger();
+    tol_sat = m_pgiTolsat->GetValue().GetInteger();
+    tol_illu = m_pgiTolillu->GetValue().GetInteger();
+    iIndex = m_pgiNetxtype->GetValue().GetInteger();
+
+    m_pFileConfig->Write("DEFAULT_TOLERANCES/tol_nm", tol_nm);
+    m_pFileConfig->Write("DEFAULT_TOLERANCES/tol_sat", tol_sat);
+    m_pFileConfig->Write("DEFAULT_TOLERANCES/tol_illu", tol_illu);
+    if(iIndex <= m_astrNetxTypes.size())
+    m_pFileConfig->Write("netXType/type", m_astrNetxTypes.Item(iIndex));
+
+    this->Destroy();
+
+
+
+}
+
+void DialogPropGrid::OnCancel( wxCommandEvent& event )
+{
+   this->Destroy();
 }
 
 DialogPropGrid::~DialogPropGrid()
 {
+    m_buttonSave->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DialogPropGrid::OnSave ), NULL, this);
+    m_buttonCancel->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DialogPropGrid::OnCancel ), NULL, this);
 }
