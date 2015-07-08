@@ -124,10 +124,16 @@ function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, error
 		lCCT   = led_analyzer.ushort_getitem(cct,   i)
 		lLUX   = led_analyzer.afloat_getitem(lux,   i)
 		
+		
 		-- Settings like Gain and Integration Time 
 		lGain    = led_analyzer.puchar_getitem(gain, i)
 		lIntTime = led_analyzer.puchar_getitem(intTimes, i)
-				
+		
+		if(i == 0) then
+			print(lClear)
+			print(lIntTime)
+		end 
+		
 		-- to avoid a later division by zero and to have more stable readings and no unneccessary
 		-- outputs from channels that are not reading any LEDs we set a minum lux level
 		

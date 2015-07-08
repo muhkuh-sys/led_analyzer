@@ -129,17 +129,5 @@ void CColorController::SetState(int iErrorCode)
         }
     }
 
-    /* RGBC values were not valid (for whatever reason that might be) */
-    else if( iErrorCode & SENSOR_RGBC_INVALID )
-    {
-        /* Validate the Errorcode and set the sensor state accordingly */
-        for (int i = 0; i < 16; i++ )
-        {
-            if(iErrorCode & (1<<i))
-            {
-                m_sensorData[i].SetState(SENSOR_RGBC_INVALID);
-            }
-        }
-    }
 
 }

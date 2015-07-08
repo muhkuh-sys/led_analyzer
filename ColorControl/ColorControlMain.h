@@ -85,7 +85,7 @@ class ColorControlFrame: public GUIFrame
         int  StrToRegisterContent(const wxString strSetting);
         void GenerateColorTestTable(wxTextFile* tFile);
         void GenerateNetXTestTable(wxTextFile* tFile);
-
+        int  GetMaximumNumberOfTestsets();
         int         m_numberOfDevices;
         wxLog       *m_pLogTarget;
         CLua        *m_pLua;

@@ -289,9 +289,7 @@ class DialogPropGrid : public wxDialog
 		wxPGProperty* m_pgiNetxtype;
         wxButton* m_buttonSave;
 		wxButton* m_buttonCancel;
-		wxFileConfig* m_myFileConfig;
 		wxArrayString m_astrNetxTypes;
-
 		wxFileConfig* m_pFileConfig;
 
 		void OnSave( wxCommandEvent& event );

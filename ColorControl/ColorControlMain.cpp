@@ -141,6 +141,9 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
 
         case IS_SCANNED:
             /* Scan */
+            delete m_pLua;
+            m_pLua = new CLua("color_control.lua");
+
             m_pLua->ScanDevices(m_numberOfDevices, m_aStrSerials);
             if(m_numberOfDevices == 0)
             {
@@ -412,11 +415,10 @@ void ColorControlFrame::CreateRows(int numberOfDevices)
             rowdata.push_back(wxVariant(""));  // saturation
             rowdata.push_back(wxVariant(""));  // illumination
             rowdata.push_back(wxVariant("255255255"));// m_cColor
-            rowdata.push_back(wxVariant(""));
-            rowdata.push_back("");             // m_clearRatio;
-            rowdata.push_back("");             // gain
+            rowdata.push_back(wxVariant(0));             // m_clearRatio;
+            rowdata.push_back(wxVariant(""));             // gain
             rowdata.push_back(wxVariant(""));  // inttime
-            rowdata.push_back(m_cocoDevices.at(i)->GetState(j)); // status
+            rowdata.push_back(wxVariant(m_cocoDevices.at(i)->GetState(j))); // status
 
             m_dvlColors->AppendItem(rowdata);
 
@@ -706,6 +708,7 @@ int ColorControlFrame::IntegrationToIndex(tcs3472_intTime_t intTime)
         break;
     default:
         wxLogMessage("Cannot return Int Time Index, Int Time not found!");
+        return 5;
         break;
     }
 
@@ -736,6 +739,7 @@ int ColorControlFrame::StrToRegisterContent(const wxString strSetting)
 
     }
 
+    wxLogMessage("Should not arrive here at end of StrToRegisterContent.");
     /* Should Not arrive here */
     return -1;
 }
@@ -744,23 +748,34 @@ int ColorControlFrame::StrToRegisterContent(const wxString strSetting)
 
 void ColorControlFrame::OnSystemSettings(wxCommandEvent& event)
 {
-    DialogPropGrid* m_test = new DialogPropGrid(this, wxID_ANY, "Color Controller Settings", wxDefaultPosition, wxDefaultSize, wxRESIZE_BORDER| wxCLOSE_BOX | wxCAPTION, m_fileConfig);//, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL,  "bla");
-    m_test->ShowModal();
+    DialogPropGrid* myPropDialog = new DialogPropGrid(this, wxID_ANY, "Color Controller Settings", wxDefaultPosition, wxDefaultSize, wxRESIZE_BORDER| wxCLOSE_BOX | wxCAPTION, m_fileConfig);//, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL,  "bla");
+    myPropDialog->ShowModal();
+
+    /* Update System Settings if any occured */
+    int tol_nm, tol_sat, tol_illu;
+    if(!m_fileConfig->Read(wxT("DEFAULT_TOLERANCES/tol_nm"), &tol_nm)) tol_nm = 10;
+    if(!m_fileConfig->Read(wxT("DEFAULT_TOLERANCES/tol_sat"), &tol_sat)) tol_sat = 10;
+    if(!m_fileConfig->Read(wxT("DEFAULT_TOLERANCES/tol_illu"), &tol_illu)) tol_illu = 50;
+
+    for(int i = 0; i < m_numberOfDevices; i++)
+    {
+        m_cocoDevices.at(i)->SetTolNm(tol_nm);
+        m_cocoDevices.at(i)->SetTolSat(tol_sat);
+        m_cocoDevices.at(i)->SetTolIllu(tol_illu);
+    }
+
 }
 
 
 void ColorControlFrame::OnGenerateTest(wxCommandEvent& event)
 {
 
-    wxString   strPath, strDefaultDir; // Full Path with dir + name
+      wxString strPath, strDefaultDir; // Full Path with dir + name
 
     if(!m_fileConfig->Read("DEFAULT_PATHS/path_generate_testfile", &strDefaultDir))
         strDefaultDir = wxEmptyString;
 
-    wxFileDialog    *save_fileDialog;
-
-    int iDevCounter = 0;
-
+    wxFileDialog *save_fileDialog;
 
     wxLogMessage("Generating Testfile.. ");
 
@@ -781,22 +796,27 @@ void ColorControlFrame::OnGenerateTest(wxCommandEvent& event)
     /* Save the Directory as a default directory in the ini file */
     m_fileConfig->Write("DEFAULT_PATHS/path_generate_testfile", save_fileDialog->GetDirectory());
 
-
     /* the file either exists or must be created */
     wxTextFile tFile(strPath);
 
+    /* Create the file if it doesn't exist yet */
     if(!tFile.Exists()) tFile.Create();
 
     if(!tFile.Open()) wxLogMessage("Couldn't open test file.");
 
+    /* Empty the file */
+    tFile.Clear();
+
     this->GenerateColorTestTable(&tFile);
-    this->GenerateNetXTestTable(&tFile);
+    //this->GenerateNetXTestTable(&tFile);
 
     /* Write the testfile */
     tFile.Write();
 
     if(!tFile.Close()) wxLogMessage("Couldn't close test file.");
     wxLogMessage("Generated %s.", strPath);
+
+
 }
 
 void ColorControlFrame::OnUseTest(wxCommandEvent& event)
@@ -848,78 +868,65 @@ void ColorControlFrame::OnUseTest(wxCommandEvent& event)
 void ColorControlFrame::GenerateColorTestTable(wxTextFile* tFile)
 {
     int iDevCounter = 0;
+    int iNumberOfTestSets = this->GetMaximumNumberOfTestsets();
 
     tFile->AddLine(" ---------------------- ColorControl LEDs under test ---------------------- ");
 
-
-    /* Get Testrow 1 */
-    for(int i = 0; i < m_sensorPanels.size(); i++)
+    for( int i = 0; i < iNumberOfTestSets; i++)
     {
-        if ( i == 0) tFile->AddLine(wxT("tTestSet1 = {\n"));
+        tFile->AddLine(wxString::Format(wxT("-- LED Testset # 1 --\n"), i));
+        tFile->AddLine(wxString::Format(wxT("tTestSet%i = {\n"), i));
 
-
-        if( i%16 == 0) tFile->AddLine(wxString::Format(wxT("[%2i] = {\n"), iDevCounter++));
-
-        //tFile->AddLine(m_sensorPanels.at(i)->GetTestSet1(i));
-        if (i%16 == 15)
+        /* Iterate over Sensor Panels */
+        for(int j = 0; j < m_sensorPanels.size(); j++)
         {
-            if(i == (m_sensorPanels.size() - 1)) tFile->AddLine(wxT("       }\n }"));
+            /* We reached a new device */
+            if(j%16 == 0) tFile->AddLine(wxString::Format(wxT("[%2i] = {"), iDevCounter++));
 
-            else tFile->AddLine(wxT("       },\n"));
+
+            /* Get your rows in case the row really exists in the testrow vector */
+            if((m_sensorPanels.at(j)->GetVectorTestrow().size()) > i)
+            {
+                /* Add the testline */
+                tFile->AddLine(m_sensorPanels.at(j)->GetTestrow(j, i));
+
+            }
+            /* In case the row does not exist Generate a Empty Testrow */
+            else  tFile->AddLine(m_sensorPanels.at(j)->GetEmptyTestrow(j));
+
+
+
+            /* Last Entry of a device */
+            if(j%16 == 15)
+            {
+                /* The last device entry needs no comma */
+                if( j == (m_sensorPanels.size() - 1)) tFile->AddLine(wxT("}\n"));
+
+                /* All other device entries need a comma */
+                else tFile->AddLine(wxT("},\n"));
+            }
         }
 
-    }
-    /* Rest device counter */
-    iDevCounter = 0;
 
-    /* Get Testrow 2 */
-    for(int i = 0; i < m_sensorPanels.size(); i++)
+        tFile->AddLine(wxT("}"));
+        iDevCounter = 0;
+    }
+
+}
+
+int ColorControlFrame::GetMaximumNumberOfTestsets()
+{
+    /* Initialize the maximum number with zero */
+    int iMaxNumber = 0;
+    int iTemp;
+
+    /* Search for the maximum amount of testsets we have */
+    for(wxVector<PanelSensor*>::iterator it = m_sensorPanels.begin(); it!= m_sensorPanels.end(); it++)
     {
-        if ( i == 0) tFile->AddLine(wxT("tTestSet2 = {\n"));
-
-
-        if( i%16 == 0) tFile->AddLine(wxString::Format(wxT("[%2i] = {\n"), iDevCounter++));
-
-        //tFile->AddLine(m_sensorPanels.at(i)->GetTestSet2(i));
-        if (i%16 == 15)
-        {
-            if(i == (m_sensorPanels.size() - 1)) tFile->AddLine(wxT("       }\n }"));
-
-            else tFile->AddLine(wxT("       },\n"));
-        }
-
-
+        if( (iTemp = (*it)->GetVectorTestrow().size()) > iMaxNumber) iMaxNumber = iTemp;
     }
-    /* Rest device counter */
-    iDevCounter = 0;
 
-    /* Get Testrow 3 */
-    for(int i = 0; i < m_sensorPanels.size(); i++)
-    {
-        if ( i == 0) tFile->AddLine(wxT("tTestSet3 = {\n"));
-
-
-        if( i%16 == 0) tFile->AddLine(wxString::Format(wxT("[%2i] = {\n"), iDevCounter++));
-
-        //tFile->AddLine(m_sensorPanels.at(i)->GetTestSet3(i));
-        if (i%16 == 15)
-        {
-            if(i == (m_sensorPanels.size() - 1)) tFile->AddLine(wxT("       }\n }"));
-
-            else tFile->AddLine(wxT("       },\n"));
-
-        }
-    }
-    /* Rest device counter */
-    iDevCounter = 0;
-
-
-    /* Write the testfile */
-    tFile->AddLine(wxT("\ntTestSet = {\ntTestSet1,\ntTestSet2, \ntTestSet3\n}"));
-
-    tFile->Write();
-
-
+    return iMaxNumber;
 }
 
 
@@ -928,17 +935,15 @@ void ColorControlFrame::GenerateNetXTestTable(wxTextFile* tFile)
     tFile->AddLine(" --------------------------- netX I/O Table ---------------------------\n ");
     tFile->AddLine(" local atPinsUnderTest = {\n");
 
-    for(int i = 0; i < m_sensorPanels.size(); i++)
+    int iDevCounter = 0;
+    int iNumberOfTestSets = this->GetMaximumNumberOfTestsets();
+
+    /* Iterate over Testsets */
+    for( int i = 0; i < iNumberOfTestSets; i++ )
     {
-
-        /* Last Entry Needs No comma */
-        if(i == (m_sensorPanels.size() - 1 ))
+        /* Iterate over Sensor Panels */
+        for(int j = 0; j < m_sensorPanels.size(); j++)
         {
-
-        }
-        else
-        {
-            //tFile->AddLine(m_sensorPanels.at(i)->GetNetXData());
 
         }
     }

@@ -64,8 +64,8 @@ const wxString CSensorData::StateToString(sensor_state_t state)
         case SENSOR_EXCEEDED_CLEAR:
             return "MAXIMUM CLEAR";
             break;
-        case SENSOR_RGBC_INVALID:
-            return "RGBC INVALID";
+        default:
+            return "UNKNOWN";
             break;
     }
 }

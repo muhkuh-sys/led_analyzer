@@ -268,7 +268,6 @@ void PanelSensor::OnButtonRemove( wxCommandEvent& event )
     /* Get the index of the vector to be deleted */
     int iVectorIndex = m_hashRemove[event.GetId()];
 
-    wxLogMessage("size before erase: %d", m_vectorTestrow.size());
     /* Remove the item in the vector */
 
     /* Destroy the panel */
@@ -324,6 +323,7 @@ void PanelSensor::OnPasteSet ( wxCommandEvent& event)
     int iVectorIndex = m_hashPaste[event.GetId()];
 
     /* Name */
+    if(!this->GetName().IsEmpty())
     m_vectorTestrow.at(iVectorIndex)->SetName(this->GetName());
     /* Wavelength */
     m_vectorTestrow.at(iVectorIndex)->SetWavelength(this->GetWavelength());
@@ -355,4 +355,61 @@ void PanelSensor::OnPasteSet ( wxCommandEvent& event)
     /* Update the View */
     this->GetParent()->FitInside();
     this->GetParent()->Layout();
+}
+
+
+wxString PanelSensor::GetTestrow(int iSensorIndex, int iRowVectorIndex)
+{
+    int iIndex     = iSensorIndex % 16 +1;
+    bool needKomma = true;
+
+    wxString    strTestRow;
+
+    /* The last sensor entry (sensor[16] doesnt need a komma) */
+    if(iIndex % 16 == 0) needKomma = false;
+
+
+    if(needKomma)
+    {
+            strTestRow = wxString::Format(wxT("[%2i] = {name = \"%s\", nm = %3i, tol_nm = %2i, sat = %3i, tol_sat = %2i, lux = %5i, tol_lux = %4i},"),
+                                           iIndex, m_vectorTestrow.at(iRowVectorIndex)->GetName() , m_vectorTestrow.at(iRowVectorIndex)->GetWavelength(),
+                                           m_vectorTestrow.at(iRowVectorIndex)->GetTolWavelength(), m_vectorTestrow.at(iRowVectorIndex)->GetSaturation(),
+                                           m_vectorTestrow.at(iRowVectorIndex)->GetTolSaturation(), m_vectorTestrow.at(iRowVectorIndex)->GetIllumination(),
+                                           m_vectorTestrow.at(iRowVectorIndex)->GetTolIllumination());
+    }
+
+    else
+    {
+            strTestRow = wxString::Format(wxT("[%2i] = {name = \"%s\", nm = %3i, tol_nm = %2i, sat = %3i, tol_sat = %2i, lux = %5i, tol_lux = %4i}"),
+                                           iIndex, m_vectorTestrow.at(iRowVectorIndex)->GetName() , m_vectorTestrow.at(iRowVectorIndex)->GetWavelength(),
+                                           m_vectorTestrow.at(iRowVectorIndex)->GetTolWavelength(), m_vectorTestrow.at(iRowVectorIndex)->GetSaturation(),
+                                           m_vectorTestrow.at(iRowVectorIndex)->GetTolSaturation(), m_vectorTestrow.at(iRowVectorIndex)->GetIllumination(),
+                                           m_vectorTestrow.at(iRowVectorIndex)->GetTolIllumination());
+    }
+
+    return strTestRow;
+}
+
+
+wxString PanelSensor::GetEmptyTestrow(int iSensorIndex)
+{
+    int iIndex     = iSensorIndex % 16 + 1;
+    bool needKomma = true;
+
+    wxString    strTestRow;
+
+    /* The last sensor entry (sensor[16] doesnt need a komma) */
+    if(iIndex % 16 == 0) needKomma = false;
+
+    if(needKomma)
+    {
+            strTestRow = wxString::Format(wxT("[%2i] = { nil }, -- NO TEST ! NO TEST ! NO TEST ! -- "), iIndex);
+    }
+
+    else
+    {
+            strTestRow = wxString::Format(wxT("[%2i] = { nil }  -- NO TEST ! NO TEST ! NO TEST ! -- "), iIndex);
+    }
+
+    return strTestRow;
 }

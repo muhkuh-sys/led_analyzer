@@ -183,7 +183,7 @@ int CLua::ConnectDevices(int &iNumberOfDevices)
 int CLua::InitDevices(int iNumberOfDevices, wxVector<CColorController*> vectorDevices)
 {
     /* Be pessimistic */
-    int iRetVal = 1;
+    unsigned int iRetVal = 1;
 
     if(!(this->IsLoaded()))
     {

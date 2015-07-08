@@ -43,6 +43,7 @@ class PanelTestrow : public wxPanel
         wxWindowID GetButtonPasteID(){return m_bpButtonPaste->GetId(); };
 
         bool IsActivated()                  {return m_cbUseSet->GetValue();};
+        wxString GetName()                  {return m_txtCtrlSpName->GetValue(); };
         void     SetName(wxString name)     {m_txtCtrlSpName->Clear();
                                              m_txtCtrlSpName->SetValue(name);};
         int GetWavelength()                 {return wxAtoi(m_txtCtrlSpWL->GetValue());};

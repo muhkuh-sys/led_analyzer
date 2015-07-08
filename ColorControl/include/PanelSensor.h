@@ -39,6 +39,7 @@ class PanelSensor : public wxPanel
 
 
     public:
+        wxVector<PanelTestrow*> GetVectorTestrow(){return m_vectorTestrow; };
         wxString GetName()              {return m_txtCtrlCurName->GetValue();};
         void SetName(wxString name)     {m_txtCtrlCurName->Clear();
                                          m_txtCtrlCurName->SetValue(name);};
@@ -66,6 +67,10 @@ class PanelSensor : public wxPanel
         int GetPinDefValue()                {return m_chCurDefPinValue->GetSelection(); };
         void SetPinDefValue(int iDefValue)  {m_chCurDefPinValue->SetSelection(iDefValue);};
 
+
+        /* Test Generation */
+        wxString GetTestrow(int iSensorIndex, int iRowVectorIndex);
+        wxString GetEmptyTestrow(int iSensorIndex);
 
         void OnAddTestRow( wxCommandEvent& event );
 		void OnButtonRemove( wxCommandEvent& event );

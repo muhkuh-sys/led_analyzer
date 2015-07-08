@@ -513,6 +513,20 @@ DialogPropGrid::DialogPropGrid( wxWindow* parent, wxWindowID id, const wxString&
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
+
+    /* Store the handle of the config file */
+    m_pFileConfig = pFileConfig;
+
+    /* Get the settings for default tolerances from the config.ini file */
+    long tol_nm, tol_sat, tol_illu;
+    wxString strNetX;
+
+    if(!m_pFileConfig->Read("DEFAULT_TOLERANCES/tol_nm", &tol_nm)) tol_nm = 10;
+    if(!m_pFileConfig->Read("DEFAULT_TOLERANCES/tol_sat", &tol_sat)) tol_sat = 10;
+    if(!m_pFileConfig->Read("DEFAULT_TOLERANCES/tol_illu", &tol_illu)) tol_illu = 50;
+    if(!m_pFileConfig->Read("netXType/type", &strNetX )) strNetX = m_astrNetxTypes.Item(0);
+
+
 	wxBoxSizer* bSizerPropGrid;
 	bSizerPropGrid = new wxBoxSizer( wxVERTICAL );
 
@@ -520,13 +534,13 @@ DialogPropGrid::DialogPropGrid( wxWindow* parent, wxWindowID id, const wxString&
 	m_propGrid->SetExtraStyle(wxPG_EX_HELP_AS_TOOLTIPS);
 
     m_propGrid->Append( new wxPropertyCategory(wxT("Default Tolerances"), wxPG_LABEL) );
-	m_pgiTolnm = m_propGrid->Append( new wxIntProperty( wxT("Wavelength +/-"), wxT("tol_nm") ) );
+	m_pgiTolnm = m_propGrid->Append( new wxIntProperty( wxT("Wavelength +/-"), wxT("tol_nm"), tol_nm ) );
 	m_pgiTolnm->SetValidator(wxTextValidator(wxFILTER_DIGITS));
 	m_propGrid->SetPropertyHelpString( m_pgiTolnm, wxT("Default tolerance for wavelength (in nm)") );
-	m_pgiTolsat = m_propGrid->Append( new wxIntProperty( wxT("Saturation    +/-"), wxT("tol_sat") ) );
+	m_pgiTolsat = m_propGrid->Append( new wxIntProperty( wxT("Saturation    +/-"), wxT("tol_sat"), tol_sat ) );
 	m_pgiTolsat->SetValidator(wxTextValidator(wxFILTER_DIGITS));
 	m_propGrid->SetPropertyHelpString( m_pgiTolsat, wxT("Default tolerance for saturation  (in %)") );
-	m_pgiTolillu = m_propGrid->Append( new wxIntProperty( wxT("Illumination +/-"), wxT("tol_illu") ) );
+	m_pgiTolillu = m_propGrid->Append( new wxIntProperty( wxT("Illumination +/-"), wxT("tol_illu"), tol_illu ) );
 	m_pgiTolillu->SetValidator(wxTextValidator(wxFILTER_DIGITS));
 	m_propGrid->SetPropertyHelpString( m_pgiTolillu, wxT("Default tolerance for illumination (in Lux)") );
     m_propGrid->Append( new wxPropertyCategory(wxT("Hardware Type"), wxPG_LABEL) );
@@ -537,7 +551,9 @@ DialogPropGrid::DialogPropGrid( wxWindow* parent, wxWindowID id, const wxString&
 	m_astrNetxTypes.Add("netX 51/52");
 	m_astrNetxTypes.Add("netX 100/500");
 
-	m_pgiNetxtype = m_propGrid->Append( new wxEnumProperty( wxT("netX Type"), wxPG_LABEL, m_astrNetxTypes ) );
+
+	m_pgiNetxtype = m_propGrid->Append( new wxEnumProperty( wxT("netX Type"), wxPG_LABEL, m_astrNetxTypes  ) );
+    m_pgiNetxtype->SetValueFromString(strNetX);
 	m_propGrid->SetPropertyHelpString( m_pgiNetxtype, wxT("Connected netX type") );
 	bSizerPropGrid->Add( m_propGrid, 1, wxEXPAND, 5 );
 
@@ -555,9 +571,6 @@ DialogPropGrid::DialogPropGrid( wxWindow* parent, wxWindowID id, const wxString&
     bSizerPropGrid->Fit( this );
 	this->Centre( wxBOTH );
 
-
-    /* Store the handle of the config file */
-    m_pFileConfig = pFileConfig;
 
 	/* Add save and cancel button */
 
@@ -582,9 +595,9 @@ void DialogPropGrid::OnSave( wxCommandEvent& event)
     if(iIndex <= m_astrNetxTypes.size())
     m_pFileConfig->Write("netXType/type", m_astrNetxTypes.Item(iIndex));
 
+
+    wxLogMessage("Saved Settings");
     this->Destroy();
-
-
 
 }
 
