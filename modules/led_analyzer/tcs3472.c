@@ -60,7 +60,7 @@ unsigned short int tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context*
 		
             for(i = 0; i<=15; i++)
             {
-				/* 0x14 = ID for tcs3472        0x44 = ID for tcs3472 */
+				/* 0x14 = ID for tcs3472        0x44 = ID for tcs3471 */
                if(aucReadbuffer[i] != (0x14) && aucReadbuffer[i] != 0x44)
                {
                     aucErrorbuffer[i] = i+1;
@@ -189,65 +189,13 @@ unsigned short int tcs_setGain_x(struct ftdi_context* ftdiA, struct ftdi_context
 }
 
 					 
-/** \brief checks if the colors read from the sensors are valid.
-
-Function checks if the color set read from the sensors is valid. This can be checked by reading a special register
-of the sensor, the status register. If TCS3472_AVALID_BIT is not set after color reading, we can assume errors with
-the color set, thus should repeat a reading. The return code can be used to determine which of the 16 sensor(s) failed.
-	@param ftdiA, ftdiB 	pointer to ftdi_context
-	
-	@return  0 : everything OK - RGBC datasets valid
-	@return >0 : one or more sensor(s) failed
-	@return	    if the return code is 0b0000000000101100, identification failed with sensor 3, sensor 4 and sensor 6
-	*/
-unsigned short int tcs_rgbcInvalid(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
-{
-    unsigned int uiErrorcounter = 0;
-    unsigned int uiSuccesscounter = 0;
-	
-	unsigned short int usErrorMask = 0;
-    int i = 0;
-
-    unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_STATUS_REG | TCS3472_COMMAND_BIT};
-	unsigned char aucReadbuffer[16];
-    unsigned char aucErrorbuffer[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-	
-	
-        i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucReadbuffer, sizeof(aucReadbuffer));
-
-            for(i = 0; i<=15; i++)
-            {
-               if((aucReadbuffer[i]&TCS3472_AVALID_BIT) != TCS3472_AVALID_BIT)
-               {
-                    aucErrorbuffer[i] = i+1;
-                    uiErrorcounter ++;
-					usErrorMask |= (1<<i);
-               }
-               else uiSuccesscounter ++;
-
-               if(uiSuccesscounter == 16)
-               {
-                   printf("RGBC datasets valid.\n");
-                   return 0; 
-               }
-            }
-        printf("Invalid RGBC data from following Sensors ...\n");
-        for(i = 0; i<16; i++)
-        {
-            if(aucErrorbuffer[i] != 0xFF) printf("%d ", aucErrorbuffer[i]);
-        }
-        printf("\n");
-       			
-		
-		return usErrorMask;
-		
-}
 
 /** \brief checks if the ADCs for color measurement have already completed.
 
-Function checks if the sensors have already completed a color measurement. This can be checked by reading a special
-register of the sensor, the status register. If TCS3472_AINT_BIT is sest in this register, the ADCs have completed
-color measurement. If measurements are not completed, the return code can be used to determine which of the 16 sensor(s) failed.
+Function checks if the sensors have already completed a color measuremend. In case the measurements are completed the ADCs can be safely
+read and the datasets are valid. This can be checked by reading a special register of the sensor, the status register. 
+If TCS3472_AVALID_BIT is set in this register, the ADCs have completed color measurements. If measurements are not completed, the return 
+code can be used to determine which of the 16 sensor(s) failed.
 	@param ftdiA, ftdiB 	pointer to ftdi_context
 	
 	@return  0 : everything OK - conversions complete
@@ -270,7 +218,7 @@ unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_conte
 
             for(i = 0; i<=15; i++)
             {
-               if((aucReadbuffer[i]&TCS3472_AINT_BIT) != TCS3472_AINT_BIT)
+               if((aucReadbuffer[i]&TCS3472_AVALID_BIT) != TCS3472_AVALID_BIT)
                {
                     aucErrorbuffer[i] = i+1;
 					usErrorMask  |= (1<<i);

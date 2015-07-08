@@ -179,7 +179,6 @@ unsigned short int tcs_setGain  		    (struct ftdi_context* ftdiA, struct ftdi_c
 unsigned short int tcs_setGain_x 			(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Gain_t gain, unsigned int uiX); 
 
 unsigned short int tcs_waitForData			(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
-unsigned short int tcs_rgbcInvalid			(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
 unsigned short int tcs_readColor			(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausColourArray, tcs_color_t color);
 unsigned short int tcs_sleep				(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
 unsigned short int tcs_wakeUp				(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);

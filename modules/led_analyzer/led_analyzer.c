@@ -46,13 +46,12 @@ internal sensorflags which are set in the functions itself specify which sensor 
 enum ERROR_FLAGS
 {
 	/** Identification error occured, e.g. the ID register value couldn't be read */
-	IDENTIFICATION_ERROR = 0x800000000,
+	IDENTIFICATION_ERROR 		= 0x40000000,
 	/** The conversion was not complete at the time the ADC register was accessed */
-	INCOMPLETE_CONVERSION_ERROR = 0x40000000,
+	INCOMPLETE_CONVERSION_ERROR = 0x20000000,
 	/** The maximum amount of clear level was reached, i.e. the sensor got digitally saturated */
-	EXCEEDED_CLEAR_ERROR = 0x20000000,
-	/** For some reason, the RGBC register contents are not valid */
-	RGBC_INVALID_ERROR = 0x10000000
+	EXCEEDED_CLEAR_ERROR 	    = 0x10000000,
+
 };
 
 /** \brief scans for connected color controller devices and stores their serial numbers in an array.
@@ -457,10 +456,6 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 		return (errorcode | EXCEEDED_CLEAR_ERROR);
 	}
 	
-	if((errorcode = tcs_rgbcInvalid(apHandles[handleIndex], apHandles[handleIndex+1])) != 0)
-	{
-		return (errorcode | RGBC_INVALID_ERROR);
-	}
 	
 	tcs_calculate_CCT_Lux(aucGain, aucIntegrationtime, ausClear, ausRed, ausGreen, ausBlue, CCT, afLUX);
 	
