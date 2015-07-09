@@ -335,7 +335,8 @@ If clear levels have been exceeded, the return code can be used to determine whi
 	*/	 
 unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned char* aucIntegrationtime)
 {
-    int i= 0;
+    int i, iFlag;
+	iFlag = 0;
     unsigned int uiSuccesscounter = 0;
     unsigned char aucErrorbuffer[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
@@ -365,7 +366,7 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
                 break;
 
             case TCS3472_INTEGRATION_100ms:
-                if(ausClear[i] >= 43007)
+                if(ausClear[i] >= 65280)
                 {
                     aucErrorbuffer[i] = i+1;
 					usErrorMask |= (1<<i);
@@ -399,6 +400,8 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
                 }               
 			    else uiSuccesscounter++;
                 break;
+			default: 
+				iFlag = 1;
         }
 
         if(uiSuccesscounter ==16)
@@ -409,9 +412,8 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
 
     }
 
-    i = 0;
-    printf("Turn down gain for following Sensors ...\n");
-    for(i; i<16; i++)
+    iFlag == 0 ? printf("Turn down gain for following Sensors ...\n") : printf("Integration Time not found.\n");
+    for(i = 0; i<16; i++)
     {
        if(aucErrorbuffer[i] != 0xFF) printf("%d ", aucErrorbuffer[i]);
     }
