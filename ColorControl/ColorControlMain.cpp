@@ -874,7 +874,7 @@ void ColorControlFrame::GenerateColorTestTable(wxTextFile* tFile)
 
     for( int i = 0; i < iNumberOfTestSets; i++)
     {
-        tFile->AddLine(wxString::Format(wxT("-- LED Testset # 1 --\n"), i));
+        tFile->AddLine(wxString::Format(wxT("-- LED Testset # %i --\n"), i));
         tFile->AddLine(wxString::Format(wxT("tTestSet%i = {\n"), i));
 
         /* Iterate over Sensor Panels */

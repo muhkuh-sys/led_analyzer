@@ -16,9 +16,9 @@ CLua::CLua(const char* filename)
     luaL_openlibs(m_pLuaState);
 
     /* Initially false */
-    m_ColorControlLoaded = false;
+    m_luaFileLoaded = false;
 
-    /* This function will set m_colorControlLoaded to true if successful */
+    /* This function will set m_luaFileLoaded to true if successful */
     this->LoadAndRun(filename);
 
 }
@@ -82,7 +82,7 @@ int  CLua::LoadAndRun(const char* pcFilename)
        return iRetVal;
     }
 
-    m_ColorControlLoaded = true;
+    m_luaFileLoaded = true;
 
     return iRetVal;
 
@@ -285,13 +285,13 @@ int CLua::ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorDe
     /* Be pessimistic */
     int iRetVal = 1;
 
-    /* push your global table onto the stack */
     if(!(this->IsLoaded()))
     {
         wxLogMessage("Color Control is not loaded!");
         return -1;
     }
 
+    /* push your global color table onto the stack */
     lua_getglobal(this->m_pLuaState, "tColorTable");
 
     /* check if it is a table */
@@ -668,6 +668,6 @@ void CLua::CleanUp()
     }
 
     /* Set it the attribute to unloaded */
-    m_ColorControlLoaded = false;
+    m_luaFileLoaded = false;
 
 }

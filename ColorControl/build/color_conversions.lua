@@ -1,6 +1,7 @@
 require("tcs_chromaTable")
 
-local MIN_LUX = 7.0
+local MIN_LUX   = 7.0
+local MIN_CLEAR = 0.0001 -- Minimum Clear Level as percentage of maximum clear
 
 -- a helper to print a colortable which contains values in RGB, XYZ, HSV, Yxy and wavelength color space 
 -- parameter space determines which space should be printed out 
@@ -113,6 +114,7 @@ function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, error
 	local lClear, lRed, lGreen, lBlue 
 	local r_n, g_n, b_n 
 	local lGain, lIntTime
+	local lClearRatio
 	
 	for i = 0, length - 1 do 
 	
@@ -129,9 +131,12 @@ function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, error
 		lGain    = led_analyzer.puchar_getitem(gain, i)
 		lIntTime = led_analyzer.puchar_getitem(intTimes, i)
 		
-		if(i == 0) then
+		lClearRatio = lClear/maxClear(lIntTime)
+		
+		if i == 0 then 
+			print(string.format("Integration Time: 0x%x", lIntTime))
 			print(lClear)
-			print(lIntTime)
+			print(maxClear(lIntTime))
 		end 
 		
 		-- to avoid a later division by zero and to have more stable readings and no unneccessary
@@ -140,7 +145,7 @@ function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, error
 		-- if measured brightness (lux) falls beneath required MINIMUM LUX or our clear channel gives zero 
 		-- fill all color tables with zero values, beside the lux value.
 		
-		if(lLUX <= MIN_LUX or lClear == 0) then 
+		if(lClearRatio < MIN_CLEAR) then 
 			-- RGB table 
 			tRGB[i+1] = {clear = 0,
 						 red   = 0,
@@ -164,7 +169,7 @@ function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, error
 								 r   = 0,
 								 g   = 0,
 								 b   = 0,
-								 clear_ratio = 100*lClear/maxClear(lIntTime) }
+								 clear_ratio = 100*lClearRatio }
 							
 			tHSV[i+1] = { H = 0,
 						  S = 0,
@@ -214,7 +219,7 @@ function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, error
 								r   = wR,
 								g   = wG,
 								b   = wB,
-								clear_ratio = 100*lClear/maxClear(lIntTime)
+								clear_ratio = 100*lClearRatio
 								}
 			
 			local H, S, V = RGB2HSV(r_n, g_n, b_n)
@@ -256,7 +261,7 @@ function maxClear(integrationTime)
 		return 10240
 		
 	elseif integrationTime == TCS3472_INTEGRATION_100ms then 
-		return 43007
+		return 65280
 		
 	elseif integrationTime == TCS3472_INTEGRATION_154ms then 
 		return 65535

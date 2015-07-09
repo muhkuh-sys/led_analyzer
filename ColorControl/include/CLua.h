@@ -25,7 +25,7 @@ class CLua
         void StackDump();
         int  SwapUp  (wxString* aStrSerials, wxString strCurSerial, int iNumberOfDevices);
         int  SwapDown(wxString* aStrSerials, wxString strCurSerial, int iNumberOfDevices);
-        bool IsLoaded(){return m_ColorControlLoaded;};
+        bool IsLoaded(){return m_luaFileLoaded;};
         int  StartMeasurements(int iNumberOfDevices);
         int  InitDevices(int iNumberOfDevices, wxVector<CColorController*> vectorDevices);
         int  ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorDevices);
@@ -36,7 +36,7 @@ class CLua
 
     protected:
     private:
-        bool m_ColorControlLoaded;
+        bool m_luaFileLoaded;
         lua_State* m_pLuaState;
 
         lua_CFunction   Panic(){return 0;};

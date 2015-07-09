@@ -193,6 +193,7 @@ class GUIFrame : public wxFrame
 			wxID_TESTMODE,
 			wxID_TIMER,
 			wxID_COLORS,
+			wxID_USENETX,
 			idStatusBar
 		};
 
@@ -238,6 +239,7 @@ class GUIFrame : public wxFrame
 		wxTextCtrl* m_text;
 		wxStatusBar* statusBar;
 		wxLog* m_pOldLogTarget;
+		wxCheckBox*    m_rbUsenetX;
         wxRadioButton* m_rbSingle;
         wxRadioButton* m_rbContinuous;
         wxChoice* m_chTime;

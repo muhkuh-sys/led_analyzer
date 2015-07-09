@@ -243,6 +243,10 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
     wxBoxSizer* bSizerSingleCont;
     bSizerSingleCont = new wxBoxSizer(wxVERTICAL);
 
+
+    m_rbUsenetX = new wxCheckBox( this, wxID_USENETX, wxT("Use netX"), wxDefaultPosition, wxDefaultSize, 0);
+    bSizerSingleCont->Add(m_rbUsenetX, 0, wxALL, 5);
+
 	m_rbSingle = new wxRadioButton( this, wxID_TESTMODE, wxT("Single"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_rbSingle->SetValue(true);
     bSizerSingleCont->Add(m_rbSingle, 0, wxALL, 5);
@@ -250,13 +254,14 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_rbContinuous = new wxRadioButton( this, wxID_TESTMODE, wxT("Continuous"), wxDefaultPosition, wxDefaultSize, 0 );
     bSizerSingleCont->Add(m_rbContinuous, 0, wxALL, 5);
 
+
     sbSizerTestmode->Add(bSizerSingleCont);
 
     wxString m_chTimeChoices[] = { wxT("0.2 sec"), wxT("0.5 sec"), wxT("1 sec"), wxT("2 sec"), wxT("5 sec")};
 	int m_chTimeNChoices = sizeof( m_chTimeChoices ) / sizeof( wxString );
 	m_chTime = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chTimeNChoices, m_chTimeChoices, 0 );
 	m_chTime->SetSelection( 0 );
-	sbSizerTestmode->Add( m_chTime, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5 );
+	sbSizerTestmode->Add( m_chTime, 0, wxALL | wxALIGN_BOTTOM, 2 );
 
 
 	bSizerButtons->Add( sbSizerTestfile, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
