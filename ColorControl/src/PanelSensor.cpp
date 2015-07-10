@@ -22,30 +22,28 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 
 	wxBoxSizer* bSizerNo;
 	bSizerNo = new wxBoxSizer( wxVERTICAL );
-    bSizerNo->SetMinSize(wxSize(80, -1));
+    bSizerNo->SetMinSize(wxSize(90, -1));
 
 	wxBoxSizer* bSizerSensorNumber;
 	bSizerSensorNumber = new wxBoxSizer( wxHORIZONTAL );
 
 	m_txtCtrlSensorNo = new wxTextCtrl( this, wxID_ANY, wxString::Format(wxT("%i"), sensornumber), wxDefaultPosition, wxSize( -1,-1 ), wxTE_CENTER | wxTE_READONLY );
-	m_txtCtrlSensorNo->SetMaxSize( wxSize( 32,-1 ) );
+	m_txtCtrlSensorNo->SetMaxSize( wxSize( 42,-1 ) );
 
-	bSizerSensorNumber->Add( m_txtCtrlSensorNo, 1, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL | wxALL, 2 );
 
-    bSizerSensorNumber->Add( 0, 0, 1, wxEXPAND, 5 );
+
 
 	m_bpButtonPlus = new wxBitmapButton( this, wxID_ANY, wxArtProvider::GetBitmap( wxART_PLUS  ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	m_bpButtonPlus->SetMaxSize( wxSize( 20,20 ) );
 
-	bSizerSensorNumber->Add( m_bpButtonPlus, 1, wxLEFT|wxALIGN_CENTER, 5 );
+	bSizerSensorNumber->Add( m_bpButtonPlus, 1, wxLEFT|wxALIGN_CENTER, 2 );
+    bSizerSensorNumber->Add( 0, 0, 1,wxEXPAND, 5 );
+    bSizerSensorNumber->Add( m_txtCtrlSensorNo, 0, wxALIGN_RIGHT | wxALIGN_CENTER | wxALIGN_CENTER_VERTICAL | wxALL, 2 );
+
 
 
 	bSizerNo->Add( bSizerSensorNumber, 1, wxALIGN_CENTER_HORIZONTAL, 2 );
-
-
 	bSizerCurSensor->Add( bSizerNo, 0, 0, 5 );
-
-
 	bSizerCurSensor->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizerName;
@@ -413,3 +411,11 @@ wxString PanelSensor::GetEmptyTestrow(int iSensorIndex)
 
     return strTestRow;
 }
+
+
+// Insert function here that needs some converting and gets the textfields
+// of the name and checks if this name already exits and if so,
+// only insert one name entry in the later testpnaenl row as the testpanel row
+// does not inlcude the on off state but only the default State_Initialized
+// i am pretty hungry thats why i need to go to sleep and need to go get some food
+//

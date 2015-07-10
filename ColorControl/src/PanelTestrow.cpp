@@ -17,26 +17,27 @@ PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos,
 
 	wxBoxSizer* bSizerButtons1;
 	bSizerButtons1 = new wxBoxSizer( wxHORIZONTAL );
+	bSizerButtons1->SetMinSize(wxSize(90, -1));
 
-	m_cbUseSet = new wxCheckBox( this, wxID_ANY, wxT("Use"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizerButtons1->Add( m_cbUseSet, 0, wxALIGN_CENTER|wxALIGN_CENTER_VERTICAL|wxALL, 2 );
+	//m_cbUseSet = new wxCheckBox( this, wxID_ANY, wxT("Use"), wxDefaultPosition, wxDefaultSize, 0 );
+	//bSizerButtons1->Add( m_cbUseSet, 0, wxALIGN_CENTER|wxALIGN_CENTER_VERTICAL|wxALL, 2 );
+
+	m_bpButtonRemove = new wxBitmapButton( this, wxIdManager::ReserveId(1), wxArtProvider::GetBitmap( wxART_MINUS ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	m_bpButtonRemove->SetMaxSize( wxSize( 20,20 ) );
+	bSizerButtons1->Add( m_bpButtonRemove, 0, wxALIGN_CENTER|wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP , 2 );
+
+    bSizerButtons1->Add( 0, 0, 1, wxEXPAND, 5 );
+
 
 	m_bpButtonPaste = new wxBitmapButton( this, wxIdManager::ReserveId(1), wxArtProvider::GetBitmap( wxART_PASTE ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	m_bpButtonPaste->SetMaxSize( wxSize( 20,20 ) );
 
-	bSizerButtons1->Add( m_bpButtonPaste, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP, 2 );
+	bSizerButtons1->Add( m_bpButtonPaste, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP, 2 );
 
 	m_bpButtonClear = new wxBitmapButton( this, wxIdManager::ReserveId(1), wxArtProvider::GetBitmap( wxART_MISSING_IMAGE ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	m_bpButtonClear->SetMaxSize( wxSize( 20,20 ) );
 
-	bSizerButtons1->Add( m_bpButtonClear, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL |wxTOP, 2 );
-
-	m_bpButtonRemove = new wxBitmapButton( this, wxIdManager::ReserveId(1), wxArtProvider::GetBitmap( wxART_MINUS ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-	m_bpButtonRemove->SetMaxSize( wxSize( 20,20 ) );
-
-
-
-	bSizerButtons1->Add( m_bpButtonRemove, 0, wxALIGN_CENTER|wxALIGN_CENTER_VERTICAL | wxLEFT|wxTOP, 2 );
+	bSizerButtons1->Add( m_bpButtonClear, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL |wxTOP | wxRIGHT , 2 );
 
 
 	bSizerNo->Add( bSizerButtons1, 1, wxALIGN_CENTER_HORIZONTAL, 2 );

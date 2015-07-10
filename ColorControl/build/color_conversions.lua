@@ -1,7 +1,7 @@
 require("tcs_chromaTable")
 
-local MIN_LUX   = 7.0
-local MIN_CLEAR = 0.0001 -- Minimum Clear Level as percentage of maximum clear
+--local MIN_LUX   = 7.0
+local MIN_CLEAR = 0.0007 -- Minimum Clear Level as percentage of maximum clear
 
 -- a helper to print a colortable which contains values in RGB, XYZ, HSV, Yxy and wavelength color space 
 -- parameter space determines which space should be printed out 
@@ -133,11 +133,6 @@ function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, error
 		
 		lClearRatio = lClear/maxClear(lIntTime)
 		
-		if i == 0 then 
-			print(string.format("Integration Time: 0x%x", lIntTime))
-			print(lClear)
-			print(maxClear(lIntTime))
-		end 
 		
 		-- to avoid a later division by zero and to have more stable readings and no unneccessary
 		-- outputs from channels that are not reading any LEDs we set a minum lux level

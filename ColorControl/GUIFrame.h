@@ -51,6 +51,7 @@ using namespace std;
 #include <wx/textfile.h>
 #include <wx/dirdlg.h>
 #include <wx/filedlg.h>
+#include <wx/tooltip.h>
 
 #include "logo_hilscher.xpm"
 

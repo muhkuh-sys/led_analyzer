@@ -1698,7 +1698,7 @@
 	"CLua.h"
 	"PanelSensor.h"
 
-1436339019 c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.h
+1436525670 c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.h
 	<iostream>
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
@@ -1739,6 +1739,7 @@
 	<wx/textfile.h>
 	<wx/dirdlg.h>
 	<wx/filedlg.h>
+	<wx/tooltip.h>
 	"logo_hilscher.xpm"
 
 1412631242 c:\wxwidgets-3.0.2\include\wx\artprov.h
@@ -2759,11 +2760,11 @@
 
 1412631244 c:\wxwidgets-3.0.2\include\wx\msw\rcdefs.h
 
-1436362557 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
+1436514645 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
 	"wx_pch.h"
 	"ColorControlMain.h"
 
-1436339375 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.cpp
+1436525788 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.cpp
 	"wx/wxprec.h"
 	<wx/wx.h>
 	"GuiFrame.h"
@@ -3423,7 +3424,7 @@
 1434720603 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\cdatasensor.cpp
 	"CDataSensor.h"
 
-1436365329 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\csensordata.h
+1436365543 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\csensordata.h
 	"../GUIFrame.h"
 
 1436362068 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\csensordata.cpp
@@ -3605,14 +3606,14 @@
 	<stdio.h>
 	"lua.h"
 
-1436177636 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\clua.h
+1436509750 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\clua.h
 	"lua.h"
 	"lualib.h"
 	"lauxlib.h"
 	"../GUIFrame.h"
 	"CDevice.h"
 
-1436363294 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\clua.cpp
+1436509750 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\clua.cpp
 	"CLua.h"
 
 1436470733 c:\led_analyzer\colorcontrol\include\clua.h
@@ -3732,7 +3733,7 @@
 	"../GUIFrame.h"
 	"PanelTestrow.h"
 
-1436348067 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\panelsensor.cpp
+1436526902 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\panelsensor.cpp
 	"PanelSensor.h"
 
 1436383695 c:\led_analyzer\colorcontrol\include\panelsensor.h
@@ -3748,7 +3749,7 @@
 1436346959 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\paneltestrow.h
 	"../GUIFrame.h"
 
-1436275126 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\paneltestrow.cpp
+1436513906 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\paneltestrow.cpp
 	"PanelTestrow.h"
 	"PanelSensor.h"
 

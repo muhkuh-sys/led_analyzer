@@ -108,7 +108,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	mMenuView->AppendSeparator();
 
 	wxMenuItem* menuDiagram;
-	menuDiagram = new wxMenuItem( mMenuView, wxID_ANY, wxString( wxT("Show Chromaticity Diagram") ) + wxT('\t') + wxT("CTRL-D"), wxT("Show CIE 1931 chromaticity diagram"), wxITEM_NORMAL );
+	menuDiagram = new wxMenuItem( mMenuView, wxID_ANY, wxString( wxT("Show Chromaticity Diagram") ) + wxT('\t') + wxT("CTRL-E"), wxT("Show CIE 1931 chromaticity diagram"), wxITEM_NORMAL );
 	mMenuView->Append( menuDiagram );
 
 	menuBarMain->Append( mMenuView, wxT("View") );
@@ -150,7 +150,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxStaticBoxSizer* bSizerCommunication;
 	bSizerCommunication = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Communication") ), wxVERTICAL );
 
-	m_buttonScan = new wxButton( this, wxID_SCAN, wxT("SCAN"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_buttonScan = new wxButton( this, wxID_SCAN, wxT("&SCAN"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerCommunication->Add( m_buttonScan, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
 	m_dataViewListSerials = new wxDataViewListCtrl( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxDV_HORIZ_RULES | wxDV_VERT_RULES );
@@ -175,8 +175,8 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	bSizerCommunication->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_buttonConnect   = new wxButton( this, wxID_CONNECT, wxT("CONNECT"), wxDefaultPosition, wxDefaultSize, 0 );
-    m_buttonDisconnect = new wxButton( this, wxID_DISCONNECT, wxT("DISCONNECT"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_buttonConnect   = new wxButton( this, wxID_CONNECT, wxT("&CONNECT"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_buttonDisconnect = new wxButton( this, wxID_DISCONNECT, wxT("&DISCONNECT"), wxDefaultPosition, wxDefaultSize, 0 );
 
 	bSizerCommunication->Add( m_buttonConnect, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 	bSizerCommunication->Add( m_buttonDisconnect, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
@@ -269,7 +269,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	bSizerButtons->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_buttonStart = new wxButton( this, wxID_START, wxT("START"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_buttonStart = new wxButton( this, wxID_START, wxT("S&TART"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerButtons->Add( m_buttonStart, 0, wxALIGN_CENTER|wxBOTTOM|wxRIGHT|wxTOP|wxEXPAND, 5 );
 
 
@@ -363,8 +363,18 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	this->Centre( wxBOTH );
 
-	// Connect Events
 
+    /* Accelerators */
+    wxAcceleratorEntry entries[4];
+    entries[0].Set(wxACCEL_ALT, (int) 'S', wxID_SCAN);
+    entries[1].Set(wxACCEL_ALT, (int) 'C', wxID_CONNECT);
+    entries[2].Set(wxACCEL_ALT, (int) 'D', wxID_DISCONNECT);
+    entries[3].Set(wxACCEL_ALT, (int) 'T', wxID_START);
+
+    wxAcceleratorTable accel(4, entries);
+    this->SetAcceleratorTable(accel);
+
+	// Connect Events
 	m_buttonScan->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnScan ), NULL, this );
 	m_bpButtonUp->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnSerialUp ), NULL, this );
 	m_bpButtonDown->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnSerialDown ), NULL, this );
