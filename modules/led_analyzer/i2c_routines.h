@@ -69,6 +69,9 @@ void i2c_clock_forACK(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, un
 void i2c_getAck      (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
 int  i2c_read16      (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength,
                       unsigned short* ausReadBuffer, unsigned char ucRecLength);
+int i2c_read4x16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength, 
+				unsigned short* ausReadBuffer1, unsigned short* ausReadBuffer2,
+				unsigned short* ausReadBuffer3, unsigned short* ausReadBuffer4, unsigned char ucRecLength);
 int  i2c_read8       (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength,
                       unsigned char* aucRecBuffer, unsigned char ucRecLength);
 int  i2c_write8      (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength);

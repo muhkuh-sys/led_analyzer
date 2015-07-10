@@ -67,6 +67,8 @@ int send_package_read8     (struct ftdi_context *ftdiA, struct ftdi_context *ftd
 
 int send_package_read16    (struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned short* ausReadBuffer, unsigned char ucReadBufferLength);
 
+int send_package_read4x16  (struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned short* ausReadBuffer1, unsigned short* ausReadBuffer2,
+						    unsigned short* ausReadBuffer3, unsigned short* ausReadBuffer4, unsigned char ucReadBufferLength);
 
 
 

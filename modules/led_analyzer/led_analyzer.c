@@ -54,6 +54,33 @@ enum ERROR_FLAGS
 
 };
 
+
+
+void test1(void** apHandles, int devIndex, unsigned short* ausClear, unsigned short* ausRed, unsigned short* ausGreen, unsigned short* ausBlue)
+
+{
+	/* 2 handles per device, device 0 has handles 0,1 .. device 1 has handles 2,3 and so on*/
+	int handleIndex = devIndex * 2;
+	int errorcode = 0;
+	unsigned char aucTempbuffer[16];
+	
+	int iHandleLength = get_number_of_handles(apHandles);
+	
+	test(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, ausGreen, ausBlue, ausRed);
+	
+	int i ;
+	
+	for(i  = 0; i < 16; i ++)
+	{
+		printf("ausClear: %d\n", ausClear[i]);
+		printf("ausred: %d\n", ausRed[i]);
+		printf("ausgreen: %d\n", ausGreen[i]);
+		printf("ausblue: %d\n", ausBlue[i]);
+	}
+	
+}
+
+
 /** \brief scans for connected color controller devices and stores their serial numbers in an array.
 
 Functions scans for all color controller devices with a given VID and PID that are connected via USB. A device which has "COLOR-CTRL" 

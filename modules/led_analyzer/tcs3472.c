@@ -244,6 +244,10 @@ unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_conte
 		
 }
 
+//TODO : Write Function to read all Colors one after another, using the autoincrement bit
+//		 this would noticeably reduce time as we dont send 4 usb packages via the usb bus, but only one
+//		 surely needed for blinking LEDs
+
 /** \brief reads back 4 color sets of 16 sensors - Red / Green / Blue / Clear.
 
 Function reads 16-Bit color values of 16 sensors. The color will be specified by the input parameter tcs_color_t color. 
@@ -281,6 +285,16 @@ unsigned short int tcs_readColor(struct ftdi_context* ftdiA, struct ftdi_context
     return 0;
 
 }
+
+
+int test 								    (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned short* ausRed,
+											 unsigned short* ausGreen, unsigned short* ausBlue)
+{
+	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_AUTOINCR_BIT | TCS3472_COMMAND_BIT | TCS3472_CDATA_REG};												 
+	if(i2c_read4x16(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), ausClear, ausRed, ausGreen, ausBlue, 16)<0) return 1;
+    return 0;												
+}
+
 
 /** \brief sends 16 sensors to sleep.
 

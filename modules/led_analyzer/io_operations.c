@@ -626,3 +626,552 @@ int send_package_read16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, 
     return uiRead;
 
 }
+
+
+
+/** \brief sends the content of the global buffers to the ftdi chip. 
+
+This function sends the content of the global Buffers aucBufferA and aucBufferB to the ftdi chip. 
+Furthermore it reads back the data of pins which were configured as input. The function returns a value which equals the amount of read back bytes.
+The parameter ausReadbuffer will be used for storing 16 read back unsigned short int values of 16 sensors 
+	@param[in] 		ftdiA, ftdiB pointer to a ftdi_context
+	@param[in, out] ausReadBuffer1 pointer to array of unsigned short values
+	@param[in, out] ausReadBuffer2 pointer to array of unsigned short values
+	@param[in, out] ausReadBuffer3 pointer to array of unsigned short values
+	@param[in, out] ausReadBuffer4 pointer to array of unsigned short values
+	@param[in]		ucReadBufferLength number of elements to be stored in ausReadbuffer
+	@return			>0: number of bytes read back from the ftdi chip 
+	@return			-1: writing to channel A failed 
+	@return			-2: writing to channel B failed
+	@return			-3: reading from channel A failed
+	@return			-4: reading from channel B failed
+					
+
+*/
+int send_package_read4x16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned short* ausReadBuffer1, unsigned short* ausReadBuffer2,
+						  unsigned short* ausReadBuffer3, unsigned short* ausReadBuffer4, unsigned char ucReadBufferLength)
+{
+    unsigned int uiWritten;
+    unsigned int uiRead;
+
+    /* Reset the receive and the transmit buffers  */
+
+
+    if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->in_ep, aucBufferA, indexA, &uiWritten, ftdiA->usb_write_timeout)<0)
+    {
+        printf("Writing to Channel %s failed!\n", ftdiA->interface==0?"A":(ftdiA->interface==1?"B":" error - invalid channel"));
+        return -1;
+    }
+
+    if(libusb_bulk_transfer(ftdiB->usb_dev, ftdiB->in_ep, aucBufferB, indexB, &uiWritten, ftdiB->usb_write_timeout)<0)
+    {
+        printf("Writing to Channel %s failed!\n", ftdiB->interface==0?"A":(ftdiB->interface==1?"B":" error - invalid channel"));
+        return -2;
+    }
+
+
+    if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->out_ep, aucBufferA, sizeof(aucBufferA), &uiRead, ftdiA->usb_write_timeout)<0)
+    {
+        printf("Writing to Channel %s failed!\n", ftdiA->interface==0?"A":(ftdiA->interface==1?"B":" error - invalid channel"));
+        return -3;
+    }
+
+    if(libusb_bulk_transfer(ftdiB->usb_dev, ftdiB->out_ep, aucBufferB, sizeof(aucBufferB), &uiRead, ftdiB->usb_write_timeout)<0)
+    {
+        printf("Writing to Channel %s failed!\n", ftdiB->interface==0?"A":(ftdiB->interface==1?"B":" error - invalid channel"));
+        return -4;
+    }
+
+    /* Fill your readBuffer with zeroes, so nothing can go wrong mate ! */
+    int i = 0;
+    for(i; i<16; i++)
+    {
+        ausReadBuffer1[i] = 0;
+        ausReadBuffer2[i] = 0;
+        ausReadBuffer3[i] = 0;
+        ausReadBuffer4[i] = 0;
+    }
+
+	
+	/* First Word */
+    unsigned char ucBitnumber = 14;
+    unsigned char ucMask = 7;
+    unsigned char ucBufferIndexA = 0;
+    unsigned char ucBufferIndexB = 8;
+    unsigned int uiCounter = 8;
+
+
+    while(uiCounter>0)
+    {
+        ucBufferIndexA = 0;
+        ucBufferIndexB = 8;
+        /* Process parallel incoming bits of each channel */
+        /* Channel AD */
+        /* DA0 */
+        ausReadBuffer1[ucBufferIndexA++] |= ((unsigned char)(aucBufferA[ucBitnumber]&0x01)<<ucMask);
+        /* DA1 */
+        ausReadBuffer1[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x04)>>2)<<ucMask);
+        /* DA2 */
+        ausReadBuffer1[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x10)>>4)<<ucMask);
+        /* DA3 */
+        ausReadBuffer1[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x40)>>6)<<ucMask);
+
+        /* Channel BD */
+        /* DA8 */
+        ausReadBuffer1[ucBufferIndexB++] |= ((unsigned char)(aucBufferB[ucBitnumber]&0x01)<<ucMask);
+        /* DA9 */
+        ausReadBuffer1[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x04)>>2)<<ucMask);
+        /* DA10 */
+        ausReadBuffer1[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x10)>>4)<<ucMask);
+        /* DA11 */
+        ausReadBuffer1[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x40)>>6)<<ucMask);
+
+
+        ucBitnumber += 1; 
+
+        /* Channel AC */
+        /* DA4 */
+        ausReadBuffer1[ucBufferIndexA++] |= ((unsigned char)(aucBufferA[ucBitnumber]&0x01)<<ucMask);
+        /* DA5 */
+        ausReadBuffer1[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x04)>>2)<<ucMask);
+        /* DA6 */
+        ausReadBuffer1[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x10)>>4)<<ucMask);
+        /* DA7 */
+        ausReadBuffer1[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x40)>>6)<<ucMask);
+
+        /* Channel BC */
+        /* DA12 */
+        ausReadBuffer1[ucBufferIndexB++] |= ((unsigned char)(aucBufferB[ucBitnumber]&0x01)<<ucMask);
+        /* DA13 */
+        ausReadBuffer1[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x04)>>2)<<ucMask);
+        /* DA14 */
+        ausReadBuffer1[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x10)>>4)<<ucMask);
+        /* DA15 */
+        ausReadBuffer1[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x40)>>6)<<ucMask);
+
+        ucBitnumber +=3;
+        uiCounter--;
+        ucMask--;
+		
+    }
+
+    ucMask = 7;
+    uiCounter = 8;
+
+    /* Process colorH */
+    while(uiCounter>0)
+    {
+        ucBufferIndexA = 0;
+        ucBufferIndexB = 8;
+        /* Process parallel incoming bits of each channel */
+        /* Channel AD */
+        /* DA0 */
+        ausReadBuffer1[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x01)<<ucMask)<<8);
+        /* DA1 */
+        ausReadBuffer1[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x04)>>2)<<ucMask)<<8);
+        /* DA2 */
+        ausReadBuffer1[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x10)>>4)<<ucMask)<<8);
+        /* DA3 */
+        ausReadBuffer1[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x40)>>6)<<ucMask)<<8);
+
+        /* Channel BD */
+        /* DA8 */
+        ausReadBuffer1[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x01)<<ucMask)<<8);
+        /* DA9 */
+        ausReadBuffer1[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x04)>>2)<<ucMask)<<8);
+        /* DA10 */
+        ausReadBuffer1[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x10)>>4)<<ucMask)<<8);
+        /* DA11 */
+        ausReadBuffer1[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x40)>>6)<<ucMask)<<8);
+
+
+        ucBitnumber += 1;
+
+        /* Channel AC */
+        /* DA4 */
+        ausReadBuffer1[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x01)<<ucMask)<<8);
+        /* DA5 */
+        ausReadBuffer1[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x04)>>2)<<ucMask)<<8);
+        /* DA6 */
+        ausReadBuffer1[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x10)>>4)<<ucMask)<<8);
+        /* DA7 */
+        ausReadBuffer1[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x40)>>6)<<ucMask)<<8);
+
+        /* Channel AD */
+        /* DA12 */
+        ausReadBuffer1[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x01)<<ucMask)<<8);
+        /* DA13 */
+        ausReadBuffer1[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x04)>>2)<<ucMask)<<8);
+        /* DA14 */
+        ausReadBuffer1[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x10)>>4)<<ucMask)<<8);
+        /* DA15 */
+        ausReadBuffer1[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x40)>>6)<<ucMask)<<8);
+
+        ucBitnumber +=3;
+        uiCounter--;
+        ucMask--;
+    }
+
+	/* Second Word */
+
+    ucMask = 7;
+    ucBufferIndexA = 0;
+    ucBufferIndexB = 8;
+    uiCounter = 8;
+
+
+    while(uiCounter>0)
+    {
+        ucBufferIndexA = 0;
+        ucBufferIndexB = 8;
+        /* Process parallel incoming bits of each channel */
+        /* Channel AD */
+        /* DA0 */
+        ausReadBuffer2[ucBufferIndexA++] |= ((unsigned char)(aucBufferA[ucBitnumber]&0x01)<<ucMask);
+        /* DA1 */
+        ausReadBuffer2[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x04)>>2)<<ucMask);
+        /* DA2 */
+        ausReadBuffer2[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x10)>>4)<<ucMask);
+        /* DA3 */
+        ausReadBuffer2[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x40)>>6)<<ucMask);
+
+        /* Channel BD */
+        /* DA8 */
+        ausReadBuffer2[ucBufferIndexB++] |= ((unsigned char)(aucBufferB[ucBitnumber]&0x01)<<ucMask);
+        /* DA9 */
+        ausReadBuffer2[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x04)>>2)<<ucMask);
+        /* DA10 */
+        ausReadBuffer2[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x10)>>4)<<ucMask);
+        /* DA11 */
+        ausReadBuffer2[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x40)>>6)<<ucMask);
+
+
+        ucBitnumber += 1; 
+
+        /* Channel AC */
+        /* DA4 */
+        ausReadBuffer2[ucBufferIndexA++] |= ((unsigned char)(aucBufferA[ucBitnumber]&0x01)<<ucMask);
+        /* DA5 */
+        ausReadBuffer2[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x04)>>2)<<ucMask);
+        /* DA6 */
+        ausReadBuffer2[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x10)>>4)<<ucMask);
+        /* DA7 */
+        ausReadBuffer2[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x40)>>6)<<ucMask);
+
+        /* Channel BC */
+        /* DA12 */
+        ausReadBuffer2[ucBufferIndexB++] |= ((unsigned char)(aucBufferB[ucBitnumber]&0x01)<<ucMask);
+        /* DA13 */
+        ausReadBuffer2[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x04)>>2)<<ucMask);
+        /* DA14 */
+        ausReadBuffer2[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x10)>>4)<<ucMask);
+        /* DA15 */
+        ausReadBuffer2[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x40)>>6)<<ucMask);
+
+        ucBitnumber +=3;
+        uiCounter--;
+        ucMask--;
+		
+    }
+
+    ucMask = 7;
+    uiCounter = 8;
+
+    /* Process colorH */
+    while(uiCounter>0)
+    {
+        ucBufferIndexA = 0;
+        ucBufferIndexB = 8;
+        /* Process parallel incoming bits of each channel */
+        /* Channel AD */
+        /* DA0 */
+        ausReadBuffer2[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x01)<<ucMask)<<8);
+        /* DA1 */
+        ausReadBuffer2[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x04)>>2)<<ucMask)<<8);
+        /* DA2 */
+        ausReadBuffer2[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x10)>>4)<<ucMask)<<8);
+        /* DA3 */
+        ausReadBuffer2[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x40)>>6)<<ucMask)<<8);
+
+        /* Channel BD */
+        /* DA8 */
+        ausReadBuffer2[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x01)<<ucMask)<<8);
+        /* DA9 */
+        ausReadBuffer2[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x04)>>2)<<ucMask)<<8);
+        /* DA10 */
+        ausReadBuffer2[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x10)>>4)<<ucMask)<<8);
+        /* DA11 */
+        ausReadBuffer2[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x40)>>6)<<ucMask)<<8);
+
+
+        ucBitnumber += 1;
+
+        /* Channel AC */
+        /* DA4 */
+        ausReadBuffer2[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x01)<<ucMask)<<8);
+        /* DA5 */
+        ausReadBuffer2[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x04)>>2)<<ucMask)<<8);
+        /* DA6 */
+        ausReadBuffer2[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x10)>>4)<<ucMask)<<8);
+        /* DA7 */
+        ausReadBuffer2[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x40)>>6)<<ucMask)<<8);
+
+        /* Channel AD */
+        /* DA12 */
+        ausReadBuffer2[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x01)<<ucMask)<<8);
+        /* DA13 */
+        ausReadBuffer2[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x04)>>2)<<ucMask)<<8);
+        /* DA14 */
+        ausReadBuffer2[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x10)>>4)<<ucMask)<<8);
+        /* DA15 */
+        ausReadBuffer2[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x40)>>6)<<ucMask)<<8);
+
+        ucBitnumber +=3;
+        uiCounter--;
+        ucMask--;
+    }
+	
+	/* Third Word */
+    ucMask = 7;
+    ucBufferIndexA = 0;
+    ucBufferIndexB = 8;
+    uiCounter = 8;
+
+
+    while(uiCounter>0)
+    {
+        ucBufferIndexA = 0;
+        ucBufferIndexB = 8;
+        /* Process parallel incoming bits of each channel */
+        /* Channel AD */
+        /* DA0 */
+        ausReadBuffer3[ucBufferIndexA++] |= ((unsigned char)(aucBufferA[ucBitnumber]&0x01)<<ucMask);
+        /* DA1 */
+        ausReadBuffer3[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x04)>>2)<<ucMask);
+        /* DA2 */
+        ausReadBuffer3[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x10)>>4)<<ucMask);
+        /* DA3 */
+        ausReadBuffer3[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x40)>>6)<<ucMask);
+
+        /* Channel BD */
+        /* DA8 */
+        ausReadBuffer3[ucBufferIndexB++] |= ((unsigned char)(aucBufferB[ucBitnumber]&0x01)<<ucMask);
+        /* DA9 */
+        ausReadBuffer3[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x04)>>2)<<ucMask);
+        /* DA10 */
+        ausReadBuffer3[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x10)>>4)<<ucMask);
+        /* DA11 */
+        ausReadBuffer3[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x40)>>6)<<ucMask);
+
+
+        ucBitnumber += 1; 
+
+        /* Channel AC */
+        /* DA4 */
+        ausReadBuffer3[ucBufferIndexA++] |= ((unsigned char)(aucBufferA[ucBitnumber]&0x01)<<ucMask);
+        /* DA5 */
+        ausReadBuffer3[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x04)>>2)<<ucMask);
+        /* DA6 */
+        ausReadBuffer3[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x10)>>4)<<ucMask);
+        /* DA7 */
+        ausReadBuffer3[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x40)>>6)<<ucMask);
+
+        /* Channel BC */
+        /* DA12 */
+        ausReadBuffer3[ucBufferIndexB++] |= ((unsigned char)(aucBufferB[ucBitnumber]&0x01)<<ucMask);
+        /* DA13 */
+        ausReadBuffer3[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x04)>>2)<<ucMask);
+        /* DA14 */
+        ausReadBuffer3[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x10)>>4)<<ucMask);
+        /* DA15 */
+        ausReadBuffer3[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x40)>>6)<<ucMask);
+
+        ucBitnumber +=3;
+        uiCounter--;
+        ucMask--;
+		
+    }
+
+    ucMask = 7;
+    uiCounter = 8;
+
+    /* Process colorH */
+    while(uiCounter>0)
+    {
+        ucBufferIndexA = 0;
+        ucBufferIndexB = 8;
+        /* Process parallel incoming bits of each channel */
+        /* Channel AD */
+        /* DA0 */
+        ausReadBuffer3[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x01)<<ucMask)<<8);
+        /* DA1 */
+        ausReadBuffer3[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x04)>>2)<<ucMask)<<8);
+        /* DA2 */
+        ausReadBuffer3[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x10)>>4)<<ucMask)<<8);
+        /* DA3 */
+        ausReadBuffer3[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x40)>>6)<<ucMask)<<8);
+
+        /* Channel BD */
+        /* DA8 */
+        ausReadBuffer3[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x01)<<ucMask)<<8);
+        /* DA9 */
+        ausReadBuffer3[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x04)>>2)<<ucMask)<<8);
+        /* DA10 */
+        ausReadBuffer3[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x10)>>4)<<ucMask)<<8);
+        /* DA11 */
+        ausReadBuffer3[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x40)>>6)<<ucMask)<<8);
+
+
+        ucBitnumber += 1;
+
+        /* Channel AC */
+        /* DA4 */
+        ausReadBuffer3[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x01)<<ucMask)<<8);
+        /* DA5 */
+        ausReadBuffer3[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x04)>>2)<<ucMask)<<8);
+        /* DA6 */
+        ausReadBuffer3[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x10)>>4)<<ucMask)<<8);
+        /* DA7 */
+        ausReadBuffer3[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x40)>>6)<<ucMask)<<8);
+
+        /* Channel AD */
+        /* DA12 */
+        ausReadBuffer3[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x01)<<ucMask)<<8);
+        /* DA13 */
+        ausReadBuffer3[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x04)>>2)<<ucMask)<<8);
+        /* DA14 */
+        ausReadBuffer3[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x10)>>4)<<ucMask)<<8);
+        /* DA15 */
+        ausReadBuffer3[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x40)>>6)<<ucMask)<<8);
+
+        ucBitnumber +=3;
+        uiCounter--;
+        ucMask--;
+    }
+	
+	/* Fourth Word */
+    ucMask = 7;
+    ucBufferIndexA = 0;
+    ucBufferIndexB = 8;
+    uiCounter = 8;
+
+
+    while(uiCounter>0)
+    {
+        ucBufferIndexA = 0;
+        ucBufferIndexB = 8;
+        /* Process parallel incoming bits of each channel */
+        /* Channel AD */
+        /* DA0 */
+        ausReadBuffer4[ucBufferIndexA++] |= ((unsigned char)(aucBufferA[ucBitnumber]&0x01)<<ucMask);
+        /* DA1 */
+        ausReadBuffer4[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x04)>>2)<<ucMask);
+        /* DA2 */
+        ausReadBuffer4[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x10)>>4)<<ucMask);
+        /* DA3 */
+        ausReadBuffer4[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x40)>>6)<<ucMask);
+
+        /* Channel BD */
+        /* DA8 */
+        ausReadBuffer4[ucBufferIndexB++] |= ((unsigned char)(aucBufferB[ucBitnumber]&0x01)<<ucMask);
+        /* DA9 */
+        ausReadBuffer4[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x04)>>2)<<ucMask);
+        /* DA10 */
+        ausReadBuffer4[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x10)>>4)<<ucMask);
+        /* DA11 */
+        ausReadBuffer4[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x40)>>6)<<ucMask);
+
+
+        ucBitnumber += 1; 
+
+        /* Channel AC */
+        /* DA4 */
+        ausReadBuffer4[ucBufferIndexA++] |= ((unsigned char)(aucBufferA[ucBitnumber]&0x01)<<ucMask);
+        /* DA5 */
+        ausReadBuffer4[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x04)>>2)<<ucMask);
+        /* DA6 */
+        ausReadBuffer4[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x10)>>4)<<ucMask);
+        /* DA7 */
+        ausReadBuffer4[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x40)>>6)<<ucMask);
+
+        /* Channel BC */
+        /* DA12 */
+        ausReadBuffer4[ucBufferIndexB++] |= ((unsigned char)(aucBufferB[ucBitnumber]&0x01)<<ucMask);
+        /* DA13 */
+        ausReadBuffer4[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x04)>>2)<<ucMask);
+        /* DA14 */
+        ausReadBuffer4[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x10)>>4)<<ucMask);
+        /* DA15 */
+        ausReadBuffer4[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x40)>>6)<<ucMask);
+
+        ucBitnumber +=3;
+        uiCounter--;
+        ucMask--;
+		
+    }
+
+    ucMask = 7;
+    uiCounter = 8;
+
+    /* Process colorH */
+    while(uiCounter>0)
+    {
+        ucBufferIndexA = 0;
+        ucBufferIndexB = 8;
+        /* Process parallel incoming bits of each channel */
+        /* Channel AD */
+        /* DA0 */
+        ausReadBuffer4[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x01)<<ucMask)<<8);
+        /* DA1 */
+        ausReadBuffer4[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x04)>>2)<<ucMask)<<8);
+        /* DA2 */
+        ausReadBuffer4[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x10)>>4)<<ucMask)<<8);
+        /* DA3 */
+        ausReadBuffer4[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x40)>>6)<<ucMask)<<8);
+
+        /* Channel BD */
+        /* DA8 */
+        ausReadBuffer4[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x01)<<ucMask)<<8);
+        /* DA9 */
+        ausReadBuffer4[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x04)>>2)<<ucMask)<<8);
+        /* DA10 */
+        ausReadBuffer4[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x10)>>4)<<ucMask)<<8);
+        /* DA11 */
+        ausReadBuffer4[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x40)>>6)<<ucMask)<<8);
+
+
+        ucBitnumber += 1;
+
+        /* Channel AC */
+        /* DA4 */
+        ausReadBuffer4[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[ucBitnumber]&0x01)<<ucMask)<<8);
+        /* DA5 */
+        ausReadBuffer4[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x04)>>2)<<ucMask)<<8);
+        /* DA6 */
+        ausReadBuffer4[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x10)>>4)<<ucMask)<<8);
+        /* DA7 */
+        ausReadBuffer4[ucBufferIndexA++] |= ((((unsigned char)(aucBufferA[ucBitnumber]&0x40)>>6)<<ucMask)<<8);
+
+        /* Channel AD */
+        /* DA12 */
+        ausReadBuffer4[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[ucBitnumber]&0x01)<<ucMask)<<8);
+        /* DA13 */
+        ausReadBuffer4[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x04)>>2)<<ucMask)<<8);
+        /* DA14 */
+        ausReadBuffer4[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x10)>>4)<<ucMask)<<8);
+        /* DA15 */
+        ausReadBuffer4[ucBufferIndexB++] |= ((((unsigned char)(aucBufferB[ucBitnumber]&0x40)>>6)<<ucMask)<<8);
+
+        ucBitnumber +=3;
+        uiCounter--;
+        ucMask--;
+    }
+	
+	/* Reset the index counters for Channel A and channel B */
+    indexA = 0;
+    indexB = 0;
+    readIndexA = 0;
+    readIndexB = 0;
+	
+    return uiRead;
+}
