@@ -287,8 +287,8 @@ unsigned short int tcs_readColor(struct ftdi_context* ftdiA, struct ftdi_context
 }
 
 
-int test 								    (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned short* ausRed,
-											 unsigned short* ausGreen, unsigned short* ausBlue)
+int tcs_readColors(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned short* ausRed,
+					unsigned short* ausGreen, unsigned short* ausBlue)
 {
 	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_AUTOINCR_BIT | TCS3472_COMMAND_BIT | TCS3472_CDATA_REG};												 
 	if(i2c_read4x16(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), ausClear, ausRed, ausGreen, ausBlue, 16)<0) return 1;
@@ -380,7 +380,7 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
                 break;
 
             case TCS3472_INTEGRATION_100ms:
-                if(ausClear[i] >= 65280)
+                if(ausClear[i] >= 43008)
                 {
                     aucErrorbuffer[i] = i+1;
 					usErrorMask |= (1<<i);

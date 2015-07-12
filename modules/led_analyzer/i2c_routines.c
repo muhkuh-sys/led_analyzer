@@ -621,7 +621,7 @@ int i2c_read4x16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
         if((counter  % 8 == 0) && counter != 64) i2c_giveAck(ftdiA, ftdiB);
     }
 
-    i2c_giveAck(ftdiA, ftdiB);
+	i2c_giveAck(ftdiA, ftdiB);
     i2c_stopCond(ftdiA, ftdiB);
 
 
@@ -651,6 +651,7 @@ which are set as input will capute their value on the negative clock edge.
 */
 void i2c_clockInput(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend)
 {
+	  process_pins(ftdiA, ftdiB, SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, 0); //added this line 
       process_pins_databack(ftdiA, ftdiB, SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, SCL | ulDataToSend);
       process_pins_databack(ftdiA, ftdiB, SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, !SCL | ulDataToSend);
 }
@@ -660,9 +661,13 @@ void i2c_clockInput(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsi
 */
 void i2c_giveAck(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
-      process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_READ );process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, 0);
+      process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_READ );
+	  process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, 0);
       i2c_clock(ftdiA, ftdiB, 0);
+
 }
+
+
 
 /** \brief clocks the acknowledge bit given by the slave. 
 	@param ftdiA, ftdiB 	pointer to ftdi_context

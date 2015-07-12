@@ -58,7 +58,5 @@ int	 swap_down(char** asSerial, char* curSerial);
 void free_devices(void** apHandles);
 void wait4Conversion(unsigned int uiWaitTime);
 
-void test1(void** apHandles, int devIndex, unsigned short* ausClear, unsigned short* ausRed, unsigned short* ausGreen, unsigned short* ausBlue);
-
 #endif	/*__LED_ANALYZER_H__*/
 

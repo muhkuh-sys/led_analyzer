@@ -56,30 +56,6 @@ enum ERROR_FLAGS
 
 
 
-void test1(void** apHandles, int devIndex, unsigned short* ausClear, unsigned short* ausRed, unsigned short* ausGreen, unsigned short* ausBlue)
-
-{
-	/* 2 handles per device, device 0 has handles 0,1 .. device 1 has handles 2,3 and so on*/
-	int handleIndex = devIndex * 2;
-	int errorcode = 0;
-	unsigned char aucTempbuffer[16];
-	
-	int iHandleLength = get_number_of_handles(apHandles);
-	
-	test(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, ausGreen, ausBlue, ausRed);
-	
-	int i ;
-	
-	for(i  = 0; i < 16; i ++)
-	{
-		printf("ausClear: %d\n", ausClear[i]);
-		printf("ausred: %d\n", ausRed[i]);
-		printf("ausgreen: %d\n", ausGreen[i]);
-		printf("ausblue: %d\n", ausBlue[i]);
-	}
-	
-}
-
 
 /** \brief scans for connected color controller devices and stores their serial numbers in an array.
 
@@ -473,11 +449,27 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntegrationtime);
 	tcs_getGain(apHandles[handleIndex], apHandles[handleIndex+1], aucGain);
 	
+	/*
+	tcs_readColors(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, ausRed, ausGreen, ausBlue);
+	
+	printf("1 ausClear: %d\n", ausClear[0]);
+	printf("1 ausRed: %d\n", ausRed[0]);
+	printf("1 ausGren: %d\n", ausGreen[0]);
+	printf("1 ausBlue: %d\n", ausBlue[0]);
+	*/
+	
 	tcs_readColor(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, CLEAR);
 	tcs_readColor(apHandles[handleIndex], apHandles[handleIndex+1], ausRed, RED);
 	tcs_readColor(apHandles[handleIndex], apHandles[handleIndex+1], ausGreen, GREEN);
 	tcs_readColor(apHandles[handleIndex], apHandles[handleIndex+1], ausBlue, BLUE);
+	
 
+	printf("2 ausClear: %d\n", ausClear[0]);
+	printf("2 ausRed: %d\n", ausRed[0]);
+	printf("2 ausGren: %d\n", ausGreen[0]);
+	printf("2 ausBlue: %d\n", ausBlue[0]);
+	
+	
 	if((errorcode = tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, aucIntegrationtime)) != 0)
 	{		
 		return (errorcode | EXCEEDED_CLEAR_ERROR);
