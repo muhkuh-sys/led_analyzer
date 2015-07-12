@@ -18,9 +18,9 @@ MAXSENSORS = 16
 
 MAXSERIALS = MAXDEVICES
 
-INIT_MAXERROR  = 10
-READ_MAXERROR  = 10 
-VALID_MAXERROR = 10 
+INIT_MAXERROR  = 1
+READ_MAXERROR  = 1 
+VALID_MAXERROR = 1 
 
 
 -- tcs3472 specific settings for gain 
@@ -154,12 +154,8 @@ function startMeasurements(numberOfDevices)
 		else 
 			error_counter = 0
 		end 
-		
-		--led_analyzer.test1(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue)
-		
+				
 		tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, aucIntTimes, aucGains, ret, MAXSENSORS)
-		--print_color(devIndex, tColorTable, 16)
-		--print_color(devIndex, tColorTable, 16, "HSV")
 		
 		devIndex = devIndex + 1 
 		print("\n")
