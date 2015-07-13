@@ -40,6 +40,8 @@ class PanelSensor : public wxPanel
 
     public:
         wxVector<PanelTestrow*> GetVectorTestrow(){return m_vectorTestrow; };
+
+        int      GetSensorNumber()      {return wxAtoi(m_txtCtrlSensorNo->GetValue());};
         wxString GetName()              {return m_txtCtrlCurName->GetValue();};
         void SetName(wxString name)     {m_txtCtrlCurName->Clear();
                                          m_txtCtrlCurName->SetValue(name);};
@@ -59,6 +61,7 @@ class PanelSensor : public wxPanel
                                             m_txtCtrlCurColor->Clear();};
         wxColour GetColour()               {return m_txtCtrlCurColor->GetBackgroundColour();};
         int GetPintype()                   {return m_chCurPintype->GetSelection();};
+        //wxString GetPintypeStr(int i)      {return m_chCurPintype->GetString(i);};
         void SetPintype(int iSelection)    {m_chCurPintype->SetSelection(iSelection);};
         int GetPinNumber()                 {return wxAtoi(m_txtCtrlCurPinNo->GetValue());}
         void SetPinNumber(int iNumber)     {m_txtCtrlCurPinNo->SetValue(wxString::Format(wxT("%i"), iNumber));};
@@ -71,7 +74,11 @@ class PanelSensor : public wxPanel
         /* Test Generation */
         wxString GetTestrow(int iSensorIndex, int iRowVectorIndex);
         wxString GetEmptyTestrow(int iSensorIndex);
+        wxString GetAtPinsUnderTest(bool lastEntry);
+        wxString GetPinStateTestSet(int iIndexTestSet);
 
+        bool NameMoreThanTwice(const wxArrayString astrCurName, const wxString strCurName);
+        bool IsLastNameEntryWithoutRepetition(int iCurIndex);
         void OnAddTestRow( wxCommandEvent& event );
 		void OnButtonRemove( wxCommandEvent& event );
         void OnClearSet( wxCommandEvent& event);

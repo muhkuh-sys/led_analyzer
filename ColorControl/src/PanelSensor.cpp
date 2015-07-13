@@ -151,7 +151,7 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerPinValue;
 	bSizerPinValue = new wxBoxSizer( wxVERTICAL );
 
-	wxString m_chCurPinValueChoices[] = { wxT("0"), wxT("1"), wxT("Input") };
+	wxString m_chCurPinValueChoices[] = { wxT("Input"), wxT("0"), wxT("1") };
 	int m_chCurPinValueNChoices = sizeof( m_chCurPinValueChoices ) / sizeof( wxString );
 	m_chCurPinValue = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chCurPinValueNChoices, m_chCurPinValueChoices, 0 );
 	m_chCurPinValue->SetSelection( 0 );
@@ -166,7 +166,7 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerDefPinValue;
 	bSizerDefPinValue = new wxBoxSizer( wxVERTICAL );
 
-	wxString m_chCurDefPinValueChoices[] = { wxT("0"), wxT("1"), wxT("Input") };
+	wxString m_chCurDefPinValueChoices[] = { wxT("Input"), wxT("0"), wxT("1") };
 	int m_chCurDefPinValueNChoices = sizeof( m_chCurDefPinValueChoices ) / sizeof( wxString );
 	m_chCurDefPinValue = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chCurDefPinValueNChoices, m_chCurDefPinValueChoices, 0 );
 	m_chCurDefPinValue->SetSelection( 0 );
@@ -267,6 +267,13 @@ void PanelSensor::OnButtonRemove( wxCommandEvent& event )
     int iVectorIndex = m_hashRemove[event.GetId()];
 
     /* Remove the item in the vector */
+    wxMessageDialog MyRequestDialog(this, wxT("Do you really want to destroy the row? All entries will be lost."), wxT("Please Confirm"),
+                                    wxOK | wxCANCEL);
+
+    if(MyRequestDialog.ShowModal() == wxID_CANCEL)
+    {
+        return;
+    }
 
     /* Destroy the panel */
     m_vectorTestrow.at(iVectorIndex)->Destroy();
@@ -348,8 +355,6 @@ void PanelSensor::OnPasteSet ( wxCommandEvent& event)
     m_vectorTestrow.at(iVectorIndex)->SetTolIllumination(this->GetTolIllumination());
 
 
-
-
     /* Update the View */
     this->GetParent()->FitInside();
     this->GetParent()->Layout();
@@ -412,10 +417,100 @@ wxString PanelSensor::GetEmptyTestrow(int iSensorIndex)
     return strTestRow;
 }
 
+wxString PanelSensor::GetAtPinsUnderTest(bool isLastEntry)
+{
+    wxString      strPinsUnderTest;
+    wxArrayString astrCurNames;
+    wxString      strCurName;
 
-// Insert function here that needs some converting and gets the textfields
-// of the name and checks if this name already exits and if so,
-// only insert one name entry in the later testpnaenl row as the testpanel row
-// does not inlcude the on off state but only the default State_Initialized
-// i am pretty hungry thats why i need to go to sleep and need to go get some food
-//
+    strPinsUnderTest += wxString::Format(wxT(" --- Sensor %2d ---\n"), this->GetSensorNumber());
+
+    if(isLastEntry)
+    {
+        for(int i = 0; i < m_vectorTestrow.size(); i++)
+        {
+            strCurName = m_vectorTestrow.at(i)->GetName();
+            if(!this->NameMoreThanTwice(astrCurNames, strCurName ))
+            {
+                astrCurNames.Add(strCurName);
+
+                /* If we have the last testentry or all following entries have the same name we need no comma */
+
+                if(i ==  (m_vectorTestrow.size() - 1))
+                {
+                    strPinsUnderTest += wxString::Format(wxT("{ \"%s\", io_matrix.PINTYPE_%s, %3d, %2d, io_matrix.PINFLAG_IOZ }\n"),
+                                            strCurName, m_vectorTestrow.at(i)->GetPintype(m_vectorTestrow.at(i)->GetPintype()),
+                                            m_vectorTestrow.at(i)->GetPinNumber(), m_vectorTestrow.at(i)->GetPinValue());
+                }
+                else
+                {
+                    if(this->IsLastNameEntryWithoutRepetition(i))
+                    {
+                        strPinsUnderTest += wxString::Format(wxT("{ \"%s\", io_matrix.PINTYPE_%s, %3d, %2d, io_matrix.PINFLAG_IOZ }\n"),
+                                                strCurName, m_vectorTestrow.at(i)->GetPintype(m_vectorTestrow.at(i)->GetPintype()),
+                                                m_vectorTestrow.at(i)->GetPinNumber(), m_vectorTestrow.at(i)->GetPinValue());
+                    }
+                    else
+                    {
+                        strPinsUnderTest += wxString::Format(wxT("{ \"%s\", io_matrix.PINTYPE_%s, %3d, %2d, io_matrix.PINFLAG_IOZ },\n"),
+                                                strCurName, m_vectorTestrow.at(i)->GetPintype(m_vectorTestrow.at(i)->GetPintype()),
+                                                m_vectorTestrow.at(i)->GetPinNumber(), m_vectorTestrow.at(i)->GetPinValue());
+                    }
+                }
+
+            }
+
+        }
+    }
+
+    else
+    {
+        for(int i = 0; i < m_vectorTestrow.size(); i++)
+        {
+            strCurName = m_vectorTestrow.at(i)->GetName();
+            if(!this->NameMoreThanTwice(astrCurNames, strCurName ))
+            {
+                astrCurNames.Add(strCurName);
+                strPinsUnderTest += wxString::Format(wxT("{ \"%s\", io_matrix.PINTYPE_%s, %3d, %2d, io_matrix.PINFLAG_IOZ },\n"),
+                                        strCurName, m_vectorTestrow.at(i)->GetPintype(m_vectorTestrow.at(i)->GetPintype()),
+                                        m_vectorTestrow.at(i)->GetPinNumber(), m_vectorTestrow.at(i)->GetPinValue());
+            }
+
+        }
+    }
+
+
+    return strPinsUnderTest;
+}
+
+bool PanelSensor::NameMoreThanTwice(const wxArrayString astrstrCurNames, const wxString strCurName)
+{
+    for(int i = 0; i < astrstrCurNames.GetCount(); i++)
+    {
+        if (astrstrCurNames.Item(i).IsSameAs(strCurName)) return true;
+    }
+    return false;
+}
+
+bool PanelSensor::IsLastNameEntryWithoutRepetition(int iCurIndex)
+{
+    wxString strCurName = m_vectorTestrow.at(iCurIndex)->GetName();
+
+    for(int i = iCurIndex+1; i < m_vectorTestrow.size(); i++)
+    {
+        if (!m_vectorTestrow.at(i)->GetName().IsSameAs(strCurName)) return false;
+    }
+
+    return true;
+
+}
+
+wxString PanelSensor::GetPinStateTestSet(int iIndexTestSet)
+{
+
+    return wxString::Format(wxT("io_matrix.set_pin(aAttr, \"%s\", %d)"),
+                                m_vectorTestrow.at(iIndexTestSet)->GetName(),
+                                m_vectorTestrow.at(iIndexTestSet)->GetPinValue());
+
+}
+// Is last entry then comma

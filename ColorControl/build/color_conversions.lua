@@ -1,7 +1,7 @@
 require("tcs_chromaTable")
 
 --local MIN_LUX   = 7.0
-local MIN_CLEAR = 0.0005 -- Minimum Clear Level as percentage of maximum clear
+local MIN_CLEAR = 0.00005 -- Minimum Clear Level as percentage of maximum clear
 
 -- a helper to print a colortable which contains values in RGB, XYZ, HSV, Yxy and wavelength color space 
 -- parameter space determines which space should be printed out 

@@ -240,7 +240,7 @@ class GUIFrame : public wxFrame
 		wxTextCtrl* m_text;
 		wxStatusBar* statusBar;
 		wxLog* m_pOldLogTarget;
-		wxCheckBox*    m_rbUsenetX;
+		wxCheckBox*    m_chUsenetx;
         wxRadioButton* m_rbSingle;
         wxRadioButton* m_rbContinuous;
         wxChoice* m_chTime;

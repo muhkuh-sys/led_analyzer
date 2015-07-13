@@ -44,8 +44,9 @@ class PanelTestrow : public wxPanel
 
         bool IsActivated()                  {return m_cbUseSet->GetValue();};
         wxString GetName()                  {return m_txtCtrlSpName->GetValue(); };
+        bool     IsNameFieldEmpty()         {return m_txtCtrlSpName->IsEmpty();};
         void     SetName(wxString name)     {m_txtCtrlSpName->Clear();
-                                             m_txtCtrlSpName->SetValue(name);};
+                                              m_txtCtrlSpName->SetValue(name);};
         int GetWavelength()                 {return wxAtoi(m_txtCtrlSpWL->GetValue());};
         int GetTolWavelength()              {return wxAtoi(m_txtCtrlSpTolNm->GetValue());};
         void     SetWavelength(int wl)      {m_txtCtrlSpWL->SetValue(wxString::Format(wxT("%i"), wl));};
@@ -63,14 +64,15 @@ class PanelTestrow : public wxPanel
         wxColour GetColour()                {return m_txtCtrlSpColor->GetBackgroundColour();};
         void SetPintype(int iSelection)     {m_chSpPintype->SetSelection(iSelection); };
         int  GetPintype()                   {return m_chSpPintype->GetSelection();};
+        wxString GetPintype(int iSelection) {return m_chSpPintype->GetString(iSelection);};
         void SetPinNumber(int iValue)       {iValue >= 0 ? m_txtCtrlSpPinNo->SetValue(wxString::Format(wxT("%i"), iValue)) :
                                                            m_txtCtrlSpPinNo->SetValue(wxString::Format(wxT("%i"), iValue));};
         int  GetPinNumber()                 {return wxAtoi(m_txtCtrlSpPinNo->GetValue());};
         void SetPinValue(int iSelection)    {m_choiceSpPinValue->SetSelection(iSelection);};
+        bool IsPinNumberFieldEmpty()        {return m_txtCtrlSpPinNo->IsEmpty();};
         int  GetPinValue()                  {return m_choiceSpPinValue->GetSelection();};
         void SetPinDefValue(int iSelection) {m_chSpDefPinValue->SetSelection(iSelection);};
         int  GetPinDefValue()               {return m_chSpDefPinValue->GetSelection();};
-
         void ClearRow();
 		~PanelTestrow();
 };

@@ -7,10 +7,8 @@ require("color_validation")	 -- Validate your colors, contains helper to print y
 
 TEST_RESULT_OK 			  = 0 
 TEST_RESULT_FAIL 		  = 1 
-TEST_RESULT_LEDS_ON 	  = 2 
-TEST_RESULT_LEDS_OFF 	  = 3 
-TEST_RESULT_NO_DEVICES 	  = 4
-TEST_RESULT_DEVICE_FAILED = 5 
+TEST_RESULT_NO_DEVICES 	  = 2
+TEST_RESULT_DEVICE_FAILED = 3 
 
 MAXDEVICES = 50
 MAXHANDLES = MAXDEVICES * 2
@@ -156,7 +154,7 @@ function startMeasurements(numberOfDevices)
 		end 
 				
 		tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, aucIntTimes, aucGains, ret, MAXSENSORS)
-		
+		print_color(devIndex, tColorTable, 16)
 		devIndex = devIndex + 1 
 		print("\n")
 	end 
@@ -167,41 +165,21 @@ end
 -- function compares the color sets read from the devices to the testtable given in tDUT
 -- the LEDs under test must be on, this means we test if the right LEDs (correct wavelength, sat, ...) are mounted on the baord
 -- a table tTestSummary will be filled according to the test results (led on, led off, wrong led detected and so on)
-function ON_validateLEDs(numberOfDevices, tDUT, lux_check_enable)
+function validateLEDs(numberOfDevices, tDUT, lux_check_enable)
 	
 	local devIndex = 0
 	local ret = 0 
 	
 	tTestSummary = {}
-	print("Testing LEDs ON\n")
+	print("Starting Test ... \n")
 	
 	while(devIndex < numberOfDevices) do 
-		tTestSummary[devIndex] = getDeviceSummary(tDUT[devIndex], tColorTable[devIndex][1], lux_check_enable)
-		--printDeviceSummary(tTestSummary[devIndex], 1 )
+		tTestSummary[devIndex] = getDeviceSummary(tDUT[devIndex], tColorTable[devIndex][ENTRY_WAVELENGTH], lux_check_enable)
+		printDeviceSummary(tTestSummary[devIndex], 1 )
 		devIndex = devIndex + 1 
 	end 
 	
-	ret = ON_validateTestSummary(numberOfDevices, tTestSummary)
-	return ret 
-end
-
--- function compares the color sets read from the devices to the testtable given in tDUT
--- the LEDs under test must be off, this means we test if the LEDs can be powered off 
--- a table tTestSummary will be filled according to the test results (led on, led off, wrong led detected and so on)
-function OFF_validateLEDs(numberOfDevices, tDUT, lux_check_enable)
-	
-	local devIndex = 0
-	local ret = 0 
-	
-	tTestSummary = {}
-	print("Testing LEDs OFF\n")
-	
-	while(devIndex < numberOfDevices) do 
-		tTestSummary[devIndex] = getDeviceSummary(tDUT[devIndex], tColorTable[devIndex][1], lux_check_enable)
-		devIndex = devIndex + 1 
-	end 
-	
-	ret = OFF_validateTestSummary(numberOfDevices, tTestSummary)
+	ret = validateTestSummary(numberOfDevices, tTestSummary)
 	return ret 
 end
 
@@ -224,6 +202,16 @@ end
 
 function setIntTimeX(iDeviceIndex, iSensorIndex, intTime)
 	return led_analyzer.set_intTime_x(apHandles, iDeviceIndex, intTime, iSensorIndex)
+end
+
+function setSettings(numberOfDevices, intTime, gain)
+	local devIndex = 0
+	while(devIndex < numberOfDevices) do
+		led_analyzer.set_gain(apHandles, devIndex, gain)
+		led_analyzer.set_intTime(apHandles, devIndex, intTime)
+		devIndex = devIndex + 1 
+	end 
+	return 0
 end
 
 -- don't forget to clean up after every test -- 

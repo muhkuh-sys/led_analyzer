@@ -21,6 +21,7 @@
 
 #define MYGREEN {0, 200, 0}
 #define MYRED   {255, 0, 0}
+#define MYORANGE{210, 150,0}
 
 
 
@@ -85,14 +86,17 @@ class ColorControlFrame: public GUIFrame
         int  StrToRegisterContent(const wxString strSetting);
         void GenerateColorTestTable(wxTextFile* tFile);
         void GenerateNetXTestTable(wxTextFile* tFile);
+        void InsertHeaders(wxTextFile* tFile);
+        void GenerateTestStepFunctions(wxTextFile* tFile);
+
         int  GetMaximumNumberOfTestsets();
+        int  GetLastEntry();
+        bool TestEntriesOK();
         int         m_numberOfDevices;
         wxLog       *m_pLogTarget;
         CLua        *m_pLua;
         wxString    *m_aStrSerials;
         e_state_t   m_eState;
-
-
 
 
         /* vector contains panels for testfile generation */

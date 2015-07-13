@@ -1690,7 +1690,7 @@
 1412631244 c:\wxwidgets-3.0.2\include\wx\univ\theme.h
 	"wx/string.h"
 
-1436341234 c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.h
+1436800526 c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.h
 	"ColorControlApp.h"
 	"GUIFrame.h"
 	"CSensorData.h"
@@ -1698,7 +1698,7 @@
 	"CLua.h"
 	"PanelSensor.h"
 
-1436525670 c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.h
+1436783256 c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.h
 	<iostream>
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
@@ -2760,11 +2760,11 @@
 
 1412631244 c:\wxwidgets-3.0.2\include\wx\msw\rcdefs.h
 
-1436514645 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
+1436800567 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
 	"wx_pch.h"
 	"ColorControlMain.h"
 
-1436525788 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.cpp
+1436783244 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.cpp
 	"wx/wxprec.h"
 	<wx/wx.h>
 	"GuiFrame.h"
@@ -3730,11 +3730,11 @@
 
 1412631244 D
 
-1436347158 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\panelsensor.h
+1436800801 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\panelsensor.h
 	"../GUIFrame.h"
 	"PanelTestrow.h"
 
-1436526902 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\panelsensor.cpp
+1436778113 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\panelsensor.cpp
 	"PanelSensor.h"
 
 1436383695 c:\led_analyzer\colorcontrol\include\panelsensor.h
@@ -3747,10 +3747,10 @@
 1435865851 5472bab98e9d9f2769051662c8270b75ca3d5
 	"PanelSensor.h"
 
-1436346959 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\paneltestrow.h
+1436783346 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\paneltestrow.h
 	"../GUIFrame.h"
 
-1436513906 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\paneltestrow.cpp
+1436771112 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\paneltestrow.cpp
 	"PanelTestrow.h"
 	"PanelSensor.h"
 

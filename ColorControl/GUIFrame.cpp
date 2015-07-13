@@ -244,8 +244,8 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
     bSizerSingleCont = new wxBoxSizer(wxVERTICAL);
 
 
-    m_rbUsenetX = new wxCheckBox( this, wxID_USENETX, wxT("Use netX"), wxDefaultPosition, wxDefaultSize, 0);
-    bSizerSingleCont->Add(m_rbUsenetX, 0, wxALL, 5);
+    m_chUsenetx = new wxCheckBox( this, wxID_USENETX, wxT("Use netX"), wxDefaultPosition, wxDefaultSize, 0);
+    bSizerSingleCont->Add(m_chUsenetx, 0, wxALL, 5);
 
 	m_rbSingle = new wxRadioButton( this, wxID_TESTMODE, wxT("Single"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_rbSingle->SetValue(true);
@@ -343,7 +343,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizerLog;
 	bSizerLog = new wxBoxSizer( wxVERTICAL );
 
-	m_text = new wxTextCtrl( m_swLog, wxID_MYTEXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY );
+	m_text = new wxTextCtrl( m_swLog, wxID_MYTEXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH );
 	m_text->SetMinSize( wxSize( -1,90 ) );
 
     m_pOldLogTarget = new wxLogTextCtrl(m_text);
