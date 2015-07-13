@@ -17,11 +17,12 @@
 #include "CDevice.h"
 #include "CLua.h"
 #include "PanelSensor.h"
+#include "CTestGeneration.h"
 
 
 #define MYGREEN {0, 200, 0}
 #define MYRED   {255, 0, 0}
-#define MYORANGE{210, 150,0}
+
 
 
 
@@ -84,6 +85,7 @@ class ColorControlFrame: public GUIFrame
         void UpdateConnectedField(wxColour colour);
         int  IntegrationToIndex(tcs3472_intTime_t intTime);
         int  StrToRegisterContent(const wxString strSetting);
+
         void GenerateColorTestTable(wxTextFile* tFile);
         void GenerateNetXTestTable(wxTextFile* tFile);
         void InsertHeaders(wxTextFile* tFile);
@@ -92,11 +94,14 @@ class ColorControlFrame: public GUIFrame
         int  GetMaximumNumberOfTestsets();
         int  GetLastEntry();
         bool TestEntriesOK();
+
         int         m_numberOfDevices;
         wxLog       *m_pLogTarget;
         CLua        *m_pLua;
         wxString    *m_aStrSerials;
         e_state_t   m_eState;
+
+        CTestGeneration m_testGeneration;
 
 
         /* vector contains panels for testfile generation */

@@ -245,7 +245,9 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 
     m_chUsenetx = new wxCheckBox( this, wxID_USENETX, wxT("Use netX"), wxDefaultPosition, wxDefaultSize, 0);
+    m_chUsenetx->SetValue(true);
     bSizerSingleCont->Add(m_chUsenetx, 0, wxALL, 5);
+
 
 	m_rbSingle = new wxRadioButton( this, wxID_TESTMODE, wxT("Single"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_rbSingle->SetValue(true);
