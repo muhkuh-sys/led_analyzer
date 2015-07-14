@@ -286,8 +286,6 @@ void CTestGeneration::GenerateTestSteps(wxVector<PanelSensor*> sensorPanel, wxTe
 }
 
 
-
-
 void CTestGeneration::GenerateTest(wxVector<PanelSensor*> sensorPanel, wxTextFile* tFile, bool useNetX, wxTextCtrl* txtCtrlLog)
 {
 
@@ -306,5 +304,122 @@ void CTestGeneration::GenerateTest(wxVector<PanelSensor*> sensorPanel, wxTextFil
     this->GenerateTestStepFunctions(sensorPanel, tFile, useNetX);
     this->GenerateInitialization(tFile, useNetX);
     this->GenerateTestSteps(sensorPanel, tFile, useNetX);
+
+}
+
+
+void CTestGeneration::SaveSessionAsIni(wxVector<PanelSensor*> sensorPanel, wxTextFile* tFile)
+{
+    int iNumberOfSensors = sensorPanel.size();
+    int rowCounter = 1;
+
+    wxVector<PanelTestrow*> vectorTestrow;
+
+    tFile->AddLine(wxT("[Testsession]"));
+    tFile->AddLine(wxString::Format(wxT("numberOfSensors=%d\n"), iNumberOfSensors));
+
+    /* Iterate over all Sensorpanels */
+    for(wxVector<PanelSensor*>::iterator it = sensorPanel.begin(); it != sensorPanel.end(); it++)
+    {
+        tFile->AddLine(wxString::Format(wxT("[Sensor%d]"), (*it)->GetSensorNumber()));
+
+        vectorTestrow = (*it)->GetVectorTestrow();
+        tFile->AddLine(wxString::Format(wxT("numberOfTestrows=%d"), vectorTestrow.size()));
+
+        /* Iterate over all testrows per sensor pannel */
+        for(wxVector<PanelTestrow*>::iterator it_testrow = vectorTestrow.begin(); it_testrow!= vectorTestrow.end(); it_testrow++)
+        {
+            tFile->AddLine(wxString::Format(wxT("row%d_name=%s"), rowCounter, (*it_testrow)->GetName()));
+            tFile->AddLine(wxString::Format(wxT("row%d_wavelength=%d"), rowCounter, (*it_testrow)->GetWavelength()));
+            tFile->AddLine(wxString::Format(wxT("row%d_saturation=%d"), rowCounter, (*it_testrow)->GetSaturation()));
+            tFile->AddLine(wxString::Format(wxT("row%d_illumination=%d"), rowCounter, (*it_testrow)->GetIllumination()));
+            tFile->AddLine(wxString::Format(wxT("row%d_colour=%d"), rowCounter, (*it_testrow)->GetColour().GetRGB()));
+            tFile->AddLine(wxString::Format(wxT("row%d_pintype=%d"), rowCounter, (*it_testrow)->GetPintype()));
+            tFile->AddLine(wxString::Format(wxT("row%d_pinnumber=%d"), rowCounter, (*it_testrow)->GetPinNumber()));
+            tFile->AddLine(wxString::Format(wxT("row%d_pinvalue=%d"), rowCounter, (*it_testrow)->GetPinValue()));
+            tFile->AddLine(wxString::Format(wxT("row%d_pindefvalue=%d"), rowCounter, (*it_testrow)->GetPinDefValue()));
+            tFile->AddLine(wxString::Format(wxT("row%d_tolnm=%d"), rowCounter, (*it_testrow)->GetTolWavelength()));
+            tFile->AddLine(wxString::Format(wxT("row%d_tolsat=%d"), rowCounter, (*it_testrow)->GetTolSaturation()));
+            tFile->AddLine(wxString::Format(wxT("row%d_tolillu=%d\n"), rowCounter, (*it_testrow)->GetTolIllumination()));
+
+            rowCounter++;
+        }
+        /* Reset rowcounter */
+        rowCounter = 0;
+    }
+}
+
+bool CTestGeneration::OpenSessionAsIni(wxVector<PanelSensor*> sensorPanel, wxFileConfig* tFileConfig)
+{
+    int iCurSensorPanelSize = sensorPanel.size();
+    int iSavedSensorPanelSize;
+
+    if(iCurSensorPanelSize == 0)
+    {
+        wxLogMessage("Please connect first.");
+        return false;
+    }
+
+    /* Return if you cannot read the number of sensors .. this is important as array exceedings
+    might happen otherwise */
+    if(!tFileConfig->Read("Testsession/numberOfSensors", &iSavedSensorPanelSize))
+    {
+        wxLogMessage("Test session file corrupted ..");
+        return false;
+    }
+
+
+    /* Now iterate over all entries of the config file */
+
+    int iCurNumberOfTestrows;
+    int iSavedNumberOfTestrows;
+    int iSensorCounter = 1;
+    int iRowCounter = 1;
+    int iTempRowCounter;
+
+                    wxCommandEvent evt(wxEVT_COMMAND_BUTTON_CLICKED, (*it)->GetpButton()->GetId());
+                    (*it)->GetpButton()->GetEventHandler()->ProcessEvent(evt);
+
+    wxVector<PanelTestrow*> vectorTestrow;
+    wxCommandEvent* evt;
+
+    for(wxVector<PanelSensor*>::iterator it = sensorPanel.begin(); it != sensorPanel.end(); it++)
+    {
+        /* Only do it if the current sensor counter is smaller than the saved sensor counter*/
+
+        if(iSensorCounter <= iSavedSensorPanelSize)
+        {
+            vectorTestrow = (*it)->GetVectorTestrow();
+            iCurNumberOfTestrows = vectorTestrow.size();
+
+            if(!tFileConfig->Read(wxString::Format(wxT("Sensor%d/numberOfTestrows"), iSensorCounter), &iSavedNumberOfTestrows))
+               {
+                   wxLogMessage("Test session file corrupted ..");
+                   return false;
+               }
+
+             /* Fill if current number is smaller than saved number */
+             if( (iTempRowCounter = iCurNumberOfTestrows) < iSavedNumberOfTestrows)
+             {
+                while( iTempRowCounter++ < iSavedNumberOfTestrows )
+                {
+
+                }
+             }
+             /* Delete if current number is bigger than saved number */
+             else
+             {
+                while( iTempRowCounter-- > iSavedNumberOfTestrows)
+                {
+                    wxCommandEvent
+                }
+             }
+        }
+
+        iSensorCounter ++;
+
+
+    }
+
 
 }

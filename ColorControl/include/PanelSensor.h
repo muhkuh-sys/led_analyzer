@@ -39,6 +39,7 @@ class PanelSensor : public wxPanel
 
 
     public:
+        wxBitmapButton* GetpButton() {return m_bpButtonPlus;};
         wxVector<PanelTestrow*> GetVectorTestrow(){return m_vectorTestrow; };
 
         int      GetSensorNumber()      {return wxAtoi(m_txtCtrlSensorNo->GetValue());};

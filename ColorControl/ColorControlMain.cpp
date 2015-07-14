@@ -335,11 +335,11 @@ void ColorControlFrame::OnStart(wxCommandEvent& event)
     switch(m_eState)
     {
         case IS_INITIAL:
-            wxLogMessage("Please Scan and Connect first.");
+            wxLogMessage("Please scan and connect first.");
             break;
 
         case IS_SCANNED:
-            wxLogMessage("Please Connect first.");
+            wxLogMessage("Please connect first.");
             break;
 
         case IS_CONNECTED:
@@ -869,7 +869,7 @@ void ColorControlFrame::OnSaveSession( wxCommandEvent& event )
     wxString strPath, strDefaultSaveDir;
 
     /* If the chosen save dir is not in the config file yet, write it into it */
-    if(!m_fileConfig->Read("DEFAULT_PATHS/path_save_testfile", &strDefaultSaveDir))
+    if(!m_fileConfig->Read("DEFAULT_PATHS/path_save_testsession", &strDefaultSaveDir))
         strDefaultSaveDir = wxEmptyString;
 
 
@@ -892,7 +892,7 @@ void ColorControlFrame::OnSaveSession( wxCommandEvent& event )
     strPath = save_sessionDialog->GetPath();
 
     /* Save the directory as a default directory into the ini file */
-    m_fileConfig->Write("DEFAULT_PATHS/path_save_testfile", save_sessionDialog->GetDirectory());
+    m_fileConfig->Write("DEFAULT_PATHS/path_save_testsession", save_sessionDialog->GetDirectory());
 
 
     /* the file either exists or must be created */
@@ -908,24 +908,11 @@ void ColorControlFrame::OnSaveSession( wxCommandEvent& event )
 
     /* Insert code here to fill it with template key tables and chapters */
 
-    //m_testGeneration.InsertConfigTemplate();
+    m_testGeneration.SaveSessionAsIni(m_sensorPanels, &tFile);
+
+    tFile.Write();
 
     if(!tFile.Close()) wxLogMessage("Couldn't close test file");
-
-
-    wxFileConfig tFileConfig(wxEmptyString, wxEmptyString,
-                             strPath, wxEmptyString,
-                             wxCONFIG_USE_LOCAL_FILE);
-
-
-    /* Insert code here to fill it with content (CTestGeneration) */
-
-    //m_testGeneration.FillConfigTemplate();
-
-
-    //m_testGeneration.SaveSession();
-
-    wxLogMessage("Saved %s.", strPath);
 
 
 
@@ -933,7 +920,51 @@ void ColorControlFrame::OnSaveSession( wxCommandEvent& event )
 
 void ColorControlFrame::OnOpenSession( wxCommandEvent& event )
 {
-    wxLogMessage("open clicked");
+
+    wxFileDialog*  open_fileDialog;
+    wxString       strDefaultDir;
+    wxString       strPath;
+
+
+    if(!m_fileConfig->Read("DEFAULT_PATHS/path_open_testsession", &strDefaultDir))
+        strDefaultDir = wxEmptyString;
+
+    open_fileDialog = new wxFileDialog(this, "Choose the input test session file ..",
+                                       strDefaultDir,
+                                       "", "ini files (*.ini) |*.ini",
+                                       wxFD_DEFAULT_STYLE | wxFD_FILE_MUST_EXIST);
+
+    if(open_fileDialog->ShowModal() == wxID_CANCEL)
+    {
+        wxLogMessage("Abort.");
+        return;
+    }
+
+    strPath = open_fileDialog->GetPath();
+
+    wxLogMessage("Opening test session %s", strPath);
+
+    m_fileConfig->Write("DEFAULT_PATHS/path_open_testsession", open_fileDialog->GetDirectory());
+
+
+    wxFileConfig tFileConfig(wxEmptyString, wxEmptyString,
+                             strPath, wxEmptyString,
+                             wxCONFIG_USE_LOCAL_FILE);
+
+
+    if(m_nbData->GetSelection() != 1)
+    {
+        m_nbData->SetSelection(1);
+        m_swTestdefinition->Show();
+    }
+
+
+    m_testGeneration.OpenSessionAsIni(m_sensorPanels, &tFileConfig);
+
+
+    wxLogMessage("Opened %s.", strPath);
+
+
 }
 
 

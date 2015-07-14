@@ -34,6 +34,10 @@ class CTestGeneration
         int  GetMaximumNumberOfTestsets(wxVector<PanelSensor*> sensorPanel);
         int  GetLastEntry(wxVector<PanelSensor*> sensorPanel);
         bool TestEntriesOK(wxVector<PanelSensor*> sensorPanel, wxTextCtrl* txtCtrlLog, bool useNetX);
+
+        /* Save and Open a Session */
+        void SaveSessionAsIni(wxVector<PanelSensor*> sensorPanel, wxTextFile* tFile);
+        bool OpenSessionAsIni(wxVector<PanelSensor*> sensorPanel, wxFileConfig* tFileConfig);
 };
 
 #endif // CTESTGENERATION_H
