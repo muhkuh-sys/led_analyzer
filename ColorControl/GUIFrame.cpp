@@ -395,6 +395,8 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
     this->Connect( menuDiagram->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler (GUIFrame::OnShowChromaticity ) );
     this->Connect( m_dvlColors->GetId(), wxEVT_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler (GUIFrame::OnSensorSettingsChanged ) );
     this->Connect( menuItem_SystemSettings->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler (GUIFrame::OnSystemSettings ) );
+    this->Connect(menuItem_save->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnSaveSession ) );
+    this->Connect(menuItem_open->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnOpenSession ) );
 }
 
 GUIFrame::~GUIFrame()

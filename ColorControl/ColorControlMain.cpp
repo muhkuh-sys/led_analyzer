@@ -864,4 +864,76 @@ void ColorControlFrame::OnUseTest(wxCommandEvent& event)
     tFile.Close();
 }
 
+void ColorControlFrame::OnSaveSession( wxCommandEvent& event )
+{
+    wxString strPath, strDefaultSaveDir;
+
+    /* If the chosen save dir is not in the config file yet, write it into it */
+    if(!m_fileConfig->Read("DEFAULT_PATHS/path_save_testfile", &strDefaultSaveDir))
+        strDefaultSaveDir = wxEmptyString;
+
+
+    wxFileDialog *save_sessionDialog;
+
+    wxLogMessage("Saving Session.. ");
+
+    save_sessionDialog = new wxFileDialog(this, "Choose output directory",
+                                                strDefaultSaveDir,
+                                                "", "ini files (*.ini) |*.ini",
+                                                wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+    if( save_sessionDialog->ShowModal() == wxID_CANCEL )
+    {
+        wxLogMessage("Abort.");
+        return;
+    }
+
+    /* Get full name + path */
+    strPath = save_sessionDialog->GetPath();
+
+    /* Save the directory as a default directory into the ini file */
+    m_fileConfig->Write("DEFAULT_PATHS/path_save_testfile", save_sessionDialog->GetDirectory());
+
+
+    /* the file either exists or must be created */
+    wxTextFile tFile(strPath);
+
+    /* Create the file if it doesn't exist yet */
+    if(!tFile.Exists()) tFile.Create();
+
+    if(!tFile.Open()) wxLogMessage("Couldn't open test file.");
+
+    /* Clear It */
+    tFile.Clear();
+
+    /* Insert code here to fill it with template key tables and chapters */
+
+    //m_testGeneration.InsertConfigTemplate();
+
+    if(!tFile.Close()) wxLogMessage("Couldn't close test file");
+
+
+    wxFileConfig tFileConfig(wxEmptyString, wxEmptyString,
+                             strPath, wxEmptyString,
+                             wxCONFIG_USE_LOCAL_FILE);
+
+
+    /* Insert code here to fill it with content (CTestGeneration) */
+
+    //m_testGeneration.FillConfigTemplate();
+
+
+    //m_testGeneration.SaveSession();
+
+    wxLogMessage("Saved %s.", strPath);
+
+
+
+}
+
+void ColorControlFrame::OnOpenSession( wxCommandEvent& event )
+{
+    wxLogMessage("open clicked");
+}
+
 

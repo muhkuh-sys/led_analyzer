@@ -269,7 +269,8 @@ class GUIFrame : public wxFrame
         virtual void OnShowChromaticity( wxCommandEvent& event ) { event.Skip(); };
         virtual void OnSensorSettingsChanged( wxDataViewEvent& event) {event.Skip(); };
         virtual void OnSystemSettings( wxCommandEvent& event) {event.Skip(); };
-
+        virtual void OnSaveSession( wxCommandEvent & event ) { event.Skip(); };
+        virtual void OnOpenSession( wxCommandEvent & event ) { event.Skip(); };
 	public:
 
 		GUIFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("ColorControl"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 927,792 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );

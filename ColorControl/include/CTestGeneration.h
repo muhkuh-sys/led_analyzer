@@ -26,7 +26,9 @@ class CTestGeneration
         void GenerateColorTestTable(wxVector<PanelSensor*> sensorPanel, wxTextFile* tFile);
         void GenerateNetXTestTable(wxVector<PanelSensor*> sensorPanel, wxTextFile* tFile, bool useNetX);
         void GenerateTestStepFunctions(wxVector<PanelSensor*> sensorPanel, wxTextFile* tFile, bool useNetX);
+        void GenerateInitialization(wxTextFile* tFile, bool useNetX);
         void InsertHeaders(wxTextFile* tFile, bool useNetX);
+        void GenerateTestSteps(wxVector<PanelSensor*> panelSensor, wxTextFile* tFile, bool useNetX);
         void GenerateTest(wxVector<PanelSensor*> sensorPanel, wxTextFile* tFile, bool useNetX, wxTextCtrl* txtCtrlLog);
 
         int  GetMaximumNumberOfTestsets(wxVector<PanelSensor*> sensorPanel);

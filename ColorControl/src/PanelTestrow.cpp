@@ -150,7 +150,7 @@ PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos,
 	wxBoxSizer* bSizerPinValue;
 	bSizerPinValue = new wxBoxSizer( wxVERTICAL );
 
-	wxString m_choiceSpPinValue1Choices[] = { wxT("Input"), wxT("0"), wxT("1") };
+	wxString m_choiceSpPinValue1Choices[] = { wxT("Input"), wxT("High"), wxT("Low") };
 	int m_choiceSpPinValue1NChoices = sizeof( m_choiceSpPinValue1Choices ) / sizeof( wxString );
 	m_choiceSpPinValue = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceSpPinValue1NChoices, m_choiceSpPinValue1Choices, 0 );
 	m_choiceSpPinValue->SetSelection( 0 );
@@ -165,7 +165,7 @@ PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos,
 	wxBoxSizer* bSizerDefPinValue;
 	bSizerDefPinValue = new wxBoxSizer( wxVERTICAL );
 
-	wxString m_chSpDefPinValue1Choices[] = { wxT("Input"), wxT("0"), wxT("1") };
+	wxString m_chSpDefPinValue1Choices[] = { wxT("Input"), wxT("High"), wxT("Low") };
 	int m_chSpDefPinValue1NChoices = sizeof( m_chSpDefPinValue1Choices ) / sizeof( wxString );
 	m_chSpDefPinValue = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chSpDefPinValue1NChoices, m_chSpDefPinValue1Choices, 0 );
 	m_chSpDefPinValue->SetSelection( 0 );

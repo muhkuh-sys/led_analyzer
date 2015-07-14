@@ -74,7 +74,8 @@ class ColorControlFrame: public GUIFrame
         virtual void OnSystemSettings( wxCommandEvent& event);
         virtual void OnGenerateTest( wxCommandEvent& event);
         virtual void OnUseTest( wxCommandEvent& event);
-
+        virtual void OnSaveSession( wxCommandEvent& event );
+        virtual void OnOpenSession( wxCommandEvent& event );
 
 
         void CreateRows(int numberOfDevices);

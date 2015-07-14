@@ -1690,15 +1690,16 @@
 1412631244 c:\wxwidgets-3.0.2\include\wx\univ\theme.h
 	"wx/string.h"
 
-1436800526 c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.h
+1436868218 c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.h
 	"ColorControlApp.h"
 	"GUIFrame.h"
 	"CSensorData.h"
 	"CDevice.h"
 	"CLua.h"
 	"PanelSensor.h"
+	"CTestGeneration.h"
 
-1436783256 c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.h
+1436868018 c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.h
 	<iostream>
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
@@ -2760,11 +2761,11 @@
 
 1412631244 c:\wxwidgets-3.0.2\include\wx\msw\rcdefs.h
 
-1436800567 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
+1436874568 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
 	"wx_pch.h"
 	"ColorControlMain.h"
 
-1436783244 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.cpp
+1436868135 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\guiframe.cpp
 	"wx/wxprec.h"
 	<wx/wx.h>
 	"GuiFrame.h"
@@ -3735,7 +3736,7 @@
 	"../GUIFrame.h"
 	"PanelTestrow.h"
 
-1436778113 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\panelsensor.cpp
+1436867542 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\panelsensor.cpp
 	"PanelSensor.h"
 
 1436818457 c:\led_analyzer\colorcontrol\include\panelsensor.h
@@ -3751,7 +3752,7 @@
 1436783346 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\paneltestrow.h
 	"../GUIFrame.h"
 
-1436771112 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\paneltestrow.cpp
+1436857306 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\paneltestrow.cpp
 	"PanelTestrow.h"
 	"PanelSensor.h"
 
@@ -3768,4 +3769,11 @@
 1436820656 c:\led_analyzer\colorcontrol\include\ctestgeneration.h
 	"../GUIFrame.h"
 	"PanelSensor.h"
+
+1436857995 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\ctestgeneration.h
+	"../GUIFrame.h"
+	"PanelSensor.h"
+
+1436868268 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\ctestgeneration.cpp
+	"CTestGeneration.h"
 

@@ -151,7 +151,7 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerPinValue;
 	bSizerPinValue = new wxBoxSizer( wxVERTICAL );
 
-	wxString m_chCurPinValueChoices[] = { wxT("Input"), wxT("0"), wxT("1") };
+	wxString m_chCurPinValueChoices[] = { wxT("Input"), wxT("High"), wxT("Low") };
 	int m_chCurPinValueNChoices = sizeof( m_chCurPinValueChoices ) / sizeof( wxString );
 	m_chCurPinValue = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chCurPinValueNChoices, m_chCurPinValueChoices, 0 );
 	m_chCurPinValue->SetSelection( 0 );
@@ -166,7 +166,7 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerDefPinValue;
 	bSizerDefPinValue = new wxBoxSizer( wxVERTICAL );
 
-	wxString m_chCurDefPinValueChoices[] = { wxT("Input"), wxT("0"), wxT("1") };
+	wxString m_chCurDefPinValueChoices[] = { wxT("Input"), wxT("High"), wxT("Low") };
 	int m_chCurDefPinValueNChoices = sizeof( m_chCurDefPinValueChoices ) / sizeof( wxString );
 	m_chCurDefPinValue = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chCurDefPinValueNChoices, m_chCurDefPinValueChoices, 0 );
 	m_chCurDefPinValue->SetSelection( 0 );
@@ -374,7 +374,7 @@ wxString PanelSensor::GetTestrow(int iSensorIndex, int iRowVectorIndex)
 
     if(needKomma)
     {
-            strTestRow = wxString::Format(wxT("[%2i] = {name = \"%s\", nm = %3i, tol_nm = %2i, sat = %3i, tol_sat = %2i, lux = %5i, tol_lux = %4i},"),
+            strTestRow = wxString::Format(wxT("     [%2i] = {name = \"%s\", nm = %3i, tol_nm = %2i, sat = %3i, tol_sat = %2i, lux = %5i, tol_lux = %4i},"),
                                            iIndex, m_vectorTestrow.at(iRowVectorIndex)->GetName() , m_vectorTestrow.at(iRowVectorIndex)->GetWavelength(),
                                            m_vectorTestrow.at(iRowVectorIndex)->GetTolWavelength(), m_vectorTestrow.at(iRowVectorIndex)->GetSaturation(),
                                            m_vectorTestrow.at(iRowVectorIndex)->GetTolSaturation(), m_vectorTestrow.at(iRowVectorIndex)->GetIllumination(),
@@ -383,7 +383,7 @@ wxString PanelSensor::GetTestrow(int iSensorIndex, int iRowVectorIndex)
 
     else
     {
-            strTestRow = wxString::Format(wxT("[%2i] = {name = \"%s\", nm = %3i, tol_nm = %2i, sat = %3i, tol_sat = %2i, lux = %5i, tol_lux = %4i}"),
+            strTestRow = wxString::Format(wxT("     [%2i] = {name = \"%s\", nm = %3i, tol_nm = %2i, sat = %3i, tol_sat = %2i, lux = %5i, tol_lux = %4i}"),
                                            iIndex, m_vectorTestrow.at(iRowVectorIndex)->GetName() , m_vectorTestrow.at(iRowVectorIndex)->GetWavelength(),
                                            m_vectorTestrow.at(iRowVectorIndex)->GetTolWavelength(), m_vectorTestrow.at(iRowVectorIndex)->GetSaturation(),
                                            m_vectorTestrow.at(iRowVectorIndex)->GetTolSaturation(), m_vectorTestrow.at(iRowVectorIndex)->GetIllumination(),
@@ -406,12 +406,12 @@ wxString PanelSensor::GetEmptyTestrow(int iSensorIndex)
 
     if(needKomma)
     {
-            strTestRow = wxString::Format(wxT("[%2i] = { nil }, -- NO TEST ! NO TEST ! NO TEST ! -- "), iIndex);
+            strTestRow = wxString::Format(wxT("     [%2i] =  nil , -- NO TEST ! NO TEST ! NO TEST ! -- "), iIndex);
     }
 
     else
     {
-            strTestRow = wxString::Format(wxT("[%2i] = { nil }  -- NO TEST ! NO TEST ! NO TEST ! -- "), iIndex);
+            strTestRow = wxString::Format(wxT("     [%2i] =  nil   -- NO TEST ! NO TEST ! NO TEST ! -- "), iIndex);
     }
 
     return strTestRow;
@@ -423,7 +423,7 @@ wxString PanelSensor::GetAtPinsUnderTest(bool isLastEntry)
     wxArrayString astrCurNames;
     wxString      strCurName;
 
-    strPinsUnderTest += wxString::Format(wxT(" --- Sensor %2d ---\n"), this->GetSensorNumber());
+    strPinsUnderTest += wxString::Format(wxT("  --- Sensor %2d ---\n"), this->GetSensorNumber());
 
     if(isLastEntry)
     {
@@ -438,23 +438,23 @@ wxString PanelSensor::GetAtPinsUnderTest(bool isLastEntry)
 
                 if(i ==  (m_vectorTestrow.size() - 1))
                 {
-                    strPinsUnderTest += wxString::Format(wxT("{ \"%s\", io_matrix.PINTYPE_%s, %3d, %2d, io_matrix.PINFLAG_IOZ }\n"),
+                    strPinsUnderTest += wxString::Format(wxT("  { \"%s\", io_matrix.PINTYPE_%s, %3d, %2d, io_matrix.PINFLAG_IOZ }\n"),
                                             strCurName, m_vectorTestrow.at(i)->GetPintype(m_vectorTestrow.at(i)->GetPintype()),
-                                            m_vectorTestrow.at(i)->GetPinNumber(), m_vectorTestrow.at(i)->GetPinValue());
+                                            m_vectorTestrow.at(i)->GetPinNumber(), m_vectorTestrow.at(i)->GetPinDefValue());
                 }
                 else
                 {
                     if(this->IsLastNameEntryWithoutRepetition(i))
                     {
-                        strPinsUnderTest += wxString::Format(wxT("{ \"%s\", io_matrix.PINTYPE_%s, %3d, %2d, io_matrix.PINFLAG_IOZ }\n"),
+                        strPinsUnderTest += wxString::Format(wxT("  { \"%s\", io_matrix.PINTYPE_%s, %3d, %2d, io_matrix.PINFLAG_IOZ }\n"),
                                                 strCurName, m_vectorTestrow.at(i)->GetPintype(m_vectorTestrow.at(i)->GetPintype()),
-                                                m_vectorTestrow.at(i)->GetPinNumber(), m_vectorTestrow.at(i)->GetPinValue());
+                                                m_vectorTestrow.at(i)->GetPinNumber(), m_vectorTestrow.at(i)->GetPinDefValue());
                     }
                     else
                     {
-                        strPinsUnderTest += wxString::Format(wxT("{ \"%s\", io_matrix.PINTYPE_%s, %3d, %2d, io_matrix.PINFLAG_IOZ },\n"),
+                        strPinsUnderTest += wxString::Format(wxT("  { \"%s\", io_matrix.PINTYPE_%s, %3d, %2d, io_matrix.PINFLAG_IOZ },\n"),
                                                 strCurName, m_vectorTestrow.at(i)->GetPintype(m_vectorTestrow.at(i)->GetPintype()),
-                                                m_vectorTestrow.at(i)->GetPinNumber(), m_vectorTestrow.at(i)->GetPinValue());
+                                                m_vectorTestrow.at(i)->GetPinNumber(), m_vectorTestrow.at(i)->GetPinDefValue());
                     }
                 }
 
@@ -471,9 +471,9 @@ wxString PanelSensor::GetAtPinsUnderTest(bool isLastEntry)
             if(!this->NameMoreThanTwice(astrCurNames, strCurName ))
             {
                 astrCurNames.Add(strCurName);
-                strPinsUnderTest += wxString::Format(wxT("{ \"%s\", io_matrix.PINTYPE_%s, %3d, %2d, io_matrix.PINFLAG_IOZ },\n"),
+                strPinsUnderTest += wxString::Format(wxT("  { \"%s\", io_matrix.PINTYPE_%s, %3d, %2d, io_matrix.PINFLAG_IOZ },\n"),
                                         strCurName, m_vectorTestrow.at(i)->GetPintype(m_vectorTestrow.at(i)->GetPintype()),
-                                        m_vectorTestrow.at(i)->GetPinNumber(), m_vectorTestrow.at(i)->GetPinValue());
+                                        m_vectorTestrow.at(i)->GetPinNumber(), m_vectorTestrow.at(i)->GetPinDefValue());
             }
 
         }
@@ -508,9 +508,8 @@ bool PanelSensor::IsLastNameEntryWithoutRepetition(int iCurIndex)
 wxString PanelSensor::GetPinStateTestSet(int iIndexTestSet)
 {
 
-    return wxString::Format(wxT("io_matrix.set_pin(aAttr, \"%s\", %d)"),
+    return wxString::Format(wxT("   io_matrix.set_pin(aAttr, \"%s\", %d)"),
                                 m_vectorTestrow.at(iIndexTestSet)->GetName(),
                                 m_vectorTestrow.at(iIndexTestSet)->GetPinValue());
 
 }
-// Is last entry then comma
