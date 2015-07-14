@@ -228,7 +228,7 @@ unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_conte
 
                if(uiSuccesscounter == 16)
                {
-                   printf("Conversions complete.\n");
+                   //printf("Conversions complete.\n");
                    return 0; 
                }
             }
@@ -420,7 +420,7 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
 
         if(uiSuccesscounter ==16)
         {
-            printf("All gain settings ok.\n");
+            //printf("All gain settings ok.\n");
             return 0;
         }
 
