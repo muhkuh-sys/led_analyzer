@@ -621,7 +621,7 @@ int i2c_read4x16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
         if((counter  % 8 == 0) && counter != 64) i2c_giveAck(ftdiA, ftdiB);
     }
 
-	i2c_giveAck(ftdiA, ftdiB);
+	//i2c_giveAck(ftdiA, ftdiB);
     i2c_stopCond(ftdiA, ftdiB);
 
 
