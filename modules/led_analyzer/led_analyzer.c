@@ -449,25 +449,16 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntegrationtime);
 	tcs_getGain(apHandles[handleIndex], apHandles[handleIndex+1], aucGain);
 	
-	/*
 	tcs_readColors(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, ausRed, ausGreen, ausBlue);
-	
-	printf("1 ausClear: %d\n", ausClear[0]);
-	printf("1 ausRed: %d\n", ausRed[0]);
-	printf("1 ausGren: %d\n", ausGreen[0]);
-	printf("1 ausBlue: %d\n", ausBlue[0]);
-	*/
-	
+
+/*	
 	tcs_readColor(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, CLEAR);
 	tcs_readColor(apHandles[handleIndex], apHandles[handleIndex+1], ausRed, RED);
 	tcs_readColor(apHandles[handleIndex], apHandles[handleIndex+1], ausGreen, GREEN);
 	tcs_readColor(apHandles[handleIndex], apHandles[handleIndex+1], ausBlue, BLUE);
+*/
 	
 
-	printf("2 ausClear: %d\n", ausClear[0]);
-	printf("2 ausRed: %d\n", ausRed[0]);
-	printf("2 ausGren: %d\n", ausGreen[0]);
-	printf("2 ausBlue: %d\n", ausBlue[0]);
 	
 	
 	if((errorcode = tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, aucIntegrationtime)) != 0)
@@ -721,14 +712,14 @@ int get_intTime(void** apHandles, int devIndex, unsigned char* aucIntegrationtim
 
 }
 
-/** waits for a time specified in uiWaitTime ]1 ... 700 ms] max 
+/** waits for a time specified in uiWaitTime ]1 ms ... 10 s] max 
 	@param uiWaitTime	time in milliseconds to wait in order to let the sensors complete their ADC measurements
 */
 
 void wait4Conversion(unsigned int uiWaitTime)
 {
 
-	if((uiWaitTime > 0) && (uiWaitTime <= 700))
+	if((uiWaitTime > 0) && (uiWaitTime <= 10000))
 		Sleep(uiWaitTime);
 	
 	else Sleep(200);
