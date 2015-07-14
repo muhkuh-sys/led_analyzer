@@ -1,7 +1,7 @@
 require("tcs_chromaTable")
 
 --local MIN_LUX   = 7.0
-local MIN_CLEAR = 0.00005 -- Minimum Clear Level as percentage of maximum clear
+local MIN_CLEAR = 0.0007 -- Minimum Clear Level as percentage of maximum clear
 
 -- a helper to print a colortable which contains values in RGB, XYZ, HSV, Yxy and wavelength color space 
 -- parameter space determines which space should be printed out 
@@ -723,6 +723,11 @@ function wavelength2RGB(wavelength)
 	-- 645 ... 780 
 	elseif ((wavelength >= 645) and (wavelength <= 780)) then 
 		r = 1.0 
+		g = 0.0 
+		b = 0.0  
+	
+	elseif (wavelength == 0) then 
+		r = 0.0
 		g = 0.0 
 		b = 0.0 
 	end 
