@@ -136,7 +136,7 @@ function startMeasurements(numberOfDevices)
 	tColorTable = {}
 
 	while(devIndex < numberOfDevices) do 
-		print(string.format("\n------------------ Device %d -------------------- ", devIndex))
+		--print(string.format("\n------------------ Device %d -------------------- ", devIndex))
 			
 		-- Get Colours --
 		while(error_counter < READ_MAXERROR) do		
@@ -154,9 +154,9 @@ function startMeasurements(numberOfDevices)
 		end 
 				
 		tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, aucIntTimes, aucGains, ret, MAXSENSORS)
-		print_color(devIndex, tColorTable, 16)
+		--print_color(devIndex, tColorTable, 16)
 		devIndex = devIndex + 1 
-		print("\n")
+		--print("\n")
 	end 
 	
 	return ret 
