@@ -32,6 +32,9 @@ class PanelSensor : public wxPanel
 		wxTextCtrl* m_txtCtrlTolSat;
 		wxTextCtrl* m_txtCtrlTolIllu;
 
+		unsigned char m_integration;
+		unsigned char m_gain;
+
 		wxVector<PanelTestrow*> m_vectorTestrow;
 		Hash_wxWindowID_UnsignedLong m_hashRemove;
 		Hash_wxWindowID_UnsignedLong m_hashClear;
@@ -39,7 +42,7 @@ class PanelSensor : public wxPanel
 
 
     public:
-        wxBitmapButton* GetpButton() {return m_bpButtonPlus;};
+        wxBitmapButton* GetpButtonAdd() {return m_bpButtonPlus;};
         wxVector<PanelTestrow*> GetVectorTestrow(){return m_vectorTestrow; };
 
         int      GetSensorNumber()      {return wxAtoi(m_txtCtrlSensorNo->GetValue());};
@@ -71,15 +74,20 @@ class PanelSensor : public wxPanel
         int GetPinDefValue()                {return m_chCurDefPinValue->GetSelection(); };
         void SetPinDefValue(int iDefValue)  {m_chCurDefPinValue->SetSelection(iDefValue);};
 
+        void SetIntegration(unsigned char ucIntegration){m_integration = ucIntegration;};
+        void SetGain(unsigned char ucGain) {m_gain = ucGain;};
+        unsigned char  GetIntegration()       {return m_integration;};
+        unsigned char  GetGain()              {return m_gain;};
 
         /* Test Generation */
         wxString GetTestrow(int iSensorIndex, int iRowVectorIndex);
         wxString GetEmptyTestrow(int iSensorIndex);
         wxString GetAtPinsUnderTest(bool lastEntry);
         wxString GetPinStateTestSet(int iIndexTestSet);
-
+        wxString GetSettingsrow(int iSensorIndex);
         bool NameMoreThanTwice(const wxArrayString astrCurName, const wxString strCurName);
         bool IsLastNameEntryWithoutRepetition(int iCurIndex);
+
         void OnAddTestRow( wxCommandEvent& event );
 		void OnButtonRemove( wxCommandEvent& event );
         void OnClearSet( wxCommandEvent& event);

@@ -9,8 +9,8 @@ PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos,
 
 	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
 
-	wxBoxSizer* bSizerSensorPanel;
-	bSizerSensorPanel = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* bSizervectorSensorPanel;
+	bSizervectorSensorPanel = new wxBoxSizer( wxHORIZONTAL );
 
 	wxBoxSizer* bSizerNo;
 	bSizerNo = new wxBoxSizer( wxVERTICAL );
@@ -43,10 +43,10 @@ PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos,
 	bSizerNo->Add( bSizerButtons1, 1, wxALIGN_CENTER_HORIZONTAL, 2 );
 
 
-	bSizerSensorPanel->Add( bSizerNo, 0, 0, 5 );
+	bSizervectorSensorPanel->Add( bSizerNo, 0, 0, 5 );
 
 
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizervectorSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizerName;
 	bSizerName = new wxBoxSizer( wxVERTICAL );
@@ -57,10 +57,10 @@ PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos,
 	bSizerName->Add( m_txtCtrlSpName, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
 
-	bSizerSensorPanel->Add( bSizerName, 0, 0, 5 );
+	bSizervectorSensorPanel->Add( bSizerName, 0, 0, 5 );
 
 
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizervectorSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizerWL;
 	bSizerWL = new wxBoxSizer( wxVERTICAL );
@@ -71,10 +71,10 @@ PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos,
 	bSizerWL->Add( m_txtCtrlSpWL, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
 
-	bSizerSensorPanel->Add( bSizerWL, 0, 0, 5 );
+	bSizervectorSensorPanel->Add( bSizerWL, 0, 0, 5 );
 
 
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizervectorSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizerSat;
 	bSizerSat = new wxBoxSizer( wxVERTICAL );
@@ -85,10 +85,10 @@ PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos,
 	bSizerSat->Add( m_txtCtrlSpSat, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
 
-	bSizerSensorPanel->Add( bSizerSat, 0, 0, 5 );
+	bSizervectorSensorPanel->Add( bSizerSat, 0, 0, 5 );
 
 
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizervectorSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizerIllu;
 	bSizerIllu = new wxBoxSizer( wxVERTICAL );
@@ -99,10 +99,10 @@ PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos,
 	bSizerIllu->Add( m_txtCtrlSpIllu, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
 
-	bSizerSensorPanel->Add( bSizerIllu, 0, 0, 5 );
+	bSizervectorSensorPanel->Add( bSizerIllu, 0, 0, 5 );
 
 
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizervectorSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizerColor;
 	bSizerColor = new wxBoxSizer( wxVERTICAL );
@@ -113,10 +113,10 @@ PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos,
 	bSizerColor->Add( m_txtCtrlSpColor, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
 
-	bSizerSensorPanel->Add( bSizerColor, 0, 0, 5 );
+	bSizervectorSensorPanel->Add( bSizerColor, 0, 0, 5 );
 
 
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizervectorSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizerPintype;
 	bSizerPintype = new wxBoxSizer( wxVERTICAL );
@@ -128,10 +128,10 @@ PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos,
 	bSizerPintype->Add( m_chSpPintype, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 2 );
 
 
-	bSizerSensorPanel->Add( bSizerPintype, 0, 0, 5 );
+	bSizervectorSensorPanel->Add( bSizerPintype, 0, 0, 5 );
 
 
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizervectorSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizerPinNo;
 	bSizerPinNo = new wxBoxSizer( wxVERTICAL );
@@ -142,10 +142,10 @@ PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos,
 	bSizerPinNo->Add( m_txtCtrlSpPinNo, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
 
-	bSizerSensorPanel->Add( bSizerPinNo, 0, 0, 5 );
+	bSizervectorSensorPanel->Add( bSizerPinNo, 0, 0, 5 );
 
 
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizervectorSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizerPinValue;
 	bSizerPinValue = new wxBoxSizer( wxVERTICAL );
@@ -157,10 +157,10 @@ PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos,
 	bSizerPinValue->Add( m_choiceSpPinValue, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 2 );
 
 
-	bSizerSensorPanel->Add( bSizerPinValue, 0, 0, 5 );
+	bSizervectorSensorPanel->Add( bSizerPinValue, 0, 0, 5 );
 
 
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizervectorSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizerDefPinValue;
 	bSizerDefPinValue = new wxBoxSizer( wxVERTICAL );
@@ -172,10 +172,10 @@ PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos,
 	bSizerDefPinValue->Add( m_chSpDefPinValue, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 2 );
 
 
-	bSizerSensorPanel->Add( bSizerDefPinValue, 0, 0, 5 );
+	bSizervectorSensorPanel->Add( bSizerDefPinValue, 0, 0, 5 );
 
 
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizervectorSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizerTolNm;
 	bSizerTolNm = new wxBoxSizer( wxVERTICAL );
@@ -186,10 +186,10 @@ PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos,
 	bSizerTolNm->Add( m_txtCtrlSpTolNm, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
 
-	bSizerSensorPanel->Add( bSizerTolNm, 0, 0, 5 );
+	bSizervectorSensorPanel->Add( bSizerTolNm, 0, 0, 5 );
 
 
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizervectorSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizerTolSat;
 	bSizerTolSat = new wxBoxSizer( wxVERTICAL );
@@ -200,10 +200,10 @@ PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos,
 	bSizerTolSat->Add( m_txtCtrlSpTolSat, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
 
-	bSizerSensorPanel->Add( bSizerTolSat, 0, 0, 5 );
+	bSizervectorSensorPanel->Add( bSizerTolSat, 0, 0, 5 );
 
 
-	bSizerSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizervectorSensorPanel->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizerTolIllu;
 	bSizerTolIllu = new wxBoxSizer( wxVERTICAL );
@@ -214,13 +214,13 @@ PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos,
 	bSizerTolIllu->Add( m_txtCtrlSpTolIllu, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 2 );
 
 
-	bSizerSensorPanel->Add( bSizerTolIllu, 0, 0, 5 );
+	bSizervectorSensorPanel->Add( bSizerTolIllu, 0, 0, 5 );
 
 
 
-	this->SetSizer( bSizerSensorPanel );
+	this->SetSizer( bSizervectorSensorPanel );
 	this->Layout();
-	bSizerSensorPanel->Fit( this );
+	bSizervectorSensorPanel->Fit( this );
 
 
 	// Connect Events

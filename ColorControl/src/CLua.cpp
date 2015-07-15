@@ -225,7 +225,27 @@ int CLua::InitDevices(int iNumberOfDevices, wxVector<CColorController*> vectorDe
         /* Load tColorTable[i] = device */
         this->GetTableField(i);
 
+        /* Get retval for sensor from init function */
         vectorDevices.at(i)->SetState(this->GetIntField(7));
+
+        /* Get the settings field (entry 6) .. contains gain and integration time */
+        this->GetTableField(6);
+
+        for(int j = 1; j <= 16; j++)
+        {
+            /* Get the sensor field */
+            this->GetTableField(j);
+
+            /* Get integration and gain and store it into vector testrow */
+            vectorDevices.at(i)->SetGain( j-1, (tcs3472_gain_t)this->GetIntField("gain"));
+            vectorDevices.at(i)->SetIntTime( j-1, (tcs3472_intTime_t)this->GetIntField("intTime"));
+
+            /* Pop the sensor field */
+            lua_pop(this->m_pLuaState, 1);
+        }
+
+        /* Pop the settings field */
+        lua_pop(this->m_pLuaState, 1);
 
         /* Pop the device table from the stack */
         lua_pop(this->m_pLuaState, 1);

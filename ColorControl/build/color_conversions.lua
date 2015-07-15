@@ -244,6 +244,27 @@ function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, error
 			
 end 
 
+-- Gets the gain and integration time settings and stores them into a settings table with form 
+-- table[sensor] = {gain = ..., intTime = ...}
+
+function auc2settingsTable(aucIntegrationtimes, aucGains, length)
+
+	local tEntry = {}
+	local lGain 
+	local lIntTime 
+	
+	for i = 0, length - 1 do 
+		lIntTime = led_analyzer.puchar_getitem(aucIntegrationtimes, i)
+		lGain    = led_analyzer.puchar_getitem(aucGains, i)
+		
+		tEntry[i+1] = { gain = lGain,
+						intTime = lIntTime
+						}
+	end
+	
+	return tEntry
+
+end
 
 -- Gets the maximum clear level corresponding to a given integration time of the tcs3472 sensor 
 function maxClear(integrationTime)

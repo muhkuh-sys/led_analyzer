@@ -395,6 +395,28 @@ wxString PanelSensor::GetTestrow(int iSensorIndex, int iRowVectorIndex)
     return strTestRow;
 }
 
+wxString PanelSensor::GetSettingsrow(int iSensorIndex)
+{
+    int iIndex     = iSensorIndex % 16 +1;
+    bool needKomma = true;
+
+    wxString    strTestRow;
+
+    /* The last sensor entry (sensor[16] doesnt need a komma) */
+    if(iIndex % 16 == 0) needKomma = false;
+
+    if(needKomma)
+    {
+        return wxString::Format(wxT("   [%2i] = { gain = %3d, integration = %3d },"),
+                                iIndex, this->GetGain(), this->GetIntegration());
+    }
+    else
+    {
+        return wxString::Format(wxT("   [%2i] = { gain = %3d, integration = %3d }"),
+                                iIndex, this->GetGain(), this->GetIntegration());
+    }
+}
+
 
 wxString PanelSensor::GetEmptyTestrow(int iSensorIndex)
 {

@@ -36,7 +36,8 @@ enum e_state_t
 };
 
 
-
+WX_DECLARE_STRING_HASH_MAP(unsigned char /*value*/, MyStr2UcHash );
+WX_DECLARE_HASH_MAP(unsigned char /* key */, wxString /* value */, wxIntegerHash, wxIntegerEqual, MyUc2StrHash );
 
 class ColorControlFrame: public GUIFrame
 {
@@ -45,6 +46,11 @@ class ColorControlFrame: public GUIFrame
         ColorControlFrame(wxFrame *frame);
         ~ColorControlFrame();
     private:
+
+        MyStr2UcHash m_str2Uc_gain;
+        MyStr2UcHash m_str2Uc_integration;
+        MyUc2StrHash m_uc2strHash_gain;
+        MyUc2StrHash m_uc2strHash_integration;
 
         enum e_TIME_TESTMODE
         {
@@ -84,8 +90,6 @@ class ColorControlFrame: public GUIFrame
         void UpdateSerialList();
         void UpdateRows(int iNumberOfDevices);
         void UpdateConnectedField(wxColour colour);
-        int  IntegrationToIndex(tcs3472_intTime_t intTime);
-        int  StrToRegisterContent(const wxString strSetting);
 
         void GenerateColorTestTable(wxTextFile* tFile);
         void GenerateNetXTestTable(wxTextFile* tFile);
@@ -106,7 +110,7 @@ class ColorControlFrame: public GUIFrame
 
 
         /* vector contains panels for testfile generation */
-        wxVector<PanelSensor*> m_sensorPanels;
+        wxVector<PanelSensor*> m_vectorSensorPanels;
         /* vector contains entries for devices */
         wxVector<CColorController*> m_cocoDevices;
 

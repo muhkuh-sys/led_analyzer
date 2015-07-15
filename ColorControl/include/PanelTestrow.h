@@ -42,6 +42,8 @@ class PanelTestrow : public wxPanel
         wxWindowID GetButtonClearID(){return m_bpButtonClear->GetId();};
         wxWindowID GetButtonPasteID(){return m_bpButtonPaste->GetId(); };
 
+        wxBitmapButton* GetpButtonRemove() {return m_bpButtonRemove;};
+
         bool IsActivated()                  {return m_cbUseSet->GetValue();};
         wxString GetName()                  {return m_txtCtrlSpName->GetValue(); };
         bool     IsNameFieldEmpty()         {return m_txtCtrlSpName->IsEmpty();};

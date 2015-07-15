@@ -246,9 +246,6 @@ class GUIFrame : public wxFrame
         wxChoice* m_chTime;
         PanelHeader* m_panelHeader;
 
-        wxArrayString astrGainchoices;
-        wxArrayString astrIntchoices;
-
 
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnScan( wxCommandEvent& event ) { event.Skip(); }

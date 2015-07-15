@@ -23,21 +23,23 @@ class CTestGeneration
         CTestGeneration();
         virtual ~CTestGeneration();
 
-        void GenerateColorTestTable(wxVector<PanelSensor*> sensorPanel, wxTextFile* tFile);
-        void GenerateNetXTestTable(wxVector<PanelSensor*> sensorPanel, wxTextFile* tFile, bool useNetX);
-        void GenerateTestStepFunctions(wxVector<PanelSensor*> sensorPanel, wxTextFile* tFile, bool useNetX);
+        void GenerateColorTestTable(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile);
+        void GenerateNetXTestTable(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX);
+        void GenerateTestStepFunctions(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX);
         void GenerateInitialization(wxTextFile* tFile, bool useNetX);
         void InsertHeaders(wxTextFile* tFile, bool useNetX);
         void GenerateTestSteps(wxVector<PanelSensor*> panelSensor, wxTextFile* tFile, bool useNetX);
-        void GenerateTest(wxVector<PanelSensor*> sensorPanel, wxTextFile* tFile, bool useNetX, wxTextCtrl* txtCtrlLog);
+        void GenerateSettingsTable(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile);
+        void GenerateTest(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX, wxTextCtrl* txtCtrlLog);
 
-        int  GetMaximumNumberOfTestsets(wxVector<PanelSensor*> sensorPanel);
-        int  GetLastEntry(wxVector<PanelSensor*> sensorPanel);
-        bool TestEntriesOK(wxVector<PanelSensor*> sensorPanel, wxTextCtrl* txtCtrlLog, bool useNetX);
+        int  GetMaximumNumberOfTestsets(wxVector<PanelSensor*> vectorSensorPanel);
+        int  GetLastEntry(wxVector<PanelSensor*> vectorSensorPanel);
+        bool TestEntriesOK(wxVector<PanelSensor*> vectorSensorPanel, wxTextCtrl* txtCtrlLog, bool useNetX);
 
         /* Save and Open a Session */
-        void SaveSessionAsIni(wxVector<PanelSensor*> sensorPanel, wxTextFile* tFile);
-        bool OpenSessionAsIni(wxVector<PanelSensor*> sensorPanel, wxFileConfig* tFileConfig);
+        void SaveSessionAsIni(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile);
+        bool OpenSessionAsIni(wxVector<PanelSensor*> vectorSensorPanel, wxFileConfig* tFileConfig);
+        bool FillTestrowsWithContent(PanelSensor* sensorPanel, int iSensorCounter, wxFileConfig* tFileConfig);
 };
 
 #endif // CTESTGENERATION_H

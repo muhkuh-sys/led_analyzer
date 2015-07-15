@@ -29,6 +29,7 @@ enum sensor_state_t
     SENSOR_EXCEEDED_CLEAR        = 0x10000000
 };
 
+
 class CSensorData
 {
     private:

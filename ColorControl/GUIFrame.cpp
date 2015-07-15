@@ -295,12 +295,13 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
     m_cExceededClear = m_dvlColors->AppendProgressColumn( wxT("Clear Level"), wxDATAVIEW_CELL_INERT, 100, wxALIGN_CENTER);
 
-
+    wxArrayString astrGainchoices;
     astrGainchoices.Add("GAIN_1X");
     astrGainchoices.Add("GAIN_4X");
     astrGainchoices.Add("GAIN_16X");
     astrGainchoices.Add("GAIN_60X");
 
+    wxArrayString astrIntchoices;
     astrIntchoices.Add("TIME_2_4ms");
     astrIntchoices.Add("TIME_24ms");
     astrIntchoices.Add("TIME_100ms");
@@ -310,6 +311,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
     m_mccrGain = new MyCustomChoiceRenderer(astrGainchoices);
     m_mccrInt  = new MyCustomChoiceRenderer(astrIntchoices);
+
 	m_cGain = new wxDataViewColumn(wxT("Gain"), m_mccrGain, 6, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
 	m_cIntegration = new wxDataViewColumn(wxT("Integration Time"), m_mccrInt, 7, wxDVC_DEFAULT_WIDTH, wxALIGN_CENTER, wxDATAVIEW_COL_RESIZABLE);
     m_dvlColors->AppendColumn(m_cGain);

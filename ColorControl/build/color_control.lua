@@ -105,6 +105,9 @@ function initDevices(numberOfDevices)
 	
 		while(error_counter < INIT_MAXERROR) do
 			ret = led_analyzer.init_sensors(apHandles, devIndex)
+			led_analyzer.get_intTime(apHandles, devIndex, aucIntTimes)
+			led_analyzer.get_gain(apHandles, devIndex, aucGains)
+			
 			if ret ~= 0 then
 				error_counter = error_counter + 1 
 			else
@@ -118,6 +121,9 @@ function initDevices(numberOfDevices)
 		end 
 		tColorTable[devIndex] = {}
 		tColorTable[devIndex][ENTRY_ERRORCODE] = ret
+		
+		tColorTable[devIndex][ENTRY_SETTINGS] = auc2settingsTable(aucIntTimes, aucGains, MAXSENSORS)
+		
 		devIndex = devIndex + 1 
 	end 
 	
