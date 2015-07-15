@@ -175,7 +175,7 @@ void CTestGeneration::InsertHeaders(wxTextFile* tFile, bool useNetX)
     if(useNetX)
     {
         tFile->AddLine("require(\"muhkuh_cli_init\")");
-        tFile->AddLine("require(\"io_matrix\"\n)");
+        tFile->AddLine("require(\"io_matrix\")\n");
     }
 
     tFile->AddLine("-- be pessimistic ");
@@ -329,6 +329,7 @@ void CTestGeneration::GenerateTest(wxVector<PanelSensor*> vectorSensorPanel, wxT
        return;
     }
 
+    this->FileLEDStimulation(vectorSensorPanel);
     this->InsertHeaders(tFile, useNetX);
     this->GenerateColorTestTable(vectorSensorPanel, tFile);
     this->GenerateSettingsTable(vectorSensorPanel, tFile);
@@ -574,3 +575,64 @@ bool CTestGeneration::FillTestrowsWithContent(PanelSensor* sensorPanel, int iSen
     return true;
 }
 
+void CTestGeneration::FileLEDStimulation(wxVector<PanelSensor*> vectorSensorPanel)
+{
+
+    wxLogMessage("strpathname: %s", wxFileName::GetCwd());
+
+    wxTextFile tFile(wxFileName::GetCwd()+"\\_tempscript_.lua");
+
+    if(!tFile.Exists()) tFile.Create();
+
+    if(!tFile.Open()) wxLogMessage("Couldn't open file.");
+
+    tFile.Clear();
+
+    tFile.AddLine("require(\"muhkuh_cli_init\")");
+    tFile.AddLine("require(\"io_matrix\")\n");
+
+    tFile.AddLine(wxT(" --------------------------- netX I/O Table ---------------------------\n "));
+    tFile.AddLine(wxT(" local atPinsUnderTest = {\n"));
+
+    for(wxVector<PanelSensor*>::iterator it = vectorSensorPanel.begin(); it != vectorSensorPanel.end(); it++)
+    {
+
+        if(!((*it) == vectorSensorPanel.back()))
+        {
+            if((*it)->IsPinnumberEmpty())
+                tFile.AddLine(wxT("    { nil },"));
+            else tFile.AddLine(wxString::Format(wxT("    { \"\", io_matrix.PINTYPE_%s, %3d, %2d, io_matrix.PINFLAG_IOZ },\n"),
+                                            (*it)->GetPintype((*it)->GetPintype()),
+                                            (*it)->GetPinNumber(), (*it)->GetPinDefValue()));
+        }
+        /* Last entry needs no komma */
+        else
+        {
+            if((*it)->IsPinnumberEmpty())
+                tFile.AddLine(wxT("    { nil }"));
+            else tFile.AddLine(wxString::Format(wxT("    { \"\", io_matrix.PINTYPE_%s, %3d, %2d, io_matrix.PINFLAG_IOZ }\n"),
+                                            (*it)->GetPintype((*it)->GetPintype()),
+                                            (*it)->GetPinNumber(), (*it)->GetPinDefValue()));
+        }
+    }
+
+
+    tFile->AddLine(wxT("-- Device initialization -------------------"));
+    tFile->AddLine(wxT("-- netX"));
+    tFile->AddLine(wxT("local aAttr = io_matrix.initialize(tPlugin, \"netx/iomatrix_netx%d.bin\")"));;
+    tFile->AddLine(wxT("io_matrix.parse_pin_description(aAttr, atPinsUnderTest, ulVerbose)"));
+
+    tFile->AddLine(wxT("-- Turn on all LEDs"));
+    tFile->AddLine(wxT("local uiCounter = 1"));
+    tFile->AddLine(wxT("while(atPinsUnderTest[uiCounter] ~= nil) do"));
+    tFile->AddLine(wxT("    io_matrix.set_pin(aAttr, atPinsUnderTest[uiCounter][1],2)"));
+    tFile->AddLine(wxT("    uiCounter = uiCounter + 1"));
+    tFile->AddLine(wxT("end\n"));
+
+    tFile.AddLine(wxT("}"));
+
+    tFile.Write();
+
+    if(!tFile.Close()) wxLogMessage("Couldn't close file");
+
+}

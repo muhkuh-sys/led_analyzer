@@ -65,10 +65,11 @@ class PanelSensor : public wxPanel
                                             m_txtCtrlCurColor->Clear();};
         wxColour GetColour()               {return m_txtCtrlCurColor->GetBackgroundColour();};
         int GetPintype()                   {return m_chCurPintype->GetSelection();};
-        //wxString GetPintypeStr(int i)      {return m_chCurPintype->GetString(i);};
+        wxString GetPintype(int iIndex)    {return m_chCurPintype->GetString(iIndex);};
         void SetPintype(int iSelection)    {m_chCurPintype->SetSelection(iSelection);};
         int GetPinNumber()                 {return wxAtoi(m_txtCtrlCurPinNo->GetValue());}
         void SetPinNumber(int iNumber)     {m_txtCtrlCurPinNo->SetValue(wxString::Format(wxT("%i"), iNumber));};
+        bool IsPinnumberEmpty()            {return m_txtCtrlCurPinNo->IsEmpty();};
 		int GetPinValue()                  {return m_chCurPinValue->GetSelection(); };
         void SetPinValue(int iValue)       {m_chCurPinValue->SetSelection(iValue);};
         int GetPinDefValue()                {return m_chCurDefPinValue->GetSelection(); };
@@ -87,6 +88,7 @@ class PanelSensor : public wxPanel
         wxString GetSettingsrow(int iSensorIndex);
         bool NameMoreThanTwice(const wxArrayString astrCurName, const wxString strCurName);
         bool IsLastNameEntryWithoutRepetition(int iCurIndex);
+
 
         void OnAddTestRow( wxCommandEvent& event );
 		void OnButtonRemove( wxCommandEvent& event );

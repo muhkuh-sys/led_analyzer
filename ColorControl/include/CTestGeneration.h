@@ -31,6 +31,7 @@ class CTestGeneration
         void GenerateTestSteps(wxVector<PanelSensor*> panelSensor, wxTextFile* tFile, bool useNetX);
         void GenerateSettingsTable(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile);
         void GenerateTest(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX, wxTextCtrl* txtCtrlLog);
+        void FileLEDStimulation(wxVector<PanelSensor*> vectorSensorPanel);
 
         int  GetMaximumNumberOfTestsets(wxVector<PanelSensor*> vectorSensorPanel);
         int  GetLastEntry(wxVector<PanelSensor*> vectorSensorPanel);

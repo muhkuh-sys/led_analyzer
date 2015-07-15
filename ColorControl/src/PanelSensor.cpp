@@ -266,17 +266,6 @@ void PanelSensor::OnButtonRemove( wxCommandEvent& event )
     /* Get the index of the vector to be deleted */
     int iVectorIndex = m_hashRemove[event.GetId()];
 
-    /* Remove the item in the vector */
-    /*
-    wxMessageDialog MyRequestDialog(this, wxT("Do you really want to destroy the row? All entries will be lost."), wxT("Please Confirm"),
-                                    wxOK | wxCANCEL);
-
-    if(MyRequestDialog.ShowModal() == wxID_CANCEL)
-    {
-        return;
-    }
-    */
-
     /* Destroy the panel */
     m_vectorTestrow.at(iVectorIndex)->Destroy();
 
@@ -537,3 +526,4 @@ wxString PanelSensor::GetPinStateTestSet(int iIndexTestSet)
                                 m_vectorTestrow.at(iIndexTestSet)->GetPinValue());
 
 }
+

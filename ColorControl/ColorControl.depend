@@ -3439,7 +3439,7 @@
 1436202548 c:\led_analyzer\colorcontrol\colorcontrolapp.h
 	<wx/app.h>
 
-1436897957 c:\led_analyzer\colorcontrol\colorcontrolmain.h
+1436985228 c:\led_analyzer\colorcontrol\colorcontrolmain.h
 	"ColorControlApp.h"
 	"GUIFrame.h"
 	"CSensorData.h"
@@ -3448,7 +3448,7 @@
 	"PanelSensor.h"
 	"CTestGeneration.h"
 
-1436897957 c:\led_analyzer\colorcontrol\guiframe.h
+1436985228 c:\led_analyzer\colorcontrol\guiframe.h
 	<iostream>
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
@@ -3492,14 +3492,14 @@
 	<wx/tooltip.h>
 	"logo_hilscher.xpm"
 
-1436466119 c:\led_analyzer\colorcontrol\include\csensordata.h
+1436985228 c:\led_analyzer\colorcontrol\include\csensordata.h
 	"../GUIFrame.h"
 
-1436905020 source:c:\led_analyzer\colorcontrol\colorcontrolmain.cpp
+1436985228 source:c:\led_analyzer\colorcontrol\colorcontrolmain.cpp
 	"wx_pch.h"
 	"ColorControlMain.h"
 
-1436897957 source:c:\led_analyzer\colorcontrol\guiframe.cpp
+1436985228 source:c:\led_analyzer\colorcontrol\guiframe.cpp
 	"wx/wxprec.h"
 	<wx/wx.h>
 	"GuiFrame.h"
@@ -3652,7 +3652,7 @@
 	<stdio.h>
 	"lua.h"
 
-1436470811 source:c:\led_analyzer\colorcontrol\src\clua.cpp
+1436985228 source:c:\led_analyzer\colorcontrol\src\clua.cpp
 	"CLua.h"
 
 1412631242 c:\wxwidgets-3.0.2\include\wx\colordlg.h
@@ -3739,11 +3739,11 @@
 1436969595 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\panelsensor.cpp
 	"PanelSensor.h"
 
-1436903851 c:\led_analyzer\colorcontrol\include\panelsensor.h
+1436991237 c:\led_analyzer\colorcontrol\include\panelsensor.h
 	"../GUIFrame.h"
 	"PanelTestrow.h"
 
-1436897957 source:c:\led_analyzer\colorcontrol\src\panelsensor.cpp
+1436985228 source:c:\led_analyzer\colorcontrol\src\panelsensor.cpp
 	"PanelSensor.h"
 
 1435865851 5472bab98e9d9f2769051662c8270b75ca3d5
@@ -3756,17 +3756,17 @@
 	"PanelTestrow.h"
 	"PanelSensor.h"
 
-1436818457 c:\led_analyzer\colorcontrol\include\paneltestrow.h
+1436985228 c:\led_analyzer\colorcontrol\include\paneltestrow.h
 	"../GUIFrame.h"
 
-1436897957 source:c:\led_analyzer\colorcontrol\src\paneltestrow.cpp
+1436985228 source:c:\led_analyzer\colorcontrol\src\paneltestrow.cpp
 	"PanelTestrow.h"
 	"PanelSensor.h"
 
 1436904812 source:c:\led_analyzer\colorcontrol\src\ctestgeneration.cpp
 	"CTestGeneration.h"
 
-1436901215 c:\led_analyzer\colorcontrol\include\ctestgeneration.h
+1436989309 c:\led_analyzer\colorcontrol\include\ctestgeneration.h
 	"../GUIFrame.h"
 	"PanelSensor.h"
 
