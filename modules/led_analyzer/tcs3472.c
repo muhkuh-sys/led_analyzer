@@ -548,7 +548,7 @@ unsigned short int tcs_getGain(struct ftdi_context* ftdiA, struct ftdi_context* 
 {
 	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_CONTROL_REG | TCS3472_COMMAND_BIT};
 	
-	if(i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucGainSettings, sizeof(aucGainSettings) < 0)) return 1;
+	if(i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucGainSettings, sizeof(aucGainSettings)) < 0) return 1;
 	
 	return 0;
 }
@@ -567,7 +567,7 @@ unsigned short int tcs_getIntegrationtime(struct ftdi_context* ftdiA, struct ftd
 {
 	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_ATIME_REG | TCS3472_COMMAND_BIT};
 
-	if(i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucIntegrationtime, sizeof(aucIntegrationtime) < 0)) return 1;
+	if(i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucIntegrationtime, sizeof(aucIntegrationtime)) < 0) return 1;
 	
 	return 0;
 }

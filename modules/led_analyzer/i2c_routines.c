@@ -359,7 +359,6 @@ int i2c_read8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned c
     i2c_giveAck(ftdiA, ftdiB);
     i2c_stopCond(ftdiA, ftdiB);
 
-
     iRetval = send_package_read8(ftdiA, ftdiB, aucRecBuffer, ucRecLength);
     return iRetval;
 
