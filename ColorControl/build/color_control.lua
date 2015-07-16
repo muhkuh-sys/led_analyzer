@@ -167,9 +167,7 @@ function startMeasurements(numberOfDevices)
 		end 
 				
 		tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, aucIntTimes, aucGains, ret, MAXSENSORS)
-		--print_color(devIndex, tColorTable, 16)
 		devIndex = devIndex + 1 
-		--print("\n")
 	end 
 	
 	return ret 

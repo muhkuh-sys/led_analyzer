@@ -180,10 +180,12 @@ int CLua::ConnectDevices(int &iNumberOfDevices)
 }
 
 
-int CLua::InitDevices(int iNumberOfDevices, wxVector<CColorController*> vectorDevices)
+int CLua::InitDevices(wxVector<CColorController*> vectorDevices)
 {
     /* Be pessimistic */
     unsigned int iRetVal = 1;
+
+    unsigned int iNumberOfDevices = vectorDevices.size();
 
     if(!(this->IsLoaded()))
     {
@@ -300,10 +302,11 @@ int CLua::StartMeasurements(int iNumberOfDevices)
 
 }
 
-int CLua::ReadColours(int iNumberOfDevices, wxVector<CColorController*> vectorDevices)
+int CLua::ReadColours(wxVector<CColorController*> vectorDevices)
 {
     /* Be pessimistic */
     int iRetVal = 1;
+    int iNumberOfDevices = vectorDevices.size();
 
     if(!(this->IsLoaded()))
     {

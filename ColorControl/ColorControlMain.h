@@ -79,12 +79,12 @@ class ColorControlFrame: public GUIFrame
         virtual void OnSaveSession( wxCommandEvent& event );
         virtual void OnOpenSession( wxCommandEvent& event );
 
-
-        void CreateRows(int numberOfDevices);
+        void InitHashTables();
+        void CreateRows();
         void CreateTestPanels(int numberOfDevices);
         void ClearTestPanels();
         void UpdateSerialList();
-        void UpdateRows(int iNumberOfDevices);
+        void UpdateData();
         void UpdateConnectedField(wxColour colour);
 
         void GenerateColorTestTable(wxTextFile* tFile);

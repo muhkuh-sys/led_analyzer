@@ -129,5 +129,15 @@ void CColorController::SetState(int iErrorCode)
         }
     }
 
+    /* Fatal device error , reading / writing to a ftdi channel failed */
+    else if (iErrorCode == DEVICE_ERROR_FATAL )
+    {
+        /* Validate the Errorcode and set the sensor states accordingly */
+        for(int i = 0; i < 16; i++)
+        {
+            m_sensorData[i].SetState(DEVICE_ERROR_FATAL);
+        }
+    }
+
 
 }

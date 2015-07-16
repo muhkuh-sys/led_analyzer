@@ -599,7 +599,7 @@ int CTestGeneration::GetLastEntryWithPinnumber(wxVector<PanelSensor*> vectorSens
 wxString CTestGeneration::GetFunctionAutomatedNetXConnection()
 {
     wxString strFunction;
-    strFunction += wxT("-- Open a netx connection without user input");
+    strFunction += wxT("-- Open a netx connection without user input\n");
     strFunction += wxT("local function open_netx_connection(strInterfacePattern)\n");
     strFunction += wxT("\n");
     strFunction += wxT("    local retPlugin\n");
@@ -711,7 +711,7 @@ bool CTestGeneration::FileLEDStimulation(wxVector<PanelSensor*> vectorSensorPane
     tFile.AddLine(wxT("-- Device connection ----------------------"));
     tFile.AddLine(wxT("-- netX"));
     tFile.AddLine(wxT("--tPlugin = tester.getCommonPlugin()"));
-    tFile.AddLine(wxT("tPlugin = open_netx_connection(\"COM4\")"));
+    tFile.AddLine(wxT("tPlugin = open_netx_connection(\"COM\")"));
     tFile.AddLine(wxT("if tPlugin==nil then"));
     tFile.AddLine(wxT("    error(\"No plugin selected, nothing to do!\")"));
     tFile.AddLine(wxT("end\n"));

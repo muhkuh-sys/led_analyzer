@@ -56,8 +56,6 @@ ColorControlFrame::ColorControlFrame(wxFrame *frame)
     /* Initialize number of devices with 0 */
     m_numberOfDevices = 0;
 
-    // View Class which updates refreshes and takes care about data to be shown
-    // set new log target
     m_pLogTarget = new wxLogTextCtrl(m_text);
     m_pOldLogTarget = wxLog::SetActiveTarget(m_pLogTarget);
     // Redirect your std::cout to the same text
@@ -89,6 +87,21 @@ ColorControlFrame::ColorControlFrame(wxFrame *frame)
     /* Initialize the timer */
     m_pTimer = new wxTimer(this, wxID_TIMER);
 
+    /* Initialize Hash Tables */
+    this->InitHashTables();
+
+    /* Set Initial State */
+    m_eState = IS_INITIAL;
+}
+
+ColorControlFrame::~ColorControlFrame()
+{
+    delete[] m_aStrSerials;
+    delete m_fileConfig;
+}
+
+void ColorControlFrame::InitHashTables()
+{
     /* Fill Hash Table String to gain or integration time*/
     m_str2Uc_gain[wxT("GAIN_1X")] =   TCS3472_GAIN_1X;
     m_str2Uc_gain[wxT("GAIN_4X")] =   TCS3472_GAIN_4X;
@@ -114,16 +127,6 @@ ColorControlFrame::ColorControlFrame(wxFrame *frame)
     m_uc2strHash_integration[TCS3472_INTEGRATION_154ms] = wxT("TIME_154ms");
     m_uc2strHash_integration[TCS3472_INTEGRATION_200ms] = wxT("TIME_200ms");
     m_uc2strHash_integration[TCS3472_INTEGRATION_700ms] = wxT("TIME_700ms");
-
-
-    /* Set Initial State */
-    m_eState = IS_INITIAL;
-}
-
-ColorControlFrame::~ColorControlFrame()
-{
-    delete[] m_aStrSerials;
-    delete m_fileConfig;
 }
 
 void ColorControlFrame::OnClose(wxCloseEvent &event)
@@ -154,39 +157,35 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
             m_pLua = new CLua("color_control.lua");
 
             /* If the txt_ctrl connected was red before because some error occured, we will set it to default now */
-
-            m_textCtrlConnected->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
-            m_textCtrlConnected->Clear();
-            *m_textCtrlConnected << m_numberOfDevices;
+            this->UpdateConnectedField(wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ));
             m_dataViewListSerials->DeleteAllItems();
 
             m_eState = IS_SCANNED;
-
             /* Don't break */
 
         case IS_SCANNED:
+
             /* Scan */
-            delete m_pLua;
+            if (m_pLua != NULL) delete m_pLua;
             m_pLua = new CLua("color_control.lua");
 
             m_pLua->ScanDevices(m_numberOfDevices, m_aStrSerials);
+
             if(m_numberOfDevices == 0)
             {
                 wxLogMessage("No device detected ... please make sure the device is properly attached!");
-
                 if(!m_cocoDevices.empty()) m_cocoDevices.clear();
-
                 m_eState = IS_INITIAL;
 
-                delete m_pLua;
+                if (m_pLua != NULL) delete m_pLua;
             }
             else
             {
                 /* Get the default Tolerance Values from the Configuration files */
                 int tol_nm, tol_sat, tol_illu;
-                m_fileConfig->Read(wxT("DEFAULT_TOLERANCES/tol_nm"), &tol_nm);
-                m_fileConfig->Read(wxT("DEFAULT_TOLERANCES/tol_sat"), &tol_sat);
-                m_fileConfig->Read(wxT("DEFAULT_TOLERANCES/tol_illu"), &tol_illu);
+                if(!m_fileConfig->Read(wxT("DEFAULT_TOLERANCES/tol_nm"), &tol_nm)) tol_nm = 10;
+                if(!m_fileConfig->Read(wxT("DEFAULT_TOLERANCES/tol_sat"), &tol_sat)) tol_sat = 10;
+                if(!m_fileConfig->Read(wxT("DEFAULT_TOLERANCES/tol_illu"), &tol_illu)) tol_illu = 50;
 
                 for(int i = 0; i < m_numberOfDevices; i++)
                 {
@@ -196,10 +195,9 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
                     m_cocoDevices.at(i)->SetTolIllu(tol_illu);
                 }
                 this->UpdateSerialList();
-                m_eState = IS_SCANNED;
             }
 
-             break;
+            break;
 
         case IS_CONNECTED:
             wxLogMessage("Please disconnect first.");
@@ -210,12 +208,10 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
 
     }
 
-
 }
 
 void ColorControlFrame::UpdateSerialList()
 {
-    /* There are known Color Controllers until now */
         /* Fill the serial gui list (clear before) */
         m_dataViewListSerials->DeleteAllItems();
         for(int i = 0; i < m_numberOfDevices; i++)
@@ -225,12 +221,13 @@ void ColorControlFrame::UpdateSerialList()
             rowData.push_back(m_aStrSerials[i]);
             m_dataViewListSerials->AppendItem(rowData);
         }
-
-
 }
 
 void ColorControlFrame::OnConnect(wxCommandEvent& event)
 {
+    int iNumberOfDevices = m_cocoDevices.size();
+
+
     switch(m_eState)
     {
         case IS_INITIAL:
@@ -243,22 +240,21 @@ void ColorControlFrame::OnConnect(wxCommandEvent& event)
             m_pLua->ConnectDevices(temp);
 
             /* Compare number of Found devices to number of devices we connected to, must be equal or errors occured */
-            if(temp == m_numberOfDevices)
+            if(temp == iNumberOfDevices)
             {
                 wxLogMessage("Connecting..");
-                for(int i = 0; i < m_numberOfDevices; i++)
+                for(int i = 0; i < iNumberOfDevices; i++)
                 {
                     m_cocoDevices.at(i)->SetSerialNumber(m_aStrSerials[i]);
                     m_cocoDevices.at(i)->SetConnectivity(true);
-
                 }
 
                 /* Init the devices */
-                m_pLua->InitDevices(m_numberOfDevices, m_cocoDevices);
+                m_pLua->InitDevices(m_cocoDevices);
                 /* Create Rows for Colors*/
-                CreateRows(m_numberOfDevices);
+                CreateRows();
                 /* Create Test Panels */
-                CreateTestPanels(m_numberOfDevices);
+                CreateTestPanels(iNumberOfDevices);
 
                 /* Set System State to Connected */
                 m_eState = IS_CONNECTED;
@@ -268,22 +264,24 @@ void ColorControlFrame::OnConnect(wxCommandEvent& event)
                 wxLogMessage("Connected!");
 
             }
-
             /* Some Exception happened in the lua code (i2c/ftdi/led_analyzer functions in led_analyzer.dll) */
             if(temp < 0)
             {
                 /* Show that something went wrong */
                 m_numberOfDevices = 0;
+                m_cocoDevices.clear();
+
                 this->UpdateConnectedField(COLOR_ERROR);
                 /* Reset the System State */
                 m_eState = IS_INITIAL;
+                LOG_ERROR(m_text);
                 wxLogError("Ups! Something went wrong, please retry Scan and Connect!");
+                LOG_DEFAULT(m_text);
             }
 
             break;
 
         case IS_CONNECTED:
-
             break;
 
         default:
@@ -295,7 +293,6 @@ void ColorControlFrame::OnConnect(wxCommandEvent& event)
 
 void ColorControlFrame::OnDisconnect(wxCommandEvent& event)
 {
-
     switch(m_eState)
     {
         case IS_INITIAL:
@@ -313,6 +310,7 @@ void ColorControlFrame::OnDisconnect(wxCommandEvent& event)
 
             /* Remove color controller devices from vector */
             m_cocoDevices.clear();
+            m_numberOfDevices = m_cocoDevices.size();
 
             /* Clear Serial Numbers */
             m_dataViewListSerials->DeleteAllItems();
@@ -322,10 +320,7 @@ void ColorControlFrame::OnDisconnect(wxCommandEvent& event)
 
             /* Clear Test Panels */
             this->ClearTestPanels();
-            m_swColors->Layout();
 
-            /* Set number of devices to zero -- ONLY AT THE END OF A BLOCK */
-            m_numberOfDevices = 0;
 
             /* Flush and write zero */
             /* Reset the color of textctrl Connected */
@@ -339,14 +334,13 @@ void ColorControlFrame::OnDisconnect(wxCommandEvent& event)
             }
 
             /* Close the current Lua State (color_control.lua) */
-            delete m_pLua;
+            if (m_pLua) delete m_pLua;
 
             /* Set Initial System State */
             m_eState = IS_INITIAL;
 
-            /* Say you're disconnected ! */
+            /* Tell the world. ! */
             wxLogMessage("Disconnected!");
-
             break;
 
         default:
@@ -371,14 +365,18 @@ void ColorControlFrame::OnStart(wxCommandEvent& event)
 
         case IS_CONNECTED:
             /* Now Check if we Make Single or Continuous Measurements */
-
             if(m_rbSingle->GetValue() == true)
             {
-                m_pLua->StartMeasurements(m_numberOfDevices);
+                if(m_pLua->StartMeasurements(m_cocoDevices.size()) == DEVICE_ERROR_FATAL)
+                {
+                    LOG_ERROR(m_text);
+                    wxLogError("A fatal error has occured. Save your work, disconnect, re-scan and re-connect!");
+                    LOG_DEFAULT(m_text);
+                }
 
-                m_pLua->ReadColours(m_numberOfDevices, m_cocoDevices);
+                m_pLua->ReadColours(m_cocoDevices);
 
-                this->UpdateRows(m_numberOfDevices);
+                this->UpdateData();
             }
 
             if(m_rbContinuous->GetValue() == true)
@@ -393,6 +391,7 @@ void ColorControlFrame::OnStart(wxCommandEvent& event)
                 else
                 {
                     int iTimerValue;
+
                     switch(m_chTime->GetCurrentSelection())
                     {
                         case TESTMODE_TIME_0_2SEC:
@@ -414,13 +413,12 @@ void ColorControlFrame::OnStart(wxCommandEvent& event)
                             iTimerValue = 1000;
                             break;
                     }
+
                     m_pTimer->Start(iTimerValue);
 
                     m_buttonStart->SetLabel("STOP");
                 }
             }
-
-
     }
 
 
@@ -434,7 +432,7 @@ void ColorControlFrame::OnStimulation( wxCommandEvent& event )
     /* Create your temporary .lua file for led stimulation */
     if(!m_testGeneration.CheckLEDStimulation(m_vectorSensorPanels ))
     {
-        wxLogMessage("Stimulation unsuccessful");
+        wxLogMessage("Stimulation unsuccessful.");
         wxLogMessage("Entries are missing, please provide.");
         LOG_DEFAULT(m_text);
         return;
@@ -442,7 +440,7 @@ void ColorControlFrame::OnStimulation( wxCommandEvent& event )
 
     if(!m_testGeneration.FileLEDStimulation(m_vectorSensorPanels))
     {
-        wxLogMessage("Stimulation unsuccessful");
+        wxLogMessage("Stimulation unsuccessful.");
         wxLogMessage("Stimulation file could not be generated.. abort.");
         LOG_DEFAULT(m_text);
         return;
@@ -452,7 +450,7 @@ void ColorControlFrame::OnStimulation( wxCommandEvent& event )
 
     if(!stimulationfile.IsLoaded())
     {
-        wxLogMessage("Stimulation unsuccessful");
+        wxLogMessage("Stimulation unsuccessful.");
         wxLogMessage("Stimulation file could not be run on lua (errors) .. abort.");
         LOG_DEFAULT(m_text);
         return;
@@ -461,12 +459,13 @@ void ColorControlFrame::OnStimulation( wxCommandEvent& event )
     LOG_DEFAULT(m_text);
 }
 
-void ColorControlFrame::CreateRows(int numberOfDevices)
+void ColorControlFrame::CreateRows()
 {
+    int iNumberOfDevices = m_cocoDevices.size();
 
     wxVariant test;
 
-    for(int i = 0; i < numberOfDevices; i++)
+    for(int i = 0; i < iNumberOfDevices; i++)
     {
        for(int j = 0; j<16; j++)
        {
@@ -488,19 +487,21 @@ void ColorControlFrame::CreateRows(int numberOfDevices)
 
 }
 
-void ColorControlFrame::UpdateRows(int iNumberOfDevices)
+void ColorControlFrame::UpdateData()
 {
-    wxVariant variant;
+    wxVariant colorVariant;
     wxColour  colour;
     /* First Clear your Rows */
     m_dvlColors->DeleteAllItems();
+
+    int iNumberOfDevices = m_cocoDevices.size();
 
     for(int i = 0; i < iNumberOfDevices; i++)
     {
        for(int j = 0; j<16; j++)
        {
-            colour = m_cocoDevices.at(i)->GetColour(j);
-            variant = wxString::Format(wxT("%3i%3i%3i"), colour.Red(), colour.Green(), colour.Blue());
+            colour       = m_cocoDevices.at(i)->GetColour(j);
+            colorVariant = wxString::Format(wxT("%3i%3i%3i"), colour.Red(), colour.Green(), colour.Blue());
 
             /* First Panel = Colors */
             wxVector<wxVariant> rowdata;
@@ -508,7 +509,7 @@ void ColorControlFrame::UpdateRows(int iNumberOfDevices)
             rowdata.push_back(m_cocoDevices.at(i)->GetWavelength(j));    // wavelength
             rowdata.push_back(m_cocoDevices.at(i)->GetSaturation(j));    // saturation
             rowdata.push_back(m_cocoDevices.at(i)->GetIllumination(j));  // illumination
-            rowdata.push_back(variant);                                  // m_cColor
+            rowdata.push_back(colorVariant);                                  // m_cColor
             rowdata.push_back(m_cocoDevices.at(i)->GetClearRatio(j));    // clearRatio
             rowdata.push_back(m_uc2strHash_gain[m_cocoDevices.at(i)->GetGain(j)]);                                     // gain
             rowdata.push_back(m_uc2strHash_integration[m_cocoDevices.at(i)->GetIntTime(j)]);                           // inttime
@@ -529,9 +530,7 @@ void ColorControlFrame::UpdateRows(int iNumberOfDevices)
        }
     }
 
-
     if(m_nbData->GetSelection() == 1)  m_swTestdefinition->Show();
-    //if(m_nbData->GetSelection() == 0)  m_swColors->Show();
 }
 
 void ColorControlFrame::UpdateConnectedField(wxColour colour)
@@ -574,16 +573,11 @@ void ColorControlFrame::CreateTestPanels(int numberOfDevices)
         }
     }
 
-
-
     m_swTestdefinition->SetSizer(bSizerTestDefinition);
-    /* this will make the scroll bars show up right away */
     m_swTestdefinition->FitInside();
     m_swTestdefinition->Layout();
 
-    //wxLogMessage("Currently selected page: %i", m_nbData->GetSelection());
     if(m_nbData->GetSelection() == 1)m_swTestdefinition->Show();
-
 
 }
 
@@ -594,13 +588,11 @@ void ColorControlFrame::ClearTestPanels()
 
     if(m_panelHeader != NULL) m_panelHeader->Destroy();
 
-    for(int i = 0; i < m_numberOfDevices; i++)
+    for(wxVector<PanelSensor*>::iterator it = m_vectorSensorPanels.begin(); it != m_vectorSensorPanels.end(); it++)
     {
-        for(int j = 0; j < 16; j++)
-        {
-            m_vectorSensorPanels.at(i*16 + j)->Destroy();
-        }
+        (*it)->Destroy();
     }
+
     m_vectorSensorPanels.clear();
     m_swTestdefinition->Show();
     m_swTestdefinition->Layout();
@@ -676,13 +668,12 @@ void ColorControlFrame::OnTimeout(wxTimerEvent& event)
 
     m_pLua->StartMeasurements(m_numberOfDevices);
     /* If the result of readColours is not zero, something went wrong => stop the measurements */
-    if(m_pLua->ReadColours(m_numberOfDevices, m_cocoDevices) != 0)
+    if(m_pLua->ReadColours(m_cocoDevices) != 0)
     {
         m_pTimer->Stop();
         if(m_buttonStart->GetLabel().IsSameAs("STOP")) m_buttonStart->SetLabel("START");
     }
-    this->UpdateRows(m_numberOfDevices);
-
+    this->UpdateData();
 }
 
 

@@ -64,6 +64,8 @@ const wxString CSensorData::StateToString(sensor_state_t state)
         case SENSOR_EXCEEDED_CLEAR:
             return "MAXIMUM CLEAR";
             break;
+        case DEVICE_ERROR_FATAL:
+            return "DEVICE ERROR FATAL";
         default:
             return "UNKNOWN";
             break;
