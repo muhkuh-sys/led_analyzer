@@ -151,7 +151,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizerCommunication = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Communication") ), wxVERTICAL );
 
 	m_buttonScan = new wxButton( this, wxID_SCAN, wxT("&SCAN"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizerCommunication->Add( m_buttonScan, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+	bSizerCommunication->Add( m_buttonScan, 0, wxEXPAND | wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
 	m_dataViewListSerials = new wxDataViewListCtrl( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxDV_HORIZ_RULES | wxDV_VERT_RULES );
 	m_dataViewListSerials->SetMinSize( wxSize( -1,120 ) );
@@ -178,8 +178,8 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_buttonConnect   = new wxButton( this, wxID_CONNECT, wxT("&CONNECT"), wxDefaultPosition, wxDefaultSize, 0 );
     m_buttonDisconnect = new wxButton( this, wxID_DISCONNECT, wxT("&DISCONNECT"), wxDefaultPosition, wxDefaultSize, 0 );
 
-	bSizerCommunication->Add( m_buttonConnect, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
-	bSizerCommunication->Add( m_buttonDisconnect, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
+	bSizerCommunication->Add( m_buttonConnect, 0, wxEXPAND | wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+	bSizerCommunication->Add( m_buttonDisconnect, 0, wxEXPAND | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
 	wxBoxSizer* bSizerConnected;
 	bSizerConnected = new wxBoxSizer( wxHORIZONTAL );
@@ -271,8 +271,16 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	bSizerButtons->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_buttonStart = new wxButton( this, wxID_START, wxT("S&TART"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizerButtons->Add( m_buttonStart, 0, wxALIGN_CENTER|wxBOTTOM|wxRIGHT|wxTOP|wxEXPAND, 5 );
+    wxBoxSizer* bSizerStartStimulate;
+    bSizerStartStimulate = new wxBoxSizer(wxVERTICAL);
+
+    m_buttonStart = new wxButton( this, wxID_START, wxT("S&TART"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerStartStimulate->Add( m_buttonStart, 1, wxALIGN_CENTER|wxBOTTOM|wxRIGHT|wxTOP|wxEXPAND, 5 );
+
+	m_buttonStimulation = new wxButton( this, wxID_START, wxT("Stimulate LEDs"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerStartStimulate->Add( m_buttonStimulation, 1, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND, 5 );
+
+	bSizerButtons->Add( bSizerStartStimulate, 1, wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
 
 
 	bSizerData->Add( bSizerButtons, 0, wxEXPAND, 5 );
@@ -387,6 +395,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_buttonGenerate->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnGenerateTest ), NULL, this );
 	m_buttonUseTestfile->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnUseTest ), NULL, this );
 	m_buttonStart->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnStart ), NULL, this );
+	m_buttonStimulation->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler ( GUIFrame::OnStimulation ), NULL, this );
 	this->Connect( menuItem_about->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnAbout ) );
     this->Connect( wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnQuit ) );
     this->Connect( wxID_TESTMODE, wxEVT_RADIOBUTTON, wxCommandEventHandler( GUIFrame::OnTestmode ) );
@@ -412,6 +421,8 @@ GUIFrame::~GUIFrame()
 	m_buttonGenerate->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnGenerateTest ), NULL, this );
 	m_buttonUseTestfile->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnUseTest ), NULL, this );
 	m_buttonStart->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnStart ), NULL, this );
+	m_buttonStimulation->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnStimulation ), NULL, this );
+
     this->Disconnect( wxEVT_RADIOBUTTON, wxCommandEventHandler( GUIFrame::OnTestmode ), NULL, this );
     this->Disconnect( wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnQuit ), NULL, this );
     this->Disconnect( wxEVT_TIMER, wxTimerEventHandler (GUIFrame::OnTimeout ), NULL, this );

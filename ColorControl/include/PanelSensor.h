@@ -49,6 +49,7 @@ class PanelSensor : public wxPanel
         wxString GetName()              {return m_txtCtrlCurName->GetValue();};
         void SetName(wxString name)     {m_txtCtrlCurName->Clear();
                                          m_txtCtrlCurName->SetValue(name);};
+        bool IsNameEmpty()              {return m_txtCtrlCurName->IsEmpty();};
         int GetWavelength()             {return wxAtoi(m_txtCtrlCurWL->GetValue());};
         int GetTolWavelength()          {return wxAtoi(m_txtCtrlTolNm->GetValue());};
         void SetWavelength(int wl)      {m_txtCtrlCurWL->SetValue(wxString::Format(wxT("%i"), wl));};

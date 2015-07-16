@@ -26,8 +26,8 @@ CLua::CLua(const char* filename)
 
 CLua::~CLua()
 {
-    this->CleanUp();
-    lua_close(m_pLuaState);
+    //this->CleanUp();
+    //lua_close(m_pLuaState);
 }
 
 void CLua::StackDump()

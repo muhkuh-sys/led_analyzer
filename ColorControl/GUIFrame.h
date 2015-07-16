@@ -55,6 +55,18 @@ using namespace std;
 
 #include "logo_hilscher.xpm"
 
+
+
+#define COLOR_WARNING{210, 150, 0  }
+#define COLOR_ERROR  {200, 0  , 0  }
+#define COLOR_OK     {0,   200, 0  }
+
+/* Macros for Log color */
+#define LOG_WARNING(pText) pText->SetDefaultStyle(wxTextAttr(COLOR_WARNING))
+#define LOG_ERROR(pText) pText->SetDefaultStyle(wxTextAttr(COLOR_ERROR))
+#define LOG_SUCCESSFUL(pText) pText->SetDefaultStyle(wxTextAttr(COLOR_OK))
+#define LOG_DEFAULT(pText) pText->SetDefaultStyle(wxTextAttr(*wxBLACK))
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Class PanelHeader
 ///////////////////////////////////////////////////////////////////////////////
@@ -221,6 +233,7 @@ class GUIFrame : public wxFrame
 		wxButton* m_buttonGenerate;
 		wxButton* m_buttonUseTestfile;
 		wxButton* m_buttonStart;
+		wxButton* m_buttonStimulation;
 		wxNotebook* m_nbData;
 		wxScrolledWindow* m_swColors;
 		wxDataViewListCtrl* m_dvlColors;
@@ -256,6 +269,7 @@ class GUIFrame : public wxFrame
 		virtual void OnGenerateTest( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnUseTest( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStart( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnStimulation ( wxCommandEvent& event) { event.Skip(); };
 		virtual void OnAbout( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnQuit( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTestmode (wxCommandEvent& event ) { event.Skip(); };

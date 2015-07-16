@@ -1,39 +1,69 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="include\PanelTestrow.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\PanelSensor.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2503" topLine="46" />
+			<Cursor1 position="2766" topLine="40" />
 		</Cursor>
 	</File>
-	<File name="ColorControlMain.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\PanelTestrow.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3188" topLine="71" />
+			<Cursor1 position="2503" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="src\CLua.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\CDevice.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="5923" topLine="220" />
+			<Cursor1 position="2130" topLine="87" />
 		</Cursor>
 	</File>
-	<File name="GUIFrame.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="ColorControlApp.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="12675" topLine="285" />
+			<Cursor1 position="417" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="ColorControlMain.cpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\CLua.cpp" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="27788" topLine="422" />
+			<Cursor1 position="464" topLine="17" />
 		</Cursor>
 	</File>
-	<File name="include\CTestGeneration.h" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="GUIFrame.h" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="511" topLine="12" />
+			<Cursor1 position="1657" topLine="42" />
 		</Cursor>
 	</File>
-	<File name="include\PanelSensor.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\CSensorData.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3681" topLine="49" />
+			<Cursor1 position="97" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="ColorControlMain.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2116" topLine="64" />
+		</Cursor>
+	</File>
+	<File name="src\CTestGeneration.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="23940" topLine="598" />
+		</Cursor>
+	</File>
+	<File name="src\PanelSensor.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="19217" topLine="490" />
+		</Cursor>
+	</File>
+	<File name="GUIFrame.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="16905" topLine="392" />
+		</Cursor>
+	</File>
+	<File name="src\PanelTestrow.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8470" topLine="183" />
+		</Cursor>
+	</File>
+	<File name="ColorControlMain.cpp" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="23777" topLine="715" />
 		</Cursor>
 	</File>
 	<File name="WxWizFrame.fbp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -46,44 +76,14 @@
 			<Cursor1 position="1894" topLine="9" />
 		</Cursor>
 	</File>
-	<File name="include\CSensorData.h" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\CSensorData.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="720" topLine="27" />
 		</Cursor>
 	</File>
-	<File name="src\CSensorData.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\CTestGeneration.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="97" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="src\CDevice.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2130" topLine="87" />
-		</Cursor>
-	</File>
-	<File name="GUIFrame.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="7066" topLine="230" />
-		</Cursor>
-	</File>
-	<File name="src\CTestGeneration.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="24504" topLine="604" />
-		</Cursor>
-	</File>
-	<File name="ColorControlApp.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="417" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="src\PanelSensor.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="11229" topLine="400" />
-		</Cursor>
-	</File>
-	<File name="src\PanelTestrow.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="8470" topLine="183" />
+			<Cursor1 position="565" topLine="10" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

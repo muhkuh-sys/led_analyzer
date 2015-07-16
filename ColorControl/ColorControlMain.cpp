@@ -263,7 +263,7 @@ void ColorControlFrame::OnConnect(wxCommandEvent& event)
                 /* Set System State to Connected */
                 m_eState = IS_CONNECTED;
                 /* Show It in the textCtrl for connected devices */
-                this->UpdateConnectedField(MYGREEN);
+                this->UpdateConnectedField(COLOR_OK);
 
                 wxLogMessage("Connected!");
 
@@ -274,7 +274,7 @@ void ColorControlFrame::OnConnect(wxCommandEvent& event)
             {
                 /* Show that something went wrong */
                 m_numberOfDevices = 0;
-                this->UpdateConnectedField(MYRED);
+                this->UpdateConnectedField(COLOR_ERROR);
                 /* Reset the System State */
                 m_eState = IS_INITIAL;
                 wxLogError("Ups! Something went wrong, please retry Scan and Connect!");
@@ -424,6 +424,41 @@ void ColorControlFrame::OnStart(wxCommandEvent& event)
     }
 
 
+}
+
+void ColorControlFrame::OnStimulation( wxCommandEvent& event )
+{
+    /* Set output to error as only error outputs follow */
+    LOG_ERROR(m_text);
+
+    /* Create your temporary .lua file for led stimulation */
+    if(!m_testGeneration.CheckLEDStimulation(m_vectorSensorPanels ))
+    {
+        wxLogMessage("Stimulation unsuccessful");
+        wxLogMessage("Entries are missing, please provide.");
+        LOG_DEFAULT(m_text);
+        return;
+    }
+
+    if(!m_testGeneration.FileLEDStimulation(m_vectorSensorPanels))
+    {
+        wxLogMessage("Stimulation unsuccessful");
+        wxLogMessage("Stimulation file could not be generated.. abort.");
+        LOG_DEFAULT(m_text);
+        return;
+    }
+
+    CLua stimulationfile("_tempscript_.lua");
+
+    if(!stimulationfile.IsLoaded())
+    {
+        wxLogMessage("Stimulation unsuccessful");
+        wxLogMessage("Stimulation file could not be run on lua (errors) .. abort.");
+        LOG_DEFAULT(m_text);
+        return;
+    }
+
+    LOG_DEFAULT(m_text);
 }
 
 void ColorControlFrame::CreateRows(int numberOfDevices)
@@ -771,15 +806,17 @@ void ColorControlFrame::OnGenerateTest(wxCommandEvent& event)
     /* Empty the file */
     tFile.Clear();
 
-
-    m_testGeneration.GenerateTest(m_vectorSensorPanels, &tFile, m_chUsenetx->GetValue(), m_text);
-
+    LOG_ERROR(m_text);
+    if(!m_testGeneration.GenerateTest(m_vectorSensorPanels, &tFile, m_chUsenetx->GetValue())) return;
+    LOG_DEFAULT(m_text);
 
     /* Write the testfile */
     tFile.Write();
 
     if(!tFile.Close()) wxLogMessage("Couldn't close test file.");
+    LOG_SUCCESSFUL(m_text);
     wxLogMessage("Generated %s.", strPath);
+    LOG_DEFAULT(m_text);
 
 
 }
@@ -809,24 +846,14 @@ void ColorControlFrame::OnUseTest(wxCommandEvent& event)
 
     wxLogMessage("Using Testfile %s", strPath);
 
+    /* Write the path as a default directory path into the config file */
     m_fileConfig->Write("DEFAULT_PATHS/path_use_testfile", open_fileDialog->GetDirectory());
 
-    wxTextFile tFile(strPath);
+    /* Insert code to use the test */
 
+    CLua *useTest = new CLua(strPath);
 
-    if(!tFile.Open())
-    {
-        wxLogMessage("Couldn't open testfile.");
-        return;
-    }
-
-    wxLogMessage("Opening succeeded");
-    while(!tFile.Eof())
-    {
-        wxLogMessage("%s", tFile.GetNextLine());
-    }
-
-    tFile.Close();
+    if(useTest != NULL) delete useTest;
 }
 
 void ColorControlFrame::OnSaveSession( wxCommandEvent& event )

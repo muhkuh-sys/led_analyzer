@@ -20,11 +20,6 @@
 #include "CTestGeneration.h"
 
 
-#define MYGREEN {0, 200, 0}
-#define MYRED   {255, 0, 0}
-
-
-
 
 
 /* System States */
@@ -68,6 +63,7 @@ class ColorControlFrame: public GUIFrame
         virtual void OnConnect(wxCommandEvent& event);
         virtual void OnDisconnect(wxCommandEvent& event);
         virtual void OnStart(wxCommandEvent& event);
+        virtual void OnStimulation(wxCommandEvent& event);
         virtual void OnSerialUp  (wxCommandEvent& event);
         virtual void OnSerialDown(wxCommandEvent& event);
         virtual void OnTestmode (wxCommandEvent& event);

@@ -5,8 +5,6 @@
 #include "PanelSensor.h"
 
 
-#define COLOR_WARNING{210, 150, 0  }
-#define COLOR_OK     {0  , 255, 0  }
 
 class CTestGeneration
 {
@@ -30,13 +28,18 @@ class CTestGeneration
         void InsertHeaders(wxTextFile* tFile, bool useNetX);
         void GenerateTestSteps(wxVector<PanelSensor*> panelSensor, wxTextFile* tFile, bool useNetX);
         void GenerateSettingsTable(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile);
-        void GenerateTest(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX, wxTextCtrl* txtCtrlLog);
-        void FileLEDStimulation(wxVector<PanelSensor*> vectorSensorPanel);
+        bool GenerateTest(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX);
+        wxString GetFunctionAutomatedNetXConnection();
+        bool FileLEDStimulation(wxVector<PanelSensor*> vectorSensorPanel);
 
         int  GetMaximumNumberOfTestsets(wxVector<PanelSensor*> vectorSensorPanel);
-        int  GetLastEntry(wxVector<PanelSensor*> vectorSensorPanel);
-        bool TestEntriesOK(wxVector<PanelSensor*> vectorSensorPanel, wxTextCtrl* txtCtrlLog, bool useNetX);
+        int  GetLastEntryWithVectors(wxVector<PanelSensor*> vectorSensorPanel);
+        int  GetLastEntryWithPinnumber(wxVector<PanelSensor*> vectorSensorPanel);
 
+        /* Check the entries for led stimulation */
+        bool CheckLEDStimulation(wxVector<PanelSensor*> vectorSensorPanel);
+        /* check the entries for testfile generation */
+        bool CheckTestGeneration(wxVector<PanelSensor*> vectorSensorPanel, bool useNetX);
         /* Save and Open a Session */
         void SaveSessionAsIni(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile);
         bool OpenSessionAsIni(wxVector<PanelSensor*> vectorSensorPanel, wxFileConfig* tFileConfig);

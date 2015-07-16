@@ -93,7 +93,7 @@ end
 
 
 -- Initializes the devices, by turning them on, clearing flags and identifying them
-function initDevices(numberOfDevices)
+function initDevices(numberOfDevices, atSettings)
 -- iterate over all devices and perform initialization -- 
 	local devIndex = 0
 	local error_counter = 0 
@@ -101,7 +101,14 @@ function initDevices(numberOfDevices)
 	
 	while(devIndex < numberOfDevices) do 
 
-		--led_analyzer.set_intTime(apHandles, devIndex, 0xD6)
+		
+		-- if atsettings is provided --
+		if atSettings ~= nil then 
+			for i = 1, MAXSENSORS do 
+				led_analyzer.set_intTime_x(apHandles, devIndex, i-1, atSettings[devIndex][i].integration)
+				led_analyzer.set_gain_x(apHandles, devIndex, i-1, atSettings[devIndex][i].gain)
+			end
+		end 
 	
 		while(error_counter < INIT_MAXERROR) do
 			ret = led_analyzer.init_sensors(apHandles, devIndex)
@@ -203,11 +210,11 @@ function swapDown(sCurSerial)
 end 
 
 function setGainX(iDeviceIndex, iSensorIndex, gain)
-	return led_analyzer.set_gain_x(apHandles, iDeviceIndex, gain, iSensorIndex)
+	return led_analyzer.set_gain_x(apHandles, iDeviceIndex, iSensorIndex, gain)
 end 
 
 function setIntTimeX(iDeviceIndex, iSensorIndex, intTime)
-	return led_analyzer.set_intTime_x(apHandles, iDeviceIndex, intTime, iSensorIndex)
+	return led_analyzer.set_intTime_x(apHandles, iDeviceIndex, iSensorIndex, intTime)
 end
 
 function setSettings(numberOfDevices, intTime, gain)

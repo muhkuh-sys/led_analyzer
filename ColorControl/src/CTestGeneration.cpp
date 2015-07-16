@@ -96,7 +96,7 @@ void CTestGeneration::GenerateNetXTestTable(wxVector<PanelSensor*> vectorSensorP
         tFile->AddLine(wxT(" local atPinsUnderTest = {\n"));
 
         int iDevCounter = 0;
-        int iIndexLastEntry   = this->GetLastEntry(vectorSensorPanel);
+        int iIndexLastEntry   = this->GetLastEntryWithVectors(vectorSensorPanel);
 
         for(int i = 0; i < vectorSensorPanel.size(); i++)
         {
@@ -114,7 +114,7 @@ void CTestGeneration::GenerateNetXTestTable(wxVector<PanelSensor*> vectorSensorP
     }
 }
 
-int CTestGeneration::GetLastEntry(wxVector<PanelSensor*> vectorSensorPanel)
+int CTestGeneration::GetLastEntryWithVectors(wxVector<PanelSensor*> vectorSensorPanel)
 {
     int iLastEntry = -1;
 
@@ -127,14 +127,11 @@ int CTestGeneration::GetLastEntry(wxVector<PanelSensor*> vectorSensorPanel)
     return iLastEntry;
 }
 
-bool CTestGeneration::TestEntriesOK(wxVector<PanelSensor*> vectorSensorPanel, wxTextCtrl* txtCtrlLog, bool useNetX)
+bool CTestGeneration::CheckTestGeneration(wxVector<PanelSensor*> vectorSensorPanel, bool useNetX)
 {
 
   int iSensorNumber;
   bool testEntriesOK = true;
-
-  /* As this function only emits warning messages we can change the text colour attribute to orange */
-  txtCtrlLog->SetDefaultStyle(wxTextAttr(COLOR_WARNING));
 
   for(wxVector<PanelSensor*>::iterator it_sensor = vectorSensorPanel.begin(); it_sensor != vectorSensorPanel.end(); it_sensor++)
   {
@@ -144,7 +141,7 @@ bool CTestGeneration::TestEntriesOK(wxVector<PanelSensor*> vectorSensorPanel, wx
          if((*it_sensor)->GetVectorTestrow().at(i)->IsNameFieldEmpty())
          {
              iSensorNumber = (*it_sensor)->GetSensorNumber();
-             wxLogWarning(wxString::Format(wxT("Name Entry for Sensor %d row %d missing!"), iSensorNumber, i+1));
+             wxLogMessage(wxString::Format(wxT("Name Entry for Sensor %d row %d missing!"), iSensorNumber, i+1));
              testEntriesOK =  false;
 
          }
@@ -154,16 +151,15 @@ bool CTestGeneration::TestEntriesOK(wxVector<PanelSensor*> vectorSensorPanel, wx
              if((*it_sensor)->GetVectorTestrow().at(i)->IsPinNumberFieldEmpty())
              {
                  iSensorNumber = (*it_sensor)->GetSensorNumber();
-                 wxLogWarning(wxString::Format(wxT("Pin Number Entry for Sensor %d row %d missing!"), iSensorNumber, i+1));
+                 wxLogMessage(wxString::Format(wxT("Pin Number Entry for Sensor %d row %d missing!"), iSensorNumber, i+1));
                  testEntriesOK =  false;
 
              }
          }
      }
   }
-  /* Change the text colour back to normal */
-  txtCtrlLog->SetDefaultStyle(wxTextAttr(*wxBLACK));
 
+  /* Further checks must follow here */
   return testEntriesOK;
 }
 
@@ -214,11 +210,15 @@ void CTestGeneration::GenerateTestStepFunctions(wxVector<PanelSensor*> vectorSen
 
 void CTestGeneration::GenerateInitialization(wxTextFile* tFile, bool useNetX)
 {
+
     if(useNetX)
     {
+        tFile->AddLine(this->GetFunctionAutomatedNetXConnection());
+        tFile->AddLine("\n");
         tFile->AddLine(wxT("-- Device connection ----------------------"));
         tFile->AddLine(wxT("-- netX"));
-        tFile->AddLine(wxT("tPlugin = tester.getCommonPlugin()"));
+        tFile->AddLine(wxT("--tPlugin = tester.getCommonPlugin()"));
+        tFile->AddLine(wxT("tPlugin = open_netx_connection(\"COM4\")"));
         tFile->AddLine(wxT("if tPlugin==nil then"));
         tFile->AddLine(wxT("    error(\"No plugin selected, nothing to do!\")"));
         tFile->AddLine(wxT("end\n"));
@@ -250,7 +250,7 @@ void CTestGeneration::GenerateInitialization(wxTextFile* tFile, bool useNetX)
     }
 
     tFile->AddLine(wxT("-- Color Controller"));
-    tFile->AddLine(wxT("initDevices(numberOfDevices, TCS3472_GAIN_1X, TCS3472_INTEGRATION_100ms)\n"));
+    tFile->AddLine(wxT("initDevices(numberOfDevices, atSettings)\n"));
 
 }
 
@@ -279,10 +279,17 @@ void CTestGeneration::GenerateTestSteps(wxVector<PanelSensor*> vectorSensorPanel
         tFile->AddLine(wxString::Format(wxT("ret = validateLEDs(numberOfDevices, atTestSets[%d])\n"), i));
         tFile->AddLine(wxT("if ret ~= TEST_RESULT_OK then"));
         tFile->AddLine(wxT("--    free()"));
-        if(useNetX) tFile->AddLine("    ---- APPLY DEFAULT PINSTATES ---- ");
+        if(useNetX)
+        {
+            tFile->AddLine("    ---- APPLY DEFAULT PINSTATES ---- ");
+            tFile->AddLine("    --tPlugin:Disconnect()");
+        }
         tFile->AddLine(wxT("--    return  TEST_RESULT_FAIL"));
         tFile->AddLine(wxT("end\n"));
     }
+
+    tFile->AddLine(wxT("free()"));
+    if(useNetX) tFile->AddLine(wxT("tPlugin:Disconnect()"));
 }
 
 void CTestGeneration::GenerateSettingsTable(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile)
@@ -317,19 +324,18 @@ void CTestGeneration::GenerateSettingsTable(wxVector<PanelSensor*> vectorSensorP
 
 }
 
-void CTestGeneration::GenerateTest(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX, wxTextCtrl* txtCtrlLog)
+bool CTestGeneration::GenerateTest(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX)
 {
 
-    if(!this->TestEntriesOK(vectorSensorPanel, txtCtrlLog, useNetX))
+    if(!this->CheckTestGeneration(vectorSensorPanel, useNetX))
     {
        if(!tFile->Close()) wxLogMessage("Couldn't close test file.");
-       txtCtrlLog->SetDefaultStyle(wxTextAttr(*wxRED));
        wxLogMessage("Errors occured ... abort.");
-       txtCtrlLog->SetDefaultStyle(wxTextAttr(*wxBLACK));
-       return;
+       return false;
     }
 
-    this->FileLEDStimulation(vectorSensorPanel);
+    /* Checks */
+
     this->InsertHeaders(tFile, useNetX);
     this->GenerateColorTestTable(vectorSensorPanel, tFile);
     this->GenerateSettingsTable(vectorSensorPanel, tFile);
@@ -337,6 +343,8 @@ void CTestGeneration::GenerateTest(wxVector<PanelSensor*> vectorSensorPanel, wxT
     this->GenerateTestStepFunctions(vectorSensorPanel, tFile, useNetX);
     this->GenerateInitialization(tFile, useNetX);
     this->GenerateTestSteps(vectorSensorPanel, tFile, useNetX);
+
+    return true;
 
 }
 
@@ -575,64 +583,180 @@ bool CTestGeneration::FillTestrowsWithContent(PanelSensor* sensorPanel, int iSen
     return true;
 }
 
-void CTestGeneration::FileLEDStimulation(wxVector<PanelSensor*> vectorSensorPanel)
+int CTestGeneration::GetLastEntryWithPinnumber(wxVector<PanelSensor*> vectorSensorPanel)
 {
+    int iIndex = -1;
 
-    wxLogMessage("strpathname: %s", wxFileName::GetCwd());
+    for(int i = 0; i < vectorSensorPanel.size(); i ++)
+    {
+        /* The pinnumber field is not empty */
+        if(!vectorSensorPanel.at(i)->IsPinnumberEmpty()) iIndex = i;
+    }
+
+    return iIndex;
+}
+
+wxString CTestGeneration::GetFunctionAutomatedNetXConnection()
+{
+    wxString strFunction;
+    strFunction += wxT("-- Open a netx connection without user input");
+    strFunction += wxT("local function open_netx_connection(strInterfacePattern)\n");
+    strFunction += wxT("\n");
+    strFunction += wxT("    local retPlugin\n");
+    strFunction += wxT("    -- Open the connection to the netX.\n");
+    strFunction += wxT("    if string.upper(strInterfacePattern)~=\"ASK\" then\n");
+    strFunction += wxT("        -- No interface detected yet.\n");
+    strFunction += wxT("        local tPlugin = nil\n");
+    strFunction += wxT("\n");
+    strFunction += wxT("        -- Detect all interfaces.\n");
+    strFunction += wxT("        local aDetectedInterfaces = {}\n");
+    strFunction += wxT("        for iCnt,tPlugin in ipairs(__MUHKUH_PLUGINS) do\n");
+    strFunction += wxT("            tPlugin:DetectInterfaces(aDetectedInterfaces)\n");
+    strFunction += wxT("        end\n");
+    strFunction += wxT("\n");
+    strFunction += wxT("        -- Search all detected interfaces for the pattern.\n");
+    strFunction += wxT("        for iInterfaceIdx,tInterface in ipairs(aDetectedInterfaces) do\n");
+    strFunction += wxT("            local strName = tInterface:GetName()\n");
+    strFunction += wxT("            if string.match(strName, strInterfacePattern)~=nil then\n");
+    strFunction += wxT("                tPlugin = aDetectedInterfaces[iInterfaceIdx]:Create()\n");
+    strFunction += wxT("\n");
+    strFunction += wxT("            -- Connect the plugin.\n");
+    strFunction += wxT("            tPlugin:Connect()\n");
+    strFunction += wxT("            break\n");
+    strFunction += wxT("        end\n");
+    strFunction += wxT("    end\n");
+    strFunction += wxT("\n");
+    strFunction += wxT("    -- Found the interface?\n");
+    strFunction += wxT("    if tPlugin==nil then\n");
+    strFunction += wxT("        error(string.format(\"No interface matched the pattern '%s'!\", strInterfacePattern))\n");
+    strFunction += wxT("    end\n");
+    strFunction += wxT("\n");
+    strFunction += wxT("    retPlugin = tester.setCommonPlugin(tPlugin)\n");
+    strFunction += wxT("    end\n");
+    strFunction += wxT("\n");
+    strFunction += wxT("    return retPlugin\n");
+    strFunction += wxT("end\n");
+
+    return strFunction;
+}
+
+bool CTestGeneration::FileLEDStimulation(wxVector<PanelSensor*> vectorSensorPanel)
+{
 
     wxTextFile tFile(wxFileName::GetCwd()+"\\_tempscript_.lua");
 
     if(!tFile.Exists()) tFile.Create();
 
-    if(!tFile.Open()) wxLogMessage("Couldn't open file.");
+    if(!tFile.Open())
+    {
+        wxLogMessage("Couldn't open file.");
+        return false;
+    }
 
     tFile.Clear();
 
     tFile.AddLine("require(\"muhkuh_cli_init\")");
     tFile.AddLine("require(\"io_matrix\")\n");
 
+    tFile.AddLine(this->GetFunctionAutomatedNetXConnection());
+
     tFile.AddLine(wxT(" --------------------------- netX I/O Table ---------------------------\n "));
     tFile.AddLine(wxT(" local atPinsUnderTest = {\n"));
 
-    for(wxVector<PanelSensor*>::iterator it = vectorSensorPanel.begin(); it != vectorSensorPanel.end(); it++)
+    if(this->GetLastEntryWithPinnumber(vectorSensorPanel) == -1)
     {
-
-        if(!((*it) == vectorSensorPanel.back()))
+        tFile.AddLine(wxT("}"));
+        return false;
+    }
+    /* Fill atPinsUnderTest */
+    for(int i = 0; i < vectorSensorPanel.size(); i++)
+    {
+        /*  */
+        if(!vectorSensorPanel.at(i)->IsPinnumberEmpty())
         {
-            if((*it)->IsPinnumberEmpty())
-                tFile.AddLine(wxT("    { nil },"));
-            else tFile.AddLine(wxString::Format(wxT("    { \"\", io_matrix.PINTYPE_%s, %3d, %2d, io_matrix.PINFLAG_IOZ },\n"),
-                                            (*it)->GetPintype((*it)->GetPintype()),
-                                            (*it)->GetPinNumber(), (*it)->GetPinDefValue()));
-        }
-        /* Last entry needs no komma */
-        else
-        {
-            if((*it)->IsPinnumberEmpty())
-                tFile.AddLine(wxT("    { nil }"));
-            else tFile.AddLine(wxString::Format(wxT("    { \"\", io_matrix.PINTYPE_%s, %3d, %2d, io_matrix.PINFLAG_IOZ }\n"),
-                                            (*it)->GetPintype((*it)->GetPintype()),
-                                            (*it)->GetPinNumber(), (*it)->GetPinDefValue()));
+            if(!(i == this->GetLastEntryWithPinnumber(vectorSensorPanel)))
+                        tFile.AddLine(wxString::Format(wxT("    { \"%s\", io_matrix.PINTYPE_%s, %3d, %2d, io_matrix.PINFLAG_IOZ },\n"),
+                        vectorSensorPanel.at(i)->GetName(),
+                        vectorSensorPanel.at(i)->GetPintype(vectorSensorPanel.at(i)->GetPintype()),
+                        vectorSensorPanel.at(i)->GetPinNumber(), vectorSensorPanel.at(i)->GetPinDefValue()));
+            /* last entry needs no comma */
+            else
+                        tFile.AddLine(wxString::Format(wxT("    { \"%s\", io_matrix.PINTYPE_%s, %3d, %2d, io_matrix.PINFLAG_IOZ }\n"),
+                        vectorSensorPanel.at(i)->GetName(),
+                        vectorSensorPanel.at(i)->GetPintype(vectorSensorPanel.at(i)->GetPintype()),
+                        vectorSensorPanel.at(i)->GetPinNumber(), vectorSensorPanel.at(i)->GetPinDefValue()));
         }
     }
 
+    tFile.AddLine(wxT("}"));
 
-    tFile->AddLine(wxT("-- Device initialization -------------------"));
-    tFile->AddLine(wxT("-- netX"));
-    tFile->AddLine(wxT("local aAttr = io_matrix.initialize(tPlugin, \"netx/iomatrix_netx%d.bin\")"));;
-    tFile->AddLine(wxT("io_matrix.parse_pin_description(aAttr, atPinsUnderTest, ulVerbose)"));
-
-    tFile->AddLine(wxT("-- Turn on all LEDs"));
-    tFile->AddLine(wxT("local uiCounter = 1"));
-    tFile->AddLine(wxT("while(atPinsUnderTest[uiCounter] ~= nil) do"));
-    tFile->AddLine(wxT("    io_matrix.set_pin(aAttr, atPinsUnderTest[uiCounter][1],2)"));
-    tFile->AddLine(wxT("    uiCounter = uiCounter + 1"));
-    tFile->AddLine(wxT("end\n"));
+    tFile.AddLine(wxT(" --------------------------- netX I/O Table values -----------------------\n "));
+    tFile.AddLine(wxT(" local atPinsUnderTestValues = {\n"));
+    /* Fill value table */
+    for(int i = 0; i < vectorSensorPanel.size(); i++)
+    {
+        if(!vectorSensorPanel.at(i)->IsPinnumberEmpty())
+        {
+            if(!(i == this->GetLastEntryWithPinnumber(vectorSensorPanel)))
+                tFile.AddLine(wxString::Format(wxT("    { %d },"), vectorSensorPanel.at(i)->GetPinValue()));
+            /* last entry needs no comma */
+            else
+                tFile.AddLine(wxString::Format(wxT("    { %d }"), vectorSensorPanel.at(i)->GetPinValue()));
+        }
+    }
 
     tFile.AddLine(wxT("}"));
 
+
+    tFile.AddLine(wxT("-- Device connection ----------------------"));
+    tFile.AddLine(wxT("-- netX"));
+    tFile.AddLine(wxT("--tPlugin = tester.getCommonPlugin()"));
+    tFile.AddLine(wxT("tPlugin = open_netx_connection(\"COM4\")"));
+    tFile.AddLine(wxT("if tPlugin==nil then"));
+    tFile.AddLine(wxT("    error(\"No plugin selected, nothing to do!\")"));
+    tFile.AddLine(wxT("end\n"));
+
+    tFile.AddLine(wxT("-- Device initialization -------------------"));
+    tFile.AddLine(wxT("-- netX"));
+    tFile.AddLine(wxT("local aAttr = io_matrix.initialize(tPlugin, \"netx/iomatrix_netx%d.bin\")"));;
+    tFile.AddLine(wxT("io_matrix.parse_pin_description(aAttr, atPinsUnderTest, ulVerbose)"));
+
+    tFile.AddLine(wxT("-- Turn on all LEDs"));
+    tFile.AddLine(wxT("local uiCounter = 1"));
+    tFile.AddLine(wxT("while(atPinsUnderTest[uiCounter] ~= nil) do"));
+    tFile.AddLine(wxT("    io_matrix.set_pin(aAttr, atPinsUnderTest[uiCounter][1], atPinsUnderTestValues[uiCounter][1])"));
+    tFile.AddLine(wxT("    uiCounter = uiCounter + 1"));
+    tFile.AddLine(wxT("end\n\n"));
+
+    tFile.AddLine(wxT("tPlugin:Disconnect()"));
+
     tFile.Write();
 
-    if(!tFile.Close()) wxLogMessage("Couldn't close file");
+    if(!tFile.Close())
+    {
+        wxLogMessage("Couldn't close file");
+        return false;
+    }
 
+    return true;
+
+}
+
+
+bool CTestGeneration::CheckLEDStimulation(wxVector<PanelSensor*> vectorSensorPanel)
+{
+    /* If Pinnumbers are provided names must be provided as well, as the io_matrix test lua
+    requires the name as a neccessary parameter */
+    bool retVal = true;
+
+    for(wxVector<PanelSensor*>::iterator it = vectorSensorPanel.begin(); it != vectorSensorPanel.end(); it++ )
+    {
+        if(!(*it)->IsPinnumberEmpty() && (*it)->IsNameEmpty())
+        {
+            wxLogMessage("      Name entry for sensor %d is missing.", (*it)->GetSensorNumber());
+            retVal = false;
+        }
+    }
+
+    return retVal;
 }
