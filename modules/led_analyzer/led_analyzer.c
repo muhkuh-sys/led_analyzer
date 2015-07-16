@@ -45,12 +45,16 @@ internal sensorflags which are set in the functions itself specify which sensor 
 
 enum ERROR_FLAGS
 {
+	/* Dont write anything with 0x80000000 as we have an int value and this would result in a negative value */
+	
 	/** Identification error occured, e.g. the ID register value couldn't be read */
 	IDENTIFICATION_ERROR 		= 0x40000000,
 	/** The conversion was not complete at the time the ADC register was accessed */
 	INCOMPLETE_CONVERSION_ERROR = 0x20000000,
 	/** The maximum amount of clear level was reached, i.e. the sensor got digitally saturated */
 	EXCEEDED_CLEAR_ERROR 	    = 0x10000000,
+	/** Fatal error on a device, writing / reading from a ftdi channel failed */
+	DEVICE_ERROR_FATAL			= 0x8000000
 
 };
 
@@ -441,15 +445,20 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 		}
 
 	/* Check if sensors' ADCs have completed conversion */
+	/*
 	if((errorcode = tcs_waitForData(apHandles[handleIndex], apHandles[handleIndex+1])) != 0)
 		{
 			return (errorcode | INCOMPLETE_CONVERSION_ERROR);
 		}
-		
+	*/
+	
 	tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntegrationtime);
 	tcs_getGain(apHandles[handleIndex], apHandles[handleIndex+1], aucGain);
 	
-	tcs_readColors(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, ausRed, ausGreen, ausBlue);
+	if(tcs_readColors(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, ausRed, ausGreen, ausBlue) != 0)
+	{
+		return DEVICE_ERROR_FATAL;
+	}
 
 /*	
 	tcs_readColor(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, CLEAR);
