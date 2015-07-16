@@ -506,13 +506,13 @@ the sensor's datasheet for calculating the content of the integration time regis
 been calculated and saved in tcs3472Integration_t.
 	@param apHandles	 		array that stores ftdi2232h handles
 	@param devIndex				device index of current color controller device 
-	@param integrationtime		integration time to be sent to the sensor
 	@param uiX					sensor which will get the new integration time ( 0 ... 15 )
+	@param integrationtime		integration time to be sent to the sensor
 	
 	@return  0 : everything OK
 	@return  -1: i2c-functions failed
 */
-int set_intTime_x(void** apHandles, int devIndex, unsigned char integrationtime, unsigned int uiX)
+int set_intTime_x(void** apHandles, int devIndex, unsigned int uiX, unsigned char integrationtime)
 {
 	int iHandleLength = get_number_of_handles(apHandles);
 	int handleIndex = devIndex * 2;
@@ -541,13 +541,13 @@ LEDs. Whereas dark LEDs require a greater gain factor, gain factor for bright LE
 the sensor's datasheet for further information about gain.
 	@param apHandles	 		array that stores ftdi2232h handles
 	@param devIndex				device index of current color controller device 
-	@param gain					gain to be sent to the sensor
 	@param uiX					sensor which will get the new gain ( 0 ... 15 )
+	@param gain					gain to be sent to the sensor
 	
 	@return  0  : everything OK
 	@return  -1 : i2c-functions failed
 */
-int set_gain_x(void** apHandles, int devIndex, unsigned char gain, unsigned int uiX)
+int set_gain_x(void** apHandles, int devIndex, unsigned int uiX, unsigned char gain)
 {
 	int iHandleLength = get_number_of_handles(apHandles);
 	int handleIndex = devIndex * 2;
