@@ -8,7 +8,7 @@ require("color_validation")	 -- Validate your colors, contains helper to print y
 TEST_RESULT_OK 			  = 0 
 TEST_RESULT_FAIL 		  = 1 
 TEST_RESULT_NO_DEVICES 	  = 2
-TEST_RESULT_DEVICE_FAILED = 3 
+TEST_RESULT_FATAL_ERROR   = 0x8000000 
 
 MAXDEVICES = 50
 MAXHANDLES = MAXDEVICES * 2
@@ -104,9 +104,11 @@ function initDevices(numberOfDevices, atSettings)
 		
 		-- if atsettings is provided --
 		if atSettings ~= nil then 
-			for i = 1, MAXSENSORS do 
-				led_analyzer.set_intTime_x(apHandles, devIndex, i-1, atSettings[devIndex][i].integration)
-				led_analyzer.set_gain_x(apHandles, devIndex, i-1, atSettings[devIndex][i].gain)
+			for i = 1, MAXSENSORS do
+				if atSettings[devIndex] ~= nil then 
+					led_analyzer.set_intTime_x(apHandles, devIndex, i-1, atSettings[devIndex][i].integration)
+					led_analyzer.set_gain_x(apHandles, devIndex, i-1, atSettings[devIndex][i].gain)
+				end 
 			end
 		end 
 	
@@ -145,6 +147,7 @@ function startMeasurements(numberOfDevices)
 	local devIndex = 0
 	local error_counter = 0 
 	local ret = 0
+	local fatal_error_occured
 	
 	tColorTable = {}
 
@@ -155,6 +158,9 @@ function startMeasurements(numberOfDevices)
 		while(error_counter < READ_MAXERROR) do		
 			ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, aucIntTimes, aucGains)
 			if ret ~= 0 then
+				if ret == TEST_RESULT_FATAL_ERROR then -- return code for fatal errors 
+					fatal_error_occured = 1 
+				end 
 				error_counter = error_counter + 1
 			else
 				break 
@@ -170,6 +176,10 @@ function startMeasurements(numberOfDevices)
 		devIndex = devIndex + 1 
 	end 
 	
+	if fatal_error_occured then 
+		return TEST_RESULT_FATAL_ERROR
+	end 
+	-- otherwise return the ret code which may contain less fatal errors like id errors or exceeded clear
 	return ret 
 end 
 
@@ -184,9 +194,10 @@ function validateLEDs(numberOfDevices, tDUT, lux_check_enable)
 	tTestSummary = {}
 	print("Starting Test ... \n")
 	
+	
 	while(devIndex < numberOfDevices) do 
 		tTestSummary[devIndex] = getDeviceSummary(tDUT[devIndex], tColorTable[devIndex][ENTRY_WAVELENGTH], lux_check_enable)
-		printDeviceSummary(tTestSummary[devIndex], 1 )
+		--printDeviceSummary(tTestSummary[devIndex], 1 )
 		devIndex = devIndex + 1 
 	end 
 	

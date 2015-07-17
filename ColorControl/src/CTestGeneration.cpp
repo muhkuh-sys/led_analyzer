@@ -218,7 +218,7 @@ void CTestGeneration::GenerateInitialization(wxTextFile* tFile, bool useNetX)
         tFile->AddLine(wxT("-- Device connection ----------------------"));
         tFile->AddLine(wxT("-- netX"));
         tFile->AddLine(wxT("--tPlugin = tester.getCommonPlugin()"));
-        tFile->AddLine(wxT("tPlugin = open_netx_connection(\"COM4\")"));
+        tFile->AddLine(wxT("tPlugin = open_netx_connection(\"COM\")"));
         tFile->AddLine(wxT("if tPlugin==nil then"));
         tFile->AddLine(wxT("    error(\"No plugin selected, nothing to do!\")"));
         tFile->AddLine(wxT("end\n"));

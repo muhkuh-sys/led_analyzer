@@ -1674,7 +1674,7 @@ tTCS_dirVector = {
 }
 
 tReferenceLEDcolors = {
-	[0  ] = {colorname = "OFF State",    nm = 0  },
+	[0  ] = {colorname = "OFF State",  nm = 0  },
 	[405] = {colorname = "Ultra Blue", nm = 405},
 	[406] = {colorname = "Ultra Blue", nm = 406},
 	[407] = {colorname = "Ultra Blue", nm = 407},

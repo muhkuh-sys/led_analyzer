@@ -171,10 +171,14 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
 
             m_pLua->ScanDevices(m_numberOfDevices, m_aStrSerials);
 
+            this->UpdateConnectedField(wxSystemSettings::GetColour(wxSYS_COLOUR_INACTIVECAPTION));
+
+            if(!m_cocoDevices.empty()) m_cocoDevices.clear();
+
             if(m_numberOfDevices == 0)
             {
                 wxLogMessage("No device detected ... please make sure the device is properly attached!");
-                if(!m_cocoDevices.empty()) m_cocoDevices.clear();
+                //if(!m_cocoDevices.empty()) m_cocoDevices.clear();
                 m_eState = IS_INITIAL;
 
                 if (m_pLua != NULL) delete m_pLua;
@@ -226,7 +230,6 @@ void ColorControlFrame::UpdateSerialList()
 void ColorControlFrame::OnConnect(wxCommandEvent& event)
 {
     int iNumberOfDevices = m_cocoDevices.size();
-
 
     switch(m_eState)
     {
@@ -930,7 +933,6 @@ void ColorControlFrame::OnOpenSession( wxCommandEvent& event )
     wxLogMessage("Opening test session %s", strPath);
 
     m_fileConfig->Write("DEFAULT_PATHS/path_open_testsession", open_fileDialog->GetDirectory());
-
 
     wxFileConfig tFileConfig(wxEmptyString, wxEmptyString,
                              strPath, wxEmptyString,
