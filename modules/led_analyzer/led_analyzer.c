@@ -467,8 +467,6 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	tcs_readColor(apHandles[handleIndex], apHandles[handleIndex+1], ausBlue, BLUE);
 */
 	
-
-	
 	
 	if((errorcode = tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, aucIntegrationtime)) != 0)
 	{		
