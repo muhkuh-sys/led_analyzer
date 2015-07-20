@@ -9,8 +9,10 @@
 
 ///////////////////////////////////////////////////////////////////////////
 
-PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, int sensornumber ) : wxPanel( parent, id, pos, size, style )
+PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, int sensornumber, bool useNetX ) : wxPanel( parent, id, pos, size, style )
 {
+    m_useNetX = useNetX;
+
 	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
 
     m_sensorNumber = sensornumber;
@@ -154,7 +156,7 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxString m_chCurPinValueChoices[] = { wxT("Input"), wxT("High"), wxT("Low") };
 	int m_chCurPinValueNChoices = sizeof( m_chCurPinValueChoices ) / sizeof( wxString );
 	m_chCurPinValue = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chCurPinValueNChoices, m_chCurPinValueChoices, 0 );
-	m_chCurPinValue->SetSelection( 0 );
+	m_chCurPinValue->SetSelection( 1 );
 	bSizerPinValue->Add( m_chCurPinValue, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 2 );
 
 
@@ -221,12 +223,49 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	bSizerRows->Add( bSizerCurSensor, 1, wxEXPAND, 5 );
 
 
+    /* Hide unneeded Panels */
+    if(!useNetX)
+    {
+        m_chCurPintype->Hide();
+        m_txtCtrlCurPinNo->Hide();
+        m_chCurPinValue->Hide();
+        m_chCurDefPinValue->Hide();
+    }
+
 	this->SetSizer( bSizerRows );
 	this->Layout();
 	bSizerRows->Fit( this );
 
+
 	// Connect Events
 	m_bpButtonPlus->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( PanelSensor::OnAddTestRow ), NULL, this );
+}
+
+void PanelSensor::UpdatePanelView(bool useNetX)
+{
+    if(useNetX)
+    {
+        m_chCurPintype->Show();
+        m_txtCtrlCurPinNo->Show();
+        m_chCurPinValue->Show();
+        m_chCurDefPinValue->Show();
+        m_useNetX = true;
+    }
+    else
+    {
+        m_chCurPintype->Hide();
+        m_txtCtrlCurPinNo->Hide();
+        m_chCurPinValue->Hide();
+        m_chCurDefPinValue->Hide();
+        m_useNetX = false;
+    }
+
+    for(wxVector<PanelTestrow*>::iterator it = m_vectorTestrow.begin(); it != m_vectorTestrow.end(); it++)
+    {
+        (*it)->UpdateTestrowView(m_useNetX);
+    }
+
+    this->Layout();
 }
 
 
@@ -243,7 +282,7 @@ void PanelSensor::OnAddTestRow(wxCommandEvent& event)
     this->GetParent()->Hide();
     int iCurVectorSize;
 
-    m_vectorTestrow.push_back(new PanelTestrow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL ));
+    m_vectorTestrow.push_back(new PanelTestrow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, m_useNetX ));
 
     iCurVectorSize = m_vectorTestrow.size();
 
@@ -315,7 +354,7 @@ void PanelSensor::OnClearSet ( wxCommandEvent& event)
 
 void PanelSensor::OnPasteSet ( wxCommandEvent& event)
 {
-    /* Get the index of the vector to be deleted */
+    /* Get the index of the vector to be edited */
     int iVectorIndex = m_hashPaste[event.GetId()];
 
     /* Name */
@@ -336,6 +375,15 @@ void PanelSensor::OnPasteSet ( wxCommandEvent& event)
     m_vectorTestrow.at(iVectorIndex)->SetPinNumber(this->GetPinNumber());
     /* Pin Value */
     m_vectorTestrow.at(iVectorIndex)->SetPinValue(this->GetPinValue());
+    /* Change the pin value as on - off - on - off orderings are expected */
+    if(this->GetPinValue() == 1)
+    {
+        this->SetPinValue(2);
+    }
+    else if (this->GetPinValue() == 2)
+    {
+        this->SetPinValue(1);
+    }
     /* Pin Default Value */
     m_vectorTestrow.at(iVectorIndex)->SetPinDefValue(this->GetPinDefValue());
     /* Tolerance Wavelength */

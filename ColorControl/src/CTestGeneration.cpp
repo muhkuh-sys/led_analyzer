@@ -175,7 +175,7 @@ void CTestGeneration::InsertHeaders(wxTextFile* tFile, bool useNetX)
     }
 
     tFile->AddLine("-- be pessimistic ");
-    tFile->AddLine("local retval = TEST_RESULT_FAIL\n");
+    tFile->AddLine("testretval = TEST_RESULT_FAIL\n");
 
 }
 
@@ -218,7 +218,7 @@ void CTestGeneration::GenerateInitialization(wxTextFile* tFile, bool useNetX)
         tFile->AddLine(wxT("-- Device connection ----------------------"));
         tFile->AddLine(wxT("-- netX"));
         tFile->AddLine(wxT("--tPlugin = tester.getCommonPlugin()"));
-        tFile->AddLine(wxT("tPlugin = open_netx_connection(\"COM\")"));
+        tFile->AddLine(wxT("tPlugin = open_netx_connection(\"COM4\")"));
         tFile->AddLine(wxT("if tPlugin==nil then"));
         tFile->AddLine(wxT("    error(\"No plugin selected, nothing to do!\")"));
         tFile->AddLine(wxT("end\n"));
@@ -255,6 +255,7 @@ void CTestGeneration::GenerateInitialization(wxTextFile* tFile, bool useNetX)
 }
 
 
+
 void CTestGeneration::GenerateTestSteps(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX)
 {
     int iNumberOfTestSets = this->GetMaximumNumberOfTestsets(vectorSensorPanel);
@@ -276,8 +277,8 @@ void CTestGeneration::GenerateTestSteps(wxVector<PanelSensor*> vectorSensorPanel
 
         tFile->AddLine(wxT("led_analyzer.wait4Conversion(700)"));
         tFile->AddLine(wxT("startMeasurements(numberOfDevices)"));
-        tFile->AddLine(wxString::Format(wxT("ret = validateLEDs(numberOfDevices, atTestSets[%d])\n"), i));
-        tFile->AddLine(wxT("if ret ~= TEST_RESULT_OK then"));
+        tFile->AddLine(wxString::Format(wxT("testretval = validateLEDs(numberOfDevices, atTestSets[%d])\n"), i));
+        tFile->AddLine(wxT("if testretval ~= TEST_RESULT_OK then"));
         tFile->AddLine(wxT("--    free()"));
         if(useNetX)
         {
@@ -290,6 +291,7 @@ void CTestGeneration::GenerateTestSteps(wxVector<PanelSensor*> vectorSensorPanel
 
     tFile->AddLine(wxT("free()"));
     if(useNetX) tFile->AddLine(wxT("tPlugin:Disconnect()"));
+    tFile->AddLine(wxT("return testretval"));
 }
 
 void CTestGeneration::GenerateSettingsTable(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile)
@@ -437,6 +439,7 @@ bool CTestGeneration::OpenSessionAsIni(wxVector<PanelSensor*> vectorSensorPanel,
         /* Refill so we have the save number of testrows as in the config file*/
         while(iCurNumberOfTesrows != iSavedNumberOfTesrows)
         {
+            /* Update current vector and its new size */
             vectorTestrow = (*it)->GetVectorTestrow();
             iCurNumberOfTesrows = vectorTestrow.size();
 
@@ -446,13 +449,13 @@ bool CTestGeneration::OpenSessionAsIni(wxVector<PanelSensor*> vectorSensorPanel,
                 /* Destroy last row */
                 wxCommandEvent evt(wxEVT_COMMAND_BUTTON_CLICKED, vectorTestrow.back()->GetpButtonRemove()->GetId());
                 vectorTestrow.back()->GetpButtonRemove()->GetEventHandler()->ProcessEvent(evt);
-                /* Update current number */
+
             }
+            /* Add rows if current number is smaller then wanted number */
             if(iCurNumberOfTesrows < iSavedNumberOfTesrows)
             {
                 wxCommandEvent evt(wxEVT_COMMAND_BUTTON_CLICKED, (*it)->GetpButtonAdd()->GetId());
                 (*it)->GetpButtonAdd()->GetEventHandler()->ProcessEvent(evt);
-                /* Update current number */
             }
         }
 
@@ -711,7 +714,7 @@ bool CTestGeneration::FileLEDStimulation(wxVector<PanelSensor*> vectorSensorPane
     tFile.AddLine(wxT("-- Device connection ----------------------"));
     tFile.AddLine(wxT("-- netX"));
     tFile.AddLine(wxT("--tPlugin = tester.getCommonPlugin()"));
-    tFile.AddLine(wxT("tPlugin = open_netx_connection(\"COM\")"));
+    tFile.AddLine(wxT("tPlugin = open_netx_connection(\"COM4\")"));
     tFile.AddLine(wxT("if tPlugin==nil then"));
     tFile.AddLine(wxT("    error(\"No plugin selected, nothing to do!\")"));
     tFile.AddLine(wxT("end\n"));

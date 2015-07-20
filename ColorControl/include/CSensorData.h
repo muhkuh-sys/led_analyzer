@@ -1,7 +1,7 @@
 #ifndef CSENSORDATA_H
 #define CSENSORDATA_H
 
-#include "../GUIFrame.h"
+#include "GUIFrame.h"
 
 enum tcs3472_intTime_t
 {

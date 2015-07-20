@@ -2,7 +2,7 @@
 #define PANELSENSOR_H
 
 
-#include "../GUIFrame.h"
+#include "GUIFrame.h"
 #include "PanelTestrow.h"
 
 
@@ -16,6 +16,7 @@ class PanelSensor : public wxPanel
 {
 	private:
 	    int m_sensorNumber;
+	    bool m_useNetX;
         wxBoxSizer* bSizerRows;
 		wxTextCtrl* m_txtCtrlSensorNo;
 		wxBitmapButton* m_bpButtonPlus;
@@ -44,6 +45,8 @@ class PanelSensor : public wxPanel
     public:
         wxBitmapButton* GetpButtonAdd() {return m_bpButtonPlus;};
         wxVector<PanelTestrow*> GetVectorTestrow(){return m_vectorTestrow; };
+        void UpdatePanelView(bool useNetX);
+
 
         int      GetSensorNumber()      {return wxAtoi(m_txtCtrlSensorNo->GetValue());};
         wxString GetName()              {return m_txtCtrlCurName->GetValue();};
@@ -99,7 +102,7 @@ class PanelSensor : public wxPanel
 
 
 
-		PanelSensor( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxTAB_TRAVERSAL, int sensornumber = 0 );
+		PanelSensor( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxTAB_TRAVERSAL, int sensornumber = 0, bool useNetX = true );
 		~PanelSensor();
 
 };

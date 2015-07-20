@@ -197,7 +197,7 @@ function validateLEDs(numberOfDevices, tDUT, lux_check_enable)
 	
 	while(devIndex < numberOfDevices) do 
 		tTestSummary[devIndex] = getDeviceSummary(tDUT[devIndex], tColorTable[devIndex][ENTRY_WAVELENGTH], lux_check_enable)
-		--printDeviceSummary(tTestSummary[devIndex], 1 )
+		printDeviceSummary(tTestSummary[devIndex], 1 )
 		devIndex = devIndex + 1 
 	end 
 	

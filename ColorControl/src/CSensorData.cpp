@@ -4,7 +4,10 @@ CSensorData::CSensorData()
 {
 
     m_rgbColor.Set(255, 255, 255);
-
+    m_wavelength = 0;
+    m_saturation = 0;
+    m_clearRatio = 0;
+    m_illumination = 0.;
 }
 
 CSensorData::~CSensorData()

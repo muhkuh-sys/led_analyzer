@@ -5,7 +5,7 @@ scanDevices()
 
 numberOfDevices = connectDevices()
 
-initDevices(numberOfDevices, TCS3472_GAIN_1X, TCS3472_INTEGRATION_700ms)
+setSettings(numberOfDevices, TCS3472_INTEGRATION_2_4ms, TCS3472_GAIN_60X)
 led_analyzer.wait4Conversion(700)
 
 

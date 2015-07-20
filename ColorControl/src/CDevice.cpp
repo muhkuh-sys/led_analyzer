@@ -100,6 +100,7 @@ void CColorController::SetState(int iErrorCode)
             {
                 m_sensorData[i].SetState(SENSOR_ID_ERROR);
             }
+            else m_sensorData[i].SetState(SENSOR_OK);
         }
     }
 
@@ -113,6 +114,7 @@ void CColorController::SetState(int iErrorCode)
             {
                 m_sensorData[i].SetState(SENSOR_INCOMPLETE_CONVERSION);
             }
+            else m_sensorData[i].SetState(SENSOR_OK);
         }
     }
 
@@ -126,6 +128,7 @@ void CColorController::SetState(int iErrorCode)
             {
                 m_sensorData[i].SetState(SENSOR_EXCEEDED_CLEAR);
             }
+            else m_sensorData[i].SetState(SENSOR_OK);
         }
     }
 

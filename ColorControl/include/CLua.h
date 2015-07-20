@@ -10,7 +10,7 @@ extern "C"
 
 }
 
-#include "../GUIFrame.h"
+#include "GUIFrame.h"
 #include "CDevice.h"
 
 

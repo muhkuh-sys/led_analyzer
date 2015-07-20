@@ -4,7 +4,7 @@
 
 ///////////////////////////////////////////////////////////////////////////
 
-PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
+PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, bool useNetX ) : wxPanel( parent, id, pos, size, style )
 {
 
 	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
@@ -216,6 +216,14 @@ PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos,
 
 	bSizervectorSensorPanel->Add( bSizerTolIllu, 0, 0, 5 );
 
+    if(!useNetX)
+    {
+        m_chSpPintype->Hide();
+        m_txtCtrlSpPinNo->Hide();
+        m_choiceSpPinValue->Hide();
+        m_chSpDefPinValue->Hide();
+    }
+
 
 
 	this->SetSizer( bSizervectorSensorPanel );
@@ -227,6 +235,26 @@ PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos,
 	m_bpButtonRemove->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( PanelSensor::OnButtonRemove ), NULL, this->GetParent() );
 	m_bpButtonPaste->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( PanelSensor::OnPasteSet ), NULL, this->GetParent() );
 	m_bpButtonClear->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( PanelSensor::OnClearSet ), NULL, this->GetParent() );
+}
+
+void PanelTestrow::UpdateTestrowView(bool useNetX)
+{
+    if(useNetX)
+    {
+        m_chSpPintype->Show();
+        m_txtCtrlSpPinNo->Show();
+        m_choiceSpPinValue->Show();
+        m_chSpDefPinValue->Show();
+    }
+    else
+    {
+        m_chSpPintype->Hide();
+        m_txtCtrlSpPinNo->Hide();
+        m_choiceSpPinValue->Hide();
+        m_chSpDefPinValue->Hide();
+    }
+
+    this->Layout();
 }
 
 void PanelTestrow::ClearRow()

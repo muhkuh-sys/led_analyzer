@@ -2761,7 +2761,7 @@
 
 1412631244 c:\wxwidgets-3.0.2\include\wx\msw\rcdefs.h
 
-1437122965 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
+1437380291 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\colorcontrolmain.cpp
 	"wx_pch.h"
 	"ColorControlMain.h"
 
@@ -3425,10 +3425,10 @@
 1434720603 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\cdatasensor.cpp
 	"CDataSensor.h"
 
-1437113236 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\csensordata.h
-	"../GUIFrame.h"
+1437381389 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\csensordata.h
+	"GUIFrame.h"
 
-1437113236 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\csensordata.cpp
+1437382713 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\csensordata.cpp
 	"CSensorData.h"
 
 1436202548 source:c:\led_analyzer\colorcontrol\colorcontrolapp.cpp
@@ -3519,7 +3519,7 @@
 1436177636 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\cdevice.h
 	"CSensorData.h"
 
-1437113236 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\cdevice.cpp
+1437376798 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\cdevice.cpp
 	"CDevice.h"
 
 1434975889 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\cview.h
@@ -3609,14 +3609,14 @@
 	<stdio.h>
 	"lua.h"
 
-1437113236 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\clua.h
+1437383278 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\clua.h
 	"lua.h"
 	"lualib.h"
 	"lauxlib.h"
-	"../GUIFrame.h"
+	"GUIFrame.h"
 	"CDevice.h"
 
-1437113236 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\clua.cpp
+1437383346 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\clua.cpp
 	"CLua.h"
 
 1437075098 c:\led_analyzer\colorcontrol\include\clua.h
@@ -3732,11 +3732,11 @@
 
 1412631244 D
 
-1437044145 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\panelsensor.h
-	"../GUIFrame.h"
+1437388391 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\panelsensor.h
+	"GUIFrame.h"
 	"PanelTestrow.h"
 
-1437027968 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\panelsensor.cpp
+1437388518 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\panelsensor.cpp
 	"PanelSensor.h"
 
 1437068396 c:\led_analyzer\colorcontrol\include\panelsensor.h
@@ -3749,10 +3749,10 @@
 1435865851 5472bab98e9d9f2769051662c8270b75ca3d5
 	"PanelSensor.h"
 
-1436947440 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\paneltestrow.h
-	"../GUIFrame.h"
+1437388278 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\paneltestrow.h
+	"GUIFrame.h"
 
-1436942375 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\paneltestrow.cpp
+1437388543 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\paneltestrow.cpp
 	"PanelTestrow.h"
 	"PanelSensor.h"
 
@@ -3770,10 +3770,82 @@
 	"../GUIFrame.h"
 	"PanelSensor.h"
 
-1437050961 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\ctestgeneration.h
-	"../GUIFrame.h"
+1437381406 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\ctestgeneration.h
+	"GUIFrame.h"
 	"PanelSensor.h"
 
-1437122426 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\ctestgeneration.cpp
+1437384226 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\ctestgeneration.cpp
 	"CTestGeneration.h"
+
+1437390515 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\guiframe.h
+	<iostream>
+	<wx/artprov.h>
+	<wx/xrc/xmlres.h>
+	<wx/string.h>
+	<wx/bitmap.h>
+	<wx/image.h>
+	<wx/icon.h>
+	<wx/menu.h>
+	<wx/gdicmn.h>
+	<wx/font.h>
+	<wx/colour.h>
+	<wx/settings.h>
+	<wx/statbmp.h>
+	<wx/button.h>
+	<wx/dataview.h>
+	<wx/bmpbuttn.h>
+	<wx/sizer.h>
+	<wx/stattext.h>
+	<wx/textctrl.h>
+	<wx/statbox.h>
+	<wx/scrolwin.h>
+	<wx/notebook.h>
+	<wx/panel.h>
+	<wx/statusbr.h>
+	<wx/frame.h>
+	<wx/checkbox.h>
+	<wx/choice.h>
+	<wx/msgdlg.h>
+	<wx/log.h>
+	<wx/dynlib.h>
+	<wx/radiobut.h>
+	<wx/colordlg.h>
+	<wx/imaglist.h>
+	<wx/timer.h>
+	<wx/fileconf.h>
+	<wx/propgrid/propgrid.h>
+	<wx/propgrid/advprops.h>
+	<wx/textfile.h>
+	<wx/dirdlg.h>
+	<wx/filedlg.h>
+	<wx/tooltip.h>
+	"logo_hilscher.xpm"
+
+1436177636 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\logo_hilscher.xpm
+
+1436177635 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\colorcontrolapp.cpp
+	"wx_pch.h"
+	"ColorControlApp.h"
+	"ColorControlMain.h"
+
+1436177635 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\colorcontrolapp.h
+	<wx/app.h>
+
+1437387552 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\colorcontrolmain.h
+	"ColorControlApp.h"
+	"GUIFrame.h"
+	"CSensorData.h"
+	"CDevice.h"
+	"CLua.h"
+	"PanelSensor.h"
+	"CTestGeneration.h"
+
+1437397838 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\colorcontrolmain.cpp
+	"wx_pch.h"
+	"ColorControlMain.h"
+
+1437390378 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\guiframe.cpp
+	"wx/wxprec.h"
+	<wx/wx.h>
+	"GuiFrame.h"
 

@@ -1,7 +1,7 @@
 #ifndef CTESTGENERATION_H
 #define CTESTGENERATION_H
 
-#include "../GUIFrame.h"
+#include "GUIFrame.h"
 #include "PanelSensor.h"
 
 

@@ -1,7 +1,7 @@
 #ifndef PANELTESTROW_H
 #define PANELTESTROW_H
 
-#include "../GUIFrame.h"
+#include "GUIFrame.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class PanelTestrow
@@ -36,7 +36,8 @@ class PanelTestrow : public wxPanel
 
 	public:
 
-		PanelTestrow( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxTAB_TRAVERSAL );
+		PanelTestrow( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxTAB_TRAVERSAL, bool useNetX = true );
+        void UpdateTestrowView( bool useNetX );
 
         wxWindowID GetButtonRemoveID(){return m_bpButtonRemove->GetId();};
         wxWindowID GetButtonClearID(){return m_bpButtonClear->GetId();};
