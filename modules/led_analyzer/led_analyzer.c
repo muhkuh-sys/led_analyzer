@@ -196,7 +196,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 					fprintf(stderr, "... ftdi_new failed!\n");
 					return -1;
 				}
-			
+				
 			if((f = ftdi_set_interface(apHandles[iArrayPos], INTERFACE_A))<0)
 				{
 					fprintf(stderr, "... unable to attach to device %d interface A: %d, (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
@@ -237,7 +237,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 					fprintf(stderr, "... ftdi_new failed!\n");
 					return -1;
 				}
-			
+
 			if((f = ftdi_set_interface(apHandles[iArrayPos], INTERFACE_B))<0)
 				{
 					fprintf(stderr, "... unable to attach to device %d interface B: %d, (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
@@ -460,14 +460,6 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 		return DEVICE_ERROR_FATAL;
 	}
 
-/*	
-	tcs_readColor(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, CLEAR);
-	tcs_readColor(apHandles[handleIndex], apHandles[handleIndex+1], ausRed, RED);
-	tcs_readColor(apHandles[handleIndex], apHandles[handleIndex+1], ausGreen, GREEN);
-	tcs_readColor(apHandles[handleIndex], apHandles[handleIndex+1], ausBlue, BLUE);
-*/
-	
-	
 	if((errorcode = tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, aucIntegrationtime)) != 0)
 	{		
 		return (errorcode | EXCEEDED_CLEAR_ERROR);

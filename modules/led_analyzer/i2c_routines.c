@@ -354,9 +354,9 @@ int i2c_read8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned c
     while(counter--)
     {
         i2c_clockInput(ftdiA, ftdiB, 0);
+        if((counter  % 8 == 0) && counter != 8) i2c_giveAck(ftdiA, ftdiB);
     }
 
-    i2c_giveAck(ftdiA, ftdiB);
     i2c_stopCond(ftdiA, ftdiB);
 
     iRetval = send_package_read8(ftdiA, ftdiB, aucRecBuffer, ucRecLength);
@@ -484,10 +484,9 @@ int i2c_read16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
     while(counter--)
     {
         i2c_clockInput(ftdiA, ftdiB, 0);
-        if(counter == 8) i2c_giveAck(ftdiA, ftdiB);
+        if((counter  % 8 == 0) && counter != 16) i2c_giveAck(ftdiA, ftdiB);
     }
 
-    i2c_giveAck(ftdiA, ftdiB);
     i2c_stopCond(ftdiA, ftdiB);
 
 
@@ -620,9 +619,7 @@ int i2c_read4x16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
         if((counter  % 8 == 0) && counter != 64) i2c_giveAck(ftdiA, ftdiB);
     }
 
-	//i2c_giveAck(ftdiA, ftdiB);
     i2c_stopCond(ftdiA, ftdiB);
-
 
     iRetval = send_package_read4x16(ftdiA, ftdiB, ausReadBuffer1, ausReadBuffer2, ausReadBuffer3, ausReadBuffer4, ucRecLength);
     return iRetval;	

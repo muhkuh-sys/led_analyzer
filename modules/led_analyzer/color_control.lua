@@ -1,4 +1,5 @@
 ---- importing ----
+
 require("led_analyzer")		 -- libusb/ftdi driver library + sensor specific functions 
 require("color_conversions") -- handles conversion between color spaces and array to table (or vice versa) handling
 require("color_validation")	 -- Validate your colors, contains helper to print your colors and store your colors in adequate arrays
@@ -6,10 +7,8 @@ require("color_validation")	 -- Validate your colors, contains helper to print y
 
 TEST_RESULT_OK 			  = 0 
 TEST_RESULT_FAIL 		  = 1 
-TEST_RESULT_LEDS_ON 	  = 2 
-TEST_RESULT_LEDS_OFF 	  = 3 
-TEST_RESULT_NO_DEVICES 	  = 4
-TEST_RESULT_DEVICE_FAILED = 5 
+TEST_RESULT_NO_DEVICES 	  = 2
+TEST_RESULT_DEVICE_FAILED = 3 
 
 MAXDEVICES = 50
 MAXHANDLES = MAXDEVICES * 2
@@ -17,9 +16,9 @@ MAXSENSORS = 16
 
 MAXSERIALS = MAXDEVICES
 
-INIT_MAXERROR  = 10
-READ_MAXERROR  = 10 
-VALID_MAXERROR = 10 
+INIT_MAXERROR  = 1
+READ_MAXERROR  = 1 
+VALID_MAXERROR = 1 
 
 
 -- tcs3472 specific settings for gain 
@@ -32,9 +31,18 @@ TCS3472_GAIN_60X = 0x03
 TCS3472_INTEGRATION_2_4ms 		= 0xFF
 TCS3472_INTEGRATION_24ms 		= 0xF6
 TCS3472_INTEGRATION_100ms 		= 0xD6
-TCS3472_INTEGRATION_200ms	    = 0xAD
 TCS3472_INTEGRATION_154ms 		= 0xC0
+TCS3472_INTEGRATION_200ms	    = 0xAD
 TCS3472_INTEGRATION_700ms       = 0x00
+
+ENTRY_WAVELENGTH = 1
+ENTRY_RGB 		 = 2
+ENTRY_XYZ 		 = 3
+ENTRY_Yxy 		 = 4
+ENTRY_HSV 		 = 5
+ENTRY_SETTINGS 	 = 6
+ENTRY_ERRORCODE  = 7
+
 
 -- Color and light related data from the TCS3472 will be stored in following arrays -- 
 local ausClear  		= led_analyzer.new_ushort(MAXSENSORS)
@@ -48,71 +56,65 @@ local aucGains  		= led_analyzer.new_puchar(MAXSENSORS)
 local aucIntTimes 		= led_analyzer.new_puchar(MAXSENSORS)
 -- serial numbers of connected color controller(s) will be stored in asSerials --
 local asSerials 		= led_analyzer.new_astring(MAXSERIALS)
+local tStrSerials		= {}
 -- handle to all connected color controller(s) will be stored in apHandles (note 2 handles per device)
 local apHandles 		= led_analyzer.new_apvoid(MAXHANDLES)
-local numberOfDevices
--- table contains all color and light related data
-local tColorTable = {}
+local numberOfDevices	= 0
+-- global table contains all color and light related data / global for easy access by C 
+tColorTable = {}
 -- table that contains a test summary for each device --
 local tTestSummary
 
 local ret 				 = 0
 
 
--- connects to color controller devices with serial numbers given in table tSerials
--- if tSerial doesn't exist, function will connect to all color controller devices 
--- taking the order of their serial numbers into account (serial number 20000 will have a smaller index than 20004)
-function connectDevices(tSerials)
-	
-	local numberOfDevices = 0 
-	local asTempSerials = led_analyzer.new_astring(MAXSERIALS)
-	
+
+
+function scanDevices() 
 	numberOfDevices = led_analyzer.scan_devices(asSerials, MAXSERIALS)
+	tStrSerials = astring2table(asSerials, numberOfDevices)
+	return tStrSerials, numberOfDevices
+end 
+
+-- connects to color controller devices with serial numbers given in table tStrSerials
+-- if tOptionalSerials doesn't exist, function will connect to all color controller devices 
+-- taking the order of their serial numbers into account (serial number 20000 will have a smaller index than 20004)
+function connectDevices(tOptionalSerials)
 	
-	if tSerials == nil then 
-		numberOfDevices = led_analyzer.connect_to_devices(apHandles, MAXHANDLES, asSerials)
-		return numberOfDevices
+	if(tOptionalSerials == nil) then 
+		numberOfDevices = led_analyzer.connect_to_devices(apHandles, MAXHANDLES, table2astring(tStrSerials, asSerials))
 	else 
-		numberOfDevices = led_analyzer.connect_to_devices(apHandles, MAXHANDLES, table2astring(tSerials, asTempSerials))
-		led_analyzer.delete_astring(asTempSerials)
-		return numberOfDevices
+		numberOfDevices = led_analyzer.connect_to_devices(apHandles, MAXHANDLES, table2astring(tOptionalSerials, asSerials))
 	end 
+	
+	return numberOfDevices;
 end 
 
 
 
--- initializes all connected devices with gain and integration time settings given in the parameters
--- if any of the sensor specific settings like gain or integration time is not given the value will 
--- be set to a default value (gain 1x and integration time 100 ms)
-function initDevices(numberOfDevices, gain, integrationtime)
+-- Initializes the devices, by turning them on, clearing flags and identifying them
+function initDevices(numberOfDevices, atSettings)
 -- iterate over all devices and perform initialization -- 
 	local devIndex = 0
 	local error_counter = 0 
 	local ret = 0
 	
-	local lGain = 0 
-	local lIntegrationtime = 0 
-	
-	if gain == nil then 
-		lGain = TCS3472_GAIN_1X 
-	else 
-		lGain = gain 
-	end 
-	
-	if integrationtime == nil then 
-		lIntegrationtime = TCS3472_INTEGRATION_100ms
-	else 
-		lIntegrationtime = integrationtime
-	end 
-	
 	while(devIndex < numberOfDevices) do 
 
-
-		led_analyzer.set_gain(apHandles, devIndex, lGain)
-		led_analyzer.set_intTime(apHandles, devIndex, lIntegrationtime)
 		
+		-- if atsettings is provided --
+		if atSettings ~= nil then 
+			for i = 1, MAXSENSORS do 
+				led_analyzer.set_intTime_x(apHandles, devIndex, i-1, atSettings[devIndex][i].integration)
+				led_analyzer.set_gain_x(apHandles, devIndex, i-1, atSettings[devIndex][i].gain)
+			end
+		end 
+	
 		while(error_counter < INIT_MAXERROR) do
 			ret = led_analyzer.init_sensors(apHandles, devIndex)
+			led_analyzer.get_intTime(apHandles, devIndex, aucIntTimes)
+			led_analyzer.get_gain(apHandles, devIndex, aucGains)
+			
 			if ret ~= 0 then
 				error_counter = error_counter + 1 
 			else
@@ -121,15 +123,18 @@ function initDevices(numberOfDevices, gain, integrationtime)
 		end 
 		if error_counter == INIT_MAXERROR then
 			print(string.format("%d initialization errors in a row, test aborting ...", error_counter))
-			return TEST_RESULT_DEVICE_FAILED
 		else 
 			error_counter = 0 
 		end 
-				
+		tColorTable[devIndex] = {}
+		tColorTable[devIndex][ENTRY_ERRORCODE] = ret
+		
+		tColorTable[devIndex][ENTRY_SETTINGS] = auc2settingsTable(aucIntTimes, aucGains, MAXSENSORS)
+		
 		devIndex = devIndex + 1 
 	end 
 	
-	return 0 
+	return ret
 end 
 
 
@@ -144,10 +149,11 @@ function startMeasurements(numberOfDevices)
 	tColorTable = {}
 
 	while(devIndex < numberOfDevices) do 
-		print(string.format("\n------------------ Device %d -------------------- ", devIndex))
+		--print(string.format("\n------------------ Device %d -------------------- ", devIndex))
 			
+		-- Get Colours --
 		while(error_counter < READ_MAXERROR) do		
-			ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX)
+			ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, aucIntTimes, aucGains)
 			if ret ~= 0 then
 				error_counter = error_counter + 1
 			else
@@ -156,63 +162,68 @@ function startMeasurements(numberOfDevices)
 		end 
 		if error_counter == READ_MAXERROR then
 			print(string.format("%d color reading errors in a row, test aborting ...", error_counter))
-			return TEST_RESULT_DEVICE_FAILED  
 		else 
 			error_counter = 0
 		end 
-		
-		tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, 16)
-		print_color(devIndex, tColorTable, 16)
-		--print_color(devIndex, tColorTable, 16, "HSV")
-		
+				
+		tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, aucIntTimes, aucGains, ret, MAXSENSORS)
 		devIndex = devIndex + 1 
-		print("\n")
 	end 
 	
-	return 0 
+	return ret 
 end 
 
 -- function compares the color sets read from the devices to the testtable given in tDUT
 -- the LEDs under test must be on, this means we test if the right LEDs (correct wavelength, sat, ...) are mounted on the baord
 -- a table tTestSummary will be filled according to the test results (led on, led off, wrong led detected and so on)
-function ON_validateLEDs(numberOfDevices, tDUT, lux_check_enable)
+function validateLEDs(numberOfDevices, tDUT, lux_check_enable)
 	
 	local devIndex = 0
 	local ret = 0 
 	
 	tTestSummary = {}
-	print("Testing LEDs ON\n")
+	print("Starting Test ... \n")
 	
 	while(devIndex < numberOfDevices) do 
-		tTestSummary[devIndex] = getDeviceSummary(tDUT[devIndex], tColorTable[devIndex][1], lux_check_enable)
-		--printDeviceSummary(tTestSummary[devIndex], 1 )
+		tTestSummary[devIndex] = getDeviceSummary(tDUT[devIndex], tColorTable[devIndex][ENTRY_WAVELENGTH], lux_check_enable)
+		printDeviceSummary(tTestSummary[devIndex], 1 )
 		devIndex = devIndex + 1 
 	end 
 	
-	ret = ON_validateTestSummary(numberOfDevices, tTestSummary)
+	ret = validateTestSummary(numberOfDevices, tTestSummary)
 	return ret 
 end
 
--- function compares the color sets read from the devices to the testtable given in tDUT
--- the LEDs under test must be off, this means we test if the LEDs can be powered off 
--- a table tTestSummary will be filled according to the test results (led on, led off, wrong led detected and so on)
-function OFF_validateLEDs(numberOfDevices, tDUT, lux_check_enable)
-	
+
+function swapUp(sCurSerial)
+	led_analyzer.swap_up(asSerials, sCurSerial)
+	tStrSerials = astring2table(asSerials, numberOfDevices)
+	return tStrSerials
+end 
+
+function swapDown(sCurSerial)
+	led_analyzer.swap_down(asSerials, sCurSerial)
+	tStrSerials = astring2table(asSerials, numberOfDevices)
+	return tStrSerials
+end 
+
+function setGainX(iDeviceIndex, iSensorIndex, gain)
+	return led_analyzer.set_gain_x(apHandles, iDeviceIndex, iSensorIndex, gain)
+end 
+
+function setIntTimeX(iDeviceIndex, iSensorIndex, intTime)
+	return led_analyzer.set_intTime_x(apHandles, iDeviceIndex, iSensorIndex, intTime)
+end
+
+function setSettings(numberOfDevices, intTime, gain)
 	local devIndex = 0
-	local ret = 0 
-	
-	tTestSummary = {}
-	print("Testing LEDs OFF\n")
-	
-	while(devIndex < numberOfDevices) do 
-		tTestSummary[devIndex] = getDeviceSummary(tDUT[devIndex], tColorTable[devIndex][1], lux_check_enable)
+	while(devIndex < numberOfDevices) do
+		led_analyzer.set_gain(apHandles, devIndex, gain)
+		led_analyzer.set_intTime(apHandles, devIndex, intTime)
 		devIndex = devIndex + 1 
 	end 
-	
-	ret = OFF_validateTestSummary(numberOfDevices, tTestSummary)
-	return ret 
+	return 0
 end
-
 
 -- don't forget to clean up after every test -- 
 function free()
