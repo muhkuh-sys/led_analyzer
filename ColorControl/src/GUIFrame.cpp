@@ -265,9 +265,26 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_chTime->SetSelection( 0 );
 	sbSizerTestmode->Add( m_chTime, 0, wxALL | wxALIGN_BOTTOM, 2 );
 
+	wxStaticBoxSizer* sbSizerFastSetup;
+	sbSizerFastSetup = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Fast Setup") ), wxVERTICAL );
 
-	bSizerButtons->Add( sbSizerTestfile, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
+	wxString m_chGainChoices[] = { wxT("GAIN_1X"), wxT("GAIN_4X"), wxT("GAIN_16X"), wxT("GAIN_60X") };
+	int m_chGainNChoices = sizeof( m_chGainChoices ) / sizeof( wxString );
+	m_chGain = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chGainNChoices, m_chGainChoices, 0 );
+	m_chGain->SetSelection( 0 );
+	sbSizerFastSetup->Add( m_chGain, 0, wxALL|wxEXPAND, 6 );
+
+	wxString m_chIntTimeChoices[] = { wxT("TIME_2_4ms"), wxT("TIME_24ms"), wxT("TIME_100ms"), wxT("TIME_154ms"), wxT("TIME_200ms"), wxT("TIME_700ms") };
+	int m_chIntTimeNChoices = sizeof( m_chIntTimeChoices ) / sizeof( wxString );
+	m_chIntTime = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chIntTimeNChoices, m_chIntTimeChoices, 0 );
+	m_chIntTime->SetSelection( 0 );
+	sbSizerFastSetup->Add( m_chIntTime, 0, wxALL|wxEXPAND, 6 );
+
+
+	bSizerButtons->Add(sbSizerTestfile, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
+    bSizerButtons->Add(sbSizerFastSetup, 0, wxALL|wxEXPAND, 5 );
     bSizerButtons->Add(sbSizerTestmode, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
+
 
 	bSizerButtons->Add( 0, 0, 1, wxEXPAND, 5 );
 
@@ -302,6 +319,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
     m_dvlColors->AppendColumn(m_cColor);
 
     m_cExceededClear = m_dvlColors->AppendProgressColumn( wxT("Clear Level"), wxDATAVIEW_CELL_INERT, 100, wxALIGN_CENTER);
+
 
     wxArrayString astrGainchoices;
     astrGainchoices.Add("GAIN_1X");
@@ -396,6 +414,8 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_buttonUseTestfile->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnUseTest ), NULL, this );
 	m_buttonStart->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUIFrame::OnStart ), NULL, this );
 	m_buttonStimulation->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler ( GUIFrame::OnStimulation ), NULL, this );
+	this->Connect( m_chGain->GetId(), wxEVT_CHOICE, wxCommandEventHandler ( GUIFrame::OnFastGain ), NULL, this );
+	this->Connect( m_chIntTime->GetId(), wxEVT_CHOICE, wxCommandEventHandler ( GUIFrame::OnFastIntTime), NULL, this );
 	this->Connect( menuItem_about->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnAbout ) );
     this->Connect( wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnQuit ) );
     this->Connect( wxID_TESTMODE, wxEVT_RADIOBUTTON, wxCommandEventHandler( GUIFrame::OnTestmode ) );
@@ -442,16 +462,18 @@ PanelHeader::PanelHeader( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizer98;
 	bSizer98 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_stSensor = new wxStaticText( this, wxID_ANY, wxT("        Sensor        "), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stSensor = new wxStaticText( this, wxID_ANY, wxT("Sensor"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER );
+	m_stSensor->SetMinSize(wxSize(80, -1));
 	m_stSensor->Wrap( -1 );
 	bSizer98->Add( m_stSensor, 0, wxALL, 5 );
 
 
 	bSizer98->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_stName = new wxStaticText( this, wxID_ANY, wxT(" Name "), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stName = new wxStaticText( this, wxID_ANY, wxT("Name"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER );
 	m_stName->Wrap( -1 );
 	bSizer98->Add( m_stName, 0, wxALL, 5 );
+
 
 
 	bSizer98->Add( 0, 0, 1, wxEXPAND, 5 );
@@ -463,14 +485,14 @@ PanelHeader::PanelHeader( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 
 	bSizer98->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_stSaturation = new wxStaticText( this, wxID_ANY, wxT("Saturation"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stSaturation = new wxStaticText( this, wxID_ANY, wxT("Sat."), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stSaturation->Wrap( -1 );
 	bSizer98->Add( m_stSaturation, 0, wxALL, 5 );
 
 
 	bSizer98->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_stIllumination = new wxStaticText( this, wxID_ANY, wxT("Illumination"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stIllumination = new wxStaticText( this, wxID_ANY, wxT("Illumin."), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stIllumination->Wrap( -1 );
 	bSizer98->Add( m_stIllumination, 0, wxALL, 5 );
 

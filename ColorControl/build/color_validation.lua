@@ -84,7 +84,7 @@ function compareRows(tDUTrow, tCurColorSensor, lux_check_enable)
 		and		  tCurColorSensor.nm >= (tDUTrow.nm - tDUTrow.tol_nm) 
 		and		 (tCurColorSensor.sat <= tDUTrow.sat - tDUTrow.tol_sat
 		or		  tCurColorSensor.sat >= tDUTrow.sat + tDUTrow.tol_sast)) then 
-			return 3, string.format("Wrong Saturation!\n			Want: %3d %\n 			Detected: %3d %", 
+			return 3, string.format("Wrong Saturation!\n			Want: %3d \n 			Detected: %3d ", 
 					tDUTrow.sat, tCurColorSensor.sat) ,dnm, dsat, dlux
 					
 		-- Neither saturation nor wavelength fits --

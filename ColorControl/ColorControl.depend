@@ -3609,14 +3609,14 @@
 	<stdio.h>
 	"lua.h"
 
-1437383278 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\clua.h
+1437486794 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\clua.h
 	"lua.h"
 	"lualib.h"
 	"lauxlib.h"
 	"GUIFrame.h"
 	"CDevice.h"
 
-1437383346 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\clua.cpp
+1437487255 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\clua.cpp
 	"CLua.h"
 
 1437075098 c:\led_analyzer\colorcontrol\include\clua.h
@@ -3770,14 +3770,14 @@
 	"../GUIFrame.h"
 	"PanelSensor.h"
 
-1437381406 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\ctestgeneration.h
+1437489831 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\ctestgeneration.h
 	"GUIFrame.h"
 	"PanelSensor.h"
 
-1437384226 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\ctestgeneration.cpp
+1437489978 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\ctestgeneration.cpp
 	"CTestGeneration.h"
 
-1437390515 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\guiframe.h
+1437487386 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\guiframe.h
 	<iostream>
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
@@ -3819,6 +3819,7 @@
 	<wx/dirdlg.h>
 	<wx/filedlg.h>
 	<wx/tooltip.h>
+	<wx/choicdlg.h>
 	"logo_hilscher.xpm"
 
 1436177636 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\logo_hilscher.xpm
@@ -3831,7 +3832,7 @@
 1436177635 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\colorcontrolapp.h
 	<wx/app.h>
 
-1437387552 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\colorcontrolmain.h
+1437488674 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\colorcontrolmain.h
 	"ColorControlApp.h"
 	"GUIFrame.h"
 	"CSensorData.h"
@@ -3840,11 +3841,11 @@
 	"PanelSensor.h"
 	"CTestGeneration.h"
 
-1437397838 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\colorcontrolmain.cpp
+1437489670 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\colorcontrolmain.cpp
 	"wx_pch.h"
 	"ColorControlMain.h"
 
-1437390378 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\guiframe.cpp
+1437468772 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\guiframe.cpp
 	"wx/wxprec.h"
 	<wx/wx.h>
 	"GuiFrame.h"

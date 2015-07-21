@@ -102,7 +102,7 @@ function initDevices(numberOfDevices, atSettings)
 	while(devIndex < numberOfDevices) do 
 
 		
-		-- if atsettings is provided --
+		--if atsettings is provided --
 		if atSettings ~= nil then 
 			for i = 1, MAXSENSORS do
 				if atSettings[devIndex] ~= nil then 
@@ -113,9 +113,9 @@ function initDevices(numberOfDevices, atSettings)
 		end 
 	
 		while(error_counter < INIT_MAXERROR) do
-			ret = led_analyzer.init_sensors(apHandles, devIndex)
-			led_analyzer.get_intTime(apHandles, devIndex, aucIntTimes)
-			led_analyzer.get_gain(apHandles, devIndex, aucGains)
+			--ret = led_analyzer.init_sensors(apHandles, devIndex)
+			--led_analyzer.get_intTime(apHandles, devIndex, aucIntTimes)
+			--led_analyzer.get_gain(apHandles, devIndex, aucGains)
 			
 			if ret ~= 0 then
 				error_counter = error_counter + 1 
@@ -226,14 +226,19 @@ function setIntTimeX(iDeviceIndex, iSensorIndex, intTime)
 	return led_analyzer.set_intTime_x(apHandles, iDeviceIndex, iSensorIndex, intTime)
 end
 
-function setSettings(numberOfDevices, intTime, gain)
+function setSettings(intTime, gain)
 	local devIndex = 0
+	local ret
 	while(devIndex < numberOfDevices) do
-		led_analyzer.set_gain(apHandles, devIndex, gain)
-		led_analyzer.set_intTime(apHandles, devIndex, intTime)
+		if gain ~= nil then 
+			ret = led_analyzer.set_gain(apHandles, devIndex, gain)
+		end 
+		if intTime ~= nil then 
+			ret = led_analyzer.set_intTime(apHandles, devIndex, intTime)
+		end 
 		devIndex = devIndex + 1 
 	end 
-	return 0
+	return ret 
 end
 
 -- don't forget to clean up after every test -- 

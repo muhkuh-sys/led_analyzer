@@ -338,8 +338,9 @@ void ColorControlFrame::OnDisconnect(wxCommandEvent& event)
                 m_buttonStart->SetLabel("START");
             }
 
-            /* Close the current Lua State (color_control.lua) */
-            if (m_pLua) delete m_pLua;
+            /* Clean up and close the current Lua State (color_control.lua) */
+            if(m_pLua) m_pLua->CleanUp();
+            if(m_pLua) delete m_pLua;
 
             /* Set Initial System State */
             m_eState = IS_INITIAL;
@@ -377,6 +378,9 @@ void ColorControlFrame::OnStart(wxCommandEvent& event)
                     LOG_ERROR(m_text);
                     wxLogError("A fatal error has occured. Save your work, disconnect, re-scan and re-connect!");
                     LOG_DEFAULT(m_text);
+
+                    /* Show that a fatal error has occured */
+                    UpdateConnectedField(COLOR_ERROR);
                 }
 
                 m_pLua->ReadColours(m_cocoDevices);
@@ -420,7 +424,6 @@ void ColorControlFrame::OnStart(wxCommandEvent& event)
                     }
 
                     m_pTimer->Start(iTimerValue);
-
                     m_buttonStart->SetLabel("STOP");
                 }
             }
@@ -430,8 +433,12 @@ void ColorControlFrame::OnStart(wxCommandEvent& event)
 
 void ColorControlFrame::OnStimulation( wxCommandEvent& event )
 {
+
     /* Set output to error as only error outputs follow */
     LOG_ERROR(m_text);
+
+    /* Read if there's already a com port saved in the config file */
+    wxString strPlugin;
 
     /* Create your temporary .lua file for led stimulation */
     if(!m_testGeneration.CheckLEDStimulation(m_vectorSensorPanels ))
@@ -442,7 +449,12 @@ void ColorControlFrame::OnStimulation( wxCommandEvent& event )
         return;
     }
 
-    if(!m_testGeneration.FileLEDStimulation(m_vectorSensorPanels))
+    if(m_fileConfig->Read("netXType/plugin", &strPlugin))
+    {
+        if(strPlugin == wxEmptyString) strPlugin = this->GetInterfaceSelection();
+    }
+
+    if(!m_testGeneration.FileLEDStimulation(m_vectorSensorPanels, strPlugin))
     {
         wxLogMessage("Stimulation unsuccessful.");
         wxLogMessage("Stimulation file could not be generated.. abort.");
@@ -667,6 +679,7 @@ void ColorControlFrame::OnTestmode(wxCommandEvent& event)
 }
 
 
+
 void ColorControlFrame::OnTimeout(wxTimerEvent& event)
 {
 
@@ -675,14 +688,19 @@ void ColorControlFrame::OnTimeout(wxTimerEvent& event)
         LOG_ERROR(m_text);
         wxLogError("A fatal error has occured. Save your work, disconnect, re-scan and re-connect!");
         LOG_DEFAULT(m_text);
+
+        /* Show that a fatal error has occured */
+        UpdateConnectedField(COLOR_ERROR);
     }
 
-    /* If the result of readColours is not zero, something went wrong => stop the measurements */
+    /* If the result of readColours is not zero, something went wrong, but its not a fatal error
+       thus just stop the measurements */
     if(m_pLua->ReadColours(m_cocoDevices) != 0)
     {
         m_pTimer->Stop();
         if(m_buttonStart->GetLabel().IsSameAs("STOP")) m_buttonStart->SetLabel("START");
     }
+    /* Show the error*/
     this->UpdateData();
 }
 
@@ -715,9 +733,29 @@ void ColorControlFrame::OnClearLog(wxCommandEvent& event)
 
 void ColorControlFrame::OnShowChromaticity(wxCommandEvent& event)
 {
+
     FrameChromaticity* chromaticityFrame = new FrameChromaticity(this, wxID_ANY, "CIE 1931 Chromaticity Diagram");
     chromaticityFrame->Show();
+}
 
+
+wxString ColorControlFrame::GetInterfaceSelection()
+{
+    CLua hInterfaces("interface.lua");
+    wxArrayString astrInterfaces;
+    hInterfaces.GetInterfaces(astrInterfaces);
+
+    wxSingleChoiceDialog chInterface(this, wxT("Select the plugin the netX is connected to."), wxT("Select the plugin"), astrInterfaces);
+    /* return an empty string */
+    if(chInterface.ShowModal() == wxID_CANCEL)
+    {
+        return wxEmptyString;
+    }
+    /* we entered ok */
+    else
+    {
+        return chInterface.GetStringSelection();
+    }
 }
 
 void ColorControlFrame::OnSensorSettingsChanged(wxDataViewEvent& event )
@@ -743,6 +781,38 @@ void ColorControlFrame::OnSensorSettingsChanged(wxDataViewEvent& event )
         m_pLua->SetIntTimeX(iDeviceIndex, iSensorIndex, intTime);
     }
 
+}
+
+void ColorControlFrame::OnFastGain( wxCommandEvent& event)
+{
+    switch(m_eState)
+    {
+        case IS_INITIAL:
+        case IS_SCANNED:
+            wxLogMessage("Please connect first.");
+            break;
+        case IS_CONNECTED:
+            m_pLua->FastSettings(m_cocoDevices, m_str2Uc_gain[m_chGain->GetString(m_chGain->GetSelection())], 0);
+            /* update the view */
+            this->UpdateData();
+            break;
+    }
+}
+
+void ColorControlFrame::OnFastIntTime( wxCommandEvent& event)
+{
+    switch(m_eState)
+    {
+        case IS_INITIAL:
+        case IS_SCANNED:
+            wxLogMessage("No devices .. connect first.");
+            break;
+        case IS_CONNECTED:
+            m_pLua->FastSettings(m_cocoDevices, m_str2Uc_integration[m_chIntTime->GetString(m_chIntTime->GetSelection())], 1);
+            /* update the view */
+            this->UpdateData();
+            break;
+    }
 
 }
 
@@ -960,6 +1030,7 @@ void ColorControlFrame::OnOpenSession( wxCommandEvent& event )
 
 }
 
+/*
 void ColorControlFrame::OnUseNetX( wxCommandEvent& event )
 {
     switch(m_eState)
@@ -988,4 +1059,5 @@ void ColorControlFrame::OnUseNetX( wxCommandEvent& event )
 
     }
 }
+*/
 

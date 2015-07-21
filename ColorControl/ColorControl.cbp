@@ -51,17 +51,14 @@
 		<Linker>
 			<Add option="-mthreads" />
 		</Linker>
-		<Unit filename="ColorControlApp.cpp" />
-		<Unit filename="ColorControlApp.h" />
-		<Unit filename="ColorControlMain.cpp" />
-		<Unit filename="ColorControlMain.h" />
-		<Unit filename="GUIFrame.cpp" />
-		<Unit filename="GUIFrame.h" />
 		<Unit filename="WxWizFrame.fbp" />
 		<Unit filename="include/CDevice.h" />
 		<Unit filename="include/CLua.h" />
 		<Unit filename="include/CSensorData.h" />
 		<Unit filename="include/CTestGeneration.h" />
+		<Unit filename="include/ColorControlApp.h" />
+		<Unit filename="include/ColorControlMain.h" />
+		<Unit filename="include/GUIFrame.h" />
 		<Unit filename="include/PanelSensor.h" />
 		<Unit filename="include/PanelTestrow.h" />
 		<Unit filename="resource.rc">
@@ -71,8 +68,12 @@
 		<Unit filename="src/CLua.cpp" />
 		<Unit filename="src/CSensorData.cpp" />
 		<Unit filename="src/CTestGeneration.cpp" />
+		<Unit filename="src/ColorControlApp.cpp" />
+		<Unit filename="src/ColorControlMain.cpp" />
+		<Unit filename="src/GUIFrame.cpp" />
 		<Unit filename="src/PanelSensor.cpp" />
 		<Unit filename="src/PanelTestrow.cpp" />
+		<Unit filename="src/logo_hilscher.xpm" />
 		<Extensions>
 			<code_completion />
 			<envvars />

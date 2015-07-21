@@ -20,7 +20,6 @@ CLua::CLua(const char* filename)
 
     /* This function will set m_luaFileLoaded to true if successful */
     this->LoadAndRun(filename);
-
 }
 
 
@@ -399,6 +398,89 @@ int CLua::ReadColours(wxVector<CColorController*> vectorDevices)
 
 }
 
+/** Set either integration time or the gain of all connected sensors at once
+    iSelection = 0 --> Gain
+    iSelection = 1 --> Integration Time */
+
+int CLua::FastSettings(wxVector<CColorController*> vectorDevices, unsigned char ucSetting, int iSelection)
+{
+    /* Be pessimistic */
+    int iRetVal = 1;
+
+    if(!(this->IsLoaded()))
+    {
+        wxLogMessage("Color Control is not loaded!");
+        return -1;
+    }
+
+    /* Get your global Set Settings Function */
+    lua_getglobal(this->m_pLuaState, "setSettings");
+
+    /* we want to set the gain */
+    if(iSelection == 0)
+    {
+        /* Push the first argument: nil */
+        lua_pushnil(this->m_pLuaState);
+
+        /* Push the second argument: gain */
+        lua_pushnumber(this->m_pLuaState, ucSetting);
+
+    }
+    /* otherwise we want to fast set the integration time */
+    else if(iSelection == 1)
+    {
+        /* first argument: integration time */
+        lua_pushnumber(this->m_pLuaState, ucSetting);
+
+        /* second argument gain: nil */
+        lua_pushnil(this->m_pLuaState);
+    }
+
+    /* now run the function */
+    if (lua_pcall(this->m_pLuaState, 2, 1, 0))
+    {
+        wxLogMessage("Error Running Function %s", lua_tostring(this->m_pLuaState, -1));
+        return iRetVal;
+    }
+
+    /* get your result .. if successful it's zero */
+    if(!lua_isnumber(this->m_pLuaState, -1))
+    {
+        wxLogMessage("Retval (int) expected, got something else!");
+    }
+
+    /* Retrieve it */
+    iRetVal = lua_tonumber(this->m_pLuaState, -1);
+
+    /* Update the view if the retval is zero ... otherwise an error occured */
+
+    if(iRetVal == 0)
+    {
+        for(int i = 0; i < vectorDevices.size(); i++)
+        {
+            for(int j = 0; j < 16; j++)
+            {
+                /* If we edited gain */
+                if(iSelection == 0)
+                {
+                    vectorDevices.at(i)->SetGain(j, (tcs3472_gain_t)ucSetting);
+                }
+                /* if we edited integration time */
+                else if(iSelection == 1)
+                {
+                    vectorDevices.at(i)->SetIntTime(j, (tcs3472_intTime_t)ucSetting);
+                }
+            }
+        }
+    }
+
+    /* Pop the retrieved value */
+    lua_pop(this->m_pLuaState, 1);
+
+    return iRetVal;
+
+}
+
 /** Set the Integration time for one sensor on one device */
 int CLua::SetGainX(int iDeviceIndex, int iSensorIndex, tcs3472_gain_t gain)
 {
@@ -693,4 +775,71 @@ void CLua::CleanUp()
     /* Set it the attribute to unloaded */
     m_luaFileLoaded = false;
 
+}
+
+int CLua::GetInterfaces(wxArrayString &astrInterfaces)
+{
+    /* Be pessimistic, iRetval marks the number of interfaces found */
+    int iRetval = 0;
+
+    if(!(this->IsLoaded()))
+    {
+        wxLogMessage("inteface.lua is not loaded!");
+    }
+
+    /* Push your function onto the table */
+    lua_getglobal(this->m_pLuaState, "getStrInterfaces");
+
+    /* Call it with 0 arguments and 1 return value expected */
+    if( lua_pcall( this->m_pLuaState, 0, 1, 0 ) != 0 )
+    {
+        wxLogMessage("Error Running Function %s", lua_tostring(this->m_pLuaState, -1));
+    }
+
+    /* Expected argument is a string */
+    if(!lua_isstring(this->m_pLuaState, -1))
+    {
+        wxLogMessage("String expected, got something else.");
+        return iRetval;
+    }
+
+    /* get the concat string */
+    wxString strInterfaces = (wxString)lua_tostring(this->m_pLuaState, -1);
+    wxString strTemp;
+    wxVector<wxString> vectorString;
+
+    size_t i = 0;
+    while(i < strInterfaces.length())
+    {
+        if(strInterfaces[i] == ',')
+        {
+            vectorString.push_back(strTemp);
+            strTemp.clear();
+        }
+        else
+        {
+            strTemp += strInterfaces[i];
+
+            /* Last item must be added as well as allthough there follows no comma */
+            if(i == (strInterfaces.length() - 1))
+            {
+                vectorString.push_back(strTemp);
+                strTemp.clear();
+            }
+        }
+        i++;
+    }
+
+    /* Fill the string array */
+    astrInterfaces.Alloc(vectorString.size());
+    for(int j = 0; j < vectorString.size(); j++)
+    {
+        astrInterfaces.Add(vectorString.at(j));
+    }
+
+    /* Pop the value from the stack */
+    lua_pop(this->m_pLuaState, 1);
+
+    /* Return the number of interfaces found */
+    return astrInterfaces.Count();
 }

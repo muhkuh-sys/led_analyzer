@@ -7,7 +7,6 @@ extern "C"
     #include "lua.h"
     #include "lualib.h"
     #include "lauxlib.h"
-
 }
 
 #include "GUIFrame.h"
@@ -19,6 +18,7 @@ class CLua
     public:
         CLua(const char* filename);
         virtual ~CLua();
+        /* Color Controller related functions */
         int  ScanDevices(int &iNumberOfDevices, wxString *aStrSerials);
         int  ConnectDevices(int &iNumberOfDevices);
         int  LoadAndRun(const char* filename);
@@ -31,7 +31,9 @@ class CLua
         int  ReadColours(wxVector<CColorController*> vectorDevices);
         int  SetGainX(int iDeviceIndex, int iSensorIndex, tcs3472_gain_t gain);
         int  SetIntTimeX(int iDeviceIndex, int iSensorIndex, tcs3472_intTime_t intTime);
+        int  FastSettings(wxVector<CColorController*> vectorDevices, unsigned char ucSetting, int iSelection);
 
+        int  GetInterfaces(wxArrayString &astrInterfaces);
         void CleanUp();
 
     protected:
