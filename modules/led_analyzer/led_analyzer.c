@@ -444,22 +444,14 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 			return -1;
 		}
 
-	/* Check if sensors' ADCs have completed conversion */
-	/*
-	if((errorcode = tcs_waitForData(apHandles[handleIndex], apHandles[handleIndex+1])) != 0)
-		{
-			return (errorcode | INCOMPLETE_CONVERSION_ERROR);
-		}
-	*/
-	
 	tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntegrationtime);
 	tcs_getGain(apHandles[handleIndex], apHandles[handleIndex+1], aucGain);
 	
-	if(tcs_readColors(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, ausRed, ausGreen, ausBlue) != 0)
-	{
-		return DEVICE_ERROR_FATAL;
-	}
+	errorcode = tcs_readColors(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, ausRed, ausGreen, ausBlue);
 
+	if(errorcode == -1) return DEVICE_ERROR_FATAL;
+	if(errorcode !=  0) return (errorcode | INCOMPLETE_CONVERSION_ERROR);
+	
 	if((errorcode = tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, aucIntegrationtime)) != 0)
 	{		
 		return (errorcode | EXCEEDED_CLEAR_ERROR);

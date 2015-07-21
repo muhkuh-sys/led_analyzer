@@ -675,6 +675,7 @@ This function sends the content of the global Buffers aucBufferA and aucBufferB 
 Furthermore it reads back the data of pins which were configured as input. The function returns a value which equals the amount of read back bytes.
 The parameter ausReadbuffer will be used for storing 16 read back unsigned short int values of 16 sensors 
 	@param[in] 		ftdiA, ftdiB pointer to a ftdi_context
+	@param[in, out] aucReadBuffer  pointer to array of unsigned char  values
 	@param[in, out] ausReadBuffer1 pointer to array of unsigned short values
 	@param[in, out] ausReadBuffer2 pointer to array of unsigned short values
 	@param[in, out] ausReadBuffer3 pointer to array of unsigned short values
@@ -688,7 +689,7 @@ The parameter ausReadbuffer will be used for storing 16 read back unsigned short
 					
 
 */
-int send_package_read4x16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned short* ausReadBuffer1, unsigned short* ausReadBuffer2,
+int send_package_read4x16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned char* aucReadBuffer, unsigned short* ausReadBuffer1, unsigned short* ausReadBuffer2,
 						  unsigned short* ausReadBuffer3, unsigned short* ausReadBuffer4, unsigned char ucReadBufferLength)
 {
     unsigned int uiWritten;
@@ -739,6 +740,7 @@ int send_package_read4x16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB
     int i = 0;
     for(i; i<16; i++)
     {
+		aucReadBuffer[i]  = 0;
         ausReadBuffer1[i] = 0;
         ausReadBuffer2[i] = 0;
         ausReadBuffer3[i] = 0;
@@ -746,13 +748,77 @@ int send_package_read4x16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB
     }
 
 	
-	/* First Word */
-    unsigned int uiBytenumber = 14;
+	/* Index - Start of data */
+	unsigned int uiBytenumber = 14;
+	
     unsigned char ucMask = 7;
     unsigned char ucBufferIndexA = 0;
     unsigned char ucBufferIndexB = 8;
     unsigned int uiCounter = 8;
+	
+    while(uiCounter>0)
+    {
+        ucBufferIndexA = 0;
+        ucBufferIndexB = 8;
 
+        /* Process parallel incoming bits of each channel */
+        /* Channel AD */
+        /* DA0 */
+        aucReadBuffer[ucBufferIndexA++] |= ((unsigned char)(aucBufferA[uiBytenumber]&0x01)<<ucMask);
+        /* DA1 */
+        aucReadBuffer[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[uiBytenumber]&0x04)>>2)<<ucMask);
+        /* DA2 */
+        aucReadBuffer[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[uiBytenumber]&0x10)>>4)<<ucMask);
+        /* DA3 */
+        aucReadBuffer[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[uiBytenumber]&0x40)>>6)<<ucMask);
+
+        /* Channel BD */
+        /* DA8 */
+        aucReadBuffer[ucBufferIndexB++] |= ((unsigned char)(aucBufferB[uiBytenumber]&0x01)<<ucMask);
+        /* DA9 */
+        aucReadBuffer[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[uiBytenumber]&0x04)>>2)<<ucMask);
+        /* DA10 */
+        aucReadBuffer[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[uiBytenumber]&0x10)>>4)<<ucMask);
+        /* DA11 */
+        aucReadBuffer[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[uiBytenumber]&0x40)>>6)<<ucMask);
+
+
+        uiBytenumber += 1; 
+
+        /* Channel AC */
+        /* DA4 */
+        aucReadBuffer[ucBufferIndexA++] |= ((unsigned char)(aucBufferA[uiBytenumber]&0x01)<<ucMask);
+        /* DA5 */
+        aucReadBuffer[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[uiBytenumber]&0x04)>>2)<<ucMask);
+        /* DA6 */
+        aucReadBuffer[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[uiBytenumber]&0x10)>>4)<<ucMask);
+        /* DA7 */
+        aucReadBuffer[ucBufferIndexA++] |= (((unsigned char)(aucBufferA[uiBytenumber]&0x40)>>6)<<ucMask);
+
+        /* Channel BC */
+        /* DA4 */
+        aucReadBuffer[ucBufferIndexB++] |= ((unsigned char)(aucBufferB[uiBytenumber]&0x01)<<ucMask);
+        /* DA5 */
+        aucReadBuffer[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[uiBytenumber]&0x04)>>2)<<ucMask);
+        /* DA6 */
+        aucReadBuffer[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[uiBytenumber]&0x10)>>4)<<ucMask);
+        /* DA7 */
+        aucReadBuffer[ucBufferIndexB++] |= (((unsigned char)(aucBufferB[uiBytenumber]&0x40)>>6)<<ucMask);
+
+
+        uiBytenumber +=3;
+        uiCounter--;
+        ucMask--;
+    }	
+	
+	
+	
+	
+	/* First Word - Clear Colour */
+    ucMask = 7;
+    ucBufferIndexA = 0;
+    ucBufferIndexB = 8;
+    uiCounter = 8;
 
     while(uiCounter>0)
     {

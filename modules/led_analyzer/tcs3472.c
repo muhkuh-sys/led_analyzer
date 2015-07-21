@@ -244,6 +244,56 @@ unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_conte
 		
 }
 
+/** \brief checks if the ADCs for color measurement have already completed. Takes the status register as parameter.
+
+Function checks if the sensors have already completed a color measuremend. In case the measurements are completed the ADCs can be safely
+read and used for further calculations. This can be checked by reading a special register of the sensor, the status register. 
+If TCS3472_AVALID_BIT is set in this register, the ADCs have completed color measurements. If measurements are not completed, the return 
+code can be used to determine which of the 16 sensor(s) failed.
+	@param aucStatusRegister 	holds the values of the status register for all 16 sensors 
+	
+	@return  0 : everything OK - conversions complete
+	@return >0 : one or more sensor(s) failed
+	@return	    if the return code is 0b0000000000101100, we have incomplete conversions with sensor 3, sensor 4 and sensor 6
+	*/
+unsigned short int tcs_conversions_complete(unsigned char* aucStatusRegister)
+{
+    unsigned int uiErrorcounter = 0;
+    unsigned int uiSuccesscounter = 0;
+	
+	unsigned short int usErrorMask = 0;
+    int i = 0;
+
+	unsigned char aucErrorbuffer[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+
+            for(i = 0; i<=15; i++)
+            {
+               if((aucStatusRegister[i]&TCS3472_AVALID_BIT) != TCS3472_AVALID_BIT)
+               {
+                    aucErrorbuffer[i] = i+1;
+					usErrorMask  |= (1<<i);
+                    uiErrorcounter ++;
+               }
+               else uiSuccesscounter ++;
+
+               if(uiSuccesscounter == 16)
+               {
+                   //printf("Conversions complete.\n");
+                   return 0; 
+               }
+            }
+
+        printf("Incomplete conversions for following Sensors ...\n");
+        for(i = 0; i<16; i++)
+        {
+            if(aucErrorbuffer[i] != 0xFF) printf("%d ", aucErrorbuffer[i]);
+        }
+        printf("\n");
+       			
+		return usErrorMask;
+		
+}
+
 /** \brief reads back 4 color sets of 16 sensors - Red / Green / Blue / Clear.
 
 Function reads 16-Bit color values of 16 sensors. The color will be specified by the input parameter tcs_color_t color. 
@@ -282,13 +332,35 @@ unsigned short int tcs_readColor(struct ftdi_context* ftdiA, struct ftdi_context
 
 }
 
+/** \brief reads back 4 colours and the content of the status register in one i2c command.
 
+This function will read out the contents of the color registers of tcs3472 as words (2 Bytes per colour) and the content
+of the status register as one byte. The status register can be used in order to determine if color conversions
+had already completed.
+	@param ftdiA, ftdiB 	pointer to ftdi_context
+	@param ausClear      	will contain color value read back from 16 sensors
+	@param ausRed        	will contain color value read back from 16 sensors
+	@param ausGreen      	will contain color value read back from 16 sensors
+	@param ausBlue       	will contain color value read back from 16 sensors
+	
+	
+	@return  0  : everything OK - conversions complete
+	@return  -1 : i2c-functions failed
+	@ return >0 : one or more sensor(s) failed as ADCs haven't completed conversions yet
+	*/
 int tcs_readColors(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned short* ausRed,
 					unsigned short* ausGreen, unsigned short* ausBlue)
 {
-	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_AUTOINCR_BIT | TCS3472_COMMAND_BIT | TCS3472_CDATA_REG};												 
-	if(i2c_read4x16(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), ausClear, ausRed, ausGreen, ausBlue, 16)<0) return 1;
-    return 0;												
+	/* Begin with the status register, the autoincrement bit effects the reading of 9 bytes 
+	these 9 bytes consist of the status register (1 byte) and 4 words, one for each colour */
+	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_AUTOINCR_BIT | TCS3472_COMMAND_BIT | TCS3472_STATUS_REG};												 
+	unsigned char aucStatusRegister[16];
+	
+	if(i2c_read4x16(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucStatusRegister, ausClear, ausRed, ausGreen, ausBlue, 16)<0) return -1;
+    
+	/* Now check if conversions had already completed */
+	return tcs_conversions_complete(aucStatusRegister);
+	
 }
 
 

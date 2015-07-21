@@ -498,7 +498,8 @@ int i2c_read16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
 /** \brief i2c-function reads the slaves connected to all 16 i2c-busses and stores the information in adequates buffer.
 
 ftdiA and ftdiB represent Channel A and Channel B of a ftdi device and each of these channels has 8 i2c-busses. This function
-can read 4 times 2 bytes from an i2c-slave. 
+can read 4 times 2 bytes from an i2c-slave. Internally it reads one more Byte (the status register) in order to check if 
+conversions have already completed. 
 	@param ftdiA, ftdiB 	pointer to ftdi_context
 	@param aucSendBuffer 	pointer to the buffer which contains slave address and register to read from
 	@param ucLength		 	sizeof aucSendbuffer in bytes
@@ -514,6 +515,7 @@ can read 4 times 2 bytes from an i2c-slave.
 */
 
 int i2c_read4x16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength, 
+				unsigned char*  aucStatusRegister,
 				unsigned short* ausReadBuffer1, unsigned short* ausReadBuffer2,
 				unsigned short* ausReadBuffer3, unsigned short* ausReadBuffer4, unsigned char ucRecLength)
 {
@@ -611,17 +613,17 @@ int i2c_read4x16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
 
     /* Now the bytes can be read back beginning from the MSB */
 
-    int counter = 64;
+    int counter = 72;
 
     while(counter--)
     {
         i2c_clockInput(ftdiA, ftdiB, 0);
-        if((counter  % 8 == 0) && counter != 64) i2c_giveAck(ftdiA, ftdiB);
+        if((counter  % 8 == 0) && counter != 72) i2c_giveAck(ftdiA, ftdiB);
     }
 
     i2c_stopCond(ftdiA, ftdiB);
 
-    iRetval = send_package_read4x16(ftdiA, ftdiB, ausReadBuffer1, ausReadBuffer2, ausReadBuffer3, ausReadBuffer4, ucRecLength);
+    iRetval = send_package_read4x16(ftdiA, ftdiB, aucStatusRegister, ausReadBuffer1, ausReadBuffer2, ausReadBuffer3, ausReadBuffer4, ucRecLength);
     return iRetval;	
 }
 
