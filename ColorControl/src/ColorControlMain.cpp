@@ -458,6 +458,10 @@ void ColorControlFrame::OnStimulation( wxCommandEvent& event )
     {
         wxLogMessage("Stimulation unsuccessful.");
         wxLogMessage("Stimulation file could not be generated.. abort.");
+
+        /* Empty the default plugin as it did not work */
+        m_fileConfig->Write("netXType/plugin", "");
+
         LOG_DEFAULT(m_text);
         return;
     }
@@ -472,6 +476,8 @@ void ColorControlFrame::OnStimulation( wxCommandEvent& event )
         return;
     }
 
+    /* LED Stimulation file could be run successfully, thus save the port as default */
+    m_fileConfig->Write("netXType/plugin", strPlugin);
     LOG_DEFAULT(m_text);
 }
 
@@ -920,8 +926,35 @@ void ColorControlFrame::OnUseTest(wxCommandEvent& event)
     /* Write the path as a default directory path into the config file */
     m_fileConfig->Write("DEFAULT_PATHS/path_use_testfile", open_fileDialog->GetDirectory());
 
-    /* Insert code to use the test */
+    /* Let the user select the interface */
+    wxString strInterface;
 
+    /* If the user pressed cancel we abort */
+    if((strInterface = GetInterfaceSelection()) == wxEmptyString)
+    {
+        wxLogMessage("Abort.");
+        return;
+    }
+
+    wxString strLine;
+    wxTextFile tFile(strPath);
+    tFile.Open();
+
+
+    for(strLine = tFile.GetFirstLine(); !tFile.Eof(); strLine = tFile.GetNextLine())
+    {
+        wxLogMessage("%s", strLine);
+        if(strLine.StartsWith("-- INSERT INTERFACE NUMBER"))
+        {
+            tFile.InsertLine(wxString::Format(wxT("local strInterface = \"%s\""), strInterface), (tFile.GetCurrentLine()+1));
+            break;
+        }
+
+    }
+
+    tFile.Write();
+
+    /* Insert code to use the test */
     CLua *useTest = new CLua(strPath);
 
     if(useTest != NULL) delete useTest;

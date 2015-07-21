@@ -785,6 +785,9 @@ int CLua::GetInterfaces(wxArrayString &astrInterfaces)
     if(!(this->IsLoaded()))
     {
         wxLogMessage("inteface.lua is not loaded!");
+        astrInterfaces.Alloc(1);
+        astrInterfaces.Add("Error - interface.lua corrupted!");
+        return iRetval;
     }
 
     /* Push your function onto the table */
@@ -794,12 +797,17 @@ int CLua::GetInterfaces(wxArrayString &astrInterfaces)
     if( lua_pcall( this->m_pLuaState, 0, 1, 0 ) != 0 )
     {
         wxLogMessage("Error Running Function %s", lua_tostring(this->m_pLuaState, -1));
+        astrInterfaces.Alloc(1);
+        astrInterfaces.Add("Error - interface.lua corrupted!");
+        return iRetval;
     }
 
     /* Expected argument is a string */
     if(!lua_isstring(this->m_pLuaState, -1))
     {
         wxLogMessage("String expected, got something else.");
+        astrInterfaces.Alloc(1);
+        astrInterfaces.Add("Error - interface.lua corrupted!");
         return iRetval;
     }
 

@@ -113,9 +113,9 @@ function initDevices(numberOfDevices, atSettings)
 		end 
 	
 		while(error_counter < INIT_MAXERROR) do
-			--ret = led_analyzer.init_sensors(apHandles, devIndex)
-			--led_analyzer.get_intTime(apHandles, devIndex, aucIntTimes)
-			--led_analyzer.get_gain(apHandles, devIndex, aucGains)
+			ret = led_analyzer.init_sensors(apHandles, devIndex)
+			led_analyzer.get_intTime(apHandles, devIndex, aucIntTimes)
+			led_analyzer.get_gain(apHandles, devIndex, aucGains)
 			
 			if ret ~= 0 then
 				error_counter = error_counter + 1 

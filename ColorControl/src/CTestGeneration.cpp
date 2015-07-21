@@ -171,11 +171,12 @@ void CTestGeneration::InsertHeaders(wxTextFile* tFile, bool useNetX)
     if(useNetX)
     {
         tFile->AddLine("require(\"muhkuh_cli_init\")");
-        tFile->AddLine("require(\"io_matrix\")\n");
+        tFile->AddLine("require(\"io_matrix\")\n\n");
+        tFile->AddLine("-- INSERT INTERFACE NUMBER");
     }
 
     tFile->AddLine("-- be pessimistic ");
-    tFile->AddLine("testretval = TEST_RESULT_FAIL\n");
+    tFile->AddLine("local testretval = TEST_RESULT_FAIL\n");
 
 }
 
@@ -218,7 +219,7 @@ void CTestGeneration::GenerateInitialization(wxTextFile* tFile, bool useNetX)
         tFile->AddLine(wxT("-- Device connection ----------------------"));
         tFile->AddLine(wxT("-- netX"));
         tFile->AddLine(wxT("--tPlugin = tester.getCommonPlugin()"));
-        tFile->AddLine(wxT("tPlugin = open_netx_connection(\"ASK\")"));
+        tFile->AddLine(wxT("tPlugin = open_netx_connection(strInterface)"));
         tFile->AddLine(wxT("if tPlugin==nil then"));
         tFile->AddLine(wxT("    error(\"No plugin selected, nothing to do!\")"));
         tFile->AddLine(wxT("end\n"));
