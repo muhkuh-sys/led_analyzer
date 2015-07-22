@@ -172,11 +172,13 @@ void CTestGeneration::InsertHeaders(wxTextFile* tFile, bool useNetX)
     {
         tFile->AddLine("require(\"muhkuh_cli_init\")");
         tFile->AddLine("require(\"io_matrix\")\n\n");
-        tFile->AddLine("-- INSERT INTERFACE NUMBER");
+        /* Dont change following line as the replace function will not work after*/
+        tFile->AddLine("-- INSERT INTERFACE NUMBER\n");
     }
 
     tFile->AddLine("-- be pessimistic ");
     tFile->AddLine("local testretval = TEST_RESULT_FAIL\n");
+    tFile->AddLine("local lux_check_enable = nil");
 
 }
 
@@ -276,9 +278,9 @@ void CTestGeneration::GenerateTestSteps(wxVector<PanelSensor*> vectorSensorPanel
             tFile->AddLine(wxString::Format(wxT("-- INSERT CODE TO TO STIMULATE THE LEDS OF TESTSET %d --"), i));
         }
 
-        tFile->AddLine(wxT("led_analyzer.wait4Conversion(700)"));
+        tFile->AddLine(wxT("led_analyzer.wait4Conversion(200)"));
         tFile->AddLine(wxT("startMeasurements(numberOfDevices)"));
-        tFile->AddLine(wxString::Format(wxT("testretval = validateLEDs(numberOfDevices, atTestSets[%d])\n"), i));
+        tFile->AddLine(wxString::Format(wxT("testretval = validateLEDs(numberOfDevices, atTestSets[%d], lux_check_enable)\n"), i));
         tFile->AddLine(wxT("if testretval ~= TEST_RESULT_OK then"));
         tFile->AddLine(wxT("--    free()"));
         if(useNetX)
@@ -606,7 +608,6 @@ wxString CTestGeneration::GetFunctionAutomatedNetXConnection()
     strFunction += wxT("-- Open a netx connection without user input\n");
     strFunction += wxT("local function open_netx_connection(strInterfacePattern)\n");
     strFunction += wxT("\n");
-    strFunction += wxT("    local retPlugin\n");
     strFunction += wxT("    -- Open the connection to the netX.\n");
     strFunction += wxT("    if string.upper(strInterfacePattern)~=\"ASK\" then\n");
     strFunction += wxT("        -- No interface detected yet.\n");
@@ -629,18 +630,17 @@ wxString CTestGeneration::GetFunctionAutomatedNetXConnection()
     strFunction += wxT("            break\n");
     strFunction += wxT("            end\n");
     strFunction += wxT("        end\n");
-    strFunction += wxT("    else\n");
-    strFunction += wxT("        tPlugin = tester.getCommonPlugin()\n");
-    strFunction += wxT("    end\n");
     strFunction += wxT("\n");
     strFunction += wxT("    -- Found the interface?\n");
-    strFunction += wxT("    if tPlugin==nil then\n");
-    strFunction += wxT("        error(string.format(\"No interface matched the pattern '%s'!\", strInterfacePattern))\n");
+    strFunction += wxT("        if tPlugin==nil then\n");
+    strFunction += wxT("            error(string.format(\"No interface matched the pattern '%s'!\", strInterfacePattern))\n");
+    strFunction += wxT("        end\n");
+    strFunction += wxT("\n");
+    strFunction += wxT("    return tester.setCommonPlugin(tPlugin)\n\n");
+    strFunction += wxT("    else\n");
+    strFunction += wxT("        return tester.getCommonPlugin()\n");
     strFunction += wxT("    end\n");
     strFunction += wxT("\n");
-    strFunction += wxT("    retPlugin = tester.setCommonPlugin(tPlugin)\n");
-    strFunction += wxT("\n");
-    strFunction += wxT("    return retPlugin\n");
     strFunction += wxT("end\n");
 
     return strFunction;
@@ -755,6 +755,7 @@ bool CTestGeneration::CheckLEDStimulation(wxVector<PanelSensor*> vectorSensorPan
     requires the name as a neccessary parameter */
     bool retVal = true;
 
+    /* check if entries which contain a pinnumber also have a name */
     for(wxVector<PanelSensor*>::iterator it = vectorSensorPanel.begin(); it != vectorSensorPanel.end(); it++ )
     {
         if(!(*it)->IsPinnumberEmpty() && (*it)->IsNameEmpty())
@@ -763,6 +764,12 @@ bool CTestGeneration::CheckLEDStimulation(wxVector<PanelSensor*> vectorSensorPan
             retVal = false;
         }
     }
+
+    if(!retVal) return retVal;
+
+    /* if there's no entry at all with a pinnumber, return */
+    if(GetLastEntryWithPinnumber(vectorSensorPanel) == -1)
+        retVal = false;
 
     return retVal;
 }

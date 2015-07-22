@@ -459,9 +459,6 @@ void ColorControlFrame::OnStimulation( wxCommandEvent& event )
         wxLogMessage("Stimulation unsuccessful.");
         wxLogMessage("Stimulation file could not be generated.. abort.");
 
-        /* Empty the default plugin as it did not work */
-        m_fileConfig->Write("netXType/plugin", "");
-
         LOG_DEFAULT(m_text);
         return;
     }
@@ -472,6 +469,10 @@ void ColorControlFrame::OnStimulation( wxCommandEvent& event )
     {
         wxLogMessage("Stimulation unsuccessful.");
         wxLogMessage("Stimulation file could not be run on lua (errors) .. abort.");
+
+        /* Empty the default plugin as it did not work */
+        m_fileConfig->Write("netXType/plugin", "");
+
         LOG_DEFAULT(m_text);
         return;
     }
@@ -943,9 +944,12 @@ void ColorControlFrame::OnUseTest(wxCommandEvent& event)
 
     for(strLine = tFile.GetFirstLine(); !tFile.Eof(); strLine = tFile.GetNextLine())
     {
-        wxLogMessage("%s", strLine);
         if(strLine.StartsWith("-- INSERT INTERFACE NUMBER"))
         {
+            /* Remove the line after "--INSERT INTERFACE NUMBER"*/
+            /* We expect that line to be a empty line (newline) .. don't change that */
+            tFile.RemoveLine(tFile.GetCurrentLine()+1);
+            /* Replace it */
             tFile.InsertLine(wxString::Format(wxT("local strInterface = \"%s\""), strInterface), (tFile.GetCurrentLine()+1));
             break;
         }
