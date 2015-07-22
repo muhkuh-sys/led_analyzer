@@ -3,7 +3,7 @@
 require("led_analyzer")		 -- libusb/ftdi driver library + sensor specific functions 
 require("color_conversions") -- handles conversion between color spaces and array to table (or vice versa) handling
 require("color_validation")	 -- Validate your colors, contains helper to print your colors and store your colors in adequate arrays
-
+require("generate_xml")
 
 TEST_RESULT_OK 			  = 0 
 TEST_RESULT_FAIL 		  = 1 
@@ -191,6 +191,7 @@ function validateLEDs(numberOfDevices, tDUT, lux_check_enable)
 	local devIndex = 0
 	local ret = 0 
 	
+	-- empty test summary -- 
 	tTestSummary = {}
 	print("Starting Test ... \n")
 	
@@ -202,6 +203,7 @@ function validateLEDs(numberOfDevices, tDUT, lux_check_enable)
 	end 
 	
 	ret = validateTestSummary(numberOfDevices, tTestSummary)
+	generate_xml(tTestSummary)
 	return ret 
 end
 
