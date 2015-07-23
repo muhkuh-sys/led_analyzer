@@ -177,7 +177,8 @@ void CTestGeneration::InsertHeaders(wxTextFile* tFile, bool useNetX)
     }
 
     tFile->AddLine("-- be pessimistic ");
-    tFile->AddLine("local testretval = TEST_RESULT_FAIL\n");
+    tFile->AddLine("local iRetval = TEST_RESULT_FAIL\n");
+    tFile->AddLine("local strXmlResult");
     tFile->AddLine("local lux_check_enable = nil");
 
 }
@@ -220,8 +221,8 @@ void CTestGeneration::GenerateInitialization(wxTextFile* tFile, bool useNetX)
         tFile->AddLine("\n");
         tFile->AddLine(wxT("-- Device connection ----------------------"));
         tFile->AddLine(wxT("-- netX"));
-        tFile->AddLine(wxT("--tPlugin = tester.getCommonPlugin()"));
-        tFile->AddLine(wxT("tPlugin = open_netx_connection(strInterface)"));
+        tFile->AddLine(wxT("open_netx_connection(strInterface)"));
+        tFile->AddLine(wxT("tPlugin = tester.getCommonPlugin()"));
         tFile->AddLine(wxT("if tPlugin==nil then"));
         tFile->AddLine(wxT("    error(\"No plugin selected, nothing to do!\")"));
         tFile->AddLine(wxT("end\n"));
@@ -253,7 +254,7 @@ void CTestGeneration::GenerateInitialization(wxTextFile* tFile, bool useNetX)
     }
 
     tFile->AddLine(wxT("-- Color Controller"));
-    tFile->AddLine(wxT("initDevices(numberOfDevices, atSettings)\n"));
+    tFile->AddLine(wxT("initDevices(atSettings)\n"));
 
 }
 
@@ -279,22 +280,22 @@ void CTestGeneration::GenerateTestSteps(wxVector<PanelSensor*> vectorSensorPanel
         }
 
         tFile->AddLine(wxT("led_analyzer.wait4Conversion(200)"));
-        tFile->AddLine(wxT("startMeasurements(numberOfDevices)"));
-        tFile->AddLine(wxString::Format(wxT("testretval = validateLEDs(numberOfDevices, atTestSets[%d], lux_check_enable)\n"), i));
-        tFile->AddLine(wxT("if testretval ~= TEST_RESULT_OK then"));
+        tFile->AddLine(wxT("startMeasurements()"));
+        tFile->AddLine(wxString::Format(wxT("iRetval, strXmlResult = validateLEDs(atTestSets[%d], lux_check_enable)\n"), i));
+        tFile->AddLine(wxT("if iRetval ~= TEST_RESULT_OK then"));
         tFile->AddLine(wxT("--    free()"));
         if(useNetX)
         {
             tFile->AddLine("    ---- APPLY DEFAULT PINSTATES ---- ");
             tFile->AddLine("    --tPlugin:Disconnect()");
         }
-        tFile->AddLine(wxT("--    return  TEST_RESULT_FAIL"));
+        tFile->AddLine(wxT("--    return  TEST_RESULT_FAIL, strXmlResult"));
         tFile->AddLine(wxT("end\n"));
     }
 
     tFile->AddLine(wxT("free()"));
     if(useNetX) tFile->AddLine(wxT("tPlugin:Disconnect()"));
-    tFile->AddLine(wxT("return testretval"));
+    tFile->AddLine(wxT("return iRetval, strXmlResult"));
 }
 
 void CTestGeneration::GenerateSettingsTable(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile)
@@ -625,20 +626,18 @@ wxString CTestGeneration::GetFunctionAutomatedNetXConnection()
     strFunction += wxT("            if string.match(strName, strInterfacePattern)~=nil then\n");
     strFunction += wxT("                tPlugin = aDetectedInterfaces[iInterfaceIdx]:Create()\n");
     strFunction += wxT("\n");
-    strFunction += wxT("            -- Connect the plugin.\n");
-    strFunction += wxT("            tPlugin:Connect()\n");
-    strFunction += wxT("            break\n");
+    strFunction += wxT("                -- Connect the plugin.\n");
+    strFunction += wxT("                tPlugin:Connect()\n");
+    strFunction += wxT("                break\n");
     strFunction += wxT("            end\n");
     strFunction += wxT("        end\n");
     strFunction += wxT("\n");
-    strFunction += wxT("    -- Found the interface?\n");
+    strFunction += wxT("        -- Found the interface?\n");
     strFunction += wxT("        if tPlugin==nil then\n");
     strFunction += wxT("            error(string.format(\"No interface matched the pattern '%s'!\", strInterfacePattern))\n");
     strFunction += wxT("        end\n");
     strFunction += wxT("\n");
-    strFunction += wxT("    return tester.setCommonPlugin(tPlugin)\n\n");
-    strFunction += wxT("    else\n");
-    strFunction += wxT("        return tester.getCommonPlugin()\n");
+    strFunction += wxT("        tester.setCommonPlugin(tPlugin)\n\n");
     strFunction += wxT("    end\n");
     strFunction += wxT("\n");
     strFunction += wxT("end\n");
@@ -716,8 +715,8 @@ bool CTestGeneration::FileLEDStimulation(wxVector<PanelSensor*> vectorSensorPane
 
     tFile.AddLine(wxT("-- Device connection ----------------------"));
     tFile.AddLine(wxT("-- netX"));
-    tFile.AddLine(wxT("--tPlugin = tester.getCommonPlugin()"));
-    tFile.AddLine(wxString::Format(wxT("tPlugin = open_netx_connection(\"%s\")"), strPlugin ));
+    tFile.AddLine(wxString::Format(wxT("open_netx_connection(\"%s\")"), strPlugin ));
+    tFile.AddLine(wxT("tPlugin = tester.getCommonPlugin()"));
     tFile.AddLine(wxT("if tPlugin==nil then"));
     tFile.AddLine(wxT("    error(\"No plugin selected, nothing to do!\")"));
     tFile.AddLine(wxT("end\n"));

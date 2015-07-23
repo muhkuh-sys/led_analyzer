@@ -19,14 +19,13 @@ CLua::CLua(const char* filename)
     m_luaFileLoaded = false;
 
     /* This function will set m_luaFileLoaded to true if successful */
-    this->LoadAndRun(filename);
+    if(filename != NULL) this->LoadAndRun(filename);
 }
 
 
 CLua::~CLua()
 {
-    //this->CleanUp();
-    //lua_close(m_pLuaState);
+    lua_close(m_pLuaState);
 }
 
 void CLua::StackDump()
@@ -64,36 +63,109 @@ void CLua::StackDump()
 int  CLua::LoadAndRun(const char* pcFilename)
 {
     /* Be pessimistic */
-    int iRetVal = 1;
-    iRetVal = luaL_loadfile(this->m_pLuaState, pcFilename);
+    int iRetval = 1;
+    iRetval = luaL_loadfile(this->m_pLuaState, pcFilename);
 
-    if(iRetVal)
+    switch(iRetval)
     {
-        wxLogMessage("Couldn't load and run file: %s", pcFilename);
-        return iRetVal;
+        case LUA_ERRSYNTAX:
+            wxLogMessage("Lua - syntax error.");
+            return iRetval;
+            break;
+        case LUA_ERRMEM:
+            wxLogMessage("Lua - memory allocation error.");
+            return iRetval;
+            break;
+        default:
+            break;
     }
 
-    iRetVal = lua_pcall(this->m_pLuaState, 0, 0, 0);
+    iRetval = lua_pcall(this->m_pLuaState, 0, 3, 0);
 
-    if(iRetVal)
+    switch(iRetval)
     {
-       wxLogMessage("Couldn't run file: %s", pcFilename);
-       return iRetVal;
+        case LUA_ERRRUN:
+            wxLogMessage("Lua - runtime error.");
+            return iRetval;
+            break;
+        case LUA_ERRMEM:
+            wxLogMessage("Lua - memory allocation error.");
+            return iRetval;
+        case LUA_ERRERR:
+            wxLogMessage("Lua - error while running the error handler function.");
+            return iRetval;
+            break;
+        default:
+            break;
     }
 
     m_luaFileLoaded = true;
 
-    return iRetVal;
+    return iRetval;
 
 }
 
+int CLua::RunGeneratedTest(const char* pcFilename)
+{
+    /* Be pessimistic */
+    int iRetval = 1;
+    iRetval = luaL_loadfile(this->m_pLuaState, pcFilename);
 
+    switch(iRetval)
+    {
+        case LUA_ERRSYNTAX:
+            wxLogMessage("Lua - syntax error.");
+            return iRetval;
+            break;
+        case LUA_ERRMEM:
+            wxLogMessage("Lua - memory allocation error.");
+            return iRetval;
+            break;
+        default:
+            break;
+    }
+
+    iRetval = lua_pcall(this->m_pLuaState, 0, 1, 0);
+
+    switch(iRetval)
+    {
+        case LUA_ERRRUN:
+            wxLogMessage("Lua - runtime error.");
+            return iRetval;
+            break;
+        case LUA_ERRMEM:
+            wxLogMessage("Lua - memory allocation error.");
+            return iRetval;
+        case LUA_ERRERR:
+            wxLogMessage("Lua - error while running the error handler function.");
+            return iRetval;
+            break;
+        default:
+            break;
+    }
+
+    m_luaFileLoaded = true;
+
+    /* First return value must be a number (number of connected devices) */
+    if (!lua_isnumber(this->m_pLuaState, -1))
+    {
+        wxLogMessage("The test had no return value .. please check.");
+        return iRetval;
+    }
+
+    iRetval = lua_tonumber(this->m_pLuaState, -1);
+
+    /* Pop the return value from the stack */
+    lua_pop(this->m_pLuaState, 1);
+
+    return iRetval;
+}
 
 int CLua::ScanDevices(int &iNumberOfDevices, wxString *aStrSerials)
 {
 
     /* Be pessimistic */
-    int iRetVal = 1;
+    int iRetval = 1;
 
     if(!(this->IsLoaded()))
     {
@@ -106,14 +178,14 @@ int CLua::ScanDevices(int &iNumberOfDevices, wxString *aStrSerials)
     if (lua_pcall(this->m_pLuaState, 0, 2, 0) != 0)
     {
         wxLogMessage("Error Running Function %s", lua_tostring(this->m_pLuaState, -1));
-        return iRetVal;
+        return iRetval;
     }
 
     /* First return value must be a number (number of connected devices) */
     if (!lua_isnumber(this->m_pLuaState, -1))
     {
         wxLogMessage("Number of devices expected got sth else!");
-        return iRetVal;
+        return iRetval;
     }
 
     iNumberOfDevices = lua_tonumber(this->m_pLuaState, -1);
@@ -126,7 +198,7 @@ int CLua::ScanDevices(int &iNumberOfDevices, wxString *aStrSerials)
     if(!lua_istable(this->m_pLuaState, -1))
     {
         wxLogMessage("Table expected, got sth else!");
-        return iRetVal;
+        return iRetval;
     }
 
     for(int i = 0; i < iNumberOfDevices; i++)
@@ -137,15 +209,15 @@ int CLua::ScanDevices(int &iNumberOfDevices, wxString *aStrSerials)
     /* Pop the table */
     lua_pop(this->m_pLuaState, 1);
 
-    iRetVal = 0;
+    iRetval = 0;
 
-    return iRetVal;
+    return iRetval;
 }
 
 int CLua::ConnectDevices(int &iNumberOfDevices)
 {
     /* Be pessimistic */
-    int iRetVal = 1;
+    int iRetval = 1;
 
     if(!(this->IsLoaded()))
     {
@@ -158,14 +230,14 @@ int CLua::ConnectDevices(int &iNumberOfDevices)
     if (lua_pcall(this->m_pLuaState, 0, 1, 0) != 0)
     {
         wxLogMessage("Error Running Function %s", lua_tostring(this->m_pLuaState, -1));
-        return iRetVal;
+        return iRetval;
     }
 
     /* First return value must be a number (number of device we connected to) */
     if (!lua_isnumber(this->m_pLuaState, -1))
     {
         wxLogMessage("Number of devices expected got sth else!");
-        return iRetVal;
+        return iRetval;
     }
 
     iNumberOfDevices = lua_tonumber(this->m_pLuaState, -1);
@@ -174,15 +246,15 @@ int CLua::ConnectDevices(int &iNumberOfDevices)
     lua_pop(this->m_pLuaState, 1);
 
     /* As we have no return values, we can successfully finish */
-    iRetVal = 0;
-    return iRetVal;
+    iRetval = 0;
+    return iRetval;
 }
 
 
 int CLua::InitDevices(wxVector<CColorController*> vectorDevices)
 {
     /* Be pessimistic */
-    unsigned int iRetVal = 1;
+    unsigned int iRetval = 1;
 
     unsigned int iNumberOfDevices = vectorDevices.size();
 
@@ -195,14 +267,11 @@ int CLua::InitDevices(wxVector<CColorController*> vectorDevices)
     /* Load Init Function */
     lua_getglobal(this->m_pLuaState, "initDevices");
 
-    /* Push number of devices as first argument onto the stack */
-    lua_pushnumber(this->m_pLuaState, iNumberOfDevices);
-
     /* Run Init Function */
-    if( lua_pcall(this->m_pLuaState, 1, 1, 0) != 0)
+    if( lua_pcall(this->m_pLuaState, 0, 1, 0) != 0)
     {
         wxLogMessage("Error Running Function %s", lua_tostring(this->m_pLuaState, -1));
-        return iRetVal;
+        return iRetval;
     }
 
     /* Get the result (0 if everything fine) */
@@ -212,7 +281,7 @@ int CLua::InitDevices(wxVector<CColorController*> vectorDevices)
     }
 
     /* Get the result */
-    iRetVal = lua_tonumber(this->m_pLuaState, -1);
+    iRetval = lua_tonumber(this->m_pLuaState, -1);
 
     /* Pop the result from the stack */
     lua_pop(this->m_pLuaState, 1);
@@ -255,13 +324,13 @@ int CLua::InitDevices(wxVector<CColorController*> vectorDevices)
     /* Pop the colorTable */
     lua_pop(this->m_pLuaState, 1);
 
-    return iRetVal;
+    return iRetval;
 }
 
-int CLua::StartMeasurements(int iNumberOfDevices)
+int CLua::StartMeasurements()
 {
     /* Be pessimistic */
-    int iRetVal = 1;
+    int iRetval = 1;
 
     if(!(this->IsLoaded()))
     {
@@ -272,31 +341,28 @@ int CLua::StartMeasurements(int iNumberOfDevices)
     /* Load Measurment Function */
     lua_getglobal(this->m_pLuaState, "startMeasurements");
 
-    /* Expected Argument: numberOfDevices ... push it onto the stack*/
-    lua_pushnumber(this->m_pLuaState, iNumberOfDevices);
-
     /* Run Measurement Function */
-    if( lua_pcall(this->m_pLuaState, 1, 1, 0) != 0)
+    if( lua_pcall(this->m_pLuaState, 0, 1, 0) != 0)
     {
         wxLogMessage("Error Running Function %s", lua_tostring(this->m_pLuaState, -1));
-        return iRetVal;
+        return iRetval;
     }
 
     /* Get the result (0 if everything fine) */
     if(!lua_isnumber(this->m_pLuaState, -1))
     {
         wxLogMessage("Retval (int) expected, got something else!");
-        return iRetVal;
+        return iRetval;
     }
 
     /* Get the result */
-    iRetVal = lua_tonumber(this->m_pLuaState, -1);
+    iRetval = lua_tonumber(this->m_pLuaState, -1);
 
     /* Pop the result from the stack */
     lua_pop(this->m_pLuaState, 1);
 
 
-    return iRetVal;
+    return iRetval;
 
 
 }
@@ -304,7 +370,7 @@ int CLua::StartMeasurements(int iNumberOfDevices)
 int CLua::ReadColours(wxVector<CColorController*> vectorDevices)
 {
     /* Be pessimistic */
-    int iRetVal = 1;
+    int iRetval = 1;
     int iNumberOfDevices = vectorDevices.size();
 
     if(!(this->IsLoaded()))
@@ -382,8 +448,8 @@ int CLua::ReadColours(wxVector<CColorController*> vectorDevices)
 
         /* Get your result .. if successful it's zero, if not zero its an errorcode with flags
            indicating what kind of error occured with what sensor(s) */
-        iRetVal = this->GetIntField(7);
-        vectorDevices.at(i)->SetState(iRetVal);
+        iRetval = this->GetIntField(7);
+        vectorDevices.at(i)->SetState(iRetval);
 
         /* Pop Device Table */
         lua_pop(this->m_pLuaState, 1);
@@ -394,7 +460,7 @@ int CLua::ReadColours(wxVector<CColorController*> vectorDevices)
 
     /* Leave */
 
-    return iRetVal;
+    return iRetval;
 
 }
 
@@ -405,7 +471,7 @@ int CLua::ReadColours(wxVector<CColorController*> vectorDevices)
 int CLua::FastSettings(wxVector<CColorController*> vectorDevices, unsigned char ucSetting, int iSelection)
 {
     /* Be pessimistic */
-    int iRetVal = 1;
+    int iRetval = 1;
 
     if(!(this->IsLoaded()))
     {
@@ -440,7 +506,7 @@ int CLua::FastSettings(wxVector<CColorController*> vectorDevices, unsigned char 
     if (lua_pcall(this->m_pLuaState, 2, 1, 0))
     {
         wxLogMessage("Error Running Function %s", lua_tostring(this->m_pLuaState, -1));
-        return iRetVal;
+        return iRetval;
     }
 
     /* get your result .. if successful it's zero */
@@ -450,11 +516,11 @@ int CLua::FastSettings(wxVector<CColorController*> vectorDevices, unsigned char 
     }
 
     /* Retrieve it */
-    iRetVal = lua_tonumber(this->m_pLuaState, -1);
+    iRetval = lua_tonumber(this->m_pLuaState, -1);
 
     /* Update the view if the retval is zero ... otherwise an error occured */
 
-    if(iRetVal == 0)
+    if(iRetval == 0)
     {
         for(int i = 0; i < vectorDevices.size(); i++)
         {
@@ -477,7 +543,7 @@ int CLua::FastSettings(wxVector<CColorController*> vectorDevices, unsigned char 
     /* Pop the retrieved value */
     lua_pop(this->m_pLuaState, 1);
 
-    return iRetVal;
+    return iRetval;
 
 }
 
@@ -485,7 +551,7 @@ int CLua::FastSettings(wxVector<CColorController*> vectorDevices, unsigned char 
 int CLua::SetGainX(int iDeviceIndex, int iSensorIndex, tcs3472_gain_t gain)
 {
     /* Be pessimistic */
-    int iRetVal = 1;
+    int iRetval = 1;
     /* push your global table onto the stack */
 
     if(!(this->IsLoaded()))
@@ -510,7 +576,7 @@ int CLua::SetGainX(int iDeviceIndex, int iSensorIndex, tcs3472_gain_t gain)
     if (lua_pcall(this->m_pLuaState, 3,1,0) != 0)
     {
         wxLogMessage("Error Running Function %s", lua_tostring(this->m_pLuaState, -1));
-        return iRetVal;
+        return iRetval;
     }
 
     /* Get your result .. if successful it's zero */
@@ -520,13 +586,13 @@ int CLua::SetGainX(int iDeviceIndex, int iSensorIndex, tcs3472_gain_t gain)
     }
 
     /* Retrieve it */
-    iRetVal = lua_tonumber(this->m_pLuaState, -1);
+    iRetval = lua_tonumber(this->m_pLuaState, -1);
 
     /* Pop the retrieved value */
     lua_pop(this->m_pLuaState, 1);
 
     /* return */
-    return iRetVal;
+    return iRetval;
 
 }
 
@@ -534,7 +600,7 @@ int CLua::SetGainX(int iDeviceIndex, int iSensorIndex, tcs3472_gain_t gain)
 int CLua::SetIntTimeX(int iDeviceIndex, int iSensorIndex, tcs3472_intTime_t intTime)
 {
     /* Be pessimistic */
-    int iRetVal = 1;
+    int iRetval = 1;
     /* push your global table onto the stack */
 
     if(!(this->IsLoaded()))
@@ -559,7 +625,7 @@ int CLua::SetIntTimeX(int iDeviceIndex, int iSensorIndex, tcs3472_intTime_t intT
     if (lua_pcall(this->m_pLuaState, 3,1,0) != 0)
     {
         wxLogMessage("Error Running Function %s", lua_tostring(this->m_pLuaState, -1));
-        return iRetVal;
+        return iRetval;
     }
 
     /* Get your result .. if successful it's zero */
@@ -569,13 +635,13 @@ int CLua::SetIntTimeX(int iDeviceIndex, int iSensorIndex, tcs3472_intTime_t intT
     }
 
     /* Retrieve it */
-    iRetVal = lua_tonumber(this->m_pLuaState, -1);
+    iRetval = lua_tonumber(this->m_pLuaState, -1);
 
     /* Pop the retrieved value */
     lua_pop(this->m_pLuaState, 1);
 
     /* return */
-    return iRetVal;
+    return iRetval;
 }
 
 /* Assumes table is at top of stack, returns table[strKey] */

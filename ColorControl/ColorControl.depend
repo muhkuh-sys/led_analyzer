@@ -3425,10 +3425,10 @@
 1434720603 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\cdatasensor.cpp
 	"CDataSensor.h"
 
-1437381389 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\csensordata.h
+1437642292 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\csensordata.h
 	"GUIFrame.h"
 
-1437382713 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\csensordata.cpp
+1437660549 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\csensordata.cpp
 	"CSensorData.h"
 
 1436202548 source:c:\led_analyzer\colorcontrol\colorcontrolapp.cpp
@@ -3519,7 +3519,7 @@
 1436177636 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\cdevice.h
 	"CSensorData.h"
 
-1437376798 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\cdevice.cpp
+1437642375 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\cdevice.cpp
 	"CDevice.h"
 
 1434975889 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\cview.h
@@ -3609,14 +3609,14 @@
 	<stdio.h>
 	"lua.h"
 
-1437486794 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\clua.h
+1437658022 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\clua.h
 	"lua.h"
 	"lualib.h"
 	"lauxlib.h"
 	"GUIFrame.h"
 	"CDevice.h"
 
-1437544860 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\clua.cpp
+1437660485 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\clua.cpp
 	"CLua.h"
 
 1437498693 c:\led_analyzer\colorcontrol\include\clua.h
@@ -3774,7 +3774,7 @@
 	"GUIFrame.h"
 	"PanelSensor.h"
 
-1437554899 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\ctestgeneration.cpp
+1437658870 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\ctestgeneration.cpp
 	"CTestGeneration.h"
 
 1437487386 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\guiframe.h
@@ -3841,7 +3841,7 @@
 	"PanelSensor.h"
 	"CTestGeneration.h"
 
-1437554101 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\colorcontrolmain.cpp
+1437660541 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\colorcontrolmain.cpp
 	"wx_pch.h"
 	"ColorControlMain.h"
 

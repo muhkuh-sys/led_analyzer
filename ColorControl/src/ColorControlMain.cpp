@@ -165,7 +165,7 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
 
         case IS_SCANNED:
 
-            /* Scan */
+            /* Scan, if already scanned delete the lua state and scan for new devices */
             if (m_pLua != NULL) delete m_pLua;
             m_pLua = new CLua("color_control.lua");
 
@@ -178,10 +178,11 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
             if(m_numberOfDevices == 0)
             {
                 wxLogMessage("No device detected ... please make sure the device is properly attached!");
-                //if(!m_cocoDevices.empty()) m_cocoDevices.clear();
-                m_eState = IS_INITIAL;
 
                 if (m_pLua != NULL) delete m_pLua;
+
+                m_eState = IS_INITIAL;
+
             }
             else
             {
@@ -229,7 +230,6 @@ void ColorControlFrame::UpdateSerialList()
 
 void ColorControlFrame::OnConnect(wxCommandEvent& event)
 {
-    int iNumberOfDevices = m_cocoDevices.size();
 
     switch(m_eState)
     {
@@ -243,10 +243,10 @@ void ColorControlFrame::OnConnect(wxCommandEvent& event)
             m_pLua->ConnectDevices(temp);
 
             /* Compare number of Found devices to number of devices we connected to, must be equal or errors occured */
-            if(temp == iNumberOfDevices)
+            if(temp == m_numberOfDevices)
             {
                 wxLogMessage("Connecting..");
-                for(int i = 0; i < iNumberOfDevices; i++)
+                for(int i = 0; i < m_numberOfDevices; i++)
                 {
                     m_cocoDevices.at(i)->SetSerialNumber(m_aStrSerials[i]);
                     m_cocoDevices.at(i)->SetConnectivity(true);
@@ -257,7 +257,7 @@ void ColorControlFrame::OnConnect(wxCommandEvent& event)
                 /* Create Rows for Colors*/
                 CreateRows();
                 /* Create Test Panels */
-                CreateTestPanels(iNumberOfDevices);
+                CreateTestPanels(m_numberOfDevices);
                 /* Update Data */
                 this->UpdateData();
 
@@ -315,7 +315,7 @@ void ColorControlFrame::OnDisconnect(wxCommandEvent& event)
 
             /* Remove color controller devices from vector */
             m_cocoDevices.clear();
-            m_numberOfDevices = m_cocoDevices.size();
+            m_numberOfDevices = 0;
 
             /* Clear Serial Numbers */
             m_dataViewListSerials->DeleteAllItems();
@@ -325,7 +325,6 @@ void ColorControlFrame::OnDisconnect(wxCommandEvent& event)
 
             /* Clear Test Panels */
             this->ClearTestPanels();
-
 
             /* Flush and write zero */
             /* Reset the color of textctrl Connected */
@@ -339,7 +338,6 @@ void ColorControlFrame::OnDisconnect(wxCommandEvent& event)
             }
 
             /* Clean up and close the current Lua State (color_control.lua) */
-            if(m_pLua) m_pLua->CleanUp();
             if(m_pLua) delete m_pLua;
 
             /* Set Initial System State */
@@ -373,7 +371,7 @@ void ColorControlFrame::OnStart(wxCommandEvent& event)
             /* Now Check if we Make Single or Continuous Measurements */
             if(m_rbSingle->GetValue() == true)
             {
-                if(m_pLua->StartMeasurements(m_cocoDevices.size()) == DEVICE_ERROR_FATAL)
+                if(m_pLua->StartMeasurements() == DEVICE_ERROR_FATAL)
                 {
                     LOG_ERROR(m_text);
                     wxLogError("A fatal error has occured. Save your work, disconnect, re-scan and re-connect!");
@@ -690,7 +688,7 @@ void ColorControlFrame::OnTestmode(wxCommandEvent& event)
 void ColorControlFrame::OnTimeout(wxTimerEvent& event)
 {
 
-    if(m_pLua->StartMeasurements(m_cocoDevices.size()) == DEVICE_ERROR_FATAL)
+    if(m_pLua->StartMeasurements() == DEVICE_ERROR_FATAL)
     {
         LOG_ERROR(m_text);
         wxLogError("A fatal error has occured. Save your work, disconnect, re-scan and re-connect!");
@@ -748,11 +746,29 @@ void ColorControlFrame::OnShowChromaticity(wxCommandEvent& event)
 
 wxString ColorControlFrame::GetInterfaceSelection()
 {
-    CLua hInterfaces("interface.lua");
+    wxString strDefaultInterface;
+
+    if(!m_fileConfig->Read("netXType/plugin", &strDefaultInterface))
+    {
+        strDefaultInterface = wxEmptyString;
+    }
+
+    /* run the lua file to get the available interfaces */
     wxArrayString astrInterfaces;
+    CLua hInterfaces("interface.lua");
     hInterfaces.GetInterfaces(astrInterfaces);
 
+    /* check if the default interface is contained in the found interfaces, and if so set it as the initially selected one */
+
+
     wxSingleChoiceDialog chInterface(this, wxT("Select the plugin the netX is connected to."), wxT("Select the plugin"), astrInterfaces);
+
+    int iSel;
+    if((iSel = astrInterfaces.Index(strDefaultInterface)) != wxNOT_FOUND)
+    {
+        chInterface.SetSelection(iSel);
+    }
+
     /* return an empty string */
     if(chInterface.ShowModal() == wxID_CANCEL)
     {
@@ -942,6 +958,8 @@ void ColorControlFrame::OnUseTest(wxCommandEvent& event)
     tFile.Open();
 
 
+    /* Insert the Com port into the lua file ... there might be a better solution here */
+    /* assumption: the generated file has the line in it */
     for(strLine = tFile.GetFirstLine(); !tFile.Eof(); strLine = tFile.GetNextLine())
     {
         if(strLine.StartsWith("-- INSERT INTERFACE NUMBER"))
@@ -959,7 +977,21 @@ void ColorControlFrame::OnUseTest(wxCommandEvent& event)
     tFile.Write();
 
     /* Insert code to use the test */
-    CLua *useTest = new CLua(strPath);
+    CLua *useTest = new CLua(/*strPath*/);
+    int iTestResult = useTest->RunGeneratedTest(strPath);
+
+    if(iTestResult == 0)
+    {
+        LOG_SUCCESSFUL(m_text);
+        wxLogMessage("LED Test successful.");
+        LOG_DEFAULT(m_text);
+    }
+    else if(iTestResult == 1)
+    {
+        LOG_ERROR(m_text);
+        wxLogMessage("LED Test failed!");
+        LOG_DEFAULT(m_text);
+    }
 
     if(useTest != NULL) delete useTest;
 }

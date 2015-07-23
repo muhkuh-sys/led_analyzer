@@ -16,7 +16,7 @@ extern "C"
 class CLua
 {
     public:
-        CLua(const char* filename);
+        CLua(const char* filename=NULL);
         virtual ~CLua();
         /* Color Controller related functions */
         int  ScanDevices(int &iNumberOfDevices, wxString *aStrSerials);
@@ -26,7 +26,7 @@ class CLua
         int  SwapUp  (wxString* aStrSerials, wxString strCurSerial, int iNumberOfDevices);
         int  SwapDown(wxString* aStrSerials, wxString strCurSerial, int iNumberOfDevices);
         bool IsLoaded(){return m_luaFileLoaded;};
-        int  StartMeasurements(int iNumberOfDevices);
+        int  StartMeasurements();
         int  InitDevices(wxVector<CColorController*> vectorDevices);
         int  ReadColours(wxVector<CColorController*> vectorDevices);
         int  SetGainX(int iDeviceIndex, int iSensorIndex, tcs3472_gain_t gain);
@@ -34,6 +34,7 @@ class CLua
         int  FastSettings(wxVector<CColorController*> vectorDevices, unsigned char ucSetting, int iSelection);
 
         int  GetInterfaces(wxArrayString &astrInterfaces);
+        int  RunGeneratedTest(const char* pcFilename);
         void CleanUp();
 
     protected:

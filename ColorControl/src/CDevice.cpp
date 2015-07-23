@@ -142,5 +142,14 @@ void CColorController::SetState(int iErrorCode)
         }
     }
 
+    /* an usb error occoured - we read a different number of bytes than we expected to read */
+    else if (iErrorCode == USB_ERROR )
+    {
+        /* Validate the Errorcode and set the sensor states accordingly */
+        for(int i = 0; i < 16; i++)
+        {
+            m_sensorData[i].SetState(USB_ERROR);
+        }
+    }
 
 }

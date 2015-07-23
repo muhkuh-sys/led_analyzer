@@ -27,7 +27,8 @@ enum sensor_state_t
     SENSOR_ID_ERROR              = 0x40000000,
     SENSOR_INCOMPLETE_CONVERSION = 0x20000000,
     SENSOR_EXCEEDED_CLEAR        = 0x10000000,
-    DEVICE_ERROR_FATAL           = 0x8000000
+    DEVICE_ERROR_FATAL           = 0x8000000,
+    USB_ERROR                    = 0x4000000,
 };
 
 

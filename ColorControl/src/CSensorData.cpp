@@ -8,6 +8,7 @@ CSensorData::CSensorData()
     m_saturation = 0;
     m_clearRatio = 0;
     m_illumination = 0.;
+
 }
 
 CSensorData::~CSensorData()
@@ -69,6 +70,8 @@ const wxString CSensorData::StateToString(sensor_state_t state)
             break;
         case DEVICE_ERROR_FATAL:
             return "DEVICE ERROR FATAL";
+        case USB_ERROR:
+            return "USB ERROR";
         default:
             return "UNKNOWN";
             break;
