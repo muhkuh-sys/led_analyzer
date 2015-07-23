@@ -1,6 +1,6 @@
 require("tcs_chromaTable")
 
---local MIN_LUX   = 7.0
+local MIN_LUX   = 3.0 
 local MIN_CLEAR = 0.0007 -- Minimum Clear Level as percentage of maximum clear
 
 -- a helper to print a colortable which contains values in RGB, XYZ, HSV, Yxy and wavelength color space 
@@ -139,7 +139,7 @@ function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, error
 		-- if measured brightness (lux) falls beneath required MINIMUM LUX or our clear channel gives zero 
 		-- fill all color tables with zero values, beside the lux value.
 		
-		if(lClearRatio < MIN_CLEAR) then 
+		if(lClearRatio < MIN_CLEAR or lLUX < MIN_LUX ) then 
 			-- RGB table 
 			tRGB[i+1] = {clear = 0,
 						 red   = 0,
