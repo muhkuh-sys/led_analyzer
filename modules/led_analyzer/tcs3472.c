@@ -351,14 +351,19 @@ had already completed.
 int tcs_readColors(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned short* ausRed,
 					unsigned short* ausGreen, unsigned short* ausBlue)
 {
+	/* Be pessimistic */
+	int iRetval = -1;
 	/* Begin with the status register, the autoincrement bit effects the reading of 9 bytes 
 	these 9 bytes consist of the status register (1 byte) and 4 words, one for each colour */
 	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_AUTOINCR_BIT | TCS3472_COMMAND_BIT | TCS3472_STATUS_REG};												 
 	unsigned char aucStatusRegister[16];
 	
-	if(i2c_read4x16(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucStatusRegister, ausClear, ausRed, ausGreen, ausBlue, 16)<0) return -1;
+	iRetval = i2c_read4x16(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucStatusRegister, ausClear, ausRed, ausGreen, ausBlue, 16);
+	
+	/* Fatal error has occured as we could not read from Channel A (-1) and Channel B (-2) */
+	if(iRetval < 0) return iRetval;
     
-	/* Now check if conversions had already completed */
+	/* Now check if conversions had already completed - 0 if so */
 	return tcs_conversions_complete(aucStatusRegister);
 	
 }

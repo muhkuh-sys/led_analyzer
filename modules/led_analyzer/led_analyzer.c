@@ -54,7 +54,9 @@ enum ERROR_FLAGS
 	/** The maximum amount of clear level was reached, i.e. the sensor got digitally saturated */
 	EXCEEDED_CLEAR_ERROR 	    = 0x10000000,
 	/** Fatal error on a device, writing / reading from a ftdi channel failed */
-	DEVICE_ERROR_FATAL			= 0x8000000
+	DEVICE_ERROR_FATAL			= 0x8000000,
+	/** USB error on a device, which means that we read back a different number of bytes than we expected to read */
+	USB_ERROR 					= 0x4000000 
 
 };
 
@@ -351,7 +353,7 @@ int init_sensors(void** apHandles, int devIndex)
 {
 	/* 2 handles per device, device 0 has handles 0,1 .. device 1 has handles 2,3 and so on*/
 	int handleIndex = devIndex * 2;
-	int errorcode = 0;
+	int iErrorcode = 0;
 	unsigned char aucTempbuffer[16];
 	
 	int iHandleLength = get_number_of_handles(apHandles);
@@ -376,17 +378,17 @@ int init_sensors(void** apHandles, int devIndex)
 	}
 			
 		
-	if((errorcode = tcs_identify(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer)) != 0)
+	if((iErrorcode = tcs_identify(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer)) != 0)
 	{
-		return (errorcode | IDENTIFICATION_ERROR);
+		return (iErrorcode | IDENTIFICATION_ERROR);
 	}
 	
 	
 	printf("Initializing successful on device %d.\n\n", devIndex);
-	return errorcode;
+	return iErrorcode;
 }
 
-
+//TODO:: change float calculations into more effective int calculations in the calculate_lux_cct function 
 
 /** \brief reads the RGBC colors of all sensors under a device and checks if the colors are valid
 
@@ -405,9 +407,10 @@ LUX level in an array. This level is calculated by a formula given in AMS / TAOS
 	@param CCT					will store 16 calculated CCT values
 	@param afLUX			    will store 16 calculated LUX levels
 	
-	@return 					0  : everything ok
-	@return 					-1 : i2c-functions failed
-	@return 					>0 : one or more sensor(s) failed
+	@return 					0     : everything ok
+	@return 					-1,-2 : device fatal error 
+	@return					    -3    : usb error 
+	@return 					>0     : one or more sensor(s) failed
 	@return	    				if the return code is 0b101100, sensor 3, 4 and 6 failed
 
 */
@@ -423,10 +426,10 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	int handleIndex = devIndex * 2;
 	
 	int i;
-	int errorcode = 0;
+	int iErrorcode = 0;
 	
 	/* Fill the arrays which contain the LUX and CCT values with zeros, so they will have the value 
-	zero in case any of the Checking functions fail and the function returns an errorcode */
+	zero in case any of the Checking functions fail and the function returns an iErrorcode */
 	
 	for(i = 0; i<16; i++)
 	{
@@ -447,20 +450,22 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntegrationtime);
 	tcs_getGain(apHandles[handleIndex], apHandles[handleIndex+1], aucGain);
 	
-	errorcode = tcs_readColors(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, ausRed, ausGreen, ausBlue);
+	iErrorcode = tcs_readColors(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, ausRed, ausGreen, ausBlue);
 
-	if(errorcode == -1) return DEVICE_ERROR_FATAL;
-	if(errorcode !=  0) return (errorcode | INCOMPLETE_CONVERSION_ERROR);
+	/* Fatal error has occured as we could not read from channel A and channel B */
+	if((iErrorcode == -1) || (iErrorcode == -2)) return DEVICE_ERROR_FATAL;
+	if(iErrorcode  == -3) return USB_ERROR;
+	if(iErrorcode  !=  0) return (iErrorcode | INCOMPLETE_CONVERSION_ERROR);
 	
-	if((errorcode = tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, aucIntegrationtime)) != 0)
+	if((iErrorcode = tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, aucIntegrationtime)) != 0)
 	{		
-		return (errorcode | EXCEEDED_CLEAR_ERROR);
+		return (iErrorcode | EXCEEDED_CLEAR_ERROR);
 	}
 	
 	
 	tcs_calculate_CCT_Lux(aucGain, aucIntegrationtime, ausClear, ausRed, ausGreen, ausBlue, CCT, afLUX);
 	
-	return errorcode;
+	return iErrorcode;
 	
 }														 
 
