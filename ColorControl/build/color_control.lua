@@ -7,7 +7,6 @@ require("generate_xml")
 
 TEST_RESULT_OK 			  = 0 
 TEST_RESULT_FAIL 		  = 1 
-TEST_RESULT_NO_DEVICES 	  = 2
 TEST_RESULT_FATAL_ERROR   = 0x8000000 
 
 MAXDEVICES = 50
@@ -93,14 +92,13 @@ end
 
 
 -- Initializes the devices, by turning them on, clearing flags and identifying them
-function initDevices(numberOfDevices, atSettings)
+function initDevices(atSettings)
 -- iterate over all devices and perform initialization -- 
 	local devIndex = 0
 	local error_counter = 0 
 	local ret = 0
 	
 	while(devIndex < numberOfDevices) do 
-
 		
 		--if atsettings is provided --
 		if atSettings ~= nil then 
@@ -142,7 +140,7 @@ end
 
 -- starts the measurements on each opened color controller device
 -- having read and checked all raw color data, these will be converted into the needed color spaces and stored in a color table  
-function startMeasurements(numberOfDevices)
+function startMeasurements()
 	
 	local devIndex = 0
 	local error_counter = 0 
@@ -151,9 +149,7 @@ function startMeasurements(numberOfDevices)
 	
 	tColorTable = {}
 
-	while(devIndex < numberOfDevices) do 
-		--print(string.format("\n------------------ Device %d -------------------- ", devIndex))
-			
+	while(devIndex < numberOfDevices) do 			
 		-- Get Colours --
 		while(error_counter < READ_MAXERROR) do		
 			ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, aucIntTimes, aucGains)
@@ -179,32 +175,34 @@ function startMeasurements(numberOfDevices)
 	if fatal_error_occured then 
 		return TEST_RESULT_FATAL_ERROR
 	end 
-	-- otherwise return the ret code which may contain less fatal errors like id errors or exceeded clear
+	-- otherwise return the ret code which may contain "normal" errors like id errors or exceeded clear
 	return ret 
 end 
 
 -- function compares the color sets read from the devices to the testtable given in tDUT
 -- the LEDs under test must be on, this means we test if the right LEDs (correct wavelength, sat, ...) are mounted on the baord
 -- a table tTestSummary will be filled according to the test results (led on, led off, wrong led detected and so on)
-function validateLEDs(numberOfDevices, tDUT, lux_check_enable)
+-- returns: an integer as return value (ret) indicating the result of the led test (0 if ok)
+-- 			a string as second parameter. string contains the test result with traces as xml 
+function validateLEDs(tDUT, lux_check_enable)
 	
 	local devIndex = 0
 	local ret = 0 
+	local ret_xml 
 	
 	-- empty test summary -- 
 	tTestSummary = {}
-	print("Starting Test ... \n")
 	
 	
 	while(devIndex < numberOfDevices) do 
 		tTestSummary[devIndex] = getDeviceSummary(tDUT[devIndex], tColorTable[devIndex][ENTRY_WAVELENGTH], lux_check_enable)
-		printDeviceSummary(tTestSummary[devIndex], 1 )
 		devIndex = devIndex + 1 
 	end 
 	
 	ret = validateTestSummary(numberOfDevices, tTestSummary)
-	generate_xml(tTestSummary)
-	return ret 
+	ret_xml = generate_xml(tTestSummary)
+	
+	return ret, ret_xml 
 end
 
 
@@ -259,4 +257,9 @@ function free()
 	led_analyzer.delete_astring(asSerials)
 	
 end 
+
+
+
+
+
 
