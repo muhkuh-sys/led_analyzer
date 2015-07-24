@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+ 
 /** \file led_analyzer.c
 
 	 \brief led_analyzer handles all functionality on device level and provides the functions needed by the GUI application.
@@ -57,6 +58,8 @@ enum ERROR_FLAGS
 	DEVICE_ERROR_FATAL			= 0x8000000,
 	/** USB error on a device, which means that we read back a different number of bytes than we expected to read */
 	USB_ERROR 					= 0x4000000 
+	
+	/* last error_flag can be     0x1000, values below this flag are used for specifying the exact sensornumber that failed */
 
 };
 
@@ -120,15 +123,13 @@ int scan_devices(char** asSerial, unsigned int asLength)
         printf("Scanning device %d\n", i);
         if ((f = ftdi_usb_get_strings(ftdi, curdev->dev, manufacturer, 128, description, 128, serial, 128)) < 0)
         {
-            fprintf(stderr, "... ftdi_usb_get_strings failed: %d (%s)\n", f, ftdi_get_error_string(ftdi));
+            fprintf(stderr, "... ftdi_usb_get_strings failed: %d (%s) ... installed libusbK driver ?\n", f, ftdi_get_error_string(ftdi));
             ftdi_list_free(&devlist);
 			ftdi_free(ftdi);
-			return -1;
+			return -2;
         }
         printf("Manufacturer: %s, Description: %s, Serial: %s\n\n", manufacturer, description, serial);
         
-		
-		
 		if(strcmp(sMatch, description) == 0)
 		{
 			numbOfSerials++;
