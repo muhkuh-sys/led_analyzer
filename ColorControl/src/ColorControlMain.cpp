@@ -1043,6 +1043,12 @@ void ColorControlFrame::OnUseTest(wxCommandEvent& event)
         wxLogMessage("LED Test failed!");
         LOG_DEFAULT(m_text);
     }
+    else if(iTestResult == 2)
+    {
+        LOG_ERROR(m_text);
+        wxLogMessage("Device error!");
+        LOG_DEFAULT(m_text);
+    }
 
 }
 

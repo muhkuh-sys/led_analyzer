@@ -9,6 +9,7 @@ require("generate_xml")
 -- LED Test retvals  
 TEST_RESULT_OK 			  = 0 
 TEST_RESULT_FAIL 		  = 1
+TEST_RESULT_DEVICE_ERROR  = 2 
 
 -- Return values if the device or sensors on the device failed -- dont change !
 IDENTIFICATION_ERROR 		= 0x40000000
