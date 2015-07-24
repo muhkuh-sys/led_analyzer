@@ -417,6 +417,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	this->Connect( m_chGain->GetId(), wxEVT_CHOICE, wxCommandEventHandler ( GUIFrame::OnFastGain ), NULL, this );
 	this->Connect( m_chIntTime->GetId(), wxEVT_CHOICE, wxCommandEventHandler ( GUIFrame::OnFastIntTime), NULL, this );
 	this->Connect( menuItem_about->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnAbout ) );
+	this->Connect( menuItem_quickGuide->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnQuickGuide ) );
     this->Connect( wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnQuit ) );
     this->Connect( wxID_TESTMODE, wxEVT_RADIOBUTTON, wxCommandEventHandler( GUIFrame::OnTestmode ) );
     this->Connect( wxID_TIMER, wxEVT_TIMER, wxTimerEventHandler ( GUIFrame::OnTimeout ) );

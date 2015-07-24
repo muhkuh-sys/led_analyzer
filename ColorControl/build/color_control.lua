@@ -5,16 +5,25 @@ require("color_conversions") -- handles conversion between color spaces and arra
 require("color_validation")	 -- Validate your colors, contains helper to print your colors and store your colors in adequate arrays
 require("generate_xml")
 
+
+-- LED Test retvals  
 TEST_RESULT_OK 			  = 0 
-TEST_RESULT_FAIL 		  = 1 
-TEST_RESULT_FATAL_ERROR   = 0x8000000 
+TEST_RESULT_FAIL 		  = 1
+
+-- Return values if the device or sensors on the device failed -- dont change !
+IDENTIFICATION_ERROR 		= 0x40000000
+INCOMPLETE_CONVERSION_ERROR = 0x20000000
+EXCEEDED_CLEAR_ERROR 	    = 0x10000000
+DEVICE_ERROR_FATAL			= 0x8000000
+USB_ERROR 					= 0x4000000 
+
 
 MAXDEVICES = 50
-MAXHANDLES = MAXDEVICES * 2
 MAXSENSORS = 16 
-
+MAXHANDLES = MAXDEVICES * 2
 MAXSERIALS = MAXDEVICES
 
+-- specify retry times 
 INIT_MAXERROR  = 1
 READ_MAXERROR  = 1 
 VALID_MAXERROR = 1 
@@ -34,6 +43,7 @@ TCS3472_INTEGRATION_154ms 		= 0xC0
 TCS3472_INTEGRATION_200ms	    = 0xAD
 TCS3472_INTEGRATION_700ms       = 0x00
 
+-- indexes for entries in tColorTable
 ENTRY_WAVELENGTH = 1
 ENTRY_RGB 		 = 2
 ENTRY_XYZ 		 = 3
@@ -67,12 +77,12 @@ local tTestSummary
 local ret 				 = 0
 
 
-
-
 function scanDevices() 
+
 	numberOfDevices = led_analyzer.scan_devices(asSerials, MAXSERIALS)
 	tStrSerials = astring2table(asSerials, numberOfDevices)
-	return tStrSerials, numberOfDevices
+	
+	return numberOfDevices, generate_xml_exception(numberOfDevices), tStrSerials
 end 
 
 -- connects to color controller devices with serial numbers given in table tStrSerials
@@ -86,11 +96,11 @@ function connectDevices(tOptionalSerials)
 		numberOfDevices = led_analyzer.connect_to_devices(apHandles, MAXHANDLES, table2astring(tOptionalSerials, asSerials))
 	end 
 	
-	return numberOfDevices;
+	return numberOfDevices, generate_xml_exception(numberOfDevices)
 end 
 
 
-
+-- todo: return a strxml
 -- Initializes the devices, by turning them on, clearing flags and identifying them
 function initDevices(atSettings)
 -- iterate over all devices and perform initialization -- 
@@ -128,8 +138,7 @@ function initDevices(atSettings)
 		end 
 		tColorTable[devIndex] = {}
 		tColorTable[devIndex][ENTRY_ERRORCODE] = ret
-		
-		tColorTable[devIndex][ENTRY_SETTINGS] = auc2settingsTable(aucIntTimes, aucGains, MAXSENSORS)
+		tColorTable[devIndex][ENTRY_SETTINGS]  = auc2settingsTable(aucIntTimes, aucGains, MAXSENSORS)
 		
 		devIndex = devIndex + 1 
 	end 
@@ -137,7 +146,7 @@ function initDevices(atSettings)
 	return ret
 end 
 
-
+-- todo: return a strxml
 -- starts the measurements on each opened color controller device
 -- having read and checked all raw color data, these will be converted into the needed color spaces and stored in a color table  
 function startMeasurements()
@@ -154,7 +163,7 @@ function startMeasurements()
 		while(error_counter < READ_MAXERROR) do		
 			ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, aucIntTimes, aucGains)
 			if ret ~= 0 then
-				if ret == TEST_RESULT_FATAL_ERROR then -- return code for fatal errors 
+				if ret == DEVICE_ERROR_FATAL then -- return code for fatal errors 
 					fatal_error_occured = 1 
 				end 
 				error_counter = error_counter + 1
@@ -173,7 +182,7 @@ function startMeasurements()
 	end 
 	
 	if fatal_error_occured then 
-		return TEST_RESULT_FATAL_ERROR
+		return DEVICE_ERROR_FATAL
 	end 
 	-- otherwise return the ret code which may contain "normal" errors like id errors or exceeded clear
 	return ret 
@@ -188,7 +197,7 @@ function validateLEDs(tDUT, lux_check_enable)
 	
 	local devIndex = 0
 	local ret = 0 
-	local ret_xml 
+	local strXml 
 	
 	-- empty test summary -- 
 	tTestSummary = {}
@@ -200,9 +209,9 @@ function validateLEDs(tDUT, lux_check_enable)
 	end 
 	
 	ret = validateTestSummary(numberOfDevices, tTestSummary)
-	ret_xml = generate_xml(tTestSummary)
+	strXml = generate_xml(tTestSummary)
 	
-	return ret, ret_xml 
+	return ret, strXml 
 end
 
 

@@ -25,7 +25,7 @@ CLua::CLua(const char* filename)
 
 CLua::~CLua()
 {
-    lua_close(m_pLuaState);
+    if (m_pLuaState) lua_close(m_pLuaState);
 }
 
 void CLua::StackDump()
@@ -175,13 +175,17 @@ int CLua::ScanDevices(int &iNumberOfDevices, wxString *aStrSerials)
 
     lua_getglobal(this->m_pLuaState, "scanDevices");
 
-    if (lua_pcall(this->m_pLuaState, 0, 2, 0) != 0)
+    if (lua_pcall(this->m_pLuaState, 0, 3, 0) != 0)
     {
         wxLogMessage("Error Running Function %s", lua_tostring(this->m_pLuaState, -1));
         return iRetval;
     }
 
-    /* First return value must be a number (number of connected devices) */
+    /* currently the table containing serial number is on top, but as we have to read out the number of devices
+    first we push a copy of that return value to the top */
+    lua_pushvalue(this->m_pLuaState, -3);
+
+    /* The number of devices */
     if (!lua_isnumber(this->m_pLuaState, -1))
     {
         wxLogMessage("Number of devices expected got sth else!");
@@ -190,11 +194,11 @@ int CLua::ScanDevices(int &iNumberOfDevices, wxString *aStrSerials)
 
     iNumberOfDevices = lua_tonumber(this->m_pLuaState, -1);
 
-    /* Pop number of devices, now serial number table is at top */
+    /* remove the numberofdevices from the stack, now the actual first return value, the table containing serial numbers
+    is at top again */
     lua_pop(this->m_pLuaState, 1);
 
-
-    /* Second return value must be a table that contains serial numbers, its on stack top now */
+    /* First return value must be a table that contains serial numbers, its on stack top now */
     if(!lua_istable(this->m_pLuaState, -1))
     {
         wxLogMessage("Table expected, got sth else!");
@@ -206,8 +210,15 @@ int CLua::ScanDevices(int &iNumberOfDevices, wxString *aStrSerials)
         aStrSerials[i] = wxString::FromUTF8(this->GetStrField(i+1));
     }
 
-    /* Pop the table */
+    /* Pop the table, now the xml string is on top */
     lua_pop(this->m_pLuaState, 1);
+
+    /* Pop the xml string as we don't need it here, now the number of devices is on top */
+    lua_pop(this->m_pLuaState, 1);
+
+    /* pop the number of devices from the stack as we only removed the copy before */
+    lua_pop(this->m_pLuaState, 1);
+
 
     iRetval = 0;
 
@@ -254,7 +265,7 @@ int CLua::ConnectDevices(int &iNumberOfDevices)
 int CLua::InitDevices(wxVector<CColorController*> vectorDevices)
 {
     /* Be pessimistic */
-    unsigned int iRetval = 1;
+    int iRetval = 1;
 
     unsigned int iNumberOfDevices = vectorDevices.size();
 
@@ -290,7 +301,7 @@ int CLua::InitDevices(wxVector<CColorController*> vectorDevices)
 
     lua_getglobal(this->m_pLuaState, "tColorTable");
 
-    for(int i = 0; i <iNumberOfDevices; i++)
+    for(unsigned int i = 0; i < iNumberOfDevices; i++)
     {
         /* Load tColorTable[i] = device */
         this->GetTableField(i);
@@ -522,7 +533,7 @@ int CLua::FastSettings(wxVector<CColorController*> vectorDevices, unsigned char 
 
     if(iRetval == 0)
     {
-        for(int i = 0; i < vectorDevices.size(); i++)
+        for(unsigned int i = 0; i < vectorDevices.size(); i++)
         {
             for(int j = 0; j < 16; j++)
             {
@@ -906,7 +917,7 @@ int CLua::GetInterfaces(wxArrayString &astrInterfaces)
 
     /* Fill the string array */
     astrInterfaces.Alloc(vectorString.size());
-    for(int j = 0; j < vectorString.size(); j++)
+    for(unsigned int j = 0; j < vectorString.size(); j++)
     {
         astrInterfaces.Add(vectorString.at(j));
     }

@@ -142,8 +142,14 @@ void ColorControlFrame::OnQuit(wxCommandEvent &event)
 void ColorControlFrame::OnAbout(wxCommandEvent &event)
 {
 
-    wxString msg = "Subhan Waizi - Bachelorarbeit. BOOYA.";
+    wxString msg = "Color Control Application by\n          Subhan Waizi         \n   swaizi@hilscher.com  \n";
     wxMessageBox(msg, _("Welcome to..."));
+
+}
+
+void ColorControlFrame::OnQuickGuide(wxCommandEvent &event)
+{
+    wxMessageBox("Quick Guide in development.", _("Quick Guide"));
 
 }
 
@@ -166,7 +172,13 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
         case IS_SCANNED:
 
             /* Scan, if already scanned delete the lua state and scan for new devices */
-            if (m_pLua != NULL) delete m_pLua;
+            if (m_pLua)
+            {
+                m_pLua->CleanUp();
+                delete m_pLua;
+            }
+
+            /* Run color_control.lua which initializes the needed modules */
             m_pLua = new CLua("color_control.lua");
 
             m_pLua->ScanDevices(m_numberOfDevices, m_aStrSerials);
@@ -179,8 +191,11 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
             {
                 wxLogMessage("No device detected ... please make sure the device is properly attached!");
 
-                if (m_pLua != NULL) delete m_pLua;
-
+                if (m_pLua)
+                {
+                    m_pLua->CleanUp();
+                    delete m_pLua;
+                }
                 m_eState = IS_INITIAL;
 
             }
@@ -217,7 +232,7 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
 
 void ColorControlFrame::UpdateSerialList()
 {
-        /* Fill the serial gui list (clear before) */
+        /* Fill the serial list (clear before) */
         m_dataViewListSerials->DeleteAllItems();
         for(int i = 0; i < m_numberOfDevices; i++)
         {
@@ -338,8 +353,11 @@ void ColorControlFrame::OnDisconnect(wxCommandEvent& event)
             }
 
             /* Clean up and close the current Lua State (color_control.lua) */
-            if(m_pLua) delete m_pLua;
-
+            if(m_pLua)
+            {
+                m_pLua->CleanUp();
+                delete m_pLua;
+            }
             /* Set Initial System State */
             m_eState = IS_INITIAL;
 
@@ -438,7 +456,7 @@ void ColorControlFrame::OnStimulation( wxCommandEvent& event )
     /* Read if there's already a com port saved in the config file */
     wxString strPlugin;
 
-    /* Create your temporary .lua file for led stimulation */
+    /* Check for any missing entries (name + pinnumber must be provided) */
     if(!m_testGeneration.CheckLEDStimulation(m_vectorSensorPanels ))
     {
         wxLogMessage("Stimulation unsuccessful.");
@@ -447,10 +465,21 @@ void ColorControlFrame::OnStimulation( wxCommandEvent& event )
         return;
     }
 
+    /* Check if we successfully connected to an interface before, if so take that one,
+        if there was no previous successful connection to an interface, let the user choose one
+        of the available interfaces */
     if(m_fileConfig->Read("netXType/plugin", &strPlugin))
     {
         if(strPlugin == wxEmptyString) strPlugin = this->GetInterfaceSelection();
     }
+    /* we could not read the config file */
+    else
+    {
+        strPlugin = this->GetInterfaceSelection();
+    }
+
+    /* if the plugin is still empty we clicked on cancel */
+    if(strPlugin == wxEmptyString) return;
 
     if(!m_testGeneration.FileLEDStimulation(m_vectorSensorPanels, strPlugin))
     {
@@ -461,6 +490,7 @@ void ColorControlFrame::OnStimulation( wxCommandEvent& event )
         return;
     }
 
+    /* Run the generated stimulation file */
     CLua stimulationfile("_tempscript_.lua");
 
     if(!stimulationfile.IsLoaded())
@@ -571,7 +601,6 @@ void ColorControlFrame::CreateTestPanels(int numberOfDevices)
     bSizerTestDefinition = new wxBoxSizer( wxVERTICAL );
     m_panelHeader = new PanelHeader(m_swTestdefinition, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxALIGN_TOP);
 
-
     bSizerTestDefinition->Add(m_panelHeader, 0, wxEXPAND, 0);
 
     for (int i = 0; i< numberOfDevices; i++)
@@ -636,7 +665,7 @@ void ColorControlFrame::OnSerialUp(wxCommandEvent& event)
             break;
 
         case IS_CONNECTED:
-            wxLogMessage("Cannot reorder serial numbers - disconnect first.");
+            wxLogMessage("Cannot reorder - disconnect first.");
             break;
 
         default:
@@ -662,7 +691,7 @@ void ColorControlFrame::OnSerialDown(wxCommandEvent& event)
             break;
 
         case IS_CONNECTED:
-            wxLogMessage("Cannot reorder serial numbers - disconnect first.");
+            wxLogMessage("Cannot reorder - disconnect first.");
             break;
 
         default:
@@ -677,7 +706,7 @@ void ColorControlFrame::OnTestmode(wxCommandEvent& event)
     if(m_pTimer->IsRunning())
     {
         wxBell();
-        wxLogMessage("Can't change Testmode. Stop First!");
+        wxLogMessage("Can't change Testmode. Stop measurements first!");
         m_rbContinuous->SetValue(true);
     }
 
@@ -699,7 +728,7 @@ void ColorControlFrame::OnTimeout(wxTimerEvent& event)
     }
 
     /* If the result of readColours is not zero, something went wrong, but its not a fatal error
-       thus just stop the measurements */
+       thus just stop the measurements and update the status (reason why it stopped)*/
     if(m_pLua->ReadColours(m_cocoDevices) != 0)
     {
         m_pTimer->Stop();
@@ -759,8 +788,6 @@ wxString ColorControlFrame::GetInterfaceSelection()
     hInterfaces.GetInterfaces(astrInterfaces);
 
     /* check if the default interface is contained in the found interfaces, and if so set it as the initially selected one */
-
-
     wxSingleChoiceDialog chInterface(this, wxT("Select the plugin the netX is connected to."), wxT("Select the plugin"), astrInterfaces);
 
     int iSel;
@@ -857,6 +884,16 @@ void ColorControlFrame::OnSystemSettings(wxCommandEvent& event)
         m_cocoDevices.at(i)->SetTolIllu(tol_illu);
     }
 
+    /* Update it if we are connected */
+    switch(m_eState)
+    {
+        case IS_INITIAL:
+        case IS_SCANNED:
+            break;
+        case IS_CONNECTED:
+            this->UpdateData();
+            break;
+    }
 }
 
 
@@ -868,26 +905,24 @@ void ColorControlFrame::OnGenerateTest(wxCommandEvent& event)
     if(!m_fileConfig->Read("DEFAULT_PATHS/path_generate_testfile", &strDefaultDir))
         strDefaultDir = wxEmptyString;
 
-    wxFileDialog *save_fileDialog;
-
     wxLogMessage("Generating Testfile.. ");
 
-    save_fileDialog = new wxFileDialog(this, "Choose output directory",
-                                       strDefaultDir,
-                                       "", "LUA files (*.lua) |*.lua",
-                                       wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    wxFileDialog save_fileDialog(this, "Choose output directory",
+                                 strDefaultDir,
+                                 "", "LUA files (*.lua) |*.lua",
+                                 wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
-    if(save_fileDialog->ShowModal() == wxID_CANCEL)
+    if(save_fileDialog.ShowModal() == wxID_CANCEL)
     {
         wxLogMessage("Abort.");
         return;
     }
 
     /* Get the name and path */
-    strPath = save_fileDialog->GetPath();
+    strPath = save_fileDialog.GetPath();
 
     /* Save the Directory as a default directory in the ini file */
-    m_fileConfig->Write("DEFAULT_PATHS/path_generate_testfile", save_fileDialog->GetDirectory());
+    m_fileConfig->Write("DEFAULT_PATHS/path_generate_testfile", save_fileDialog.GetDirectory());
 
     /* the file either exists or must be created */
     wxTextFile tFile(strPath);
@@ -957,7 +992,6 @@ void ColorControlFrame::OnUseTest(wxCommandEvent& event)
     wxTextFile tFile(strPath);
     tFile.Open();
 
-
     /* Insert the Com port into the lua file ... there might be a better solution here */
     /* assumption: the generated file has the line in it */
     for(strLine = tFile.GetFirstLine(); !tFile.Eof(); strLine = tFile.GetNextLine())
@@ -978,8 +1012,25 @@ void ColorControlFrame::OnUseTest(wxCommandEvent& event)
 
     /* Insert code to use the test */
     CLua *useTest = new CLua(/*strPath*/);
+
+    LOG_ERROR(m_text);
     int iTestResult = useTest->RunGeneratedTest(strPath);
 
+    if(!useTest->IsLoaded())
+    {
+        wxLogMessage("Test file could not be run on lua (errors) .. abort.");
+
+        /* Empty the default plugin as it did not work */
+        m_fileConfig->Write("netXType/plugin", "");
+
+        LOG_DEFAULT(m_text);
+        return;
+    }
+
+    /* LED Stimulation file could be run successfully, thus save the plugin as default */
+    m_fileConfig->Write("netXType/plugin", strInterface);
+
+    /* Show result */
     if(iTestResult == 0)
     {
         LOG_SUCCESSFUL(m_text);
@@ -993,7 +1044,6 @@ void ColorControlFrame::OnUseTest(wxCommandEvent& event)
         LOG_DEFAULT(m_text);
     }
 
-    if(useTest != NULL) delete useTest;
 }
 
 void ColorControlFrame::OnSaveSession( wxCommandEvent& event )

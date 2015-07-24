@@ -13,21 +13,21 @@ CTestGeneration::~CTestGeneration()
 
 void CTestGeneration::GenerateColorTestTable(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile)
 {
-    int iDevCounter = 0;
-    int iNumberOfTestSets = this->GetMaximumNumberOfTestsets(vectorSensorPanel);
+    unsigned int uiDevCounter = 0;
+    unsigned int uiNumberOfTests = this->GetMaximumNumberOfTestsets(vectorSensorPanel);
 
     tFile->AddLine(" ---------------------- ColorControl LEDs under test ---------------------- ");
 
-    for( int i = 0; i < iNumberOfTestSets; i++)
+    for(unsigned int i = 0; i < uiNumberOfTests; i++)
     {
         tFile->AddLine(wxString::Format(wxT("-- LED Testset # %i --\n"), i));
         tFile->AddLine(wxString::Format(wxT("local tTestSet%i = {\n"), i));
 
         /* Iterate over Sensor Panels */
-        for(int j = 0; j < vectorSensorPanel.size(); j++)
+        for(unsigned int j = 0; j < vectorSensorPanel.size(); j++)
         {
             /* We reached a new device */
-            if(j%16 == 0) tFile->AddLine(wxString::Format(wxT(" [%2i] = {"), iDevCounter++));
+            if(j%16 == 0) tFile->AddLine(wxString::Format(wxT(" [%2i] = {"), uiDevCounter++));
 
 
             /* Get your rows in case the row really exists in the testrow vector */
@@ -55,15 +55,15 @@ void CTestGeneration::GenerateColorTestTable(wxVector<PanelSensor*> vectorSensor
 
 
         tFile->AddLine(wxT("}\n"));
-        iDevCounter = 0;
+        uiDevCounter = 0;
     }
 
     wxString strTestSets;
-    for(int i = 0; i < iNumberOfTestSets; i++)
+    for(unsigned int i = 0; i < uiNumberOfTests; i++)
     {
         if(i == 0) strTestSets += wxT("local atTestSets = { ");
         /* Last TestSet*/
-        if(i == iNumberOfTestSets - 1) strTestSets += wxString::Format(wxT("tTestSet%d }\n"), i);
+        if(i == uiNumberOfTests - 1) strTestSets += wxString::Format(wxT("tTestSet%d }\n"), i);
         /* Else */
         else strTestSets += wxString::Format(wxT("tTestSet%d, "), i);
 
@@ -95,10 +95,9 @@ void CTestGeneration::GenerateNetXTestTable(wxVector<PanelSensor*> vectorSensorP
         tFile->AddLine(wxT(" --------------------------- netX I/O Table ---------------------------\n "));
         tFile->AddLine(wxT(" local atPinsUnderTest = {\n"));
 
-        int iDevCounter = 0;
         int iIndexLastEntry   = this->GetLastEntryWithVectors(vectorSensorPanel);
 
-        for(int i = 0; i < vectorSensorPanel.size(); i++)
+        for(int i = 0; (unsigned int)i < vectorSensorPanel.size(); i++)
         {
 
             if(vectorSensorPanel.at(i)->GetVectorTestrow().size() > 0)
@@ -119,7 +118,7 @@ int CTestGeneration::GetLastEntryWithVectors(wxVector<PanelSensor*> vectorSensor
     int iLastEntry = -1;
 
     /* Search for the last sensor entry which contains testrows */
-    for(int i = 0; i<vectorSensorPanel.size(); i++)
+    for(unsigned int i = 0; i<vectorSensorPanel.size(); i++)
     {
         if( vectorSensorPanel.at(i)->GetVectorTestrow().size() > 0) iLastEntry = i;
     }
@@ -135,7 +134,7 @@ bool CTestGeneration::CheckTestGeneration(wxVector<PanelSensor*> vectorSensorPan
 
   for(wxVector<PanelSensor*>::iterator it_sensor = vectorSensorPanel.begin(); it_sensor != vectorSensorPanel.end(); it_sensor++)
   {
-     for(int i = 0; i < (*it_sensor)->GetVectorTestrow().size(); i++)
+     for(unsigned int i = 0; i < (*it_sensor)->GetVectorTestrow().size(); i++)
      {
          /* Names must be existent */
          if((*it_sensor)->GetVectorTestrow().at(i)->IsNameFieldEmpty())
@@ -185,22 +184,22 @@ void CTestGeneration::InsertHeaders(wxTextFile* tFile, bool useNetX)
 
 void CTestGeneration::GenerateTestStepFunctions(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX)
 {
-    int iMaxNumber = this->GetMaximumNumberOfTestsets(vectorSensorPanel);
+    unsigned int uiMaxNumber = this->GetMaximumNumberOfTestsets(vectorSensorPanel);
 
     if(useNetX)
     {
         tFile->AddLine(wxT("-- Functions triggers the desired pin state for a testset"));
         /* Iterate over all Testsets and push the desired pin value onto the netX */
-        for(int iTestIndex = 0; iTestIndex < iMaxNumber; iTestIndex++)
+        for(unsigned int uiTestIndex = 0; uiTestIndex < uiMaxNumber; uiTestIndex++)
         {
-            tFile->AddLine(wxString::Format(wxT("-- apply pin states for test set %d"), iTestIndex));
-            tFile->AddLine(wxString::Format(wxT("local function applyPinState%d(aAttr)"), iTestIndex));
+            tFile->AddLine(wxString::Format(wxT("-- apply pin states for test set %d"), uiTestIndex));
+            tFile->AddLine(wxString::Format(wxT("local function applyPinState%d(aAttr)"), uiTestIndex));
 
             for(wxVector<PanelSensor*>::iterator it = vectorSensorPanel.begin(); it!= vectorSensorPanel.end(); it++)
             {
-                if((*it)->GetVectorTestrow().size() > iTestIndex)
+                if((*it)->GetVectorTestrow().size() > uiTestIndex)
                 {
-                    tFile->AddLine((*it)->GetPinStateTestSet(iTestIndex));
+                    tFile->AddLine((*it)->GetPinStateTestSet(uiTestIndex));
                 }
             }
 
@@ -228,11 +227,19 @@ void CTestGeneration::GenerateInitialization(wxTextFile* tFile, bool useNetX)
         tFile->AddLine(wxT("end\n"));
     }
 
-    tFile->AddLine(wxT("-- Color Controller"));
-    tFile->AddLine(wxT("scanDevices()"));
-    tFile->AddLine(wxT("local numberOfDevices = connectDevices()"));
+    tFile->AddLine(wxT("-- Color Controller --> Scan"));
+    tFile->AddLine(wxT("numberOfDevices, strXmlResult = scanDevices()"));
     tFile->AddLine(wxT("if numberOfDevices <= 0 then"));
-    tFile->AddLine(wxT("    error(\"No Color Controller detected, nothing to do!\")"));
+    tFile->AddLine(wxT("    free()"));
+    if(useNetX) tFile->AddLine(wxT("    tPlugin:Disconnect()"));
+    tFile->AddLine(wxT("    return TEST_RESULT_DEVICE_ERROR, strXmlResult"));
+    tFile->AddLine(wxT("end\n"));
+    tFile->AddLine(wxT("-- Color Controller --> Connect"));
+    tFile->AddLine(wxT("numberOfDevices, strXmlResult = connectDevices()"));
+    tFile->AddLine(wxT("if numberOfDevices <= 0 then"));
+    tFile->AddLine(wxT("    free()"));
+    if(useNetX) tFile->AddLine(wxT("    tPlugin:Disconnect()"));
+    tFile->AddLine(wxT("    return TEST_RESULT_DEVICE_ERROR, strXmlResult"));
     tFile->AddLine(wxT("end\n"));
 
     if(useNetX)
@@ -253,7 +260,7 @@ void CTestGeneration::GenerateInitialization(wxTextFile* tFile, bool useNetX)
         tFile->AddLine(wxT("end\n"));
     }
 
-    tFile->AddLine(wxT("-- Color Controller"));
+    tFile->AddLine(wxT("-- Color Controller --> Init"));
     tFile->AddLine(wxT("initDevices(atSettings)\n"));
 
 }
@@ -262,11 +269,11 @@ void CTestGeneration::GenerateInitialization(wxTextFile* tFile, bool useNetX)
 
 void CTestGeneration::GenerateTestSteps(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX)
 {
-    int iNumberOfTestSets = this->GetMaximumNumberOfTestsets(vectorSensorPanel);
+    int uiNumberOfTests = this->GetMaximumNumberOfTestsets(vectorSensorPanel);
 
     tFile->AddLine(wxT("-- Actual Test -----------------------------"));
     /* Lua index for testtables start at 1 */
-    for(int i = 1; i <= iNumberOfTestSets; i++)
+    for(int i = 1; i <= uiNumberOfTests; i++)
     {
 
         if(useNetX)
@@ -283,13 +290,13 @@ void CTestGeneration::GenerateTestSteps(wxVector<PanelSensor*> vectorSensorPanel
         tFile->AddLine(wxT("startMeasurements()"));
         tFile->AddLine(wxString::Format(wxT("iRetval, strXmlResult = validateLEDs(atTestSets[%d], lux_check_enable)\n"), i));
         tFile->AddLine(wxT("if iRetval ~= TEST_RESULT_OK then"));
-        tFile->AddLine(wxT("--    free()"));
+        tFile->AddLine(wxT("    free()"));
         if(useNetX)
         {
             tFile->AddLine("    ---- APPLY DEFAULT PINSTATES ---- ");
             tFile->AddLine("    --tPlugin:Disconnect()");
         }
-        tFile->AddLine(wxT("--    return  TEST_RESULT_FAIL, strXmlResult"));
+        tFile->AddLine(wxT("    return  TEST_RESULT_FAIL, strXmlResult"));
         tFile->AddLine(wxT("end\n"));
     }
 
@@ -306,7 +313,7 @@ void CTestGeneration::GenerateSettingsTable(wxVector<PanelSensor*> vectorSensorP
     tFile->AddLine(wxT("atSettings = {"));
 
     /* Iterate over all elements of vectorsensorpanel */
-    for(int i = 0; i < vectorSensorPanel.size(); i++)
+    for(unsigned int i = 0; i < vectorSensorPanel.size(); i++)
     {
         /* We reached a new device */
         if(i%16 == 0) tFile->AddLine(wxString::Format(wxT(" [%2i] = {"), iDevCounter++));
@@ -415,8 +422,6 @@ bool CTestGeneration::OpenSessionAsIni(wxVector<PanelSensor*> vectorSensorPanel,
         return false;
     }
 
-
-    int iRowCounter = 1;
     int iSensorcounter = 1;
 
     int iSavedNumberOfTesrows;
@@ -594,7 +599,7 @@ int CTestGeneration::GetLastEntryWithPinnumber(wxVector<PanelSensor*> vectorSens
 {
     int iIndex = -1;
 
-    for(int i = 0; i < vectorSensorPanel.size(); i ++)
+    for(unsigned int i = 0; i < vectorSensorPanel.size(); i ++)
     {
         /* The pinnumber field is not empty */
         if(!vectorSensorPanel.at(i)->IsPinnumberEmpty()) iIndex = i;
@@ -674,7 +679,7 @@ bool CTestGeneration::FileLEDStimulation(wxVector<PanelSensor*> vectorSensorPane
         return false;
     }
     /* Fill atPinsUnderTest */
-    for(int i = 0; i < vectorSensorPanel.size(); i++)
+    for(int i = 0; (unsigned int)i < vectorSensorPanel.size(); i++)
     {
         /*  */
         if(!vectorSensorPanel.at(i)->IsPinnumberEmpty())
@@ -698,7 +703,7 @@ bool CTestGeneration::FileLEDStimulation(wxVector<PanelSensor*> vectorSensorPane
     tFile.AddLine(wxT(" --------------------------- netX I/O Table values -----------------------\n "));
     tFile.AddLine(wxT(" local atPinsUnderTestValues = {\n"));
     /* Fill value table */
-    for(int i = 0; i < vectorSensorPanel.size(); i++)
+    for(int i = 0; (unsigned int)i < vectorSensorPanel.size(); i++)
     {
         if(!vectorSensorPanel.at(i)->IsPinnumberEmpty())
         {

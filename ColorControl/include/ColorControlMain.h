@@ -59,6 +59,7 @@ class ColorControlFrame: public GUIFrame
         virtual void OnClose(wxCloseEvent& event);
         virtual void OnQuit(wxCommandEvent& event);
         virtual void OnAbout(wxCommandEvent& event);
+        virtual void OnQuickGuide(wxCommandEvent& event);
         virtual void OnScan(wxCommandEvent& event);
         virtual void OnConnect(wxCommandEvent& event);
         virtual void OnDisconnect(wxCommandEvent& event);

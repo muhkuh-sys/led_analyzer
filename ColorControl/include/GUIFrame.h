@@ -58,9 +58,9 @@ using namespace std;
 
 
 
-#define COLOR_WARNING{210, 150, 0  }
-#define COLOR_ERROR  {200, 0  , 0  }
-#define COLOR_OK     {0,   200, 0  }
+#define COLOR_WARNING wxColor(210, 150, 0  )
+#define COLOR_ERROR wxColor(200, 0  , 0  )
+#define COLOR_OK wxColor(0,   200, 0  )
 
 /* Macros for Log color */
 #define LOG_WARNING(pText) pText->SetDefaultStyle(wxTextAttr(COLOR_WARNING))
@@ -140,45 +140,14 @@ public:
                                        )
         { }
 
+/*
         virtual wxString GetChoice(size_t WXUNUSED(index))
         {
-
+            return;
         }
-
-
-};
-
-
-/*
-class MyDataViewListModel: public wxDataViewModel
-{
-    public:
-        MyDataViewListModel();
-
-        ~MyDataViewListModel();
-
-    virtual unsigned int GetColumnCount() const;
-
-    virtual wxString GetColumnType( unsigned int col ) const;
-
-    virtual void GetValueByRow( wxVariant &variant,
-                                unsigned int row, unsigned int col ) const;
-    virtual bool GetAttrByRow( unsigned int row, unsigned int col,
-                               wxDataViewItemAttr &attr ) const;
-    virtual bool SetValueByRow( const wxVariant &variant,
-                                unsigned int row, unsigned int col );
-
-    virtual unsigned int GetRow(const wxDataViewItem& children) const ;
-
-    virtual unsigned int GetCount() const;
-
-    virtual unsigned int GetChildren( const wxDataViewItem& item, wxDataViewItemArray& children) const;
-
-    private:
-        int m_test;
-};
 */
 
+};
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -276,6 +245,7 @@ class GUIFrame : public wxFrame
 		virtual void OnStart( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStimulation ( wxCommandEvent& event) { event.Skip(); };
 		virtual void OnAbout( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnQuickGuide( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnQuit( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTestmode (wxCommandEvent& event ) { event.Skip(); };
         virtual void OnTimeout( wxTimerEvent& event ) { event.Skip(); };

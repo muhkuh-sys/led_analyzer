@@ -303,20 +303,20 @@ void PanelSensor::OnAddTestRow(wxCommandEvent& event)
 void PanelSensor::OnButtonRemove( wxCommandEvent& event )
 {
     /* Get the index of the vector to be deleted */
-    int iVectorIndex = m_hashRemove[event.GetId()];
+    unsigned int uiVectorIndex = m_hashRemove[event.GetId()];
 
     /* Destroy the panel */
-    m_vectorTestrow.at(iVectorIndex)->Destroy();
+    m_vectorTestrow.at(uiVectorIndex)->Destroy();
 
     /* Clear all hashes for this panel */
-    m_hashClear.erase(m_vectorTestrow.at(iVectorIndex)->GetButtonClearID());
+    m_hashClear.erase(m_vectorTestrow.at(uiVectorIndex)->GetButtonClearID());
 
-    m_hashPaste.erase(m_vectorTestrow.at(iVectorIndex)->GetButtonPasteID());
+    m_hashPaste.erase(m_vectorTestrow.at(uiVectorIndex)->GetButtonPasteID());
 
     m_hashRemove.erase(event.GetId());
 
     /* Remove the item from the vector */
-    m_vectorTestrow.erase(iVectorIndex);
+    m_vectorTestrow.erase(uiVectorIndex);
 
     /* First delete all existent hashes as the assignment to the vector index has changed */
     m_hashClear.clear();
@@ -488,7 +488,7 @@ wxString PanelSensor::GetAtPinsUnderTest(bool isLastEntry)
 
     if(isLastEntry)
     {
-        for(int i = 0; i < m_vectorTestrow.size(); i++)
+        for(unsigned int i = 0; i < m_vectorTestrow.size(); i++)
         {
             strCurName = m_vectorTestrow.at(i)->GetName();
             if(!this->NameMoreThanTwice(astrCurNames, strCurName ))
@@ -526,7 +526,7 @@ wxString PanelSensor::GetAtPinsUnderTest(bool isLastEntry)
 
     else
     {
-        for(int i = 0; i < m_vectorTestrow.size(); i++)
+        for(unsigned int i = 0; i < m_vectorTestrow.size(); i++)
         {
             strCurName = m_vectorTestrow.at(i)->GetName();
             if(!this->NameMoreThanTwice(astrCurNames, strCurName ))
@@ -546,7 +546,7 @@ wxString PanelSensor::GetAtPinsUnderTest(bool isLastEntry)
 
 bool PanelSensor::NameMoreThanTwice(const wxArrayString astrstrCurNames, const wxString strCurName)
 {
-    for(int i = 0; i < astrstrCurNames.GetCount(); i++)
+    for(unsigned int i = 0; i < astrstrCurNames.GetCount(); i++)
     {
         if (astrstrCurNames.Item(i).IsSameAs(strCurName)) return true;
     }
@@ -557,7 +557,7 @@ bool PanelSensor::IsLastNameEntryWithoutRepetition(int iCurIndex)
 {
     wxString strCurName = m_vectorTestrow.at(iCurIndex)->GetName();
 
-    for(int i = iCurIndex+1; i < m_vectorTestrow.size(); i++)
+    for(unsigned int i = iCurIndex+1; i < m_vectorTestrow.size(); i++)
     {
         if (!m_vectorTestrow.at(i)->GetName().IsSameAs(strCurName)) return false;
     }

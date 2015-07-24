@@ -1,13 +1,6 @@
--- DEBU OUTPUT LEVELS
--- 0 : no warnings if test entries are missing for a device or test entries are missing for sensors
--- 1 : prints out information about the failed sensors and info text 
--- 2 : prints out warnings if test entries are missing for devices or sensors 
--- 3 : if test entries for devices miss we throw an error 
-
-DEBUG_OUTPUT = 0
-
--- The result of the text will be a value in status and some information text in info text 
--- following values are possible for the test status of a sensor :
+-- compare rows will compare the current measured colors with the row set provided in a test table 
+-- it returns a status information, an information text table with string values, and the values for 
+-- wavelength ... illumination, tolerances for these, and set point wavelength ... illumination
 	-- 0: PASS ALL FITS
 	-- 1: There's no test entry for the row, thus we do not need a test 
 	-- 2: Wrong color as saturation fits but the wavelength does not 
@@ -67,7 +60,7 @@ function compareRows(tDUTrow, tCurColorSensor, lux_check_enable)
 				-- As wavelength and saturations are OK and there's no need for a lux check we can return OK here
 				return 0, {"Wavelength is in range", 
 						   "Saturation is in range",
-						   "Illumination check is disabled"}, nm, sat, lux, tol_nm, tol_sat, tol_lux, sp_nm, sp_sat, sp_lux
+						   "Illumination was not tested"}, nm, sat, lux, tol_nm, tol_sat, tol_lux, sp_nm, sp_sat, sp_lux
 			end 
 		-- Saturation fits but wavelength doesn't (wrong color)
 		elseif ((nm  <= (sp_nm  - tol_nm) 
