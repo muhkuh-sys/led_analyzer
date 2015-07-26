@@ -35,17 +35,17 @@ for simple i2c-slaves which do not have the ability of clock stretching.
 /** \brief sends a start condition on all 16 i2c-busses.
 	@param ftdiA, ftdiB	pointer to ftdi_context
 */
-void i2c_startCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
+void i2c_startCond()
 {
     
 	/* Set clocklines low, datalines high */
-    process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, (!SCL) | SDA_0_OUTPUT | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT);
+    process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, (!SCL) | SDA_0_OUTPUT | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT);
     /* Set clocklines high, datalines high */
-	process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SCL | SDA_0_OUTPUT | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT);
+	process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SCL | SDA_0_OUTPUT | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT);
     /* Set clocklines high, datalines low */
-	process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SCL | !SDA_0_OUTPUT | !SDA_1_OUTPUT | !SDA_2_OUTPUT | !SDA_3_OUTPUT);
+	process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SCL | !SDA_0_OUTPUT | !SDA_1_OUTPUT | !SDA_2_OUTPUT | !SDA_3_OUTPUT);
     /* Set clocklines low, datalines low */
-	process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, (!SCL) | !SDA_0_OUTPUT | !SDA_1_OUTPUT | !SDA_2_OUTPUT | !SDA_3_OUTPUT);
+	process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, (!SCL) | !SDA_0_OUTPUT | !SDA_1_OUTPUT | !SDA_2_OUTPUT | !SDA_3_OUTPUT);
 
     
 }
@@ -54,15 +54,15 @@ void i2c_startCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 /** \brief sends a stop condition on all 16 i2c-busses. 
 	@param ftdiA, ftdiB	pointer to ftdi_context
 */
-void i2c_stopCond(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB )
+void i2c_stopCond()
 {
     
     /* Set all lines low */
-    process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, 0);
+    process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, 0);
     /* Set clocklines high, datalines low */
-	process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SCL | !SDA_0_OUTPUT | !SDA_1_OUTPUT | !SDA_2_OUTPUT | !SDA_3_OUTPUT);
+	process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SCL | !SDA_0_OUTPUT | !SDA_1_OUTPUT | !SDA_2_OUTPUT | !SDA_3_OUTPUT);
     /* Set clocklines high, datalines high */
-	process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL);
+	process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL);
 
 }
 
@@ -102,8 +102,8 @@ int i2c_write8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
                          | ucDataToSend <<16 | ucDataToSend << 18| ucDataToSend << 20| ucDataToSend <<22
                          | ucDataToSend <<24 | ucDataToSend << 26| ucDataToSend << 28| ucDataToSend <<30;
 
-            process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
-            i2c_clock(ftdiA, ftdiB, ulDataToSend);
+            process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
+            i2c_clock(ulDataToSend);
 
             ucMask>>=1;
             ucBitnumber--;
@@ -111,8 +111,8 @@ int i2c_write8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
 
 
     /* 0 write 1 read */
-    process_pins(ftdiA, ftdiB,  SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_WRITE);
-    i2c_clock(ftdiA, ftdiB, SDA_WRITE);
+    process_pins( SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_WRITE);
+    i2c_clock(SDA_WRITE);
     i2c_getAck(ftdiA, ftdiB);
     uiBufferIndex++;
     ucMask = 128;
@@ -130,8 +130,8 @@ int i2c_write8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
                          | ucDataToSend <<16 | ucDataToSend << 18| ucDataToSend << 20| ucDataToSend <<22  // DA8-11
                          | ucDataToSend <<24 | ucDataToSend << 26| ucDataToSend << 28| ucDataToSend <<30; // DA12-15
 
-            process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
-            i2c_clock(ftdiA, ftdiB, ulDataToSend);
+            process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
+            i2c_clock(ulDataToSend);
 
             ucMask>>=1;
             ucBitnumber--;
@@ -187,8 +187,8 @@ int i2c_write8_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
 			/* Write to a single dataline */			
 			ulDataToSend = ucDataToSend << (sensorToDataline);
 
-            process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
-            i2c_clock(ftdiA, ftdiB, ulDataToSend);
+            process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
+            i2c_clock(ulDataToSend);
 
             ucMask>>=1;
             ucBitnumber--;
@@ -196,8 +196,8 @@ int i2c_write8_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
 
 
     /* 8th bit of the first byte --> 0 write 1 read */
-    process_pins(ftdiA, ftdiB,  SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_WRITE);
-    i2c_clock(ftdiA, ftdiB, SDA_WRITE);
+    process_pins( SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_WRITE);
+    i2c_clock(SDA_WRITE);
     i2c_getAck(ftdiA, ftdiB);
     uiBufferIndex++;
     ucMask = 128;
@@ -214,8 +214,8 @@ int i2c_write8_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
 			/* Write to a single dataline */
 			ulDataToSend = ucDataToSend << (sensorToDataline);
 
-            process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
-            i2c_clock(ftdiA, ftdiB, ulDataToSend);
+            process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
+            i2c_clock(ulDataToSend);
 
             ucMask>>=1;
             ucBitnumber--;
@@ -274,16 +274,16 @@ int i2c_read8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned c
                          | ucDataToSend <<16 | ucDataToSend << 18| ucDataToSend << 20| ucDataToSend <<22  // DA8-11
                          | ucDataToSend <<24 | ucDataToSend << 26| ucDataToSend << 28| ucDataToSend <<30; // DA12-15
 
-            process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
-            i2c_clock(ftdiA, ftdiB, ulDataToSend);
+            process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
+            i2c_clock(ulDataToSend);
 
             ucMask>>=1;
             ucBitnumber--;
         }
 
     /* 0 write 1 read */
-    process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL , SDA_WRITE );
-    i2c_clock(ftdiA, ftdiB, SDA_WRITE);
+    process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL , SDA_WRITE );
+    i2c_clock(SDA_WRITE);
     i2c_getAck(ftdiA, ftdiB);
 
     uiBufferIndex++;
@@ -302,8 +302,8 @@ int i2c_read8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned c
                          | ucDataToSend <<16 | ucDataToSend << 18| ucDataToSend << 20| ucDataToSend <<22  // DA8-11
                          | ucDataToSend <<24 | ucDataToSend << 26| ucDataToSend << 28| ucDataToSend <<30; // DA12-15
 
-            process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
-            i2c_clock(ftdiA, ftdiB, ulDataToSend);
+            process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
+            i2c_clock(ulDataToSend);
 
             ucMask>>=1;
             ucBitnumber--;
@@ -336,15 +336,15 @@ int i2c_read8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned c
                          | ucDataToSend <<16 | ucDataToSend << 18| ucDataToSend << 20| ucDataToSend <<22  // DA8-11
                          | ucDataToSend <<24 | ucDataToSend << 26| ucDataToSend <<28 | ucDataToSend <<30; // DA12-15
 
-            process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
-            i2c_clock(ftdiA, ftdiB, ulDataToSend);
+            process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
+            i2c_clock(ulDataToSend);
 
             ucMask>>=1;
             ucBitnumber--;
         }
 
-    process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_READ);
-    i2c_clock(ftdiA, ftdiB, SDA_READ);
+    process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_READ);
+    i2c_clock(SDA_READ);
     i2c_getAck(ftdiA, ftdiB);
 
     /* Now the bytes can be read back beginning from the MSB */
@@ -353,7 +353,7 @@ int i2c_read8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned c
 
     while(counter--)
     {
-        i2c_clockInput(ftdiA, ftdiB, 0);
+        i2c_clockInput(0);
         if((counter  % 8 == 0) && counter != 8) i2c_giveAck(ftdiA, ftdiB);
     }
 
@@ -403,16 +403,16 @@ int i2c_read16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
                          | ucDataToSend <<16 | ucDataToSend << 18| ucDataToSend << 20| ucDataToSend <<22  // DA8-11
                          | ucDataToSend <<24 | ucDataToSend << 26| ucDataToSend <<28 | ucDataToSend <<30; // DA12-15
 
-            process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL , ulDataToSend );
-            i2c_clock(ftdiA, ftdiB, ulDataToSend);
+            process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL , ulDataToSend );
+            i2c_clock(ulDataToSend);
 
             ucMask>>=1;
             ucBitnumber--;
         }
 
     /* 0 write 1 read */
-    process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL , SDA_WRITE);
-    i2c_clock(ftdiA, ftdiB, SDA_WRITE);
+    process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL , SDA_WRITE);
+    i2c_clock(SDA_WRITE);
     i2c_getAck(ftdiA, ftdiB);
 
     uiBufferIndex++;
@@ -431,8 +431,8 @@ int i2c_read16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
                          | ucDataToSend <<16 | ucDataToSend << 18| ucDataToSend << 20| ucDataToSend <<22  // DA8-11
                          | ucDataToSend <<24 | ucDataToSend << 26| ucDataToSend << 28| ucDataToSend <<30; // DA12-15
 
-            process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
-            i2c_clock(ftdiA, ftdiB, ulDataToSend);
+            process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
+            i2c_clock(ulDataToSend);
 
             ucMask>>=1;
             ucBitnumber--;
@@ -464,15 +464,15 @@ int i2c_read16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
                          | ucDataToSend <<16 | ucDataToSend << 18| ucDataToSend << 20| ucDataToSend <<22  // DA8-11
                          | ucDataToSend <<24 | ucDataToSend << 26| ucDataToSend << 28| ucDataToSend <<30; // DA12-15
 
-            process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
-            i2c_clock(ftdiA, ftdiB, ulDataToSend);
+            process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
+            i2c_clock(ulDataToSend);
 
             ucMask>>=1;
             ucBitnumber--;
         }
 
-    process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_READ );
-    i2c_clock(ftdiA, ftdiB, SDA_READ);
+    process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_READ );
+    i2c_clock(SDA_READ);
 
 
     i2c_getAck(ftdiA, ftdiB);
@@ -483,7 +483,7 @@ int i2c_read16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
 
     while(counter--)
     {
-        i2c_clockInput(ftdiA, ftdiB, 0);
+        i2c_clockInput(0);
         if((counter  % 8 == 0) && counter != 16) i2c_giveAck(ftdiA, ftdiB);
     }
 
@@ -537,16 +537,16 @@ int i2c_read4x16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
                          | ucDataToSend <<16 | ucDataToSend << 18| ucDataToSend << 20| ucDataToSend <<22  // DA8-11
                          | ucDataToSend <<24 | ucDataToSend << 26| ucDataToSend <<28 | ucDataToSend <<30; // DA12-15
 
-            process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL , ulDataToSend );
-            i2c_clock(ftdiA, ftdiB, ulDataToSend);
+            process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL , ulDataToSend );
+            i2c_clock(ulDataToSend);
 
             ucMask>>=1;
             ucBitnumber--;
         }
 
     /* 0 write 1 read */
-    process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL , SDA_WRITE);
-    i2c_clock(ftdiA, ftdiB, SDA_WRITE);
+    process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL , SDA_WRITE);
+    i2c_clock(SDA_WRITE);
     i2c_getAck(ftdiA, ftdiB);
 
     uiBufferIndex++;
@@ -565,8 +565,8 @@ int i2c_read4x16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
                          | ucDataToSend <<16 | ucDataToSend << 18| ucDataToSend << 20| ucDataToSend <<22  // DA8-11
                          | ucDataToSend <<24 | ucDataToSend << 26| ucDataToSend << 28| ucDataToSend <<30; // DA12-15
 
-            process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
-            i2c_clock(ftdiA, ftdiB, ulDataToSend);
+            process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
+            i2c_clock(ulDataToSend);
 
             ucMask>>=1;
             ucBitnumber--;
@@ -598,15 +598,15 @@ int i2c_read4x16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
                          | ucDataToSend <<16 | ucDataToSend << 18| ucDataToSend << 20| ucDataToSend <<22  // DA8-11
                          | ucDataToSend <<24 | ucDataToSend << 26| ucDataToSend << 28| ucDataToSend <<30; // DA12-15
 
-            process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
-            i2c_clock(ftdiA, ftdiB, ulDataToSend);
+            process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
+            i2c_clock(ulDataToSend);
 
             ucMask>>=1;
             ucBitnumber--;
         }
 
-    process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_READ );
-    i2c_clock(ftdiA, ftdiB, SDA_READ);
+    process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_READ );
+    i2c_clock(SDA_READ);
 
 
     i2c_getAck(ftdiA, ftdiB);
@@ -617,7 +617,7 @@ int i2c_read4x16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
 
     while(counter--)
     {
-        i2c_clockInput(ftdiA, ftdiB, 0);
+        i2c_clockInput(0);
         if((counter  % 8 == 0) && counter != 72) i2c_giveAck(ftdiA, ftdiB);
     }
 
@@ -631,10 +631,10 @@ int i2c_read4x16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
 	@param ftdiA, ftdiB 	pointer to ftdi_context
 	@param ulDataToSend  	data which is going to be clocked on all lines set as output
  */
-void i2c_clock(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend)
+void i2c_clock(unsigned long ulDataToSend)
 {
-      process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SCL | ulDataToSend);
-      process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, (!SCL) | ulDataToSend);
+      process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SCL | ulDataToSend);
+      process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, (!SCL) | ulDataToSend);
 }
 
 
@@ -647,21 +647,21 @@ which are set as input will capute their value on the negative clock edge.
 	@param ftdiA, ftdiB 	pointer to ftdi_context
 	@param ulDataToSend 	data which is going to be clocked on all lines set as output
 */
-void i2c_clockInput(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend)
+void i2c_clockInput(unsigned long ulDataToSend)
 {
-	  process_pins(ftdiA, ftdiB, SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, 0); //added this line 
-      process_pins_databack(ftdiA, ftdiB, SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, SCL | ulDataToSend);
-      process_pins_databack(ftdiA, ftdiB, SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, !SCL | ulDataToSend);
+	  process_pins(SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, 0); //added this line 
+      process_pins_databack(SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, SCL | ulDataToSend);
+      process_pins_databack(SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, !SCL | ulDataToSend);
 }
 
 /** \brief master gives an acknowledge on all data lines. 
 	@param ftdiA, ftdiB 	pointer to ftdi_context
 */
-void i2c_giveAck(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
+void i2c_giveAck()
 {
-      process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_READ );
-	  process_pins(ftdiA, ftdiB, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, 0);
-      i2c_clock(ftdiA, ftdiB, 0);
+      process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_READ );
+	  process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, 0);
+      i2c_clock(0);
 
 }
 
@@ -671,19 +671,19 @@ void i2c_giveAck(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 	@param ftdiA, ftdiB 	pointer to ftdi_context
 	@param ulDataToSend		data which is going to be clocked on lines set as output
 */
-void i2c_clock_forACK(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend)
+void i2c_clock_forACK(unsigned long ulDataToSend)
 {
-      process_pins_databack(ftdiA, ftdiB, SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, SCL | ulDataToSend);
-      process_pins_databack(ftdiA, ftdiB, SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, !SCL | ulDataToSend);
+      process_pins_databack(SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, SCL | ulDataToSend);
+      process_pins_databack(SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, !SCL | ulDataToSend);
 
 }
 
 /** \brief expects and clocks an acknowledge bit given by the slave.
 	@param ftdiA, ftdiB 	pointer to ftdi_context
 */
-void i2c_getAck(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
+void i2c_getAck()
 {
 
-    process_pins(ftdiA, ftdiB, SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, 0);
-    i2c_clock_forACK(ftdiA, ftdiB, 0);
+    process_pins(SDA_0_INPUT | SDA_1_INPUT | SDA_2_INPUT | SDA_3_INPUT | SCL, 0);
+    i2c_clock_forACK(0);
 }

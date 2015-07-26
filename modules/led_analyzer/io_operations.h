@@ -57,9 +57,9 @@ int writeOutputs           (struct ftdi_context *ftdiA, struct ftdi_context *ftd
 
 int readInputs             (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, const unsigned char* readBack);
 
-void process_pins          (struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned long ulIOMask, unsigned long ulOutput);
+void process_pins          (unsigned long ulIOMask, unsigned long ulOutput);
 
-void process_pins_databack (struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned long ulIOMask, unsigned long ulOutput);
+void process_pins_databack (unsigned long ulIOMask, unsigned long ulOutput);
 
 int send_package_write8    (struct ftdi_context *ftdiA, struct ftdi_context *ftdiB);
 

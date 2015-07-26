@@ -60,13 +60,13 @@ for simple i2c-slaves which do not have the ability of clock stretching.
 #define SDA_3_INPUT  0x00
 
 
-void i2c_startCond   (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
-void i2c_stopCond    (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
-void i2c_clock       (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend);
-void i2c_clockInput  (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend);
-void i2c_giveAck     (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
-void i2c_clock_forACK(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned long ulDataToSend);
-void i2c_getAck      (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
+void i2c_startCond   ();
+void i2c_stopCond    ();
+void i2c_clock       (unsigned long ulDataToSend);
+void i2c_clockInput  (unsigned long ulDataToSend);
+void i2c_giveAck     ();
+void i2c_clock_forACK(unsigned long ulDataToSend);
+void i2c_getAck      ();
 int  i2c_read16      (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength,
                       unsigned short* ausReadBuffer, unsigned char ucRecLength);
 int i2c_read4x16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength, 

@@ -197,7 +197,7 @@ which form the software i2c protocol.
 
 */
 
-void process_pins(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned long ulIOMask, unsigned long ulOutput)
+void process_pins(unsigned long ulIOMask, unsigned long ulOutput)
 {
 
     aucBufferA[indexA++] = W_LOWBYTE; //
@@ -229,7 +229,7 @@ which form the software i2c protocol.
 	@param[in]		ulOutput	 value to be assigned to pins set as output 
 
 */
-void process_pins_databack(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned long ulIOMask, unsigned long ulOutput)
+void process_pins_databack(unsigned long ulIOMask, unsigned long ulOutput)
 {
 
     aucBufferA[indexA++] = W_LOWBYTE; //
