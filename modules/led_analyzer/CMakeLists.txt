@@ -12,6 +12,9 @@ INCLUDE(${SWIG_USE_FILE})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${LUA_INCLUDE_DIR})
+include_directories(${LIBFTDI_INCLUDE_DIRECTORIES})
+include_directories(${LIBUSB_INCLUDE_DIRECTORIES})
+
 
 find_library(LIBFTDI_LIBRARY NAMES libftdi1 HINTS . )
 find_library(LIBUSB_LIBRARY  NAMES libusb   HINTS . )
@@ -33,6 +36,4 @@ IF((${CMAKE_SYSTEM_NAME} STREQUAL "Windows") AND (${CMAKE_COMPILER_IS_GNUCC}))
 ENDIF((${CMAKE_SYSTEM_NAME} STREQUAL "Windows") AND (${CMAKE_COMPILER_IS_GNUCC}))
 
 
-# Install the lua module.
-INSTALL(TARGETS TARGET_led_analyzer DESTINATION "install/lua")
 
