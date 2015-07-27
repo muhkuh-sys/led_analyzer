@@ -66,14 +66,13 @@ ExternalProject_Add(TARGET_libftdi
 					#-DLIBUSB_INCLUDE_DIR=${CMAKE_CURRENT_BINARY_DIR}/../libusb/libusb-1.0.19/install/include/libusb-1.0 -DLIBUSB_LIBRARIES=${CMAKE_CURRENT_BINARY_DIR}/../libusb/libusb-1.0.19/install/lib/libusb.a
                     INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} install
 					
-
 )
 
  
 
 # 3) Provide all variables for the build.
  SET(LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2/lib/libftdi1.a)
- SET(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2/include/libftdi1/libftdi1.a)
+ SET(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2/include/libftdi1)
 
 
  IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
