@@ -3609,14 +3609,14 @@
 	<stdio.h>
 	"lua.h"
 
-1437658022 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\clua.h
+1437748162 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\clua.h
 	"lua.h"
 	"lualib.h"
 	"lauxlib.h"
 	"GUIFrame.h"
 	"CDevice.h"
 
-1437742405 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\clua.cpp
+1437748162 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\clua.cpp
 	"CLua.h"
 
 1437498693 c:\led_analyzer\colorcontrol\include\clua.h
@@ -3752,7 +3752,7 @@
 1437388278 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\paneltestrow.h
 	"GUIFrame.h"
 
-1437388543 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\paneltestrow.cpp
+1437985659 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\paneltestrow.cpp
 	"PanelTestrow.h"
 	"PanelSensor.h"
 
@@ -3841,7 +3841,7 @@
 	"PanelSensor.h"
 	"CTestGeneration.h"
 
-1437743585 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\colorcontrolmain.cpp
+1437979061 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\colorcontrolmain.cpp
 	"wx_pch.h"
 	"ColorControlMain.h"
 

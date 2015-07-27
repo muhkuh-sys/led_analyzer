@@ -20,7 +20,7 @@
 
 
 IMPLEMENT_APP(ColorControlApp);
-IMPLEMENT_VARIANT_OBJECT(wxColour)
+//IMPLEMENT_VARIANT_OBJECT(wxColour)
 
 bool ColorControlApp::OnInit()
 {

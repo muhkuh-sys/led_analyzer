@@ -1,6 +1,6 @@
 ---- importing ----
 
-require("led_analyzer")		 -- libusb/ftdi driver library + sensor specific functions 
+require("led_analyzer")		 -- api for color controller device 
 require("color_conversions") -- handles conversion between color spaces and array to table (or vice versa) handling
 require("color_validation")	 -- Validate your colors, contains helper to print your colors and store your colors in adequate arrays
 require("generate_xml")
@@ -18,17 +18,10 @@ EXCEEDED_CLEAR_ERROR 	    = 0x10000000
 DEVICE_ERROR_FATAL			= 0x8000000
 USB_ERROR 					= 0x4000000 
 
-
 MAXDEVICES = 50
 MAXSENSORS = 16 
 MAXHANDLES = MAXDEVICES * 2
 MAXSERIALS = MAXDEVICES
-
--- specify retry times 
-INIT_MAXERROR  = 1
-READ_MAXERROR  = 1 
-VALID_MAXERROR = 1 
-
 
 -- tcs3472 specific settings for gain 
 TCS3472_GAIN_1X  = 0x00
@@ -69,13 +62,14 @@ local asSerials 		= led_analyzer.new_astring(MAXSERIALS)
 local tStrSerials		= {}
 -- handle to all connected color controller(s) will be stored in apHandles (note 2 handles per device)
 local apHandles 		= led_analyzer.new_apvoid(MAXHANDLES)
-local numberOfDevices	= 0
 -- global table contains all color and light related data / global for easy access by C 
 tColorTable = {}
+-- number of 1 scanned / 2 connected devices 
+local numberOfDevices	= 0
 -- table that contains a test summary for each device --
 local tTestSummary
 
-local ret 				 = 0
+
 
 
 function scanDevices() 
@@ -121,22 +115,12 @@ function initDevices(atSettings)
 			end
 		end 
 	
-		while(error_counter < INIT_MAXERROR) do
-			ret = led_analyzer.init_sensors(apHandles, devIndex)
-			led_analyzer.get_intTime(apHandles, devIndex, aucIntTimes)
-			led_analyzer.get_gain(apHandles, devIndex, aucGains)
-			
-			if ret ~= 0 then
-				error_counter = error_counter + 1 
-			else
-				break
-			end  
-		end 
-		if error_counter == INIT_MAXERROR then
-			print(string.format("%d initialization errors in a row, test aborting ...", error_counter))
-		else 
-			error_counter = 0 
-		end 
+		
+		ret = led_analyzer.init_sensors(apHandles, devIndex)
+		led_analyzer.get_intTime(apHandles, devIndex, aucIntTimes)
+		led_analyzer.get_gain(apHandles, devIndex, aucGains)
+		
+		
 		tColorTable[devIndex] = {}
 		tColorTable[devIndex][ENTRY_ERRORCODE] = ret
 		tColorTable[devIndex][ENTRY_SETTINGS]  = auc2settingsTable(aucIntTimes, aucGains, MAXSENSORS)
@@ -161,21 +145,12 @@ function startMeasurements()
 
 	while(devIndex < numberOfDevices) do 			
 		-- Get Colours --
-		while(error_counter < READ_MAXERROR) do		
-			ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, aucIntTimes, aucGains)
-			if ret ~= 0 then
-				if ret == DEVICE_ERROR_FATAL then -- return code for fatal errors 
-					fatal_error_occured = 1 
-				end 
-				error_counter = error_counter + 1
-			else
-				break 
+
+		ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, aucIntTimes, aucGains)
+		if ret ~= 0 then
+			if ret == DEVICE_ERROR_FATAL then -- return code for fatal errors 
+				fatal_error_occured = 1 
 			end 
-		end 
-		if error_counter == READ_MAXERROR then
-			print(string.format("%d color reading errors in a row, test aborting ...", error_counter))
-		else 
-			error_counter = 0
 		end 
 				
 		tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, aucIntTimes, aucGains, ret, MAXSENSORS)
@@ -185,8 +160,8 @@ function startMeasurements()
 	if fatal_error_occured then 
 		return DEVICE_ERROR_FATAL
 	end 
-	-- otherwise return the ret code which may contain "normal" errors like id errors or exceeded clear
-	return ret 
+	-- otherwise return 0 as no fatal error occured, the actualy ret code for smaller errors is stored in tColorTable
+	return 0 
 end 
 
 -- function compares the color sets read from the devices to the testtable given in tDUT
