@@ -99,7 +99,7 @@ end
 
 -- Convert the Colors given as parameters into various color spaces (RGB, HSV, XYZ, Yxy, Wavelength)
 -- and save the values of the color spaces into tables 
-function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, errorcode, length)
+function aus2colorTable(clear, red, green, blue, intTimes, gain, errorcode, length)
 
 	-- tables containing colors in different color spaces 
 	local tRGB = {}
@@ -114,24 +114,26 @@ function aus2colorTable(clear, red, green, blue, cct, lux, intTimes, gain, error
 	local lClear, lRed, lGreen, lBlue 
 	local r_n, g_n, b_n 
 	local lGain, lIntTime
+	local lCCT, lLUX 
 	local lClearRatio
 	
 	for i = 0, length - 1 do 
-	
+		
 	    -- Get your current colors and save them into tables 
 		lClear = led_analyzer.ushort_getitem(clear, i)
 		lRed   = led_analyzer.ushort_getitem(red,   i)
 		lGreen = led_analyzer.ushort_getitem(green, i)
 		lBlue  = led_analyzer.ushort_getitem(blue,  i)
-		lCCT   = led_analyzer.ushort_getitem(cct,   i)
-		lLUX   = led_analyzer.afloat_getitem(lux,   i)
-		
 		
 		-- Settings like Gain and Integration Time 
 		lGain    = led_analyzer.puchar_getitem(gain, i)
 		lIntTime = led_analyzer.puchar_getitem(intTimes, i)
 		
+		-- ratio of measured clear channel count to max clear channel count (dependent on gain and integration time)
 		lClearRatio = lClear/maxClear(lIntTime)
+		
+		-- just get lux, cct can be obtained here as well, but not used/needed yet 
+		lLUX = calculate_CCT_LUX(lRed, lGreen, lBlue, lClear, lIntTime, lGain)
 		
 		-- to avoid a later division by zero and to have more stable readings and no unneccessary
 		-- outputs from channels that are not reading any LEDs we set a minum lux level
@@ -695,11 +697,70 @@ function Yxy2wavelength(x,y)
 	
 end
 
-
-function getSaturation(red, green, blue, cear)
-
+-- function calculates the lux levels and cct (correleated colour temperature) 
+-- Illumination: --> unit: LUX 		CCT: --> unit: degrees Kelvin)
+-- input parameters are tables which contain 16 values each (as 16 sensors exist per device)
+-- the calculation itself is specific to the spectral responsitivity of tcs3472, the calculation sheet
+-- can be acquired from ams (DN40 - Lux and CCT Calculations)
+function calculate_CCT_LUX(red, green, blue, clear, integrationTime, gain)
+	
+	-- color temperature and LUX 
+	local CCT 
+	local LUX 
+	-- some magic numbers from the Design Note:
+	local R_Coef = 0.136 
+	local G_Coef = 1.0000000
+	local B_Coef = -0.444
+	
+	local CT_Coef = 3810
+	local CT_Offset = 1391 
+	
+	local IR_Content
+	local CPL = 0 					-- counts per lux 
+	local GA  = 1.0				    -- device attenuation 
+	local device_factor = 310
+	local DGF = device_factor * GA  -- combined device factor and glass attenuation 
+	
+	-- remove the IR content from the rgb values 
+	IR_Content = (red + green + blue - clear) / 2 
+	red   = red   - IR_Content		-- R' (removed IR)
+	green = green - IR_Content		-- G' (removed IR)
+	blue  = blue  - IR_Content		-- B' (removed IR)
+	
+	-- Color temperature calculation (avoid division by zero):
+	if red > 0 then 
+		CCT = CT_Coef * ( blue / red ) + CT_Offset
+	else 
+		CCT = 0 
+	end 
+	
+	-- LUX calculation:
+	CPL = ((256 - integrationTime) * 2.4) * getGainDivisor(gain) / (DGF) 
+	LUX = ((R_Coef * red) + (G_Coef * green) + (B_Coef * blue)) / CPL
+	
+	return LUX, CCT 
+	
 end 
 
+-- returns the divisor for the value in the gain register for tcs3472
+-- a register value of 0 means gain_divisor = 1 
+-- a register value of 1 means gain_divisor = 4 .. and so on
+function getGainDivisor(gain)
+
+	if gain == TCS3472_GAIN_1X then 
+		return 1 
+	elseif gain == TCS3472_GAIN_4X then 
+		return 4 
+	elseif gain == TCS3472_GAIN_16X then 
+		return 16 
+	elseif gain == TCS3472_GAIN_60X then 
+		return 60 
+	else 
+		-- unknown register value ??
+		return 1 
+	end 
+
+end 
 
 --Discussion
 --The WaveLengthToRGB function is based on Dan Bruton's work (www.physics.sfasu.edu/astro/color.html)

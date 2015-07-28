@@ -146,14 +146,14 @@ function startMeasurements()
 	while(devIndex < numberOfDevices) do 			
 		-- Get Colours --
 
-		ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, aucIntTimes, aucGains)
+		ret = led_analyzer.read_colors(apHandles, devIndex, ausClear, ausRed, ausGreen, ausBlue, aucIntTimes, aucGains)
 		if ret ~= 0 then
 			if ret == DEVICE_ERROR_FATAL then -- return code for fatal errors 
 				fatal_error_occured = 1 
 			end 
 		end 
 				
-		tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, ausCCT, afLUX, aucIntTimes, aucGains, ret, MAXSENSORS)
+		tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, aucIntTimes, aucGains, ret, MAXSENSORS)
 		devIndex = devIndex + 1 
 	end 
 	
