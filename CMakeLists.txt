@@ -10,7 +10,7 @@ PROJECT("led_analyzer")
 
 
 # Select the LUA version.
-INCLUDE(cmake/muhkuh_lua.cmake)
+INCLUDE(cmake/muhkuh_installation_folders.cmake)
 
 # Find the Doxygen package
 find_package(Doxygen)
@@ -34,7 +34,7 @@ if(${CMAKE_BUILD_TOOL} MATCHES "(msdev|VCExpress|devenv)")
 ENDIF(${CMAKE_BUILD_TOOL} MATCHES "(msdev|VCExpress|devenv)")
 
 
-#
+
 SET(USE_SYSTEM_LUA FALSE)
 
 
@@ -43,7 +43,6 @@ SET(USE_SYSTEM_LUA FALSE)
 # Include the projects in the subdirectories.
 
 add_subdirectory(external)
-add_subdirectory(lua)
 add_subdirectory(modules)
 add_subdirectory(ColorControl)
 
