@@ -405,8 +405,6 @@ LUX level in an array. This level is calculated by a formula given in AMS / TAOS
 	@param ausRed				stores 16 red colors
 	@param ausGreen				stores 16 green colors
 	@param ausBlue				stores 16 blue colors
-	@param CCT					will store 16 calculated CCT values
-	@param afLUX			    will store 16 calculated LUX levels
 	
 	@return 					0     : everything ok
 	@return 					-1,-2 : device fatal error 
@@ -416,7 +414,7 @@ LUX level in an array. This level is calculated by a formula given in AMS / TAOS
 
 */
 int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsigned short* ausRed,
-				unsigned short* ausGreen, unsigned short* ausBlue, unsigned short* CCT, float* afLUX, 
+				unsigned short* ausGreen, unsigned short* ausBlue,
 				unsigned char* aucIntegrationtime, unsigned char* aucGain)
 {
 	int iHandleLength = get_number_of_handles(apHandles);
@@ -428,15 +426,6 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	
 	int i;
 	int iErrorcode = 0;
-	
-	/* Fill the arrays which contain the LUX and CCT values with zeros, so they will have the value 
-	zero in case any of the Checking functions fail and the function returns an iErrorcode */
-	
-	for(i = 0; i<16; i++)
-	{
-		afLUX[i] = 0.0;
-		CCT[i] 	= 0;
-	}
 	
 	
 	// Transform device index into handle index, as each device has two handles */
@@ -462,9 +451,6 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	{		
 		return (iErrorcode | EXCEEDED_CLEAR_ERROR);
 	}
-	
-	
-	tcs_calculate_CCT_Lux(aucGain, aucIntegrationtime, ausClear, ausRed, ausGreen, ausBlue, CCT, afLUX);
 	
 	return iErrorcode;
 	

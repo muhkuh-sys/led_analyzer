@@ -39,7 +39,7 @@ provides the functions which are required for the application CoCo App.
 int  scan_devices(char** asSerial, unsigned int uiLength);	
 int  connect_to_devices(void** apHandles, int apHlength, char** asLength);
 int  read_colors(void** apHandles, int devIndex, unsigned short *ausClear, unsigned short* ausRed,
-	 unsigned short *ausGreen, unsigned short* ausBlue, unsigned short* CCT, float* afLUX,
+	 unsigned short *ausGreen, unsigned short* ausBlue,
 	 unsigned char *aucIntegrationtime, unsigned char* aucGain);
 int  init_sensors(void** apHandles, int devIndex);
 int  get_number_of_handles(void ** apHandles);

@@ -511,6 +511,8 @@ unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* 
 }
 
 
+/* this function will not be used here anymore as it is implemented in the lua scripts */
+
 /** \brief calculates Illuminance in unit LUX.
 
 Functions calculates the illuminance level of 16 sensors. In photometry, illuminance is the total luminous flux incident on a surface, per unit area.
