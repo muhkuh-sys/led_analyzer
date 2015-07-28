@@ -33,8 +33,6 @@ INCLUDE(ExternalProject)
 #
 
 
-
-
 #SET(LIBFTDI_CMAKE_ARGS "")
 #list baut eine ganze zeile aus den sachen die mit append hinzugefügt wurden 
 LIST(APPEND LIBFTDI_CMAKE_ARGS "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}")
