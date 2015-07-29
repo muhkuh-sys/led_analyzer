@@ -8,10 +8,6 @@ PROJECT("led_analyzer")
 #FIND_PACKAGE(SWIG REQUIRED)
 
 
-
-# Select the LUA version.
-INCLUDE(cmake/muhkuh_installation_folders.cmake)
-
 # Find the Doxygen package
 find_package(Doxygen)
 
