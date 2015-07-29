@@ -41,7 +41,7 @@ using namespace std;
 #include <wx/msgdlg.h>
 #include <wx/log.h>
 #include <wx/dynlib.h>
-#include <wx/radiobut.h> 
+#include <wx/radiobut.h>
 #include <wx/colordlg.h>
 #include <wx/imaglist.h>
 #include <wx/timer.h>
@@ -260,6 +260,7 @@ class GUIFrame : public wxFrame
         virtual void OnUseNetX( wxCommandEvent & event ) { event.Skip(); };
         virtual void OnFastGain ( wxCommandEvent& event) { event.Skip(); };
         virtual void OnFastIntTime( wxCommandEvent& event) { event.Skip(); };
+        virtual void OnResize( wxSizeEvent& event) { event.Skip(); };
 	public:
 
 		GUIFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("ColorControl"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 927,792 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );

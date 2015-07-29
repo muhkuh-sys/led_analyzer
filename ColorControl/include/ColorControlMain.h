@@ -79,6 +79,7 @@ class ColorControlFrame: public GUIFrame
         virtual void OnUseTest( wxCommandEvent& event);
         virtual void OnSaveSession( wxCommandEvent& event );
         virtual void OnOpenSession( wxCommandEvent& event );
+        virtual void OnResize(  wxSizeEvent& event );
         //virtual void OnUseNetX ( wxCommandEvent& event);
         virtual void OnFastGain ( wxCommandEvent& event );
         virtual void OnFastIntTime( wxCommandEvent& event );

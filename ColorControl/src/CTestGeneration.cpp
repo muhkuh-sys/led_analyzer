@@ -294,7 +294,7 @@ void CTestGeneration::GenerateTestSteps(wxVector<PanelSensor*> vectorSensorPanel
         if(useNetX)
         {
             tFile->AddLine("    ---- APPLY DEFAULT PINSTATES ---- ");
-            tFile->AddLine("    --tPlugin:Disconnect()");
+            tFile->AddLine("    tPlugin:Disconnect()");
         }
         tFile->AddLine(wxT("    return  TEST_RESULT_FAIL, strXmlResult"));
         tFile->AddLine(wxT("end\n"));

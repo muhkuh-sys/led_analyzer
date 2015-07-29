@@ -160,7 +160,7 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
     {
         case IS_INITIAL:
             /* If we're at initial state load and run the color_control file */
-            m_pLua = new CLua("color_control.lua");
+            m_pLua = new CLua("color_control_init.lua");
 
             /* If the txt_ctrl connected was red before because some error occured, we will set it to default now */
             this->UpdateConnectedField(wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ));
@@ -179,7 +179,7 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
             }
 
             /* Run color_control.lua which initializes the needed modules */
-            m_pLua = new CLua("color_control.lua");
+            m_pLua = new CLua("color_control_init.lua");
 
             m_pLua->ScanDevices(m_numberOfDevices, m_aStrSerials);
 
@@ -784,7 +784,7 @@ wxString ColorControlFrame::GetInterfaceSelection()
 
     /* run the lua file to get the available interfaces */
     wxArrayString astrInterfaces;
-    CLua hInterfaces("interface.lua");
+    CLua hInterfaces("muhkuh_cli_init.lua");
     hInterfaces.GetInterfaces(astrInterfaces);
 
     /* check if the default interface is contained in the found interfaces, and if so set it as the initially selected one */
@@ -1185,4 +1185,9 @@ void ColorControlFrame::OnUseNetX( wxCommandEvent& event )
     }
 }
 */
+
+void ColorControlFrame::OnResize( wxSizeEvent& event )
+{
+    wxLogMessage("resizing");
+}
 
