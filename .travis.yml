@@ -4,7 +4,7 @@ language: c
 
 env:
   - secure: "cYO+77K4FIp5TXbGSn2QkVBnf+usTo4vtnkZ+Cqx/y2HadI/gzfIDq1JIX0Za9Ov7X7QIUYpelWFt1DkYGgjg0xzIChBDp7F3/6mRXUlnPIu3LcNVrY4toIkFy6LdygwanMpPMVloe+DNOTvAcq6pqiJnEFPDm/0QXq4Hq1EVKo="
-
+  - PATH=/opt/mingw-w64-i686/bin:/opt/mingw-w64-x86_64/bin:/tmp/apache-ant-1.9.5/bin:${PATH}
 
 before_install:
   - sudo dpkg --purge cmake cmake-doc cmake-data
@@ -18,6 +18,8 @@ before_install:
   - sudo apt-get --assume-yes install cmake3
   - sudo apt-get --assume-yes install swig3
   - sudo apt-get --assume-yes install python-pip python-virtualenv
+  - wget ftp://ftp.fu-berlin.de/unix/www/apache/ant/binaries/apache-ant-1.9.5-bin.tar.bz2 -O /tmp/apache-ant-1.9.5-bin.tar.bz2
+  - tar --directory /tmp --extract --bzip2 --file /tmp/apache-ant-1.9.5-bin.tar.bz2
   - sudo apt-get --assume-yes --no-install-recommends install doxygen doxygen-gui graphviz
   - virtualenv ~/virtualenv/python2.7
   - source ~/virtualenv/python2.7/bin/activate
@@ -30,15 +32,3 @@ script:
   - ./.build.sh
   - python installer/ivy/deploy.py build/artifacts/artifacts_led_analyzer.xml
 
-
-#eploy:
-# provider: releases
-# api_key: 
-
-# file:
-#   - build/led_analyzer.zip
-#   - build/ivy.xml
-# skip_cleanup: true
-# on:
-#   repo: muhkuh-sys/led_analyzer
-#   tags: true
