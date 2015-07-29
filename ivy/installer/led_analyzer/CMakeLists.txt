@@ -5,6 +5,7 @@ SET(CPACK_PACKAGE_FILE_NAME led_analyzer-${VERSION_FULL})
 
 SET(CPACK_GENERATOR "ZIP")
 INCLUDE(CPack)
+INCLUDE(../../dependencies/ant_paths.cmake)
 
 # Build the ivy file.
 CONFIGURE_FILE(ivy.xml ivy-${VERSION_FULL}.xml)
@@ -21,13 +22,26 @@ INSTALL(FILES ${COCO_WIN32_INSTALL}/ColorControl/ColorControl.exe
         DESTINATION windows_x86/build
 )
 
-INSTALL(FILES ${LUA_WIN32_INSTALL}/liblua.dll
+INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51}/windows_x86/bin/liblua.dll
         DESTINATION windows_x86/build
 )
 
-INSTALL(FILES ${LUA_WIN32_INSTALL}/lua.exe
+INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51}/windows_x86/bin/lua.exe
         DESTINATION windows_x86/build
 )
+
+INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51-bit}/windows_x86/bit.dll 
+        DESTINATION windows_x86/build/${INSTALL_DIR_LUA_MODULES}
+)
+
+INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51-mhash}/windows_x86/mhash.dll 
+        DESTINATION windows_x86/build/${INSTALL_DIR_LUA_MODULES}
+)
+
+INSTALL(DIRECTORY ${ant_path.org.muhkuh.lua.lua51-romloader}/windows_x86/
+        DESTINATION windows_x86/build/${INSTALL_DIR_LUA_MODULES}
+)
+
 
 INSTALL(DIRECTORY ${COCO_WIN32_INSTALL}/doc
 	DESTINATION windows_x86/build
@@ -45,12 +59,24 @@ INSTALL(FILES ${COCO_WIN64_INSTALL}/ColorControl/ColorControl.exe
         DESTINATION windows_amd64/build
 )
 
-INSTALL(FILES ${LUA_WIN64_INSTALL}/liblua.dll
+INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51}/windows_amd64/bin/liblua.dll
         DESTINATION windows_amd64/build
 )
 
-INSTALL(FILES ${LUA_WIN64_INSTALL}/lua.exe
+INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51}/windows_amd64/bin/lua.exe
         DESTINATION windows_amd64/build
+)
+
+INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51-bit}/windows_amd64/bit.dll 
+        DESTINATION windows_amd64/build/${INSTALL_DIR_LUA_MODULES}
+)
+
+INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51-mhash}/windows_amd64/mhash.dll 
+        DESTINATION windows_amd64/build/${INSTALL_DIR_LUA_MODULES}
+)
+
+INSTALL(DIRECTORY ${ant_path.org.muhkuh.lua.lua51-romloader}/windows_amd64/
+        DESTINATION windows_amd64/build/${INSTALL_DIR_LUA_MODULES}
 )
 
 INSTALL(DIRECTORY ${COCO_WIN64_INSTALL}/doc
@@ -66,21 +92,28 @@ INSTALL(FILES install.xml
 
 #Install the general LUA Files
 INSTALL(DIRECTORY ${LED_ANALYZER_LUA}/lua/
+	DESTINATION windows_x86/build/${INSTALL_DIR_LUA_SCRIPTS}
+)
+
+INSTALL(DIRECTORY ${LED_ANALYZER_LUA}/example_device
 	DESTINATION windows_x86/build
+)
+
+INSTALL(FILES ${LED_ANALYZER_LUA}/color_control_init.lua
+	DESTINATION windows_x86/build 
 )
 
 INSTALL(DIRECTORY ${LED_ANALYZER_LUA}/lua/
-	DESTINATION windows_amd64/build
-)
-
-INSTALL(DIRECTORY ${LED_ANALYZER_LUA}/example_device
-	DESTINATION windows_x86/build
+	DESTINATION windows_amd64/build/${INSTALL_DIR_LUA_SCRIPTS}
 )
 
 INSTALL(DIRECTORY ${LED_ANALYZER_LUA}/example_device
 	DESTINATION windows_amd64/build
 )
 
+INSTALL(FILES ${LED_ANALYZER_LUA}/color_control_init.lua
+	DESTINATION windows_amd64/build 
+)
 
 #-----------------------------------------------------------------------------
 #

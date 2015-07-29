@@ -1,22 +1,5 @@
 <project xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:if="ant:if" name="led_analyzer" default="install">
-	<target name="install" description="install all components">
-		<echo>led_analyzer</echo>
-		<sequential if:true="${install.os_arch.windows_x86}">
-			<copy file="windows_x86/led_analyzer.dll"        todir="${install.sharedobject}" />
-			<copy file="windows_x86/led_analyzeLUA_wrap.c"   todir="${install.sharedobject}" />
-		</sequential>
-		
-		<sequential if:true="${install.os_arch.windows_amd64}">
-			<copy file="windows_amd64/led_analyzer.dll"         todir="${install.sharedobject}" />
-			<copy file="windows_amd64/led_analyzerLUA_wrap.c"   todir="${install.sharedobject}" />
-		</sequential>
+	<target name="install" description="install all components.. already done via cmake">
 
-	    <sequential>
-			<copy file="modules/led_analyzer/color_conversions.lua" todir="${install.sharedobjects}"/>
-			<copy file="modules/led_analyzer/color_validation.lua " todir="${install.sharedobjects}"/>
-			<copy file="modules/led_analyzer/color_control.lua"     todir="${install.sharedobjects}"/>
-			<copy file="modules/led_analyzer/tcs_chromaTable.lua"   todir="${install.sharedobjects}"/>
-			<copy file="modules/led_analyzer/testboard.lua"         todir="${install.sharedobjects}"/>	
-		</sequential>
 	</target>
 </project>
