@@ -100,6 +100,7 @@ INSTALL(DIRECTORY ${LED_ANALYZER_LUA}/example_device
 )
 
 INSTALL(FILES ${LED_ANALYZER_LUA}/color_control_init.lua
+			  ${LED_ANALYZER_LUA}/muhkuh_cli_init.lua 
 	DESTINATION windows_x86/build 
 )
 
@@ -112,6 +113,7 @@ INSTALL(DIRECTORY ${LED_ANALYZER_LUA}/example_device
 )
 
 INSTALL(FILES ${LED_ANALYZER_LUA}/color_control_init.lua
+			  ${LED_ANALYZER_LUA}/muhkuh_cli_init.lua 
 	DESTINATION windows_amd64/build 
 )
 
