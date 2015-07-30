@@ -341,6 +341,12 @@ int send_package_read8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, u
     unsigned int uiWritten;
     unsigned int uiRead;
 
+    /* Fill your readBuffer with zeroes, so nothing can go wrong mate ! */
+    int i = 0;
+    for(i; i<16; i++)
+    {
+        aucReadBuffer[i] = 0;
+    }
 	
 	/* Send to Channel A */
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->in_ep, aucBufferA, indexA, &uiWritten, ftdiA->usb_write_timeout)<0)
@@ -384,12 +390,6 @@ int send_package_read8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, u
 		return -4;
 	}
 	
-    /* Fill your readBuffer with zeroes, so nothing can go wrong mate ! */
-    int i = 0;
-    for(i; i<16; i++)
-    {
-        aucReadBuffer[i] = 0;
-    }
 
 /* ucBitnumber marks the start of data in the buffer read out from usb->ep
             with 3 Acknowledges expected
@@ -490,6 +490,13 @@ int send_package_read16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, 
     unsigned int uiWritten;
     unsigned int uiRead;
 
+    /* Fill your readBuffer with zeroes, so nothing can go wrong mate ! */
+    int i = 0;
+    for(i; i<16; i++)
+    {
+        ausReadBuffer[i] = 0;
+    }
+	
     /* Reset the receive and the transmit buffers  */
 
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->in_ep, aucBufferA, indexA, &uiWritten, ftdiA->usb_write_timeout)<0)
@@ -531,12 +538,6 @@ int send_package_read16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, 
 		return -4;
 	}
 	
-    /* Fill your readBuffer with zeroes, so nothing can go wrong mate ! */
-    int i = 0;
-    for(i; i<16; i++)
-    {
-        ausReadBuffer[i] = 0;
-    }
 
     unsigned int uiBytenumber = 14;
     unsigned char ucMask = 7;
@@ -695,9 +696,17 @@ int send_package_read4x16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB
     unsigned int uiWritten;
     unsigned int uiRead;
 
-    /* Reset the receive and the transmit buffers  */
-
-
+    /* Fill your readBuffer with zeroes, so nothing can go wrong mate ! */
+    int i = 0;
+    for(i; i<16; i++)
+    {
+		aucReadBuffer[i]  = 0;
+        ausReadBuffer1[i] = 0;
+        ausReadBuffer2[i] = 0;
+        ausReadBuffer3[i] = 0;
+        ausReadBuffer4[i] = 0;
+    }
+	
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->in_ep, aucBufferA, indexA, &uiWritten, ftdiA->usb_write_timeout)<0)
     {
         printf("Writing to Channel %s failed!\n", ftdiA->interface==0?"A":(ftdiA->interface==1?"B":" error - invalid channel"));
@@ -735,17 +744,6 @@ int send_package_read4x16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB
 		printf("Reading from Channel B failed! Expected %d bytes, read %d bytes!\n", (readIndexB+2), uiRead);
 		return -3;
 	}
-
-    /* Fill your readBuffer with zeroes, so nothing can go wrong mate ! */
-    int i = 0;
-    for(i; i<16; i++)
-    {
-		aucReadBuffer[i]  = 0;
-        ausReadBuffer1[i] = 0;
-        ausReadBuffer2[i] = 0;
-        ausReadBuffer3[i] = 0;
-        ausReadBuffer4[i] = 0;
-    }
 
 	
 	/* Index - Start of data */
