@@ -8,5 +8,3 @@ package.path = package.path .. ";lua/?.lua;lua/?/init.lua;"
 
 -- Load the common romloader plugins.
 require("color_control")
-
-
