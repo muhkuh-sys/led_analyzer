@@ -599,6 +599,11 @@ DialogPropGrid::DialogPropGrid( wxWindow* parent, wxWindowID id, const wxString&
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
+	/* Available netX types */
+	m_astrNetxTypes.Add("netX 10");
+	m_astrNetxTypes.Add("netX 50");
+	m_astrNetxTypes.Add("netX 51/52");
+	m_astrNetxTypes.Add("netX 100/500");
 
     /* Store the handle of the config file */
     m_pFileConfig = pFileConfig;
@@ -630,13 +635,6 @@ DialogPropGrid::DialogPropGrid( wxWindow* parent, wxWindowID id, const wxString&
 	m_pgiTolillu->SetValidator(wxTextValidator(wxFILTER_DIGITS));
 	m_propGrid->SetPropertyHelpString( m_pgiTolillu, wxT("Default tolerance for illumination (in Lux)") );
     m_propGrid->Append( new wxPropertyCategory(wxT("Hardware Type"), wxPG_LABEL) );
-
-
-	m_astrNetxTypes.Add("netX 10");
-	m_astrNetxTypes.Add("netX 50");
-	m_astrNetxTypes.Add("netX 51/52");
-	m_astrNetxTypes.Add("netX 100/500");
-
 
 	m_pgiNetxtype = m_propGrid->Append( new wxEnumProperty( wxT("netX Type"), wxPG_LABEL, m_astrNetxTypes  ) );
     m_pgiNetxtype->SetValueFromString(strNetX);
