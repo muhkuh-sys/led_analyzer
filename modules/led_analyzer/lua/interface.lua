@@ -1,5 +1,3 @@
-require("muhkuh_cli_init")
-
 
 function getStrInterfaces()
 	-- Detect all interfaces.

@@ -135,6 +135,9 @@ function aus2colorTable(clear, red, green, blue, intTimes, gain, errorcode, leng
 		-- get lux and cct, cct is not used/needed yet 
 		lLUX, lCCT = calculate_CCT_LUX(lRed, lGreen, lBlue, lClear, lIntTime, lGain)
 		
+		if( i == 0) then 
+			print(lCCT)
+		end 
 		
 		-- to avoid a later division by zero and to have more stable readings and no unneccessary
 		-- outputs from channels that are not reading any LEDs we set a minum lux level
@@ -725,8 +728,17 @@ function calculate_CCT_LUX(red, green, blue, clear, integrationTime, gain)
 	-- remove the IR content from the rgb values 
 	IR_Content = (red + green + blue - clear) / 2 
 	red   = red   - IR_Content		-- R' (removed IR)
+	if red < 0 then 
+		red = 0 
+	end 
 	green = green - IR_Content		-- G' (removed IR)
+	if green < 0 then 
+		green = 0 
+	end 
 	blue  = blue  - IR_Content		-- B' (removed IR)
+	if blue < 0 then 
+		blue = 0
+	end 
 	
 	-- Color temperature calculation (avoid division by zero):
 	if red > 0 then 
@@ -738,6 +750,11 @@ function calculate_CCT_LUX(red, green, blue, clear, integrationTime, gain)
 	-- LUX calculation:
 	CPL = ((256 - integrationTime) * 2.4) * getGainDivisor(gain) / (DGF) 
 	LUX = ((R_Coef * red) + (G_Coef * green) + (B_Coef * blue)) / CPL
+	
+	-- blue leds produce a negative lux ... so turn it around 
+	if LUX < 0 then 
+		LUX = LUX * (-1)
+	end 
 	
 	return LUX, CCT 
 	
