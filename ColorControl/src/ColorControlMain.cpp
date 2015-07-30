@@ -199,6 +199,17 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
                 m_eState = IS_INITIAL;
 
             }
+            else if(m_numberOfDevices < 0 )
+            {
+                wxLogMessage("Connection error ... please make sure the proper driver is installed!");
+                if (m_pLua)
+                {
+                    m_pLua->CleanUp();
+                    delete m_pLua;
+                }
+                m_eState = IS_INITIAL;
+            }
+
             else
             {
                 /* Get the default Tolerance Values from the Configuration files */
@@ -801,7 +812,7 @@ wxString ColorControlFrame::GetInterfaceSelection()
     {
         return wxEmptyString;
     }
-    /* we entered ok */
+    /* we clicked ok */
     else
     {
         return chInterface.GetStringSelection();
