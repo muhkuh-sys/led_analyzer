@@ -135,10 +135,6 @@ function aus2colorTable(clear, red, green, blue, intTimes, gain, errorcode, leng
 		-- get lux and cct, cct is not used/needed yet 
 		lLUX, lCCT = calculate_CCT_LUX(lRed, lGreen, lBlue, lClear, lIntTime, lGain)
 		
-		if( i == 0) then 
-			print(lCCT)
-		end 
-		
 		-- to avoid a later division by zero and to have more stable readings and no unneccessary
 		-- outputs from channels that are not reading any LEDs we set a minum lux level
 		
