@@ -370,15 +370,15 @@ void CTestGeneration::SaveSessionAsIni(wxVector<PanelSensor*> vectorSensorPanel,
     wxVector<PanelTestrow*> vectorTestrow;
 
     tFile->AddLine(wxT("[Testsession]"));
-    tFile->AddLine(wxString::Format(wxT("numberOfSensors=%d\n"), iNumberOfSensors));
+    //tFile->AddLine(wxString::Format(wxT("numberOfSensors=%d\n"), iNumberOfSensors));
 
     /* Iterate over all vectorSensorPanels */
     for(wxVector<PanelSensor*>::iterator it = vectorSensorPanel.begin(); it != vectorSensorPanel.end(); it++)
     {
-        tFile->AddLine(wxString::Format(wxT("[Sensor%d]"), (*it)->GetSensorNumber()));
+        //tFile->AddLine(wxString::Format(wxT("[Sensor%d]"), (*it)->GetSensorNumber()));
 
         vectorTestrow = (*it)->GetVectorTestrow();
-        tFile->AddLine(wxString::Format(wxT("numberOfTestrows=%d"), vectorTestrow.size()));
+        tFile->AddLine(wxString::Format(wxT("numberOfTestrows=%d"), (int)vectorTestrow.size()));
 
         /* Iterate over all testrows per sensor pannel */
         for(wxVector<PanelTestrow*>::iterator it_testrow = vectorTestrow.begin(); it_testrow!= vectorTestrow.end(); it_testrow++)
