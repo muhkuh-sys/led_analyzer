@@ -119,6 +119,18 @@ INSTALL(FILES ${LED_ANALYZER_LUA}/color_control_init.lua
 
 #-----------------------------------------------------------------------------
 #
+# Install the folder containing the icons used for this project 
+
+INSTALL(DIRECTORY ${COCO_ICONS}
+	DESTINATION windows_x86/build
+)
+
+INSTALL(DIRECTORY ${COCO_ICONS}
+	DESTINATION windows_amd64/build
+)
+
+#-----------------------------------------------------------------------------
+#
 # Filter the pom.xml file.
 #
 SET(POM_ARTIFACT_ID  "led_analyzer")
