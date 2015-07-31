@@ -202,7 +202,6 @@ This function gets called repeatedly by i2c functions. It stores the commands in
 (aucBufferA and aucBufferB). The commands consist of a mask which determines which pins are configured as output and input
 plus the actual output value to be written to the pins. All stored commands can be sent by the send_package_xx functions
 which form the software i2c protocol.
-	@param[in] 		ftdiA, ftdiB pointer to a ftdi_context
 	@param[in] 		ulIOMask	 input / output mask to set pin functionality
 	@param[in]		ulOutput	 value to be assigned to pins set as output 
 
@@ -235,7 +234,6 @@ This function gets called repeatedly by i2c functions. It stores the commands in
 (aucBufferA and aucBufferB). The commands consist of a mask which determines which pins are set as input and output and and output value
 which will be written to the pins set as output. All stored commands can be sent by the send_package_xx functions
 which form the software i2c protocol.
-	@param[in] 		ftdiA, ftdiB pointer to a ftdi_context
 	@param[in] 		ulIOMask	 input / output mask to set pin direction
 	@param[in]		ulOutput	 value to be assigned to pins set as output 
 

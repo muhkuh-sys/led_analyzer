@@ -33,7 +33,6 @@ for simple i2c-slaves which do not have the ability of clock stretching.
 
 
 /** \brief sends a start condition on all 16 i2c-busses.
-	@param ftdiA, ftdiB	pointer to ftdi_context
 */
 void i2c_startCond()
 {
@@ -52,7 +51,6 @@ void i2c_startCond()
 
 
 /** \brief sends a stop condition on all 16 i2c-busses. 
-	@param ftdiA, ftdiB	pointer to ftdi_context
 */
 void i2c_stopCond()
 {
@@ -621,7 +619,6 @@ int i2c_read4x16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
 }
 
 /** \brief triggers a clock cycle on all clock lines, while sendindg out data on the data lines.
-	@param ftdiA, ftdiB 	pointer to ftdi_context
 	@param ulDataToSend  	data which is going to be clocked on all lines set as output
  */
 void i2c_clock(unsigned long ulDataToSend)
@@ -637,7 +634,6 @@ void i2c_clock(unsigned long ulDataToSend)
 
 ulDataToSend is the value which is going to be written to all pins set as output, if no pin is set as output, nothing happens. All pins
 which are set as input will capute their value on the negative clock edge.
-	@param ftdiA, ftdiB 	pointer to ftdi_context
 	@param ulDataToSend 	data which is going to be clocked on all lines set as output
 */
 void i2c_clockInput(unsigned long ulDataToSend)
@@ -648,20 +644,17 @@ void i2c_clockInput(unsigned long ulDataToSend)
 }
 
 /** \brief master gives an acknowledge on all data lines. 
-	@param ftdiA, ftdiB 	pointer to ftdi_context
 */
 void i2c_giveAck()
 {
       process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_READ );
 	  process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, 0);
       i2c_clock(0);
-
 }
 
 
 
 /** \brief clocks the acknowledge bit given by the slave. 
-	@param ftdiA, ftdiB 	pointer to ftdi_context
 	@param ulDataToSend		data which is going to be clocked on lines set as output
 */
 void i2c_clock_forACK(unsigned long ulDataToSend)
@@ -672,7 +665,6 @@ void i2c_clock_forACK(unsigned long ulDataToSend)
 }
 
 /** \brief expects and clocks an acknowledge bit given by the slave.
-	@param ftdiA, ftdiB 	pointer to ftdi_context
 */
 void i2c_getAck()
 {
