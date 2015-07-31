@@ -5,7 +5,7 @@ PROJECT("led_analyzer")
 
 
 # Swig is required to generate the bindings.
-#FIND_PACKAGE(SWIG REQUIRED)
+FIND_PACKAGE(SWIG REQUIRED)
 
 
 # Find the Doxygen package
