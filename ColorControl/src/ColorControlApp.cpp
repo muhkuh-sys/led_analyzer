@@ -25,7 +25,6 @@ IMPLEMENT_APP(ColorControlApp);
 bool ColorControlApp::OnInit()
 {
 
-
     ColorControlFrame* frame = new ColorControlFrame(0L);
     frame->SetIcon(wxICON(aaaa)); // To Set App Icon
     frame->Show();
