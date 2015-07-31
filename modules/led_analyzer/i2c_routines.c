@@ -21,7 +21,7 @@
 
 	 \brief Software I2C Functions for the FTDI 2232H Chip
 	 
-i2c_routines is simple library which provides basic i2c-functionality. Functions include sending 1 or more bytes, and reading 1 Byte / 2 Bytes.
+i2c_routines is a simple library which provides basic i2c-functionality. Functions include sending 1 or more bytes, and reading 1 Byte / 2 Bytes.
 The structure of the buffers which will be sent consists of [address - register - data]. This i2c-library can be used
 for simple i2c-slaves which do not have the ability of clock stretching.
 
@@ -88,7 +88,6 @@ int i2c_write8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
     unsigned char ucBitnumber = 7;
     unsigned long ucDataToSend = 0;
     unsigned long ulDataToSend = 0;
-    int iRetval = 0;
 
     i2c_startCond(ftdiA, ftdiB);
 
@@ -146,9 +145,8 @@ int i2c_write8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
 
     i2c_stopCond(ftdiA, ftdiB);
 
-    iRetval = send_package_write8(ftdiA, ftdiB);
-    return iRetval;
-
+	return send_package_write8(ftdiA, ftdiB);
+ 
 }
 
 
@@ -173,7 +171,6 @@ int i2c_write8_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
     unsigned char ucBitnumber  = 7;
     unsigned long ucDataToSend = 0;
     unsigned long ulDataToSend = 0;
-    int iRetval				   = 0;
 	int sensorToDataline 	   = (int)(uiX*2);
 
 
@@ -231,8 +228,8 @@ int i2c_write8_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
 
     i2c_stopCond(ftdiA, ftdiB);
 
-    iRetval = send_package_write8(ftdiA, ftdiB); // 3 Acknowladges expected
-    return iRetval;
+	return send_package_write8(ftdiA, ftdiB); // 3 Acknowladges expected
+;
 
 }
 
@@ -261,7 +258,6 @@ int i2c_read8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned c
     unsigned char ucBitnumber = 7;
     unsigned long ucDataToSend = 0;
     unsigned long ulDataToSend = 0;
-    int iRetval = 0;
 
     i2c_startCond(ftdiA, ftdiB);
 
@@ -359,8 +355,7 @@ int i2c_read8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned c
 
     i2c_stopCond(ftdiA, ftdiB);
 
-    iRetval = send_package_read8(ftdiA, ftdiB, aucRecBuffer, ucRecLength);
-    return iRetval;
+    return send_package_read8(ftdiA, ftdiB, aucRecBuffer, ucRecLength);
 
 }
 
@@ -390,7 +385,6 @@ int i2c_read16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
     unsigned char ucBitnumber = 7;
     unsigned long ucDataToSend = 0;
     unsigned long ulDataToSend = 0;
-    int iRetval = 0;
 
     i2c_startCond(ftdiA, ftdiB);
 
@@ -490,8 +484,8 @@ int i2c_read16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
     i2c_stopCond(ftdiA, ftdiB);
 
 
-    iRetval = send_package_read16(ftdiA, ftdiB, ausReadBuffer, ucRecLength);
-    return iRetval;
+    return send_package_read16(ftdiA, ftdiB, ausReadBuffer, ucRecLength);
+
 
 }
 
@@ -524,7 +518,6 @@ int i2c_read4x16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
     unsigned char ucBitnumber = 7;
     unsigned long ucDataToSend = 0;
     unsigned long ulDataToSend = 0;
-    int iRetval = 0;
 
     i2c_startCond(ftdiA, ftdiB);
 
@@ -623,8 +616,8 @@ int i2c_read4x16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
 
     i2c_stopCond(ftdiA, ftdiB);
 
-    iRetval = send_package_read4x16(ftdiA, ftdiB, aucStatusRegister, ausReadBuffer1, ausReadBuffer2, ausReadBuffer3, ausReadBuffer4, ucRecLength);
-    return iRetval;	
+    return send_package_read4x16(ftdiA, ftdiB, aucStatusRegister, ausReadBuffer1, ausReadBuffer2, ausReadBuffer3, ausReadBuffer4, ucRecLength);
+
 }
 
 /** \brief triggers a clock cycle on all clock lines, while sendindg out data on the data lines.

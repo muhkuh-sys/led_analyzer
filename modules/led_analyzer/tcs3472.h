@@ -170,28 +170,24 @@ typedef enum
 }
  tcs_color_t;
  
-unsigned short int tcs_setIntegrationTime   (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Integration_t integration);
-unsigned short int tcs_setIntegrationTime_x (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Integration_t integration, unsigned int uiX);
-
-unsigned short int tcs_identify				(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer);
-
-unsigned short int tcs_setGain  		    (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Gain_t gain);
-unsigned short int tcs_setGain_x 			(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Gain_t gain, unsigned int uiX); 
-
-unsigned short int tcs_waitForData			(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
-unsigned short int tcs_conversions_complete (unsigned char* aucStatusRegister);
-unsigned short int tcs_readColor			(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausColourArray, tcs_color_t color);
-unsigned short int tcs_sleep				(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
-unsigned short int tcs_wakeUp				(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
-unsigned short int tcs_ON					(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
-unsigned short int tcs_exClear				(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned char* aucIntegrationtime);
-unsigned short int tcs_clearInt				(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
-unsigned short int tcs_getGain				(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucGainSettings);
-unsigned short int tcs_getIntegrationtime	(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucIntegrationtime);
-unsigned int 	   getGainDivisor			(tcs3472Gain_t gain);
-void			   tcs_calculate_CCT_Lux	(unsigned char* aucGain, unsigned char* aucIntegrationtime, unsigned short* ausClear, unsigned short* ausRed,
-											 unsigned short* ausGreen, unsigned short* ausBlue, unsigned short* CCT, float* afLUX);
-int 			   tcs_readColors 		    (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned short* ausRed,
+int tcs_identify			(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer);
+int tcs_waitForData			(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
+int tcs_conversions_complete(unsigned char* aucStatusRegister);
+int tcs_readColor			(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausColourArray, tcs_color_t color);
+int tcs_sleep				(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
+int tcs_wakeUp				(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
+int tcs_ON					(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
+int tcs_exClear				(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned char* aucIntegrationtime);
+int tcs_clearInt			(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB);
+int getGainDivisor			(tcs3472Gain_t gain);
+int tcs_getIntegrationtime	 (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucIntegrationtime);
+int tcs_getGain				 (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucGainSettings);
+int tcs_setIntegrationTime   (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Integration_t integration);
+int tcs_setIntegrationTime_x (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Integration_t integration, unsigned int uiX);
+int tcs_setGain  		     (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Gain_t gain);
+int tcs_setGain_x 			 (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Gain_t gain, unsigned int uiX); 
+int tcs_readColors 		     (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned short* ausRed,
 											 unsigned short* ausGreen, unsigned short* ausBlue);
-
-
+void tcs_calculate_CCT_Lux	(unsigned char* aucGain, unsigned char* aucIntegrationtime, unsigned short* ausClear, unsigned short* ausRed,
+											 unsigned short* ausGreen, unsigned short* ausBlue, unsigned short* CCT, float* afLUX);
+									

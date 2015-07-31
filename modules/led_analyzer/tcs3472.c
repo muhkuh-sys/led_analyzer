@@ -45,11 +45,11 @@ For the TCS3472 chip 0x14 is expected to be read back from the ID register, for 
 	@return	    if the return code is 0b0000000000101100, identification failed with sensor 3, sensor 4 and sensor 6
 	*/
 	
-unsigned short int tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer)
+int tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer)
 {
     unsigned int uiErrorcounter = 0;
     unsigned int uiSuccesscounter = 0;
-	unsigned short int usErrorMask = 0;
+	int usErrorMask = 0;
 
     int i = 0;
 
@@ -98,7 +98,7 @@ no effect.
 	@return  1 : i2c-functions failed
 	*/
 	
-unsigned short int tcs_ON(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
+int tcs_ON(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
    unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3472_ENABLE_REG | TCS3472_COMMAND_BIT, TCS3472_AIEN_BIT | TCS3472_AEN_BIT
                                     | TCS3472_PON_BIT };
@@ -119,7 +119,7 @@ been calculated and saved in enum tcs3472Integration_t.
 	@return  1 : i2c-functions failed
 	*/
 	
-unsigned short int tcs_setIntegrationTime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Integration_t uiIntegrationtime)
+int tcs_setIntegrationTime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Integration_t uiIntegrationtime)
 {
     unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3472_ATIME_REG | TCS3472_COMMAND_BIT, uiIntegrationtime};
     if(i2c_write8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer)) <0) return 1;
@@ -140,7 +140,7 @@ been calculated and saved in enum tcs3472Integration_t.
 	@return  0 : everything OK - Identification successful
 	@return  1 : i2c-functions failed
 */
-unsigned short int tcs_setIntegrationTime_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Integration_t uiIntegrationtime, unsigned int uiX)
+int tcs_setIntegrationTime_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Integration_t uiIntegrationtime, unsigned int uiX)
 {
     unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3472_ATIME_REG | TCS3472_COMMAND_BIT, uiIntegrationtime};
     if(i2c_write8_x(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), uiX) <0) return 1;
@@ -159,7 +159,7 @@ the sensor's datasheet for further information about gain.
 	@return  0 : everything OK - Identification successful
 	@return  1 : i2c-functions failed
 */
-unsigned short int tcs_setGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Gain_t gain)
+int tcs_setGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Gain_t gain)
 {
     unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3472_CONTROL_REG | TCS3472_COMMAND_BIT, gain};
 
@@ -180,7 +180,7 @@ the sensor's datasheet for further information about gain.
 	@return  1 : i2c-functions failed
 */
 
-unsigned short int tcs_setGain_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Gain_t gain, unsigned int uiX)
+int tcs_setGain_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Gain_t gain, unsigned int uiX)
 {
     unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3472_CONTROL_REG | TCS3472_COMMAND_BIT, gain};
 
@@ -202,12 +202,12 @@ code can be used to determine which of the 16 sensor(s) failed.
 	@return >0 : one or more sensor(s) failed
 	@return	    if the return code is 0b0000000000101100, we have incomplete conversions with sensor 3, sensor 4 and sensor 6
 	*/
-unsigned short int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
+int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
     unsigned int uiErrorcounter = 0;
     unsigned int uiSuccesscounter = 0;
 	
-	unsigned short int usErrorMask = 0;
+	int usErrorMask = 0;
     int i = 0;
 
     unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_STATUS_REG | TCS3472_COMMAND_BIT};
@@ -256,12 +256,12 @@ code can be used to determine which of the 16 sensor(s) failed.
 	@return >0 : one or more sensor(s) failed
 	@return	    if the return code is 0b0000000000101100, we have incomplete conversions with sensor 3, sensor 4 and sensor 6
 	*/
-unsigned short int tcs_conversions_complete(unsigned char* aucStatusRegister)
+int tcs_conversions_complete(unsigned char* aucStatusRegister)
 {
     unsigned int uiErrorcounter = 0;
     unsigned int uiSuccesscounter = 0;
 	
-	unsigned short int usErrorMask = 0;
+	int usErrorMask = 0;
     int i = 0;
 
 	unsigned char aucErrorbuffer[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
@@ -304,7 +304,7 @@ Function reads 16-Bit color values of 16 sensors. The color will be specified by
 	@return  0 : everything OK - conversions complete
 	@return  1 : i2c-functions failed
 	*/
-unsigned short int tcs_readColor(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausColorArray, tcs_color_t color)
+int tcs_readColor(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausColorArray, tcs_color_t color)
 {
     unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_AUTOINCR_BIT | TCS3472_COMMAND_BIT};
 
@@ -351,18 +351,18 @@ had already completed.
 int tcs_readColors(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned short* ausRed,
 					unsigned short* ausGreen, unsigned short* ausBlue)
 {
-	/* Be pessimistic */
-	int iRetval = -1;
-	/* Begin with the status register, the autoincrement bit effects the reading of 9 bytes 
+	int iRetval;
+	/* Begin with the status registere, the autoincrement bit effects the reading of 9 bytes 
 	these 9 bytes consist of the status register (1 byte) and 4 words, one for each colour */
 	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_AUTOINCR_BIT | TCS3472_COMMAND_BIT | TCS3472_STATUS_REG};												 
 	unsigned char aucStatusRegister[16];
 	
-	iRetval = i2c_read4x16(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucStatusRegister, ausClear, ausRed, ausGreen, ausBlue, 16);
+	if((iRetval = i2c_read4x16(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucStatusRegister, ausClear, ausRed, ausGreen, ausBlue, 16)) < 0)
+	{
+		/* Fatal error has occured */
+		return iRetval;
+	}
 	
-	/* Fatal error has occured as we could not read from Channel A (-1) and Channel B (-2) */
-	if(iRetval < 0) return iRetval;
-    
 	/* Now check if conversions had already completed - 0 if so */
 	return tcs_conversions_complete(aucStatusRegister);
 	
@@ -377,7 +377,7 @@ Function sends 16 color sensors to sleep state.
 	@return  0 : everything OK - conversions complete
 	@return  1 : i2c-functions failed
 	*/
-unsigned short int tcs_sleep(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
+int tcs_sleep(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
     unsigned char aucReadbuffer[16];
     unsigned char aucTempbuffer[2]  = {(TCS_ADDRESS<<1), TCS3472_COMMAND_BIT | TCS3472_ENABLE_REG};
@@ -396,7 +396,7 @@ Function wakes 16 color sensors from sleep state.
 	@return  0 : everything OK - conversions complete
 	@return  1 : i2c-functions failed
 	*/
-unsigned short int tcs_wakeUp(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
+int tcs_wakeUp(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
     unsigned char aucReadbuffer[16];
     unsigned char aucTempbuffer[2]  = {(TCS_ADDRESS<<1), TCS3472_COMMAND_BIT | TCS3472_ENABLE_REG};
@@ -416,18 +416,18 @@ If clear levels have been exceeded, the return code can be used to determine whi
 	@param ausClear				clear values of the 16 sensors which will be checked for maximum clear level exceedings
 	@param aucIntegrationtime	current integration time setting of the 16 sensors - needed to check if maximum clear level has been exceeded
 	
-	@return  0 : everything OK - conversions complete
+	@return  0 : everything OK - no clear exceedings 
 	@return >0 : one or more sensor(s) failed
 	@return	    if the return code is 0b0000000000101100, identification failed with sensor 3, sensor 4 and sensor 6
 	*/	 
-unsigned short int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned char* aucIntegrationtime)
+int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned char* aucIntegrationtime)
 {
     int i, iFlag;
 	iFlag = 0;
     unsigned int uiSuccesscounter = 0;
     unsigned char aucErrorbuffer[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
-	unsigned short int usErrorMask = 0;
+	int usErrorMask = 0;
 	
     for(i=0; i<16; i++)
     {
@@ -599,7 +599,7 @@ read back from the sensor has fallen below a certain color value. Both settings 
 	@return  0 : everything OK - conversions complete
 	@return  1 : i2c-functions failed
 	*/	 
-unsigned short int tcs_clearInt(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
+int tcs_clearInt(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
     unsigned char aucTempbuffer[2]  = {(TCS_ADDRESS<<1), TCS3472_COMMAND_BIT | TCS3472_SPECIAL_BIT | TCS3472_INTCLEAR_BIT};
 
@@ -616,14 +616,19 @@ gain settings.
 	@param ftdiA, ftdiB 	pointer to ftdi_context
 	@param aucGainSettings	pointer to buffer which will contain the gain settings of the 16 sensors
 	
-	@return 0 :				everything OK
-	@return	1 : 			i2c-functions failed
+	@return 0 :					everything OK
+	@return	<0: 				i2c-functions failed, usb-error 
 */
-unsigned short int tcs_getGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucGainSettings)
+int tcs_getGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucGainSettings)
 {
 	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_CONTROL_REG | TCS3472_COMMAND_BIT};
+	int iRetval;
 	
-	if(i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucGainSettings, sizeof(aucGainSettings)) < 0) return 1;
+	if((iRetval = i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucGainSettings, sizeof(aucGainSettings))) < 0)
+	{
+		/* Fatal error has occured */
+		return iRetval;
+	}
 	
 	return 0;
 }
@@ -636,13 +641,18 @@ integration time settings.
 	@param aucIntegrationtime	pointer to buffer which will store the integration time settings of the 16 sensors
 	
 	@return 0 :					everything OK
-	@return	1 : 				i2c-functions failed
+	@return	<0: 				i2c-functions failed, usb-error 
 */
-unsigned short int tcs_getIntegrationtime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucIntegrationtime)
+int tcs_getIntegrationtime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucIntegrationtime)
 {
 	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_ATIME_REG | TCS3472_COMMAND_BIT};
-
-	if(i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucIntegrationtime, sizeof(aucIntegrationtime)) < 0) return 1;
+	int iRetval;
+	
+	if((iRetval = i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucIntegrationtime, sizeof(aucIntegrationtime))) < 0)
+	{
+		/* Fatal error has occured */
+		return iRetval;
+	}
 	
 	return 0;
 }
@@ -655,7 +665,7 @@ TCS3472_GAIN_1X)
 	@param gain		enum value for gain setting
 	@return			gain divisor value which corresponds to the enum value of the gain setting
 */
-unsigned int getGainDivisor(tcs3472Gain_t gain)
+int getGainDivisor(tcs3472Gain_t gain)
 {
 		switch(gain)
 		{

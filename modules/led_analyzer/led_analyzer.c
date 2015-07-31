@@ -406,9 +406,9 @@ LUX level in an array. This level is calculated by a formula given in AMS / TAOS
 	@param ausGreen				stores 16 green colors
 	@param ausBlue				stores 16 blue colors
 	
-	@return 					0     : everything ok
-	@return 					-1,-2 : device fatal error 
-	@return					    -3    : usb error 
+	@return 					0      : everything ok
+	@return 					-1..-4 : device fatal error 
+	@return					    -5..-6 : usb error 
 	@return 					>0     : one or more sensor(s) failed
 	@return	    				if the return code is 0b101100, sensor 3, 4 and 6 failed
 
@@ -423,13 +423,10 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 
 	
 	int handleIndex = devIndex * 2;
-	
-	int i;
 	int iErrorcode = 0;
-	
-	
-	// Transform device index into handle index, as each device has two handles */
-	
+
+
+	/* Transform device index into handle index, as each device has two handles */	
 	if(handleIndex >= iHandleLength)
 		{
 			printf("Exceeded maximum amount of handles ... \n");
@@ -443,8 +440,8 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	iErrorcode = tcs_readColors(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, ausRed, ausGreen, ausBlue);
 
 	/* Fatal error has occured as we could not read from channel A and channel B */
-	if((iErrorcode == -1) || (iErrorcode == -2)) return DEVICE_ERROR_FATAL;
-	if(iErrorcode  == -3) return USB_ERROR;
+	if(iErrorcode <= -1 && iErrorcode >= -4) return DEVICE_ERROR_FATAL;
+	if(iErrorcode <= -5 && iErrorcode >= -6) return USB_ERROR;
 	if(iErrorcode  !=  0) return (iErrorcode | INCOMPLETE_CONVERSION_ERROR);
 	
 	if((iErrorcode = tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, aucIntegrationtime)) != 0)
