@@ -26,6 +26,15 @@ Special commands (for example found in AN_108) can be used to set the 32 GPIO Pi
 values can be assigned to the output pins and data can be read back from the input pins. These functions will be used to provide software i2c functionality.
 */
 
+
+/* NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE ----------------------->
+
+  For now we wait between a usb write to and read from ftdi chip command, with a Sleep(1) function. This works
+  but does not guarantee that expected data will really arrive after that one second ... this should be changed 
+  in future code 
+
+  NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE -----------------------> */
+
 /* Info - How the code works */
 /* Each process pins databack functions reads two bytes, namely the lowbyte and the highbyte of each channel,
 thus 2 of these commands result in 4 Bytes read back ... as we only want to evaluate the value on the bus on negative
@@ -35,8 +44,10 @@ of highbyte and increment by another one would result in reading the next lowbyt
 thus: read lowbyte - neg clock cycle, increment bytenumber , read highbyte - neg clockcycle, increment bytenumber by 3, read next lowbyte and so on 
 
 readIndexA and readIndexB mark the number of bytes we expect. As every i2c-read command expects 12 Bytes acknowledge 
-+ x times 4 Bytes Data (x marks the number of bytes expected ... x = 8 for i2c_read8) + 2 bytes status information of the ftdi.
-Thus we always expect to read back readIndexA+2 and readIndexB+2. 
++ x times 4 Bytes Data (x marks the number of data bytes expected from the slave ... x = 8 for i2c_read8) + 2 bytes status information of the ftdi.
+Thus we always expect to read back readIndexA+2 and readIndexB+2 bytes with a usb command. If we read less, that means that not all
+command sent to the ftdi chip had been processed yet or that the usb package has been sent to it too late. 
+
 */
 
  
