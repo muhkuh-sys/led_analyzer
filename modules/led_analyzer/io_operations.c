@@ -272,13 +272,14 @@ This function sends the content of the global Buffers aucBufferA and aucBufferB 
 Furthermore it reads back the data of pins which were configured as input. In case of i2c these read back pins
 can be acknowledge bits or data send back by the device. 
 	@param[in] 		ftdiA, ftdiB pointer to a ftdi_context
-	@return			>0: number of bytes sent to the ftdi chip 
-	@return			-1: writing to channel A failed 
-	@return			-2: writing to channel B failed
-	@return			-3: reading from channel A failed
-	@return			-4: reading from channel B failed
+	@return			0 if succesful, errorcode if not 
+		- @ref WRITE_ERR_CH_A
+        - @ref WRITE_ERR_CH_B
+        - @ref READ_ERR_CH_A
+        - @ref READ_ERR_CH_B
+        - @ref ERR_INCORRECT_AMOUNT
+	
 					
-
 */
 int send_package_write8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB)
 {
@@ -286,19 +287,19 @@ int send_package_write8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB)
     unsigned int uiWritten;
     unsigned int uiRead;
 
-
+	
 	/* Send to Channel A */
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->in_ep, aucBufferA, indexA, &uiWritten, ftdiA->usb_write_timeout)<0)
     {
         printf("Writing to Channel %s failed!\n", ftdiA->interface==0?"A":(ftdiA->interface==1?"B":" error - invalid channel"));
-        return -1;
+        return WRITE_ERR_CH_A;
     }
 	
 	/* Send to chanel B */
     if(libusb_bulk_transfer(ftdiB->usb_dev, ftdiB->in_ep, aucBufferB, indexB, &uiWritten, ftdiB->usb_write_timeout)<0)
     {
         printf("Writing to Channel %s failed!\n", ftdiB->interface==0?"A":(ftdiB->interface==1?"B":" error - invalid channel"));
-        return -2;
+        return WRITE_ERR_CH_B;
     }
 	
 	/* Wait until all commands are sent and processed by the chip */
@@ -308,28 +309,28 @@ int send_package_write8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB)
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->out_ep, aucBufferA, sizeof(aucBufferA), &uiRead, ftdiA->usb_read_timeout) < 0)
 	{
         printf("Reading from channel %s failed!\n", ftdiA->interface==0?"A":(ftdiA->interface==1?"B":" error - invalid channel"));
-        return -3;
+        return READ_ERR_CH_A;
     }
 	
 	/* Compare expected number of bytes with the actual number of bytes */
 	if(uiRead != (readIndexA + 2 ))
 	{
 		printf("Reading from Channel A failed! Expected %d bytes, read %d bytes!\n", (readIndexA+2), uiRead);
-		return -3;
+		return ERR_INCORRECT_AMOUNT;
 	}
 	
 	/* Read from Channel B */
     if(libusb_bulk_transfer(ftdiB->usb_dev, ftdiB->out_ep, aucBufferB, sizeof(aucBufferB),&uiRead, ftdiB->usb_read_timeout) < 0)
 	{
         printf("Reading from channel %s failed!\n", ftdiB->interface==0?"A":(ftdiB->interface==1?"B":" error - invalid channel"));
-        return -4;
+        return READ_ERR_CH_B;
     }
 
 	/* Compare expected number of bytes with the actual number of bytes */
 	if(uiRead != (readIndexB + 2 ))
 	{
 		printf("Reading from Channel B failed! Expected %d bytes, read %d bytes!\n", (readIndexB+2), uiRead);
-		return -4;
+		return ERR_INCORRECT_AMOUNT;
 	}
 	
 	/* Reset the index Counters for channel A and channel B */
@@ -338,7 +339,7 @@ int send_package_write8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB)
     readIndexA = 0;
     readIndexB = 0;
 
-    return uiWritten;
+    return 0;
 
 }
 
@@ -351,11 +352,12 @@ The parameter aucReadbuffer will be used for storing 16 read back unsigned char 
 	@param[in] 		ftdiA, ftdiB pointer to a ftdi_context
 	@param[in, out] aucReadBuffer pointer to array of unsigned char values
 	@param[in]		ucReadBufferLength number of elements to be stored in aucReadbuffer
-	@return			>0: number of bytes read back from the ftdi chip 
-	@return			-1: writing to channel A failed 
-	@return			-2: writing to channel B failed
-	@return			-3: reading from channel A failed
-	@return			-4: reading from channel B failed
+	@return			0 if succesful, errorcode if not 
+		- @ref WRITE_ERR_CH_A
+        - @ref WRITE_ERR_CH_B
+        - @ref READ_ERR_CH_A
+        - @ref READ_ERR_CH_B
+        - @ref ERR_INCORRECT_AMOUNT
 					
 
 */
@@ -372,19 +374,19 @@ int send_package_read8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, u
     {
         aucReadBuffer[i] = 0;
     }
-	
+		
 	/* Send to Channel A */
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->in_ep, aucBufferA, indexA, &uiWritten, ftdiA->usb_write_timeout)<0)
     {
         printf("Writing to Channel %s failed!\n", ftdiA->interface==0?"A":(ftdiA->interface==1?"B":" error - invalid channel"));
-        return -1;
+        return WRITE_ERR_CH_A;
     }
 	
 	/* Send to chanel B */
     if(libusb_bulk_transfer(ftdiB->usb_dev, ftdiB->in_ep, aucBufferB, indexB, &uiWritten, ftdiB->usb_write_timeout)<0)
     {
         printf("Writing to Channel %s failed!\n", ftdiB->interface==0?"A":(ftdiB->interface==1?"B":" error - invalid channel"));
-        return -2;
+        return WRITE_ERR_CH_B;
     }
 	
 	/* Wait until all commands are sent and processed by the chip */
@@ -394,28 +396,28 @@ int send_package_read8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, u
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->out_ep, aucBufferA, sizeof(aucBufferA), &uiRead, ftdiA->usb_read_timeout) < 0)
 	{
         printf("Reading from channel %s failed!\n", ftdiA->interface==0?"A":(ftdiA->interface==1?"B":" error - invalid channel"));
-        return -3;
+        return READ_ERR_CH_A;
     }
 	
 	/* Compare expected number of bytes with the actual number of bytes */
 	if(uiRead != (readIndexA + 2 ))
 	{
 		printf("Reading from Channel A failed! Expected %d bytes, read %d bytes!\n", (readIndexA+2), uiRead);
-		return -5;
+		return ERR_INCORRECT_AMOUNT;
 	}
 	
 	/* Read from Channel B */
     if(libusb_bulk_transfer(ftdiB->usb_dev, ftdiB->out_ep, aucBufferB, sizeof(aucBufferB),&uiRead, ftdiB->usb_read_timeout) < 0)
 	{
         printf("Reading from channel %s failed!\n", ftdiB->interface==0?"A":(ftdiB->interface==1?"B":" error - invalid channel"));
-        return -4;
+        return READ_ERR_CH_B;
     }
 
 	/* Compare expected number of bytes with the actual number of bytes */
 	if(uiRead != (readIndexB + 2 ))
 	{
 		printf("Reading from Channel B failed! Expected %d bytes, read %d bytes!\n", (readIndexB+2), uiRead);
-		return -6;
+		return ERR_INCORRECT_AMOUNT;
 	}
 	
 
@@ -491,7 +493,7 @@ int send_package_read8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, u
     indexB = 0;
     readIndexA = 0;
     readIndexB = 0;	
-    return uiRead;
+    return 0;
 
 }
 
@@ -504,13 +506,13 @@ The parameter ausReadbuffer will be used for storing 16 read back unsigned short
 	@param[in] 		ftdiA, ftdiB pointer to a ftdi_context
 	@param[in, out] ausReadBuffer pointer to array of unsigned short values
 	@param[in]		ucReadBufferLength number of elements to be stored in ausReadbuffer
-	@return			>0: number of bytes read back from the ftdi chip 
-	@return			-1: writing to channel A failed 
-	@return			-2: writing to channel B failed
-	@return			-3: reading from channel A failed
-	@return			-4: reading from channel B failed
+	@return			0 if succesful, errorcode if not 
+		- @ref WRITE_ERR_CH_A
+        - @ref WRITE_ERR_CH_B
+        - @ref READ_ERR_CH_A
+        - @ref READ_ERR_CH_B
+        - @ref ERR_INCORRECT_AMOUNT
 					
-
 */
 int send_package_read16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned short* ausReadBuffer, unsigned char ucReadBufferLength)
 {
@@ -523,20 +525,20 @@ int send_package_read16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, 
     for(i; i<16; i++)
     {
         ausReadBuffer[i] = 0;
-    }
+    }	
 	
-	/* Send to Channel A */
+ 	/* Send to Channel A */
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->in_ep, aucBufferA, indexA, &uiWritten, ftdiA->usb_write_timeout)<0)
     {
         printf("Writing to Channel %s failed!\n", ftdiA->interface==0?"A":(ftdiA->interface==1?"B":" error - invalid channel"));
-        return -1;
+        return WRITE_ERR_CH_A;
     }
 	
 	/* Send to chanel B */
     if(libusb_bulk_transfer(ftdiB->usb_dev, ftdiB->in_ep, aucBufferB, indexB, &uiWritten, ftdiB->usb_write_timeout)<0)
     {
         printf("Writing to Channel %s failed!\n", ftdiB->interface==0?"A":(ftdiB->interface==1?"B":" error - invalid channel"));
-        return -2;
+        return WRITE_ERR_CH_B;
     }
 	
 	/* Wait until all commands are sent and processed by the chip */
@@ -546,28 +548,28 @@ int send_package_read16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, 
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->out_ep, aucBufferA, sizeof(aucBufferA), &uiRead, ftdiA->usb_read_timeout) < 0)
 	{
         printf("Reading from channel %s failed!\n", ftdiA->interface==0?"A":(ftdiA->interface==1?"B":" error - invalid channel"));
-        return -3;
+        return READ_ERR_CH_A;
     }
 	
 	/* Compare expected number of bytes with the actual number of bytes */
 	if(uiRead != (readIndexA + 2 ))
 	{
 		printf("Reading from Channel A failed! Expected %d bytes, read %d bytes!\n", (readIndexA+2), uiRead);
-		return -5;
+		return ERR_INCORRECT_AMOUNT;
 	}
 	
 	/* Read from Channel B */
     if(libusb_bulk_transfer(ftdiB->usb_dev, ftdiB->out_ep, aucBufferB, sizeof(aucBufferB),&uiRead, ftdiB->usb_read_timeout) < 0)
 	{
         printf("Reading from channel %s failed!\n", ftdiB->interface==0?"A":(ftdiB->interface==1?"B":" error - invalid channel"));
-        return -4;
+        return READ_ERR_CH_B;
     }
 
 	/* Compare expected number of bytes with the actual number of bytes */
 	if(uiRead != (readIndexB + 2 ))
 	{
 		printf("Reading from Channel B failed! Expected %d bytes, read %d bytes!\n", (readIndexB+2), uiRead);
-		return -6;
+		return ERR_INCORRECT_AMOUNT;
 	}
 	
 
@@ -696,7 +698,7 @@ int send_package_read16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, 
     readIndexA = 0;
     readIndexB = 0;
 	
-    return uiRead;
+    return 0;
 
 }
 
@@ -714,15 +716,16 @@ The parameter ausReadbuffer will be used for storing 16 read back unsigned short
 	@param[in, out] ausReadBuffer3 pointer to array of unsigned short values
 	@param[in, out] ausReadBuffer4 pointer to array of unsigned short values
 	@param[in]		ucReadBufferLength number of elements to be stored in ausReadbuffer
-	@return			>0: number of bytes read back from the ftdi chip 
-	@return			-1: writing to channel A failed 
-	@return			-2: writing to channel B failed
-	@return			-3: reading from channel A failed
-	@return			-4: reading from channel B failed
-					
+	
+	@return			0 if succesful, errorcode if not 
+		- @ref WRITE_ERR_CH_A
+        - @ref WRITE_ERR_CH_B
+        - @ref READ_ERR_CH_A
+        - @ref READ_ERR_CH_B
+        - @ref ERR_INCORRECT_AMOUNT					
 
 */
-int send_package_read4x16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned char* aucReadBuffer, unsigned short* ausReadBuffer1, unsigned short* ausReadBuffer2,
+int send_package_read72(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned char* aucReadBuffer, unsigned short* ausReadBuffer1, unsigned short* ausReadBuffer2,
 						  unsigned short* ausReadBuffer3, unsigned short* ausReadBuffer4, unsigned char ucReadBufferLength)
 {
     unsigned int uiWritten;
@@ -739,18 +742,18 @@ int send_package_read4x16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB
         ausReadBuffer4[i] = 0;
     }
 	
-	/* Send to Channel A */
+ 	/* Send to Channel A */
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->in_ep, aucBufferA, indexA, &uiWritten, ftdiA->usb_write_timeout)<0)
     {
         printf("Writing to Channel %s failed!\n", ftdiA->interface==0?"A":(ftdiA->interface==1?"B":" error - invalid channel"));
-        return -1;
+        return WRITE_ERR_CH_A;
     }
 	
 	/* Send to chanel B */
     if(libusb_bulk_transfer(ftdiB->usb_dev, ftdiB->in_ep, aucBufferB, indexB, &uiWritten, ftdiB->usb_write_timeout)<0)
     {
         printf("Writing to Channel %s failed!\n", ftdiB->interface==0?"A":(ftdiB->interface==1?"B":" error - invalid channel"));
-        return -2;
+        return WRITE_ERR_CH_B;
     }
 	
 	/* Wait until all commands are sent and processed by the chip */
@@ -760,28 +763,28 @@ int send_package_read4x16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->out_ep, aucBufferA, sizeof(aucBufferA), &uiRead, ftdiA->usb_read_timeout) < 0)
 	{
         printf("Reading from channel %s failed!\n", ftdiA->interface==0?"A":(ftdiA->interface==1?"B":" error - invalid channel"));
-        return -3;
+        return READ_ERR_CH_A;
     }
 	
 	/* Compare expected number of bytes with the actual number of bytes */
 	if(uiRead != (readIndexA + 2 ))
 	{
 		printf("Reading from Channel A failed! Expected %d bytes, read %d bytes!\n", (readIndexA+2), uiRead);
-		return -5;
+		return ERR_INCORRECT_AMOUNT;
 	}
 	
 	/* Read from Channel B */
     if(libusb_bulk_transfer(ftdiB->usb_dev, ftdiB->out_ep, aucBufferB, sizeof(aucBufferB),&uiRead, ftdiB->usb_read_timeout) < 0)
 	{
         printf("Reading from channel %s failed!\n", ftdiB->interface==0?"A":(ftdiB->interface==1?"B":" error - invalid channel"));
-        return -4;
+        return READ_ERR_CH_B;
     }
 
 	/* Compare expected number of bytes with the actual number of bytes */
 	if(uiRead != (readIndexB + 2 ))
 	{
 		printf("Reading from Channel B failed! Expected %d bytes, read %d bytes!\n", (readIndexB+2), uiRead);
-		return -6;
+		return ERR_INCORRECT_AMOUNT;
 	}
 	
 	/* Index - Start of data */
@@ -1329,6 +1332,6 @@ int send_package_read4x16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB
     readIndexA = 0;
     readIndexB = 0;
 	
-    return uiRead;
+    return 0;
 }
 

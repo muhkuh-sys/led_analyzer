@@ -34,7 +34,39 @@ provides the functions which are required for the application CoCo App.
 #ifndef __LED_ANALYZER_H__
 #define __LED_ANALYZER_H__
 
+/** Vendor ID of 'Hilscher Gesellschaft für Systemautomation mbH' */
+#define VID 0x1939
+/** Product ID for the Color Controller "COLOR-CTRL" */
+#define PID 0x0024
 
+/** Maximum Length of characters a descriptor in the ftdi2232h eeprom can have */
+#define MAX_DESCLENGTH 128
+
+/** \brief Contains Errorcodes and Errorflags which indicate what kind of errors occured
+
+The errorflags indicate what kind of error occured. They get ored with the erroflag of the sensors in order to
+show what kind of error occured with what sensor. Furthermore there are errorcodes which indicate errors on 
+usb, i2c and device level or if indexing outside array boundaries occur. */
+
+enum E_ERROR
+{
+	/* Dont write anything with 0x80000000 as we have an int value and this would result in a negative value */
+	
+	/** Flag - Identification error occured, e.g. the ID register value couldn't be read */
+	ERR_FLAG_ID 			= 0x40000000,
+	/** Flag - The conversion was not complete at the time the ADC register was accessed */
+	ERR_FLAG_INCOMPL_CONV   = 0x20000000,
+	/** The maximum amount of clear level was reached, i.e. the sensor got digitally saturated */
+	ERR_FLAG_EXCEEDED_CLEAR = 0x10000000,
+	/** Errorcode - Fatal error on a device, writing / reading from a ftdi channel failed */
+	ERR_DEVICE_FATAL		= 0x8000000,
+	/** Errorcode - USB error on a device, which means that we read back a different number of bytes than we expected to read */
+	ERR_USB 			    = 0x4000000,
+	
+	/* last positive error_flag can be     0x1000, values below this flag are used for specifying the exact sensornumber that failed */
+	/** Indexing outside the handles array (apHandles) */
+	ERR_INDEXING			= -100
+};
 
 int  scan_devices(char** asSerial, unsigned int uiLength);	
 int  connect_to_devices(void** apHandles, int apHlength, char** asLength);

@@ -2741,7 +2741,7 @@
 
 1412631244 c:\wxwidgets-3.0.2\include\wx\os2\msgdlg.h
 
-1436177636 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\resource.rc
+1438332849 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\resource.rc
 	"wx/msw/wx.rc"
 
 1412631244 c:\wxwidgets-3.0.2\include\wx\msw\wx.rc
@@ -3774,10 +3774,10 @@
 	"GUIFrame.h"
 	"PanelSensor.h"
 
-1437740359 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\ctestgeneration.cpp
+1438173850 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\ctestgeneration.cpp
 	"CTestGeneration.h"
 
-1438067579 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\guiframe.h
+1438334234 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\guiframe.h
 	<iostream>
 	<wx/artprov.h>
 	<wx/xrc/xmlres.h>
@@ -3824,7 +3824,7 @@
 
 1436177636 c:\users\subhan\desktop\led_analyzer\colorcontrol\include\logo_hilscher.xpm
 
-1438001975 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\colorcontrolapp.cpp
+1438332803 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\colorcontrolapp.cpp
 	"wx_pch.h"
 	"ColorControlApp.h"
 	"ColorControlMain.h"
@@ -3841,11 +3841,11 @@
 	"PanelSensor.h"
 	"CTestGeneration.h"
 
-1438152016 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\colorcontrolmain.cpp
+1438265168 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\colorcontrolmain.cpp
 	"wx_pch.h"
 	"ColorControlMain.h"
 
-1438068121 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\guiframe.cpp
+1438241317 source:c:\users\subhan\desktop\led_analyzer\colorcontrol\src\guiframe.cpp
 	"wx/wxprec.h"
 	"GUIFrame.h"
 

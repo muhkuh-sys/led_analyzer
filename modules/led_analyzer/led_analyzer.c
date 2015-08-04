@@ -31,41 +31,6 @@ provides the functions which are required for the application CoCo App.
  
 #include "led_analyzer.h"
 
-/** Vendor ID of 'Hilscher Gesellschaft für Systemautomation mbH' */
-#define VID 0x1939
-/** Product ID for the Color Controller "COLOR-CTRL" */
-#define PID 0x0024
-
-/** Maximum Length of characters a descriptor in the ftdi2232h eeprom can have */
-#define MAX_DESCLENGTH 128
-
-/** \brief Contains Flags which indicate what kind of error occured
-
-This flag indicates what kind of error occured during a measurement. These flags indicate the kind,
-internal sensorflags which are set in the functions itself specify which sensor failed */
-
-enum ERROR_FLAGS
-{
-	/* Dont write anything with 0x80000000 as we have an int value and this would result in a negative value */
-	
-	/** Identification error occured, e.g. the ID register value couldn't be read */
-	IDENTIFICATION_ERROR 		= 0x40000000,
-	/** The conversion was not complete at the time the ADC register was accessed */
-	INCOMPLETE_CONVERSION_ERROR = 0x20000000,
-	/** The maximum amount of clear level was reached, i.e. the sensor got digitally saturated */
-	EXCEEDED_CLEAR_ERROR 	    = 0x10000000,
-	/** Fatal error on a device, writing / reading from a ftdi channel failed */
-	DEVICE_ERROR_FATAL			= 0x8000000,
-	/** USB error on a device, which means that we read back a different number of bytes than we expected to read */
-	USB_ERROR 					= 0x4000000 
-	
-	/* last error_flag can be     0x1000, values below this flag are used for specifying the exact sensornumber that failed */
-
-};
-
-
-
-
 /** \brief scans for connected color controller devices and stores their serial numbers in an array.
 
 Functions scans for all color controller devices with a given VID and PID that are connected via USB. A device which has "COLOR-CTRL" 
@@ -74,9 +39,9 @@ Furthermore the serialnumber(s) will be stored in an array and can be used by fu
 	@param asSerial stores the serial numbers of all connected color controller devices
 	@param asLength	maximum number of elements the serial number array can contain 
 	
-	@return 0  : no color controller device detected
-	@return <0 : error with ftdi functions or insufficient space for storing all serial numbers in asSerial
-	@return >0 : number of connected color controller devices with "COLOR-CTRL" as description
+	@retval  0 no color controller device detected
+	@retval <0 error with ftdi functions or insufficient space for storing all serial numbers in asSerial
+	@retval >0 number of connected color controller devices with given VID, PID and "COLOR-CTRL" as description
 */
 int scan_devices(char** asSerial, unsigned int asLength)
 {
@@ -163,9 +128,9 @@ each connected color controller will get 2 handles in apHandles.
 	@param apHlength	maximum number of handles apHandles can store
 	@param asSerial 	stores the serial numbers of all connected color controller devices
 	
-	@return 0  : opened no color controller device
-	@return <0 : error with ftdi functions or insufficient length of apHandles
-	@return >0 : number of opened color controller devices
+	@retval  0 opened no color controller device
+	@retval -1 error with ftdi functions or insufficient length of apHandles
+	@retval >0 number of opened color controller devices
 */
 
 int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
@@ -344,10 +309,10 @@ are valid.
 	@param apHandles	 		array that stores ftdi2232h handles
 	@param devIndex				device index of current color controller device
 	
-	@return 					0  : everything ok
-	@return 					-1 : i2c-functions failed
-	@return 					>0 : one or more sensor(s) failed
-	@return	    				if the return code is 0b101100, identification failed with sensor 3, sensor 4 and sensor 6
+	@retval 0  Succesful 
+	@retval >0 Flag in DWORD HIGH marks what kind of error occured, 16 bits in DWORD LOW mark which of the 16 sensors failed  
+	@retval <0 USB errors, i2c errors or indexing errors occured, check return value for further information 
+			   
 
 */
 int init_sensors(void** apHandles, int devIndex)
@@ -364,7 +329,7 @@ int init_sensors(void** apHandles, int devIndex)
 	{
 		printf("Exceeded maximum amount of handles ... \n");
 		printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
-		return -1;
+		return ERR_INDEXING;
 	}
 	
 			
@@ -379,17 +344,13 @@ int init_sensors(void** apHandles, int devIndex)
 	}
 			
 		
-	if((iErrorcode = tcs_identify(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer)) != 0)
+	if((iErrorcode = tcs_identify(apHandles[handleIndex], apHandles[handleIndex+1], aucTempbuffer)) > 0)
 	{
-		return (iErrorcode | IDENTIFICATION_ERROR);
+		return (iErrorcode | ERR_FLAG_ID);
 	}
 	
-	
-	printf("Initializing successful on device %d.\n\n", devIndex);
 	return iErrorcode;
 }
-
-//TODO:: change float calculations into more effective int calculations in the calculate_lux_cct function 
 
 /** \brief reads the RGBC colors of all sensors under a device and checks if the colors are valid
 
@@ -406,12 +367,10 @@ LUX level in an array. This level is calculated by a formula given in AMS / TAOS
 	@param ausGreen				stores 16 green colors
 	@param ausBlue				stores 16 blue colors
 	
-	@return 					0      : everything ok
-	@return 					-1..-4 : device fatal error 
-	@return					    -5..-6 : usb error 
-	@return 					>0     : one or more sensor(s) failed
-	@return	    				if the return code is 0b101100, sensor 3, 4 and 6 failed
-
+	@retval 0  Succesful 
+	@retval >0 Flag in DWORD HIGH marks what kind of error occured, 16 bits in DWORD LOW mark which of the 16 sensors failed  
+	@retval <0 USB errors, i2c errors or indexing errors occured, check return value for further information 
+	
 */
 int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsigned short* ausRed,
 				unsigned short* ausGreen, unsigned short* ausBlue,
@@ -431,7 +390,7 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 		{
 			printf("Exceeded maximum amount of handles ... \n");
 			printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
-			return -1;
+			return ERR_INDEXING;
 		}
 
 	tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntegrationtime);
@@ -440,15 +399,19 @@ int read_colors(void** apHandles, int devIndex, unsigned short* ausClear, unsign
 	iErrorcode = tcs_readColors(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, ausRed, ausGreen, ausBlue);
 
 	/* Fatal error has occured as we could not read from channel A and channel B */
-	if(iErrorcode <= -1 && iErrorcode >= -4) return DEVICE_ERROR_FATAL;
-	if(iErrorcode <= -5 && iErrorcode >= -6) return USB_ERROR;
-	if(iErrorcode  !=  0) return (iErrorcode | INCOMPLETE_CONVERSION_ERROR);
+	if(iErrorcode <= -1 && iErrorcode >= -4) return ERR_DEVICE_FATAL;
+	/* Usb error has occured - read different amount of bytes than expected */
+	if(iErrorcode <= -5 && iErrorcode >= -6) return ERR_USB;
+	/* Some sensors have not finished their conversion cycle yet */
+	if(iErrorcode >  0) return (iErrorcode | ERR_FLAG_INCOMPL_CONV);
 	
-	if((iErrorcode = tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, aucIntegrationtime)) != 0)
+	/* Clear levels have been exceeded on some sensors */
+	if((iErrorcode = tcs_exClear(apHandles[handleIndex], apHandles[handleIndex+1], ausClear, aucIntegrationtime)) > 0)
 	{		
-		return (iErrorcode | EXCEEDED_CLEAR_ERROR);
+		return (iErrorcode | ERR_FLAG_EXCEEDED_CLEAR);
 	}
 	
+	/* Errorcode is 0 */
 	return iErrorcode;
 	
 }														 
@@ -489,8 +452,8 @@ been calculated and saved in tcs3472Integration_t.
 	@param uiX					sensor which will get the new integration time ( 0 ... 15 )
 	@param integrationtime		integration time to be sent to the sensor
 	
-	@return  0 : everything OK
-	@return  -1: i2c-functions failed
+	@retval 0  Succesful 
+	@retval <0 USB errors, i2c errors or indexing errors occured, check return value for further information 
 */
 int set_intTime_x(void** apHandles, int devIndex, unsigned int uiX, unsigned char integrationtime)
 {
@@ -501,17 +464,11 @@ int set_intTime_x(void** apHandles, int devIndex, unsigned int uiX, unsigned cha
 	{
 			printf("Exceeded maximum amount of handles ... \n");
 			printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
-			return -1;
+			return ERR_INDEXING;
 	}
 	
-	if(tcs_setIntegrationTime_x(apHandles[handleIndex], apHandles[handleIndex+1], integrationtime, uiX) != 0)
-	{
-		printf("... failed to set integration time for sensor %d on device %d ...\n", uiX+1, devIndex);
-		return -1;
-	}
-	
-	else printf("integration time setting successfully sent to sensor %d on device %d.\n", uiX+1, devIndex);
-	return 0;
+	return tcs_setIntegrationTime_x(apHandles[handleIndex], apHandles[handleIndex+1], integrationtime, uiX);
+
 }
 
 /** \brief sets the gain of one sensor.
@@ -524,8 +481,8 @@ the sensor's datasheet for further information about gain.
 	@param uiX					sensor which will get the new gain ( 0 ... 15 )
 	@param gain					gain to be sent to the sensor
 	
-	@return  0  : everything OK
-	@return  -1 : i2c-functions failed
+	@retval 0  Succesful 
+	@retval <0 USB errors, i2c errors or indexing errors occured, check return value for further information 
 */
 int set_gain_x(void** apHandles, int devIndex, unsigned int uiX, unsigned char gain)
 {
@@ -536,18 +493,11 @@ int set_gain_x(void** apHandles, int devIndex, unsigned int uiX, unsigned char g
 	{
 			printf("Exceeded maximum amount of handles ... \n");
 			printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
-			return -1;
+			return ERR_INDEXING;
 	}
 	
-	if(tcs_setGain_x(apHandles[handleIndex], apHandles[handleIndex+1], gain, uiX) != 0)
-	{
-		printf("... failed to set gain for sensor %d on device %d ...\n", uiX+1, devIndex);
-		return -1;		
-	}
-	
-	else printf("gain setting successfully sent to sensor %d on device %d.\n", uiX+1, devIndex);
-	
-	return 0;
+	return tcs_setGain_x(apHandles[handleIndex], apHandles[handleIndex+1], gain, uiX);
+
 }
 
 /** \brief sets the gain of 16 sensors under a device.
@@ -559,8 +509,8 @@ the sensor's datasheet for further information about gain.
 	@param devIndex				device index of current color controller device
 	@param gain					gain to be sent to the sensors
 	
-	@return  0  : everything OK - Identification successful
-	@return  -1 : i2c-functions failed or reaching out of apHandles
+	@retval 0  Succesful 
+	@retval <0 USB errors, i2c errors or indexing errors occured, check return value for further information 
 */
 
 int set_gain(void** apHandles, int devIndex, unsigned char gain)
@@ -572,18 +522,11 @@ int set_gain(void** apHandles, int devIndex, unsigned char gain)
 	{
 			printf("Exceeded maximum amount of handles ... \n");
 			printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
-			return -1;
+			return ERR_INDEXING;
 	}
 	
-	if(tcs_setGain(apHandles[handleIndex], apHandles[handleIndex+1], gain) != 0)
-	{
-		printf("... failed to set gain for all sensors on device %d ...\n", devIndex);
-		return -1;		
-	}
-	
-	else printf("gain setting successfully sent to all sensors on device %d.\n", devIndex);
-	
-	return 0;
+	return tcs_setGain(apHandles[handleIndex], apHandles[handleIndex+1], gain);
+
 }
 
 /** \brief reads the current gain setting of 16 sensors under a device and stores them in an adequate buffer.
@@ -594,8 +537,8 @@ gain settings.
 	@param devIndex				device index of current color controller device
 	@param aucGains				buffer which will contain the gain settings of the 16 sensors
 	
-	@return 					0  : everything OK
-	@return						-1 : i2c-functions failed
+	@retval 0  Succesful 
+	@retval <0 USB errors, i2c errors or indexing errors occured, check return value for further information 
 */
 int get_gain(void** apHandles, int devIndex, unsigned char* aucGains)
 {
@@ -607,16 +550,11 @@ int get_gain(void** apHandles, int devIndex, unsigned char* aucGains)
 	{
 			printf("Exceeded maximum amount of handles ... \n");
 			printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
-			return -1;
+			return ERR_INDEXING;
 	}
 	
-	if(tcs_getGain(apHandles[handleIndex], apHandles[handleIndex+1], aucGains) != 0)
-	{
-			printf("... failed to read gain from all sensors on device %d.\n", devIndex);
-			return -1;
-	}
-	
-	return 0;
+	return tcs_getGain(apHandles[handleIndex], apHandles[handleIndex+1], aucGains);
+
 }
 
 /** \brief sets the integration time of 16 sensors under a device.
@@ -629,8 +567,8 @@ been calculated and saved in enum tcs3472Integration_t.
 	@param devIndex				device index of current color controller device		
 	@param integrationtime		integration time to be sent to the sensors
 	
-	@return  					0  : everything OK - Identification successful
-	@return 					-1 : i2c-functions failed
+	@retval 0  Succesful 
+	@retval <0 USB errors, i2c errors or indexing errors occured, check return value for further information 
 	*/
 
 int set_intTime(void** apHandles, int devIndex, unsigned char integrationtime)
@@ -642,18 +580,10 @@ int set_intTime(void** apHandles, int devIndex, unsigned char integrationtime)
 	{
 			printf("Exceeded maximum amount of handles ... \n");
 			printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
-			return -1;
+			return ERR_INDEXING;
 	}
 	
-	if(tcs_setIntegrationTime(apHandles[handleIndex], apHandles[handleIndex+1], integrationtime) != 0)
-	{
-			printf("... failed to set integration time of all sensors on device %d.\n", devIndex);
-			return -1;
-	}
-	
-	printf("integration time setting successfully sent to all sensors on device %d.\n", devIndex);
-	
-	return 0;
+	return tcs_setIntegrationTime(apHandles[handleIndex], apHandles[handleIndex+1], integrationtime);
 		
 }
 
@@ -666,8 +596,8 @@ integration time settings.
 	@param devIndex				device index of current color controller device
 	@param aucIntegrationtime	pointer to buffer which will store the integration time settings of the 16 sensors
 	
-	@return 					0  : everything OK
-	@return						-1 : i2c-functions failed
+	@retval 0  Succesful 
+	@retval <0 USB errors, i2c errors or indexing errors occured, check return value for further information 
 */
 
 int get_intTime(void** apHandles, int devIndex, unsigned char* aucIntegrationtime)
@@ -679,17 +609,10 @@ int get_intTime(void** apHandles, int devIndex, unsigned char* aucIntegrationtim
 	{
 			printf("Exceeded maximum amount of handles ... \n");
 			printf("Amount of handles: %d trying to index: %d\n", iHandleLength, handleIndex);
-			return -1;
+			return ERR_INDEXING;
 	}
 	
-	if(tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntegrationtime) != 0)
-	{
-			printf("... failed to read integration time from all sensors on device %d.\n", devIndex);
-			return -1;
-	}
-	
-	return 0;
-
+	return tcs_getIntegrationtime(apHandles[handleIndex], apHandles[handleIndex+1], aucIntegrationtime);
 }
 
 /** waits for a time specified in uiWaitTime ]1 ms ... 10 s] max 
@@ -718,8 +641,8 @@ has finished successfully the serial number which was in pos1 will be in positio
 	@param pos1		current position of one swap operand
 	@param pos2		target position of the swap operand
 	
-	@return  		0  : OK - swapping successful
-	@return  		-1 : reaching out of the serial number array
+	@retval	0  OK - swapping successful
+	@return -1 reaching out of the serial number array
 */
 
 int swap_serialPos(char** asSerial, unsigned int pos1, unsigned int pos2)
@@ -758,7 +681,7 @@ Function returns the serial number that curSerial currently has in the serial nu
 	@param asSerial	 array which contains serial numbers of color controller devices
 	@param curSerial current serial number
 	
-	@return 		 index / position of current serial number in asSerial
+	@retval 		 index / position of current serial number in asSerial
 */
 int getSerialIndex(char** asSerial, char* curSerial)
 {
@@ -781,8 +704,8 @@ int getSerialIndex(char** asSerial, char* curSerial)
 
 Function swaps the serial number described by curSerial up by one position. The serial number
 that got pushed away will be in [oldPosition - 1].
-	@return 	0  : OK - swap successful or no need to swap
-	@return 	-1 : swapping failed
+	@retval 0  OK - swap successful or no need to swap
+	@retval -1 swapping failed 
 */
 int swap_up(char** asSerial, char* curSerial)
 {
@@ -808,8 +731,8 @@ int swap_up(char** asSerial, char* curSerial)
 
 Function swaps the serial number described by curSerial down by one position. The serial number
 that got pushed away will be in [oldPosition + 1].
-	@return 0  : OK - swap successful or no need to swap
-	@return -1 : swapping failed
+	@retval 0  OK - swap successful or no need to swap
+	@retval -1 swapping failed 
 */
 int swap_down(char** asSerial, char* curSerial)
 {

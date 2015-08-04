@@ -36,13 +36,14 @@ an return code will be returned which can be used to determine which specific se
 
 /** \brief reads the ID-Register of 16 sensors and compares the values to expected values.
 
-For the TCS3472 chip 0x14 is expected to be read back from the ID register, for the TCS3471 chip 0x44 is expected.
+Expected ID for the TCS3472 is 0x44, the expected ID for the TCS3471 is 0x14 
 	@param ftdiA, ftdiB 	pointer to ftdi_context
 	@param aucReadbuffer	stores the ID-values read back from the 16 sensors, must be able to hold 16 elements
 	
-	@return  0 : everything OK - Identification successful
-	@return >0 : one or more sensor(s) failed
-	@return	    if the return code is 0b0000000000101100, identification failed with sensor 3, sensor 4 and sensor 6
+	@retval 0  Succesful 
+	@retval >0 Failed to identify one or more sensors, 
+			   if the return code is 0b0000000000101100 for example, identification failed for sensor 3, sensor 4 and sensor 6 
+	@retval <0 USB or i2c errors occured, check return value for further information 		   
 	*/
 	
 int tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucReadbuffer)
@@ -50,13 +51,13 @@ int tcs_identify(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
     unsigned int uiErrorcounter = 0;
     unsigned int uiSuccesscounter = 0;
 	int usErrorMask = 0;
-
+	int iRetval;
     int i = 0;
 
     unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_ID_REG | TCS3472_COMMAND_BIT};
     unsigned char aucErrorbuffer[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
-        i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucReadbuffer, sizeof(aucReadbuffer));
+        if((iRetval = i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucReadbuffer, sizeof(aucReadbuffer))) < 0) return iRetval;
 		
             for(i = 0; i<=15; i++)
             {
@@ -94,16 +95,15 @@ Function wakes 16 sensors on in case they were put to sleep before. If sensors a
 no effect. 
 	@param ftdiA, ftdiB 	pointer to ftdi_context
 	
-	@return  0 : everything OK - Identification successful
-	@return  1 : i2c-functions failed
+	@retval 0  Succesful 
+	@retval <0 USB or i2c errors occured, check return value for further information 		
 	*/
 	
 int tcs_ON(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
    unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3472_ENABLE_REG | TCS3472_COMMAND_BIT, TCS3472_AIEN_BIT | TCS3472_AEN_BIT
                                     | TCS3472_PON_BIT };
-   if(i2c_write8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer)) <0) return 1;
-   return 0;
+   return i2c_write8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer));
 }
 
 /** \brief sets the integration time of 16 sensors at once.
@@ -115,16 +115,14 @@ been calculated and saved in enum tcs3472Integration_t.
 	@param ftdiA, ftdiB 		pointer to ftdi_context
 	@param uiIntegrationtime	integration time to be sent to the sensors
 	
-	@return  0 : everything OK - Identification successful
-	@return  1 : i2c-functions failed
+	@retval 0  Succesful 
+	@retval <0 USB or i2c errors occured, check return value for further information 		
 	*/
 	
 int tcs_setIntegrationTime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Integration_t uiIntegrationtime)
 {
     unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3472_ATIME_REG | TCS3472_COMMAND_BIT, uiIntegrationtime};
-    if(i2c_write8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer)) <0) return 1;
-
-    return 0;
+    return i2c_write8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer));
 }
 
 /** \brief sets the integration time of one sensor.
@@ -137,15 +135,14 @@ been calculated and saved in enum tcs3472Integration_t.
 	@param uiIntegrationtime	integration time to be sent to the sensor
 	@param uiX					sensor which will get the new integration time ( 0 ... 15 )
 	
-	@return  0 : everything OK - Identification successful
-	@return  1 : i2c-functions failed
+	@retval 0  Succesful 
+	@retval <0 USB or i2c errors occured, check return value for further information 		
 */
+
 int tcs_setIntegrationTime_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Integration_t uiIntegrationtime, unsigned int uiX)
 {
     unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3472_ATIME_REG | TCS3472_COMMAND_BIT, uiIntegrationtime};
-    if(i2c_write8_x(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), uiX) <0) return 1;
-
-    return 0;
+    return i2c_write8_x(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), uiX);
 }
 
 /** \brief sets the gain of 16 sensors.
@@ -156,15 +153,13 @@ the sensor's datasheet for further information about gain.
 	@param ftdiA, ftdiB 		pointer to ftdi_context
 	@param gain					gain to be sent to the sensors
 	
-	@return  0 : everything OK - Identification successful
-	@return  1 : i2c-functions failed
+	@retval 0  Succesful  
+	@retval <0 USB or i2c errors occured, check return value for further information 		
 */
 int tcs_setGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Gain_t gain)
 {
     unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3472_CONTROL_REG | TCS3472_COMMAND_BIT, gain};
-
-    if(i2c_write8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer)) <0) return 1;
-    return 0;
+    return i2c_write8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer));
 }
 
 /** \brief sets the gain of one sensor.
@@ -176,19 +171,16 @@ the sensor's datasheet for further information about gain.
 	@param gain					gain to be sent to the sensor
 	@param uiX					sensor which will get the new gain ( 0 ... 15 )
 	
-	@return  0 : everything OK - Identification successful
-	@return  1 : i2c-functions failed
+	@retval 0  Succesful 
+	@retval <0 USB or i2c errors occured, check return value for further information 		
 */
 
 int tcs_setGain_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, tcs3472Gain_t gain, unsigned int uiX)
 {
     unsigned char aucTempbuffer[3] = {(TCS_ADDRESS<<1), TCS3472_CONTROL_REG | TCS3472_COMMAND_BIT, gain};
-
-    if(i2c_write8_x(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), uiX) <0) return 1;
-    return 0;
+    return i2c_write8_x(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), uiX);
 }
 
-					 
 
 /** \brief checks if the ADCs for color measurement have already completed.
 
@@ -198,9 +190,10 @@ If TCS3472_AVALID_BIT is set in this register, the ADCs have completed color mea
 code can be used to determine which of the 16 sensor(s) failed.
 	@param ftdiA, ftdiB 	pointer to ftdi_context
 	
-	@return  0 : everything OK - conversions complete
-	@return >0 : one or more sensor(s) failed
-	@return	    if the return code is 0b0000000000101100, we have incomplete conversions with sensor 3, sensor 4 and sensor 6
+	@retval 0  Succesful 
+	@retval >0 One or more sensors have not completed the conversion cycle yet, 
+			   if the return code is 0b0000000000101100 for example, we have uncompleted conversions for sensor 3, sensor 4 and sensor 6 
+	@retval <0 USB or i2c errors occured, check return value for further information 		
 	*/
 int tcs_waitForData(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
@@ -252,10 +245,11 @@ If TCS3472_AVALID_BIT is set in this register, the ADCs have completed color mea
 code can be used to determine which of the 16 sensor(s) failed.
 	@param aucStatusRegister 	holds the values of the status register for all 16 sensors 
 	
-	@return  0 : everything OK - conversions complete
-	@return >0 : one or more sensor(s) failed
-	@return	    if the return code is 0b0000000000101100, we have incomplete conversions with sensor 3, sensor 4 and sensor 6
+	@retval 0  Succesful 
+	@retval >0 One or more sensors have not completed the conversion cycle yet, 
+			   if the return code is 0b0000000000101100 for example, we have uncompleted conversions for sensor 3, sensor 4 and sensor 6 
 	*/
+	
 int tcs_conversions_complete(unsigned char* aucStatusRegister)
 {
     unsigned int uiErrorcounter = 0;
@@ -301,8 +295,8 @@ Function reads 16-Bit color values of 16 sensors. The color will be specified by
 	@param ausColorArray	will contain color value read back from 16 sensors
 	@param color			specifies the color to be read from the sensor (red, green, blue, clear)
 	
-	@return  0 : everything OK - conversions complete
-	@return  1 : i2c-functions failed
+	@retval 0  Succesful 
+	@retval <0 USB or i2c errors occured, check return value for further information 	
 	*/
 int tcs_readColor(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausColorArray, tcs_color_t color)
 {
@@ -327,8 +321,7 @@ int tcs_readColor(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsign
             break;
     }
 
-    if(i2c_read16(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), ausColorArray, 16)<0) return 1;
-    return 0;
+    return i2c_read16(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), ausColorArray, 16);
 
 }
 
@@ -344,9 +337,10 @@ had already completed.
 	@param ausBlue       	will contain color value read back from 16 sensors
 	
 	
-	@return  0  : everything OK - conversions complete
-	@return  -1 : i2c-functions failed
-	@ return >0 : one or more sensor(s) failed as ADCs haven't completed conversions yet
+	@retval 0  Succesful 
+	@retval <0 USB or i2c errors occured, check return value for further information 
+	@retval >0 One or more sensors have not completed the conversion cycle yet, 
+			   if the return code is 0b0000000000101100 for example, we have uncompleted conversions for sensor 3, sensor 4 and sensor 6 
 	*/
 int tcs_readColors(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned short* ausRed,
 					unsigned short* ausGreen, unsigned short* ausBlue)
@@ -357,7 +351,7 @@ int tcs_readColors(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsig
 	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_AUTOINCR_BIT | TCS3472_COMMAND_BIT | TCS3472_STATUS_REG};												 
 	unsigned char aucStatusRegister[16];
 	
-	if((iRetval = i2c_read4x16(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucStatusRegister, ausClear, ausRed, ausGreen, ausBlue, 16)) < 0)
+	if((iRetval = i2c_read72(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucStatusRegister, ausClear, ausRed, ausGreen, ausBlue, 16)) < 0)
 	{
 		/* Fatal error has occured */
 		return iRetval;
@@ -374,16 +368,18 @@ int tcs_readColors(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsig
 Function sends 16 color sensors to sleep state.
 	@param ftdiA, ftdiB 	pointer to ftdi_context
 	
-	@return  0 : everything OK - conversions complete
-	@return  1 : i2c-functions failed
+	@retval 0  Succesful 
+	@retval <0 USB or i2c errors occured, check return value for further information 	
 	*/
 int tcs_sleep(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
+	int iRetval;
+	
     unsigned char aucReadbuffer[16];
     unsigned char aucTempbuffer[2]  = {(TCS_ADDRESS<<1), TCS3472_COMMAND_BIT | TCS3472_ENABLE_REG};
-    if(i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucReadbuffer, sizeof(aucReadbuffer))<0) return 1;
+    if((iRetval = i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucReadbuffer, sizeof(aucReadbuffer)))<0) return iRetval;
     unsigned char aucTempbuffer2[3] = {(TCS_ADDRESS<<1), TCS3472_COMMAND_BIT | TCS3472_ENABLE_REG,  aucReadbuffer[0] & ~(TCS3472_PON_BIT | TCS3472_AEN_BIT)};
-    if(i2c_write8(ftdiA, ftdiB,  aucTempbuffer2, sizeof(aucTempbuffer2))<0) return 1;
+    if((iRetval = i2c_write8(ftdiA, ftdiB,  aucTempbuffer2, sizeof(aucTempbuffer2)))<0) return iRetval;
 
     return 0;
 }
@@ -393,16 +389,18 @@ int tcs_sleep(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 Function wakes 16 color sensors from sleep state.
 	@param ftdiA, ftdiB 	pointer to ftdi_context
 	
-	@return  0 : everything OK - conversions complete
-	@return  1 : i2c-functions failed
+	@retval 0  Succesful 
+	@retval <0 USB or i2c errors occured, check return value for further information 	
 	*/
 int tcs_wakeUp(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
+	int iRetval;
+	
     unsigned char aucReadbuffer[16];
     unsigned char aucTempbuffer[2]  = {(TCS_ADDRESS<<1), TCS3472_COMMAND_BIT | TCS3472_ENABLE_REG};
-    if(i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucReadbuffer, sizeof(aucReadbuffer))<0) return 1;
+    if((iRetval = i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucReadbuffer, sizeof(aucReadbuffer)))<0) return iRetval;
     unsigned char aucTempbuffer2[3] = {(TCS_ADDRESS<<1), TCS3472_COMMAND_BIT | TCS3472_ENABLE_REG,  aucReadbuffer[0] | TCS3472_PON_BIT};
-    if(i2c_write8(ftdiA, ftdiB,  aucTempbuffer2, sizeof(aucTempbuffer2))<0) return 1;
+    if((iRetval = i2c_write8(ftdiA, ftdiB,  aucTempbuffer2, sizeof(aucTempbuffer2)))<0) iRetval;
 
     return 0;
 }
@@ -416,9 +414,9 @@ If clear levels have been exceeded, the return code can be used to determine whi
 	@param ausClear				clear values of the 16 sensors which will be checked for maximum clear level exceedings
 	@param aucIntegrationtime	current integration time setting of the 16 sensors - needed to check if maximum clear level has been exceeded
 	
-	@return  0 : everything OK - no clear exceedings 
-	@return >0 : one or more sensor(s) failed
-	@return	    if the return code is 0b0000000000101100, identification failed with sensor 3, sensor 4 and sensor 6
+	@retval 0  Succesful 
+	@retval >0 One or more sensors got saturated as they have reached the maximum amount in the clear data register, 
+			   if the return code is 0b0000000000101100 for example, sensor 3, sensor 4 and sensor 6 got saturated 
 	*/	 
 int tcs_exClear(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned short* ausClear, unsigned char* aucIntegrationtime)
 {
@@ -603,9 +601,7 @@ int tcs_clearInt(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB)
 {
     unsigned char aucTempbuffer[2]  = {(TCS_ADDRESS<<1), TCS3472_COMMAND_BIT | TCS3472_SPECIAL_BIT | TCS3472_INTCLEAR_BIT};
 
-    if(i2c_write8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer))<0) return 1;
-    return 0;
-
+    return i2c_write8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer));
 }
 
 
@@ -616,21 +612,13 @@ gain settings.
 	@param ftdiA, ftdiB 	pointer to ftdi_context
 	@param aucGainSettings	pointer to buffer which will contain the gain settings of the 16 sensors
 	
-	@return 0 :					everything OK
-	@return	<0: 				i2c-functions failed, usb-error 
+	@retval 0  Succesful 
+	@retval <0 USB or i2c errors occured, check return value for further information 	 
 */
 int tcs_getGain(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucGainSettings)
 {
 	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_CONTROL_REG | TCS3472_COMMAND_BIT};
-	int iRetval;
-	
-	if((iRetval = i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucGainSettings, sizeof(aucGainSettings))) < 0)
-	{
-		/* Fatal error has occured */
-		return iRetval;
-	}
-	
-	return 0;
+	return i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucGainSettings, sizeof(aucGainSettings));
 }
 
 /** \brief reads the current integration time setting of 16 sensors and stores them in an adequate buffer.
@@ -640,21 +628,13 @@ integration time settings.
 	@param ftdiA, ftdiB 		pointer to ftdi_context
 	@param aucIntegrationtime	pointer to buffer which will store the integration time settings of the 16 sensors
 	
-	@return 0 :					everything OK
-	@return	<0: 				i2c-functions failed, usb-error 
+	@retval 0  Succesful 
+	@retval <0 USB or i2c errors occured, check return value for further information 	
 */
 int tcs_getIntegrationtime(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucIntegrationtime)
 {
-	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_ATIME_REG | TCS3472_COMMAND_BIT};
-	int iRetval;
-	
-	if((iRetval = i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucIntegrationtime, sizeof(aucIntegrationtime))) < 0)
-	{
-		/* Fatal error has occured */
-		return iRetval;
-	}
-	
-	return 0;
+	unsigned char aucTempbuffer[2] = {(TCS_ADDRESS<<1), TCS3472_ATIME_REG | TCS3472_COMMAND_BIT};	
+	return i2c_read8(ftdiA, ftdiB, aucTempbuffer, sizeof(aucTempbuffer), aucIntegrationtime, sizeof(aucIntegrationtime));
 }
 
 /** \brief returns a divisor which corresponds to a specific gain setting.

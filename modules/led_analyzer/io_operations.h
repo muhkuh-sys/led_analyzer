@@ -53,6 +53,17 @@ values can be assigned to the output pins and data can be read back from the inp
 /** Set all Bits as input */
 #define MYINPUT 0x00 
 
+/** Error writing to channel A */
+#define WRITE_ERR_CH_A -1 
+/** Error writing to channel B */
+#define WRITE_ERR_CH_B -2 
+/** Error reading from channel A */
+#define READ_ERR_CH_A -3 
+/** Error reading from channel B */
+#define READ_ERR_CH_B -4 
+/** Error - received a different amount of bytes than expected */
+#define ERR_INCORRECT_AMOUNT -5 
+
 int writeOutputs           (struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, const unsigned long ulOutput);
 
 int readInputs             (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, const unsigned char* readBack);
@@ -67,7 +78,7 @@ int send_package_read8     (struct ftdi_context *ftdiA, struct ftdi_context *ftd
 
 int send_package_read16    (struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned short* ausReadBuffer, unsigned char ucReadBufferLength);
 
-int send_package_read4x16  (struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned char* aucReadBuffer, unsigned short* ausReadBuffer1, unsigned short* ausReadBuffer2,
+int send_package_read72  (struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, unsigned char* aucReadBuffer, unsigned short* ausReadBuffer1, unsigned short* ausReadBuffer2,
 						    unsigned short* ausReadBuffer3, unsigned short* ausReadBuffer4, unsigned char ucReadBufferLength);
 
 

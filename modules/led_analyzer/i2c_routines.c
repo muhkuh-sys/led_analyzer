@@ -74,9 +74,12 @@ The number of bytes to be sent can be passed in the parameter ucLength.
 	@param aucSendBuffer pointer to the buffer which contains address, register and data
 	@param ucLength		 sizeof aucSendbuffer in bytes
 	
-	@retval	>0  :	everything ok
-	@retval ==0 :	something failed as retVal represents the number of bytes written to the usb-device (alway more than 0 expected)
-	@retval <0  :	libusb functions failed
+	@return	0 if succesful, errorcode if not 
+		- @ref WRITE_ERR_CH_A
+        - @ref WRITE_ERR_CH_B
+        - @ref READ_ERR_CH_A
+        - @ref READ_ERR_CH_B
+        - @ref ERR_INCORRECT_AMOUNT
 */
 
 int i2c_write8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength)
@@ -158,9 +161,12 @@ which ranges from 0 ... 15.
 	@param ucLength		 sizeof aucSendbuffer in bytes
 	@param uiX			 number of i2c-bus which should send the data (0 ... 15)
 	
-	@retval	>0  :	everything ok
-	@retval ==0 :	something failed as retVal represents the number of bytes written to the usb-device (alway more than 0 expected)
-	@retval <0  :	libusb functions failed
+	@return	0 if succesful, errorcode if not 
+		- @ref WRITE_ERR_CH_A
+        - @ref WRITE_ERR_CH_B
+        - @ref READ_ERR_CH_A
+        - @ref READ_ERR_CH_B
+        - @ref ERR_INCORRECT_AMOUNT
 */
 int i2c_write8_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength, unsigned int uiX)
 {
@@ -243,9 +249,12 @@ can read one byte from an i2c-slave.
 	@param aucRecBuffer	 as we have 16 i2c-busses aucRecBuffer must be able to hold at least 16 bytes.
 	@param ucRecLength	 sizeof aucRecBuffer in bytes
 	
-	@retval	>0  :	everything ok
-	@retval ==0 :	something failed as retVal represents the number of bytes read from the usb-device (alway more than 0 expected)
-	@retval <0  :	libusb functions failed
+	@return	0 if succesful, errorcode if not 
+		- @ref WRITE_ERR_CH_A
+        - @ref WRITE_ERR_CH_B
+        - @ref READ_ERR_CH_A
+        - @ref READ_ERR_CH_B
+        - @ref ERR_INCORRECT_AMOUNT
 */
 
 int i2c_read8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength,
@@ -369,9 +378,12 @@ can read 2 bytes from an i2c-slave.
 	@param ausReadBuffer 	as we have 16 i2c-busses ausReadBuffer must be able to hold at least 16 elements.
 	@param ucRecLength	 	number of expected bytes to read from the slaves
 	
-	@retval	>0  :	everything ok
-	@retval ==0 :	something failed as retVal represents the number of bytes read from the usb-device (alway more than 0 expected)
-	@retval <0  :	libusb functions failed
+	@return	0 if succesful, errorcode if not 
+		- @ref WRITE_ERR_CH_A
+        - @ref WRITE_ERR_CH_B
+        - @ref READ_ERR_CH_A
+        - @ref READ_ERR_CH_B
+        - @ref ERR_INCORRECT_AMOUNT
 */
 
 
@@ -501,12 +513,15 @@ conversions have already completed.
 	@param ausReadBuffer1 	stores the fourth 16 Bit information read back from the slaves
 	@param ucRecLength	 	number of expected bytes to read from the slaves
 	
-	@retval	>0  :	everything ok
-	@retval ==0 :	something failed as retVal represents the number of bytes read from the usb-device (alway more than 0 expected)
-	@retval <0  :	libusb functions failed
+	@return	0 if succesful, errorcode if not 
+		- @ref WRITE_ERR_CH_A
+        - @ref WRITE_ERR_CH_B
+        - @ref READ_ERR_CH_A
+        - @ref READ_ERR_CH_B
+        - @ref ERR_INCORRECT_AMOUNT
 */
 
-int i2c_read4x16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength, 
+int i2c_read72(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength, 
 				unsigned char*  aucStatusRegister,
 				unsigned short* ausReadBuffer1, unsigned short* ausReadBuffer2,
 				unsigned short* ausReadBuffer3, unsigned short* ausReadBuffer4, unsigned char ucRecLength)
@@ -614,7 +629,7 @@ int i2c_read4x16(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigne
 
     i2c_stopCond(ftdiA, ftdiB);
 
-    return send_package_read4x16(ftdiA, ftdiB, aucStatusRegister, ausReadBuffer1, ausReadBuffer2, ausReadBuffer3, ausReadBuffer4, ucRecLength);
+    return send_package_read72(ftdiA, ftdiB, aucStatusRegister, ausReadBuffer1, ausReadBuffer2, ausReadBuffer3, ausReadBuffer4, ucRecLength);
 
 }
 
