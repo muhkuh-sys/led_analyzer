@@ -61,19 +61,30 @@ for simple i2c-slaves which do not have the ability of clock stretching.
 
 
 void i2c_startCond   ();
+
 void i2c_stopCond    ();
+
 void i2c_clock       (unsigned long ulDataToSend);
+
 void i2c_clockInput  (unsigned long ulDataToSend);
+
 void i2c_giveAck     ();
+
 void i2c_clock_forACK(unsigned long ulDataToSend);
+
 void i2c_getAck      ();
+
 int  i2c_read16      (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength,
                       unsigned short* ausReadBuffer, unsigned char ucRecLength);
-int i2c_read72(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength, 
-				unsigned char*  aucStatusRegister,
-				unsigned short* ausReadBuffer1, unsigned short* ausReadBuffer2,
-				unsigned short* ausReadBuffer3, unsigned short* ausReadBuffer4, unsigned char ucRecLength);
+					  
+int i2c_read72		 (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength, 
+					  unsigned char*  aucStatusRegister,
+					  unsigned short* ausReadBuffer1, unsigned short* ausReadBuffer2,
+					  unsigned short* ausReadBuffer3, unsigned short* ausReadBuffer4, unsigned char ucRecLength);
+					  
 int  i2c_read8       (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength,
                       unsigned char* aucRecBuffer, unsigned char ucRecLength);
+					  
 int  i2c_write8      (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength);
+
 int  i2c_write8_x    (struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength, unsigned int uiX);
