@@ -64,6 +64,7 @@ enum E_ERROR
 	ERR_USB 			    = 0x4000000,
 	
 	/* last positive error_flag can be     0x1000, values below this flag are used for specifying the exact sensornumber that failed */
+	
 	/** Indexing outside the handles array (apHandles) */
 	ERR_INDEXING			= -100
 };
