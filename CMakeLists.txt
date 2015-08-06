@@ -30,8 +30,12 @@ if(${CMAKE_BUILD_TOOL} MATCHES "(msdev|VCExpress|devenv)")
 ENDIF(${CMAKE_BUILD_TOOL} MATCHES "(msdev|VCExpress|devenv)")
 
 
+#----------------------------------------------------------------------------
+#
+# Include CMake scripts.
 
-SET(USE_SYSTEM_LUA FALSE)
+# Select the LUA version.
+INCLUDE(cmake/muhkuh_lua.cmake)
 
 
 #----------------------------------------------------------------------------
