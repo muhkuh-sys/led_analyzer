@@ -32,11 +32,19 @@ INCLUDE(ExternalProject)
 # Build the project.
 #
 
+# Extend the C flags and CXX flags with '-fPIC' for linux 64bit or linking the
+# static libftdi to a shared object will fail.
+SET(SUB_C_FLAGS ${CMAKE_C_FLAGS})
+SET(SUB_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+	LIST(APPEND SUB_C_FLAGS "-fPIC")
+	LIST(APPEND SUB_CXX_FLAGS "-fPIC")
+ENDIF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
 
 SET(LIBFTDI_CMAKE_ARGS "")
 #list baut eine ganze zeile aus den sachen die mit append hinzugefügt wurden 
-LIST(APPEND LIBFTDI_CMAKE_ARGS "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}")
-LIST(APPEND LIBFTDI_CMAKE_ARGS "-DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}")
+LIST(APPEND LIBFTDI_CMAKE_ARGS "-DCMAKE_C_FLAGS=${SUB_C_FLAGS}")
+LIST(APPEND LIBFTDI_CMAKE_ARGS "-DCMAKE_CXX_FLAGS=${SUB_CXX_FLAGS}")
 LIST(APPEND LIBFTDI_CMAKE_ARGS "-DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}")
 LIST(APPEND LIBFTDI_CMAKE_ARGS "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}")
 LIST(APPEND LIBFTDI_CMAKE_ARGS "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}")
@@ -61,13 +69,13 @@ ENDIF(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 
 
 ExternalProject_Add(TARGET_libftdi
+                    # The target needs libusb.
                     DEPENDS TARGET_libusb
-                    #download
                     PREFIX ${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2
+                    # Use the source archive in the current folder.
                     URL ${CMAKE_CURRENT_SOURCE_DIR}/libftdi1-1.2.tar.bz2
                     URL_HASH SHA1=636b9fcc745bf4eeb027a1dd891f770158444f7a
-                    #configure
-                    #PATCH_COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/templates ${CMAKE_CURRENT_BINARY_DIR}/libftdi1-1.2/src/TARGET_libftdi
+                    # Add all of the custom CMAKE arguments.
                     CMAKE_ARGS ${LIBFTDI_CMAKE_ARGS}
                     INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} install
 )
