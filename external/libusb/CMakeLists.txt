@@ -32,10 +32,7 @@ INCLUDE(ExternalProject)
 # Build the project.
 #
 
-
-
-
-#SET(LIBUSB_CMAKE_ARGS "")
+SET(LIBUSB_CMAKE_ARGS "")
 LIST(APPEND LIBUSB_CMAKE_ARGS "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}")
 LIST(APPEND LIBUSB_CMAKE_ARGS "-DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}")
 LIST(APPEND LIBUSB_CMAKE_ARGS "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}")
@@ -59,35 +56,34 @@ ExternalProject_Add(TARGET_libusb
                     INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} install DESTDIR=${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19
 					#annahme: mingw oder linux target - im toplevel make.txt das korrekte make kommando ermitteln 
 					# cmake current make executable 
-					)
-
+)
 
 
 # 3) Provide all variables for the build.
- SET(LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19/install/lib/libusb.a)
- SET(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19/install/include/libusb-1.0)
+SET(LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19/install/lib/libusb.a)
+SET(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR}/libusb-1.0.19/install/include/libusb-1.0)
 
 
- IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-	# SET(LDFLAGS "-pthread -lrt -ludev")
- ENDIF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+	SET(LDFLAGS "-pthread;-lrt;-ludev")
+ENDIF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
 
- SET(DEFINES -DROMLOADER_USB_LIBUSB_VERSION=1)
- 
+SET(DEFINES -DROMLOADER_USB_LIBUSB_VERSION=1)
 
- 
- 
- 
- 
- #SET(LIBUSB_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../libusb/lib/libusb-1.0.19/src/TARGET_libusb/libusb)
- #SET(LIBUSB_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/../libusb/lib/libusb-1.0.19/src/TARGET_libusb-build/libusb.a)
 
- 
+
+
+
+
+#SET(LIBUSB_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../libusb/lib/libusb-1.0.19/src/TARGET_libusb/libusb)
+#SET(LIBUSB_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/../libusb/lib/libusb-1.0.19/src/TARGET_libusb-build/libusb.a)
+
+
 # ----------------------------------------------------------------------------
 
- # Store all information about the library in the cache.
+# Store all information about the library in the cache.
 
- SET(LIBUSB_LIBRARY              ${LIBRARY}              CACHE INTERNAL "The libusb library with the complete path.")
- SET(LIBUSB_LDFLAGS              ${LDFLAGS}              CACHE INTERNAL "All linker flags required to link the library. The list must be separated with whitespace.")
- SET(LIBUSB_DEFINES              ${DEFINES}              CACHE INTERNAL "All defines for the libusb library. This should be a list of entries starting with -D.")
- SET(LIBUSB_INCLUDE_DIRECTORIES  ${INCLUDE_DIRECTORIES}  CACHE INTERNAL "The include folders for the library headers. The list must be separated with whitespace.")
+SET(LIBUSB_LIBRARY              ${LIBRARY}              CACHE INTERNAL "The libusb library with the complete path.")
+SET(LIBUSB_LDFLAGS              ${LDFLAGS}              CACHE INTERNAL "All linker flags required to link the library. The list must be separated with whitespace.")
+SET(LIBUSB_DEFINES              ${DEFINES}              CACHE INTERNAL "All defines for the libusb library. This should be a list of entries starting with -D.")
+SET(LIBUSB_INCLUDE_DIRECTORIES  ${INCLUDE_DIRECTORIES}  CACHE INTERNAL "The include folders for the library headers. The list must be separated with whitespace.")
