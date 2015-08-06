@@ -162,23 +162,28 @@ bool CTestGeneration::CheckTestGeneration(wxVector<PanelSensor*> vectorSensorPan
   return testEntriesOK;
 }
 
-void CTestGeneration::InsertHeaders(wxTextFile* tFile, bool useNetX)
+void CTestGeneration::InsertHeaders(wxTextFile* tFile, bool useNetX, bool luxCheckEnable)
 {
     /* Get the right requires for the test */
     tFile->AddLine("require(\"color_control\")");
 
+    /* do we have a netX connected --> LED Stimulation ? */
     if(useNetX)
     {
         tFile->AddLine("require(\"muhkuh_cli_init\")");
         tFile->AddLine("require(\"io_matrix\")\n\n");
         /* Dont change following line as the replace function will not work after*/
-        tFile->AddLine("-- INSERT INTERFACE NUMBER\n");
+        tFile->AddLine("-- INSERT INTERFACE NUMBER as strInterface = \"COM4\" for example\n");
     }
 
     tFile->AddLine("-- be pessimistic ");
-    tFile->AddLine("local iRetval = TEST_RESULT_FAIL\n");
-    tFile->AddLine("local strXmlResult");
-    tFile->AddLine("local lux_check_enable = nil");
+    tFile->AddLine("local iRetval = TEST_RESULT_FAIL");
+    tFile->AddLine("local strXmlResult\n");
+
+    /* Enable lux check ? */
+    tFile->AddLine("-- Test for brightness (lux) as well ? -- ")
+    if(luxCheckEnable)  tFile->AddLine("local lux_check_enable = true");
+    else tFile->AddLine("local lux_check_enable = nil");
 
 }
 
@@ -337,7 +342,7 @@ void CTestGeneration::GenerateSettingsTable(wxVector<PanelSensor*> vectorSensorP
 
 }
 
-bool CTestGeneration::GenerateTest(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX)
+bool CTestGeneration::GenerateTest(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX, bool luxCheckEnable)
 {
 
     if(!this->CheckTestGeneration(vectorSensorPanel, useNetX))
@@ -349,7 +354,7 @@ bool CTestGeneration::GenerateTest(wxVector<PanelSensor*> vectorSensorPanel, wxT
 
     /* Checks */
 
-    this->InsertHeaders(tFile, useNetX);
+    this->InsertHeaders(tFile, useNetX, luxCheckEnable);
     this->GenerateColorTestTable(vectorSensorPanel, tFile);
     this->GenerateSettingsTable(vectorSensorPanel, tFile);
     this->GenerateNetXTestTable(vectorSensorPanel, tFile, useNetX);
@@ -370,12 +375,12 @@ void CTestGeneration::SaveSessionAsIni(wxVector<PanelSensor*> vectorSensorPanel,
     wxVector<PanelTestrow*> vectorTestrow;
 
     tFile->AddLine(wxT("[Testsession]"));
-    //tFile->AddLine(wxString::Format(wxT("numberOfSensors=%d\n"), iNumberOfSensors));
+    tFile->AddLine(wxString::Format(wxT("numberOfSensors=%d\n"), iNumberOfSensors));
 
     /* Iterate over all vectorSensorPanels */
     for(wxVector<PanelSensor*>::iterator it = vectorSensorPanel.begin(); it != vectorSensorPanel.end(); it++)
     {
-        //tFile->AddLine(wxString::Format(wxT("[Sensor%d]"), (*it)->GetSensorNumber()));
+        tFile->AddLine(wxString::Format(wxT("[Sensor%d]"), (*it)->GetSensorNumber()));
 
         vectorTestrow = (*it)->GetVectorTestrow();
         tFile->AddLine(wxString::Format(wxT("numberOfTestrows=%d"), (int)vectorTestrow.size()));

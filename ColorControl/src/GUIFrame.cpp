@@ -238,32 +238,25 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	sbSizerTestfile->Add( m_buttonUseTestfile, 0, wxALL|wxEXPAND, 5 );
 
     wxStaticBoxSizer* sbSizerTestmode;
-    sbSizerTestmode = new wxStaticBoxSizer ( new wxStaticBox(this, wxID_ANY, wxT("Testmode" )  ), wxHORIZONTAL);
+    sbSizerTestmode = new wxStaticBoxSizer ( new wxStaticBox(this, wxID_ANY, wxT("Measurement Mode" )  ), wxVERTICAL);
 
-    wxBoxSizer* bSizerSingleCont;
-    bSizerSingleCont = new wxBoxSizer(wxVERTICAL);
-
-
-    m_chUsenetx = new wxCheckBox( this, wxID_USENETX, wxT("Use netX"), wxDefaultPosition, wxDefaultSize, 0);
-    m_chUsenetx->SetValue(true);
-    bSizerSingleCont->Add(m_chUsenetx, 0, wxALL, 5);
-
-
-	m_rbSingle = new wxRadioButton( this, wxID_TESTMODE, wxT("Single"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_rbSingle = new wxRadioButton( this, wxID_TESTMODE, wxT("Singleshot"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_rbSingle->SetValue(true);
-    bSizerSingleCont->Add(m_rbSingle, 0, wxALL, 5);
+    sbSizerTestmode->Add(m_rbSingle, 0, wxALL, 5);
 
 	m_rbContinuous = new wxRadioButton( this, wxID_TESTMODE, wxT("Continuous"), wxDefaultPosition, wxDefaultSize, 0 );
-    bSizerSingleCont->Add(m_rbContinuous, 0, wxALL, 5);
-
-
-    sbSizerTestmode->Add(bSizerSingleCont);
 
     wxString m_chTimeChoices[] = { wxT("0.2 sec"), wxT("0.5 sec"), wxT("1 sec"), wxT("2 sec"), wxT("5 sec")};
 	int m_chTimeNChoices = sizeof( m_chTimeChoices ) / sizeof( wxString );
 	m_chTime = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chTimeNChoices, m_chTimeChoices, 0 );
 	m_chTime->SetSelection( 0 );
-	sbSizerTestmode->Add( m_chTime, 0, wxALL | wxALIGN_BOTTOM, 2 );
+
+    wxBoxSizer* bSizerContinuous;
+    bSizerContinuous = new wxBoxSizer(wxHORIZONTAL);
+    bSizerContinuous->Add(m_rbContinuous, 0, wxALL, 5);
+    bSizerContinuous->Add(m_chTime, 0, wxALL, 5 );
+
+    sbSizerTestmode->Add(bSizerContinuous);
 
 	wxStaticBoxSizer* sbSizerFastSetup;
 	sbSizerFastSetup = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Fast Setup") ), wxVERTICAL );
@@ -281,8 +274,8 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	sbSizerFastSetup->Add( m_chIntTime, 0, wxALL|wxEXPAND, 6 );
 
 
-	bSizerButtons->Add(sbSizerTestfile, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
     bSizerButtons->Add(sbSizerFastSetup, 0, wxALL|wxEXPAND, 5 );
+	bSizerButtons->Add(sbSizerTestfile, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
     bSizerButtons->Add(sbSizerTestmode, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
 
 
@@ -430,7 +423,6 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
     this->Connect( menuItem_SystemSettings->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler (GUIFrame::OnSystemSettings ) );
     this->Connect(menuItem_save->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnSaveSession ) );
     this->Connect(menuItem_open->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUIFrame::OnOpenSession ) );
-    this->Connect(m_chUsenetx->GetId(), wxEVT_CHECKBOX , wxCommandEventHandler ( GUIFrame::OnUseNetX ) );
 }
 
 GUIFrame::~GUIFrame()
@@ -694,4 +686,140 @@ DialogPropGrid::~DialogPropGrid()
 {
     m_buttonSave->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DialogPropGrid::OnSave ), NULL, this);
     m_buttonCancel->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DialogPropGrid::OnCancel ), NULL, this);
+}
+
+// Dialog to generate a testfile //
+
+MyGenerateDialog::MyGenerateDialog(  wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style, wxFileConfig* pFileConfig ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
+
+
+    m_cancelled = false;
+    /* Get the pointer to the config */
+    m_fileConfig = pFileConfig;
+
+	wxBoxSizer* bSizerTestgenSettings;
+	bSizerTestgenSettings = new wxBoxSizer( wxVERTICAL );
+
+	wxStaticBoxSizer* sbSizerOutputDir;
+	sbSizerOutputDir = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Choose output directory") ), wxHORIZONTAL );
+
+	m_txtCtrl_outputdir = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_LEFT | wxTE_READONLY );
+	sbSizerOutputDir->Add( m_txtCtrl_outputdir, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+	m_bmDir = new wxBitmapButton( this, wxID_ANY, wxArtProvider::GetBitmap( wxART_FOLDER ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	sbSizerOutputDir->Add( m_bmDir, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
+
+
+	bSizerTestgenSettings->Add( sbSizerOutputDir, 1, wxEXPAND, 5 );
+
+	wxStaticBoxSizer* sbSizerSettings;
+	sbSizerSettings = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Testsettings") ), wxHORIZONTAL );
+
+	wxBoxSizer* bSizerCheck;
+	bSizerCheck = new wxBoxSizer( wxVERTICAL );
+
+	m_chUsenetx = new wxCheckBox( this, wxID_ANY, wxT("netX Stimulation"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerCheck->Add( m_chUsenetx, 0, wxALL, 5 );
+
+	m_chluxcheck = new wxCheckBox( this, wxID_ANY, wxT("Lux Check"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerCheck->Add( m_chluxcheck, 0, wxALL, 5 );
+
+
+	sbSizerSettings->Add( bSizerCheck, 0, 0, 5 );
+
+	wxBoxSizer* bSizerDesc;
+	bSizerDesc = new wxBoxSizer( wxVERTICAL );
+
+	m_stusenetx = new wxStaticText( this, wxID_ANY, wxT("- Stimulate the LEDs on netX board"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stusenetx->Wrap( -1 );
+	bSizerDesc->Add( m_stusenetx, 0, wxALL, 5 );
+
+	m_stluxcheck = new wxStaticText( this, wxID_ANY, wxT("- Enable test for illumination (brightness)"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stluxcheck->Wrap( -1 );
+	bSizerDesc->Add( m_stluxcheck, 0, wxALL, 5 );
+
+
+	sbSizerSettings->Add( bSizerDesc, 1, wxEXPAND, 5 );
+
+
+	bSizerTestgenSettings->Add( sbSizerSettings, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer61;
+	bSizer61 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_buttonGenerate = new wxButton( this, wxID_ANY, wxT("Generate Testfile"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer61->Add( m_buttonGenerate, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+	m_buttonCancel = new wxButton( this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer61->Add( m_buttonCancel, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+
+	bSizerTestgenSettings->Add( bSizer61, 1, wxEXPAND, 5 );
+
+    m_buttonGenerate->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MyGenerateDialog::OnGenerate ), NULL, this );
+    m_buttonCancel->Connect  ( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MyGenerateDialog::OnCancel ), NULL, this );
+    m_bmDir->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MyGenerateDialog::OnChooseFolder ), NULL, this );
+
+
+	this->SetSizer( bSizerTestgenSettings );
+	this->Layout();
+}
+
+void MyGenerateDialog::OnChooseFolder( wxCommandEvent& event)
+{
+    wxString strPath, strDefaultDir; // Full Path with dir + name
+
+    if(!m_fileConfig->Read("DEFAULT_PATHS/path_generate_testfile", &strDefaultDir))
+        strDefaultDir = wxEmptyString;
+
+    wxLogMessage("Generating Testfile.. ");
+
+    wxFileDialog save_fileDialog(this, "Choose output directory",
+                                 strDefaultDir,
+                                 "", "LUA files (*.lua) |*.lua",
+                                 wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+    if(save_fileDialog.ShowModal() == wxID_CANCEL)
+    {
+        wxLogMessage("Abort.");
+        return;
+    }
+
+    /* Get the name and path */
+    strPath = save_fileDialog.GetPath();
+
+    /* Write the path into txtCtrl */
+    m_txtCtrl_outputdir->SetValue(strPath);
+
+    /* Save the Directory as a default directory in the ini file */
+    m_fileConfig->Write("DEFAULT_PATHS/path_generate_testfile", save_fileDialog.GetDirectory());
+
+}
+
+void MyGenerateDialog::OnGenerate( wxCommandEvent& event)
+{
+    m_cancelled = false;
+
+    if (!m_txtCtrl_outputdir->IsEmpty())
+    {
+        this->Hide();
+    }
+
+    else
+    {
+        wxLogMessage("Please choose an output direction!");
+    }
+}
+
+void MyGenerateDialog::OnCancel( wxCommandEvent& event)
+{
+    m_cancelled = true;
+    this->Hide();
+}
+
+MyGenerateDialog::~MyGenerateDialog()
+{
+
 }

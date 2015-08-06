@@ -618,7 +618,7 @@ void ColorControlFrame::CreateTestPanels(int numberOfDevices)
     {
         for(int j = 0; j < 16; j++)
         {
-            m_vectorSensorPanels.push_back(new PanelSensor(m_swTestdefinition, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSTATIC_BORDER, i*16 + j + 1, m_chUsenetx->GetValue()));
+            m_vectorSensorPanels.push_back(new PanelSensor(m_swTestdefinition, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSTATIC_BORDER, i*16 + j + 1));
             /* Fill it with the integration time and gain values so a tesgeneration without
             prior Measurement will have the settings as well */
             m_vectorSensorPanels.at(i*16 + j)->SetGain(m_cocoDevices.at(i)->GetGain(j));
@@ -908,58 +908,110 @@ void ColorControlFrame::OnSystemSettings(wxCommandEvent& event)
 }
 
 
+//void ColorControlFrame::OnGenerateTest(wxCommandEvent& event)
+//{
+//
+//    MyGenerateDialog* GenDialog = new MyGenerateDialog(this, wxID_ANY, wxT("Select your settings for the testfile"), wxDefaultPosition, wxDefaultSize );
+//    GenDialog->Show();
+//
+//    wxString strPath, strDefaultDir; // Full Path with dir + name
+//
+//    if(!m_fileConfig->Read("DEFAULT_PATHS/path_generate_testfile", &strDefaultDir))
+//        strDefaultDir = wxEmptyString;
+//
+//    wxLogMessage("Generating Testfile.. ");
+//
+//
+//    wxFileDialog save_fileDialog(this, "Choose output directory",
+//                                 strDefaultDir,
+//                                 "", "LUA files (*.lua) |*.lua",
+//                                 wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+//
+//    if(save_fileDialog.ShowModal() == wxID_CANCEL)
+//    {
+//        wxLogMessage("Abort.");
+//        return;
+//    }
+//
+//    /* Get the name and path */
+//    strPath = save_fileDialog.GetPath();
+//
+//    /* Save the Directory as a default directory in the ini file */
+//    m_fileConfig->Write("DEFAULT_PATHS/path_generate_testfile", save_fileDialog.GetDirectory());
+//
+//    /* the file either exists or must be created */
+//    wxTextFile tFile(strPath);
+//
+//    /* Create the file if it doesn't exist yet */
+//    if(!tFile.Exists()) tFile.Create();
+//
+//    if(!tFile.Open()) wxLogMessage("Couldn't open test file.");
+//
+//    /* Empty the file */
+//    tFile.Clear();
+//
+//    LOG_ERROR(m_text);
+//    if(!m_testGeneration.GenerateTest(m_vectorSensorPanels, &tFile, m_chUsenetx->GetValue())) return;
+//    LOG_DEFAULT(m_text);
+//
+//    /* Write the testfile */
+//    tFile.Write();
+//
+//    if(!tFile.Close()) wxLogMessage("Couldn't close test file.");
+//    LOG_SUCCESSFUL(m_text);
+//    wxLogMessage("Generated %s.", strPath);
+//    LOG_DEFAULT(m_text);
+//
+//
+//}
+
+
 void ColorControlFrame::OnGenerateTest(wxCommandEvent& event)
 {
-
-    wxString strPath, strDefaultDir; // Full Path with dir + name
-
-    if(!m_fileConfig->Read("DEFAULT_PATHS/path_generate_testfile", &strDefaultDir))
-        strDefaultDir = wxEmptyString;
-
-    wxLogMessage("Generating Testfile.. ");
-
-    wxFileDialog save_fileDialog(this, "Choose output directory",
-                                 strDefaultDir,
-                                 "", "LUA files (*.lua) |*.lua",
-                                 wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-
-    if(save_fileDialog.ShowModal() == wxID_CANCEL)
+    switch(m_eState)
     {
-        wxLogMessage("Abort.");
-        return;
+    case IS_INITIAL:
+    case IS_SCANNED:
+            wxLogMessage("Please connect first.");
+            break;
+    case IS_CONNECTED:
+        /* Get your output directory, and some test settings */
+        MyGenerateDialog GenDialog(this, wxID_ANY, wxT("Select your settings for the testfile"), wxDefaultPosition, wxDefaultSize,  wxCAPTION , m_fileConfig );
+        GenDialog.ShowModal();
+
+        if (GenDialog.IsCancelled())
+        {
+            wxLogMessage("Abort.");
+            return;
+        }
+        /* the file either exists or must be created */
+        wxTextFile tFile(GenDialog.GetOutputDir());
+
+        /* Create the file if it doesn't exist yet */
+        if(!tFile.Exists()) tFile.Create();
+
+        if(!tFile.Open()) wxLogMessage("Couldn't open test file.");
+
+        /* Empty the file */
+        tFile.Clear();
+
+        LOG_ERROR(m_text);
+        if(!m_testGeneration.GenerateTest(m_vectorSensorPanels, &tFile, GenDialog.UseNetX(), GenDialog.LuxCheckEnabled())) return;
+        LOG_DEFAULT(m_text);
+
+        /* Write the testfile */
+        tFile.Write();
+
+        if(!tFile.Close()) wxLogMessage("Couldn't close test file.");
+        LOG_SUCCESSFUL(m_text);
+        wxLogMessage("Generated %s.", GenDialog.GetOutputDir());
+        LOG_DEFAULT(m_text);
+
+        break;
     }
 
-    /* Get the name and path */
-    strPath = save_fileDialog.GetPath();
-
-    /* Save the Directory as a default directory in the ini file */
-    m_fileConfig->Write("DEFAULT_PATHS/path_generate_testfile", save_fileDialog.GetDirectory());
-
-    /* the file either exists or must be created */
-    wxTextFile tFile(strPath);
-
-    /* Create the file if it doesn't exist yet */
-    if(!tFile.Exists()) tFile.Create();
-
-    if(!tFile.Open()) wxLogMessage("Couldn't open test file.");
-
-    /* Empty the file */
-    tFile.Clear();
-
-    LOG_ERROR(m_text);
-    if(!m_testGeneration.GenerateTest(m_vectorSensorPanels, &tFile, m_chUsenetx->GetValue())) return;
-    LOG_DEFAULT(m_text);
-
-    /* Write the testfile */
-    tFile.Write();
-
-    if(!tFile.Close()) wxLogMessage("Couldn't close test file.");
-    LOG_SUCCESSFUL(m_text);
-    wxLogMessage("Generated %s.", strPath);
-    LOG_DEFAULT(m_text);
-
-
 }
+
 
 void ColorControlFrame::OnUseTest(wxCommandEvent& event)
 {

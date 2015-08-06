@@ -126,6 +126,33 @@ public:
 };
 
 
+class MyGenerateDialog : public wxDialog
+{
+	private:
+		wxTextCtrl* m_txtCtrl_outputdir;
+		wxBitmapButton* m_bmDir;
+		wxCheckBox* m_chUsenetx;
+		wxCheckBox* m_chluxcheck;
+		wxStaticText* m_stusenetx;
+		wxStaticText* m_stluxcheck;
+		wxButton* m_buttonGenerate;
+		wxButton* m_buttonCancel;
+		wxFileConfig* m_fileConfig;
+		bool m_cancelled;
+
+	public:
+
+		MyGenerateDialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE, wxFileConfig* pFileConfig = NULL );
+		void OnChooseFolder( wxCommandEvent& event );
+		void OnGenerate( wxCommandEvent& event );
+		void OnCancel( wxCommandEvent & event );
+		~MyGenerateDialog();
+
+		bool UseNetX() {return m_chUsenetx->GetValue();};
+		bool LuxCheckEnabled() {return m_chluxcheck->GetValue();};
+		bool IsCancelled() {return m_cancelled;};
+		wxString GetOutputDir() {return m_txtCtrl_outputdir->GetValue();};
+};
 
 // ----------------------------------------------------------------------------
 // MyCustomChoiceRenderer for gain and integration time
@@ -224,7 +251,6 @@ class GUIFrame : public wxFrame
 		wxTextCtrl* m_text;
 		wxStatusBar* statusBar;
 		wxLog* m_pOldLogTarget;
-		wxCheckBox*    m_chUsenetx;
         wxRadioButton* m_rbSingle;
         wxRadioButton* m_rbContinuous;
         wxChoice* m_chTime;
@@ -264,7 +290,6 @@ class GUIFrame : public wxFrame
 	public:
 
 		GUIFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("ColorControl"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 927,792 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
-        //bool UseNetX() {return m_chUsenetx->GetValue();};
 		~GUIFrame();
 
 };
