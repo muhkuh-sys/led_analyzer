@@ -775,8 +775,6 @@ void MyGenerateDialog::OnChooseFolder( wxCommandEvent& event)
     if(!m_fileConfig->Read("DEFAULT_PATHS/path_generate_testfile", &strDefaultDir))
         strDefaultDir = wxEmptyString;
 
-    wxLogMessage("Generating Testfile.. ");
-
     wxFileDialog save_fileDialog(this, "Choose output directory",
                                  strDefaultDir,
                                  "", "LUA files (*.lua) |*.lua",

@@ -982,6 +982,9 @@ void ColorControlFrame::OnGenerateTest(wxCommandEvent& event)
             wxLogMessage("Please connect first.");
             break;
     case IS_CONNECTED:
+
+        wxLogMessage("Generating Testfile.. ");
+
         /* Get your output directory, and some test settings */
         MyGenerateDialog GenDialog(this, wxID_ANY, wxT("Select your settings for the testfile"), wxDefaultPosition, wxDefaultSize,  wxCAPTION , m_fileConfig );
         GenDialog.ShowModal();
