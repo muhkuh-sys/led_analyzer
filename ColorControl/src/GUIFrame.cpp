@@ -115,7 +115,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	mMenuSettings = new wxMenu();
 	wxMenuItem* menuItem_SystemSettings;
-	menuItem_SystemSettings = new wxMenuItem( mMenuSettings, wxID_TOLERANCES, wxString( wxT("System Settings") ) , wxT("Change default tolerances and netX type"), wxITEM_NORMAL );
+	menuItem_SystemSettings = new wxMenuItem( mMenuSettings, wxID_TOLERANCES, wxString( wxT("System Settings") ) + wxT('\t') + wxT("CTRL-Y"), wxT("Change default tolerances and netX type"), wxITEM_NORMAL );
 	mMenuSettings->Append( menuItem_SystemSettings );
 
 	menuBarMain->Append( mMenuSettings, wxT("Settings") );
@@ -679,6 +679,7 @@ void DialogPropGrid::OnSave( wxCommandEvent& event)
 
 void DialogPropGrid::OnCancel( wxCommandEvent& event )
 {
+   wxLogMessage("Abort.");
    this->Destroy();
 }
 

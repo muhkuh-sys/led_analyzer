@@ -181,10 +181,16 @@ void CTestGeneration::InsertHeaders(wxTextFile* tFile, bool useNetX, bool luxChe
     tFile->AddLine("local strXmlResult\n");
 
     /* Enable lux check ? */
-    tFile->AddLine("-- Test for brightness (lux) as well ? -- ")
-    if(luxCheckEnable)  tFile->AddLine("local lux_check_enable = true");
-    else tFile->AddLine("local lux_check_enable = nil");
+    tFile->AddLine("-- Test for brightness (lux) as well ? -- ");
 
+    if(luxCheckEnable)
+    {
+        tFile->AddLine("local lux_check_enable = true");
+    }
+    else
+    {
+        tFile->AddLine("local lux_check_enable = nil");
+    }
 }
 
 void CTestGeneration::GenerateTestStepFunctions(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX)

@@ -164,7 +164,7 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
 
             /* If the txt_ctrl connected was red before because some error occured, we will set it to default now */
             this->UpdateConnectedField(wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ));
-            m_dataViewListSerials->DeleteAllItems();
+            this->UpdateSerialList();
 
             m_eState = IS_SCANNED;
             /* Don't break */
@@ -184,6 +184,7 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
             m_pLua->ScanDevices(m_numberOfDevices, m_aStrSerials);
 
             this->UpdateConnectedField(wxSystemSettings::GetColour(wxSYS_COLOUR_INACTIVECAPTION));
+            this->UpdateSerialList();
 
             if(!m_cocoDevices.empty()) m_cocoDevices.clear();
 
@@ -225,7 +226,7 @@ void ColorControlFrame::OnScan(wxCommandEvent& event)
                     m_cocoDevices.at(i)->SetTolSat(tol_sat);
                     m_cocoDevices.at(i)->SetTolIllu(tol_illu);
                 }
-                this->UpdateSerialList();
+
             }
 
             break;
@@ -490,7 +491,11 @@ void ColorControlFrame::OnStimulation( wxCommandEvent& event )
     }
 
     /* if the plugin is still empty we clicked on cancel */
-    if(strPlugin == wxEmptyString) return;
+    if(strPlugin == wxEmptyString)
+    {
+        LOG_DEFAULT(m_text);
+        return;
+    }
 
     if(!m_testGeneration.FileLEDStimulation(m_vectorSensorPanels, strPlugin))
     {
@@ -518,6 +523,8 @@ void ColorControlFrame::OnStimulation( wxCommandEvent& event )
 
     /* LED Stimulation file could be run successfully, thus save the port as default */
     m_fileConfig->Write("netXType/plugin", strPlugin);
+    LOG_SUCCESSFUL(m_text);
+    wxLogMessage("Stimulation successful.");
     LOG_DEFAULT(m_text);
 }
 
@@ -536,7 +543,7 @@ void ColorControlFrame::CreateRows()
             rowdata.push_back(wxVariant(""));  // wavelength
             rowdata.push_back(wxVariant(""));  // saturation
             rowdata.push_back(wxVariant(""));  // illumination
-            rowdata.push_back(wxVariant("255255255"));// m_cColor
+            rowdata.push_back(wxVariant("255255255"));// m_cColor 255255255 is white
             rowdata.push_back(wxVariant(0));             // m_clearRatio;
             rowdata.push_back(wxVariant(m_uc2strHash_gain[m_cocoDevices.at(i)->GetGain(j)]));             // gain
             rowdata.push_back(wxVariant(m_uc2strHash_integration[m_cocoDevices.at(i)->GetIntTime(j)]));  // inttime
@@ -882,7 +889,7 @@ void ColorControlFrame::OnSystemSettings(wxCommandEvent& event)
     DialogPropGrid* myPropDialog = new DialogPropGrid(this, wxID_ANY, "Color Controller Settings", wxDefaultPosition, wxDefaultSize, wxRESIZE_BORDER| wxCLOSE_BOX | wxCAPTION, m_fileConfig);//, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL,  "bla");
     myPropDialog->ShowModal();
 
-    /* Update System Settings if any occured */
+    /* Update System Settings if any occured, take defaults if for any reason the settings are corrupted */
     int tol_nm, tol_sat, tol_illu;
     if(!m_fileConfig->Read(wxT("DEFAULT_TOLERANCES/tol_nm"), &tol_nm)) tol_nm = 10;
     if(!m_fileConfig->Read(wxT("DEFAULT_TOLERANCES/tol_sat"), &tol_sat)) tol_sat = 10;
@@ -996,9 +1003,12 @@ void ColorControlFrame::OnGenerateTest(wxCommandEvent& event)
         tFile.Clear();
 
         LOG_ERROR(m_text);
-        if(!m_testGeneration.GenerateTest(m_vectorSensorPanels, &tFile, GenDialog.UseNetX(), GenDialog.LuxCheckEnabled())) return;
-        LOG_DEFAULT(m_text);
-
+        if(!m_testGeneration.GenerateTest(m_vectorSensorPanels, &tFile, GenDialog.UseNetX(), GenDialog.LuxCheckEnabled()))
+        {
+            /* Change log colour back */
+            LOG_DEFAULT(m_text);
+            return;
+        }
         /* Write the testfile */
         tFile.Write();
 
