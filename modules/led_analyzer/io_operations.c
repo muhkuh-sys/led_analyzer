@@ -153,8 +153,6 @@ int readInputs(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, const uns
 
     /* Read back the needed pins */
 
-
-
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->out_ep, aucBuffer, sizeof(aucBuffer), &uiRead, ftdiA->usb_write_timeout)<0)
     {
         printf("Reading back failed");
@@ -316,6 +314,7 @@ int send_package_write8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB)
 	if(uiRead != (readIndexA + 2 ))
 	{
 		printf("Reading from Channel A failed! Expected %d bytes, read %d bytes!\n", (readIndexA+2), uiRead);
+		ftdi_usb_purge_buffers(ftdiA);
 		return ERR_INCORRECT_AMOUNT;
 	}
 	
@@ -330,6 +329,7 @@ int send_package_write8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB)
 	if(uiRead != (readIndexB + 2 ))
 	{
 		printf("Reading from Channel B failed! Expected %d bytes, read %d bytes!\n", (readIndexB+2), uiRead);
+		ftdi_usb_purge_buffers(ftdiB);
 		return ERR_INCORRECT_AMOUNT;
 	}
 	
@@ -403,6 +403,7 @@ int send_package_read8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, u
 	if(uiRead != (readIndexA + 2 ))
 	{
 		printf("Reading from Channel A failed! Expected %d bytes, read %d bytes!\n", (readIndexA+2), uiRead);
+		ftdi_usb_purge_buffers(ftdiA);
 		return ERR_INCORRECT_AMOUNT;
 	}
 	
@@ -417,6 +418,7 @@ int send_package_read8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, u
 	if(uiRead != (readIndexB + 2 ))
 	{
 		printf("Reading from Channel B failed! Expected %d bytes, read %d bytes!\n", (readIndexB+2), uiRead);
+		ftdi_usb_purge_buffers(ftdiB);
 		return ERR_INCORRECT_AMOUNT;
 	}
 	
@@ -555,6 +557,7 @@ int send_package_read16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, 
 	if(uiRead != (readIndexA + 2 ))
 	{
 		printf("Reading from Channel A failed! Expected %d bytes, read %d bytes!\n", (readIndexA+2), uiRead);
+		ftdi_usb_purge_buffers(ftdiA);
 		return ERR_INCORRECT_AMOUNT;
 	}
 	
@@ -569,6 +572,7 @@ int send_package_read16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, 
 	if(uiRead != (readIndexB + 2 ))
 	{
 		printf("Reading from Channel B failed! Expected %d bytes, read %d bytes!\n", (readIndexB+2), uiRead);
+		ftdi_usb_purge_buffers(ftdiB);
 		return ERR_INCORRECT_AMOUNT;
 	}
 	
@@ -770,6 +774,7 @@ int send_package_read72(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, 
 	if(uiRead != (readIndexA + 2 ))
 	{
 		printf("Reading from Channel A failed! Expected %d bytes, read %d bytes!\n", (readIndexA+2), uiRead);
+		ftdi_usb_purge_buffers(ftdiA);
 		return ERR_INCORRECT_AMOUNT;
 	}
 	
@@ -784,6 +789,7 @@ int send_package_read72(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, 
 	if(uiRead != (readIndexB + 2 ))
 	{
 		printf("Reading from Channel B failed! Expected %d bytes, read %d bytes!\n", (readIndexB+2), uiRead);
+		ftdi_usb_purge_buffers(ftdiB);
 		return ERR_INCORRECT_AMOUNT;
 	}
 	
