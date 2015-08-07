@@ -7,6 +7,10 @@ SET(CPACK_GENERATOR "ZIP")
 INCLUDE(CPack)
 INCLUDE(../../dependencies/ant_paths.cmake)
 
+# Look for the Doxygen package.
+# If it is not installed, no Doxygen documentation was generated.
+FIND_PACKAGE(Doxygen)
+
 # Build the ivy file.
 CONFIGURE_FILE(ivy.xml ivy-${VERSION_FULL}.xml)
 
@@ -14,11 +18,11 @@ CONFIGURE_FILE(ivy.xml ivy-${VERSION_FULL}.xml)
 #
 # Install the 32bit files and the documentation.
 #
-INSTALL(FILES ${COCO_WIN32_INSTALL}/modules/led_analyzer/led_analyzer.dll 
+INSTALL(FILES ${COCO_WIN32_INSTALL}/modules/led_analyzer/led_analyzer.dll
         DESTINATION windows_x86/build
 )
 
-INSTALL(FILES ${COCO_WIN32_INSTALL}/ColorControl/ColorControl.exe 
+INSTALL(FILES ${COCO_WIN32_INSTALL}/ColorControl/ColorControl.exe
         DESTINATION windows_x86/build
 )
 
@@ -30,11 +34,11 @@ INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51}/windows_x86/bin/lua.exe
         DESTINATION windows_x86/build
 )
 
-INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51-bit}/windows_x86/bit.dll 
+INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51-bit}/windows_x86/bit.dll
         DESTINATION windows_x86/build/${INSTALL_DIR_LUA_MODULES}
 )
 
-INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51-mhash}/windows_x86/mhash.dll 
+INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51-mhash}/windows_x86/mhash.dll
         DESTINATION windows_x86/build/${INSTALL_DIR_LUA_MODULES}
 )
 
@@ -42,20 +46,22 @@ INSTALL(DIRECTORY ${ant_path.org.muhkuh.lua.lua51-romloader}/windows_x86/
         DESTINATION windows_x86/build/${INSTALL_DIR_LUA_MODULES}
 )
 
+IF(DOXYGEN_FOUND)
+	INSTALL(DIRECTORY ${COCO_WIN32_INSTALL}/doc
+		DESTINATION windows_x86/build
+	)
+ENDIF(DOXYGEN_FOUND)
 
-INSTALL(DIRECTORY ${COCO_WIN32_INSTALL}/doc
-	DESTINATION windows_x86/build
-)
 
 #-----------------------------------------------------------------------------
 #
 # Install the 64bit files and lua files.
 #
-INSTALL(FILES ${COCO_WIN64_INSTALL}/modules/led_analyzer/led_analyzer.dll 
+INSTALL(FILES ${COCO_WIN64_INSTALL}/modules/led_analyzer/led_analyzer.dll
         DESTINATION windows_amd64/build
 )
 
-INSTALL(FILES ${COCO_WIN64_INSTALL}/ColorControl/ColorControl.exe 
+INSTALL(FILES ${COCO_WIN64_INSTALL}/ColorControl/ColorControl.exe
         DESTINATION windows_amd64/build
 )
 
@@ -67,11 +73,11 @@ INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51}/windows_amd64/bin/lua.exe
         DESTINATION windows_amd64/build
 )
 
-INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51-bit}/windows_amd64/bit.dll 
+INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51-bit}/windows_amd64/bit.dll
         DESTINATION windows_amd64/build/${INSTALL_DIR_LUA_MODULES}
 )
 
-INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51-mhash}/windows_amd64/mhash.dll 
+INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51-mhash}/windows_amd64/mhash.dll
         DESTINATION windows_amd64/build/${INSTALL_DIR_LUA_MODULES}
 )
 
@@ -79,9 +85,12 @@ INSTALL(DIRECTORY ${ant_path.org.muhkuh.lua.lua51-romloader}/windows_amd64/
         DESTINATION windows_amd64/build/${INSTALL_DIR_LUA_MODULES}
 )
 
-INSTALL(DIRECTORY ${COCO_WIN64_INSTALL}/doc
-	DESTINATION windows_amd64/build
-)
+IF(DOXYGEN_FOUND)
+	INSTALL(DIRECTORY ${COCO_WIN64_INSTALL}/doc
+		DESTINATION windows_amd64/build
+	)
+ENDIF(DOXYGEN_FOUND)
+
 
 #-----------------------------------------------------------------------------
 
@@ -100,7 +109,7 @@ INSTALL(DIRECTORY ${LED_ANALYZER_LUA}/example_device
 )
 
 INSTALL(FILES ${LED_ANALYZER_LUA}/color_control_init.lua
-			  ${LED_ANALYZER_LUA}/muhkuh_cli_init.lua 
+			  ${LED_ANALYZER_LUA}/muhkuh_cli_init.lua
 	DESTINATION windows_x86/build 
 )
 
@@ -113,13 +122,13 @@ INSTALL(DIRECTORY ${LED_ANALYZER_LUA}/example_device
 )
 
 INSTALL(FILES ${LED_ANALYZER_LUA}/color_control_init.lua
-			  ${LED_ANALYZER_LUA}/muhkuh_cli_init.lua 
+			  ${LED_ANALYZER_LUA}/muhkuh_cli_init.lua
 	DESTINATION windows_amd64/build 
 )
 
 #-----------------------------------------------------------------------------
 #
-# Install the folder containing the icons used for this project 
+# Install the folder containing the icons used for this project
 
 INSTALL(DIRECTORY ${COCO_ICONS}
 	DESTINATION windows_x86/build
