@@ -50,6 +50,12 @@ Furthermore the serialnumber(s) will be stored in an array and can be used by fu
 */
 int scan_devices(char** asSerial, unsigned int asLength)
 {
+	
+	
+	printf("Starting to wait");
+	wait4Conversion(5000);
+	printf("Finished waiting");
+
 	int i;
 	int f;
 	int 		numbOfDevs = 0;
@@ -202,7 +208,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 				}
 			else  printf("enabling MPSSE mode on device %d Channel A\n", devCounter);
 			
-			if((f=ftdi_purge_buffers(apHandles[iArrayPos])) < 0)
+			if((f=ftdi_usb_puge_buffers(apHandles[iArrayPos])) < 0)
 				{
 					fprintf(stderr, "... unable to purge buffers on device %d Channel A: %d (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_free(apHandles[iArrayPos]);
@@ -251,7 +257,7 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 				}
 			else  printf("enabling MPSSE mode on device %d Channel B\n", devCounter);
 			
-			if((f=ftdi_purge_buffers(apHandles[iArrayPos])) < 0)
+			if((f=ftdi_usb_puge_buffers(apHandles[iArrayPos])) < 0)
 				{
 					fprintf(stderr, "... unable to purge buffers on device %d Channel A: %d (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
 					ftdi_free(apHandles[iArrayPos]);
