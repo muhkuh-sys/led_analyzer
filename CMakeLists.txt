@@ -44,7 +44,7 @@ INCLUDE(cmake/muhkuh_lua.cmake)
 
 add_subdirectory(external)
 add_subdirectory(modules)
-#add_subdirectory(ColorControl)
+add_subdirectory(ColorControl)
 
 
 #----------------------------------------------------------------------------
