@@ -202,6 +202,14 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 				}
 			else  printf("enabling MPSSE mode on device %d Channel A\n", devCounter);
 			
+			if((f=ftdi_purge_buffers(apHandles[iArrayPos])) < 0)
+				{
+					fprintf(stderr, "... unable to purge buffers on device %d Channel A: %d (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					ftdi_free(apHandles[iArrayPos]);
+					return -1;
+				}			
+			
+			
 			iArrayPos ++;
 						
 			/* Ch B */
@@ -241,8 +249,14 @@ int connect_to_devices(void** apHandles, int apHlength, char** asSerial)
 					ftdi_free(apHandles[iArrayPos]);
 					return -1;
 				}
-			
 			else  printf("enabling MPSSE mode on device %d Channel B\n", devCounter);
+			
+			if((f=ftdi_purge_buffers(apHandles[iArrayPos])) < 0)
+				{
+					fprintf(stderr, "... unable to purge buffers on device %d Channel A: %d (%s) \n", devCounter, f, ftdi_get_error_string(apHandles[iArrayPos]));
+					ftdi_free(apHandles[iArrayPos]);
+					return -1;
+				}			
 			
 			iArrayPos ++;
 			
