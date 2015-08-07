@@ -3,6 +3,7 @@
 /modules/led_analyzer/example device/
 Doxyfile
 
+/build/
 /build_windows32/
 /build_windows64/
 /ivy/dependencies/ant_paths.cmake
