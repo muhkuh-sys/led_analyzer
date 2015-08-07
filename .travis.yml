@@ -11,16 +11,9 @@ before_install:
   - curl -sL http://download.opensuse.org/repositories/home:/doc_bacardi/xUbuntu_12.04/Release.key | sudo apt-key add -
   - echo "deb http://download.opensuse.org/repositories/home:/doc_bacardi/xUbuntu_12.04 ./" | sudo tee -a /etc/apt/sources.list
   - sudo apt-get update -qq
-  - wget http://downloads.sourceforge.net/project/muhkuh/mbs/org/wxwidgets/wxwidgets-3.0.2-mingw-static.zip
-  - unzip wxwidgets-3.0.2-mingw-static.zip -d /tmp
-  - sudo apt-get --assume-yes install mingw-w64 g++-mingw-w64 g++-mingw-w64-i686 g++-mingw-w64-x86-64 gcc-mingw-w64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 binutils-mingw-w64-i686 binutils-mingw-w64-x86-64
-  - sudo apt-get --assume-yes install gcc-multilib g++-multilib make libudev-dev libreadline6-dev
-  - sudo apt-get --assume-yes install cmake3
-  - sudo apt-get --assume-yes install swig3
-  - sudo apt-get --assume-yes install python-pip python-virtualenv
+  - sudo apt-get --assume-yes install cmake3 doxygen doxygen-gui graphviz make mbs-mingw-w64 mingw64-wxwidgets python-pip python-virtualenv swig3
   - wget ftp://ftp.fu-berlin.de/unix/www/apache/ant/binaries/apache-ant-1.9.5-bin.tar.bz2 -O /tmp/apache-ant-1.9.5-bin.tar.bz2
   - tar --directory /tmp --extract --bzip2 --file /tmp/apache-ant-1.9.5-bin.tar.bz2
-  - sudo apt-get --assume-yes --no-install-recommends install doxygen doxygen-gui graphviz
   - virtualenv ~/virtualenv/python2.7
   - source ~/virtualenv/python2.7/bin/activate
   - pip install -q requests
@@ -30,5 +23,8 @@ before_install:
 script:
   - unset CC
   - ./.build.sh
+
+
+after_success:
   - python installer/ivy/deploy.py build/artifacts/artifacts_led_analyzer.xml
 
