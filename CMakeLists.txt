@@ -7,9 +7,8 @@ PROJECT("led_analyzer")
 # Swig is required to generate the bindings.
 FIND_PACKAGE(SWIG REQUIRED)
 
-
 # Find the Doxygen package
-find_package(Doxygen)
+FIND_PACKAGE(Doxygen)
 
 
 #----------------------------------------------------------------------------
@@ -34,6 +33,9 @@ ENDIF(${CMAKE_BUILD_TOOL} MATCHES "(msdev|VCExpress|devenv)")
 #
 # Include CMake scripts.
 
+# Include the location of the dependencies.
+INCLUDE(ivy/dependencies/ant_paths.cmake)
+
 # Select the LUA version.
 INCLUDE(cmake/muhkuh_lua.cmake)
 
@@ -51,11 +53,10 @@ add_subdirectory(ColorControl)
 #
 # Create a doxygen documentation 
 
-if(DOXYGEN_FOUND)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-add_custom_target(doc ALL
-${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-COMMENT "Generating API documentation with Doxygen" VERBATIM
-)
-endif(DOXYGEN_FOUND)
+IF(DOXYGEN_FOUND)
+	CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+	ADD_CUSTOM_TARGET(doc ALL
+	                  ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+	                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+	                  COMMENT "Generating API documentation with Doxygen" VERBATIM)
+ENDIF(DOXYGEN_FOUND)
