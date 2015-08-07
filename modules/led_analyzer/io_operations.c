@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2015 by Subhan Waizi                              		   *
- *                                     									   *
+ *   Copyright (C) 2015 by Subhan Waizi                                    *
+ *                                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -303,7 +303,7 @@ int send_package_write8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB)
     }
 	
 	/* Wait until all commands are sent and processed by the chip */
-	Sleep(1);
+	usleep(1000);
 
 	/* Read from Channel A */
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->out_ep, aucBufferA, sizeof(aucBufferA), &uiRead, ftdiA->usb_read_timeout) < 0)
@@ -390,7 +390,7 @@ int send_package_read8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, u
     }
 	
 	/* Wait until all commands are sent and processed by the chip */
-	Sleep(1);
+	usleep(1000);
 
 	/* Read from Channel A */
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->out_ep, aucBufferA, sizeof(aucBufferA), &uiRead, ftdiA->usb_read_timeout) < 0)
@@ -542,7 +542,7 @@ int send_package_read16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, 
     }
 	
 	/* Wait until all commands are sent and processed by the chip */
-	Sleep(1);
+	usleep(1000);
 
 	/* Read from Channel A */
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->out_ep, aucBufferA, sizeof(aucBufferA), &uiRead, ftdiA->usb_read_timeout) < 0)
@@ -757,7 +757,7 @@ int send_package_read72(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, 
     }
 	
 	/* Wait until all commands are sent and processed by the chip */
-	Sleep(1);
+	usleep(1000);
 
 	/* Read from Channel A */
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->out_ep, aucBufferA, sizeof(aucBufferA), &uiRead, ftdiA->usb_read_timeout) < 0)

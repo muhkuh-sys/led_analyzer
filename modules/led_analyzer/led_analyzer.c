@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2014 by Subhan Waizi                           		   *
- *                                     									   *
+ *   Copyright (C) 2014 by Subhan Waizi                                    *
+ *                                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -30,6 +30,11 @@ provides the functions which are required for the application CoCo App.
  */
  
 #include "led_analyzer.h"
+
+/* This is for the "malloc" function. */
+#include <stdlib.h>
+/* This is for the "strcpy" and "memset" functions. */
+#include <string.h>
 
 /** \brief scans for connected color controller devices and stores their serial numbers in an array.
 
@@ -623,9 +628,9 @@ void wait4Conversion(unsigned int uiWaitTime)
 {
 
 	if((uiWaitTime > 0) && (uiWaitTime <= 10000))
-		Sleep(uiWaitTime);
+		usleep(uiWaitTime*1000);
 	
-	else Sleep(200);
+	else usleep(200000);
 }
 
 
