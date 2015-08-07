@@ -35,6 +35,8 @@ provides the functions which are required for the application CoCo App.
 #include <stdlib.h>
 /* This is for the "strcpy" and "memset" functions. */
 #include <string.h>
+/* This is for the "sleep_ms" macro. */
+#include "sleep_ms.h"
 
 /** \brief scans for connected color controller devices and stores their serial numbers in an array.
 
@@ -644,9 +646,9 @@ void wait4Conversion(unsigned int uiWaitTime)
 {
 
 	if((uiWaitTime > 0) && (uiWaitTime <= 10000))
-		usleep(uiWaitTime*1000);
+		sleep_ms(uiWaitTime);
 	
-	else usleep(200000);
+	else sleep_ms(200);
 }
 
 

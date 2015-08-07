@@ -52,6 +52,8 @@ command sent to the ftdi chip had been processed yet or that the usb package has
 
  
 #include "io_operations.h"
+#include "sleep_ms.h"
+
 
 /** global arrayindex for Channel A, it marks the current index of aucBufferA */
 unsigned int indexA = 0;
@@ -301,7 +303,7 @@ int send_package_write8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB)
     }
 	
 	/* Wait until all commands are sent and processed by the chip */
-	usleep(1000);
+	sleep_ms(1);
 
 	/* Read from Channel A */
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->out_ep, aucBufferA, sizeof(aucBufferA), &uiRead, ftdiA->usb_read_timeout) < 0)
@@ -390,7 +392,7 @@ int send_package_read8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, u
     }
 	
 	/* Wait until all commands are sent and processed by the chip */
-	usleep(1000);
+	sleep_ms(1);
 
 	/* Read from Channel A */
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->out_ep, aucBufferA, sizeof(aucBufferA), &uiRead, ftdiA->usb_read_timeout) < 0)
@@ -544,7 +546,7 @@ int send_package_read16(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, 
     }
 	
 	/* Wait until all commands are sent and processed by the chip */
-	usleep(1000);
+	sleep_ms(1);
 
 	/* Read from Channel A */
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->out_ep, aucBufferA, sizeof(aucBufferA), &uiRead, ftdiA->usb_read_timeout) < 0)
@@ -761,7 +763,7 @@ int send_package_read72(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB, 
     }
 	
 	/* Wait until all commands are sent and processed by the chip */
-	usleep(1000);
+	sleep_ms(1);
 
 	/* Read from Channel A */
     if(libusb_bulk_transfer(ftdiA->usb_dev, ftdiA->out_ep, aucBufferA, sizeof(aucBufferA), &uiRead, ftdiA->usb_read_timeout) < 0)
