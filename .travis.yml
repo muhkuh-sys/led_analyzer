@@ -27,5 +27,5 @@ script:
 
 
 after_success:
-  - python installer/ivy/deploy.py build/artifacts/artifacts_led_analyzer.xml
+  - python ivy/installer/deploy.py build/artifacts/artifacts_led_analyzer.xml
 
