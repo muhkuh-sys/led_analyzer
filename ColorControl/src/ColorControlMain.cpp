@@ -98,6 +98,7 @@ ColorControlFrame::~ColorControlFrame()
 {
     delete[] m_aStrSerials;
     if ( m_fileConfig ) delete m_fileConfig;
+    if ( m_pLua       ) m_pLua->CleanUp();
 }
 
 void ColorControlFrame::InitHashTables()
@@ -131,11 +132,13 @@ void ColorControlFrame::InitHashTables()
 
 void ColorControlFrame::OnClose(wxCloseEvent &event)
 {
+    if(m_pTimer->IsRunning()) m_pTimer->Stop();
     Destroy();
 }
 
 void ColorControlFrame::OnQuit(wxCommandEvent &event)
 {
+    if(m_pTimer->IsRunning()) m_pTimer->Stop();
     Destroy();
 }
 
@@ -459,6 +462,31 @@ void ColorControlFrame::OnStart(wxCommandEvent& event)
 
 }
 
+
+void ColorControlFrame::OnTimeout(wxTimerEvent& event)
+{
+
+    if(m_pLua->StartMeasurements() == DEVICE_ERROR_FATAL)
+    {
+        LOG_ERROR(m_text);
+        wxLogError("A fatal error has occured. Save your work, disconnect, re-scan and re-connect!");
+        LOG_DEFAULT(m_text);
+
+        /* Show that a fatal error has occured */
+        UpdateConnectedField(COLOR_ERROR);
+    }
+
+    /* If the result of readColours is not zero, something went wrong, but its not a fatal error
+       thus just stop the measurements and update the status (reason why it stopped)*/
+    if(m_pLua->ReadColours(m_cocoDevices) != 0)
+    {
+        m_pTimer->Stop();
+        if(m_buttonStart->GetLabel().IsSameAs("STOP")) m_buttonStart->SetLabel("START");
+    }
+    /* Show the results*/
+    this->UpdateData();
+}
+
 void ColorControlFrame::OnStimulation( wxCommandEvent& event )
 {
 
@@ -555,6 +583,7 @@ void ColorControlFrame::CreateRows()
     }
 
 }
+
 
 void ColorControlFrame::UpdateData()
 {
@@ -727,31 +756,6 @@ void ColorControlFrame::OnTestmode(wxCommandEvent& event)
 
 }
 
-
-
-void ColorControlFrame::OnTimeout(wxTimerEvent& event)
-{
-
-    if(m_pLua->StartMeasurements() == DEVICE_ERROR_FATAL)
-    {
-        LOG_ERROR(m_text);
-        wxLogError("A fatal error has occured. Save your work, disconnect, re-scan and re-connect!");
-        LOG_DEFAULT(m_text);
-
-        /* Show that a fatal error has occured */
-        UpdateConnectedField(COLOR_ERROR);
-    }
-
-    /* If the result of readColours is not zero, something went wrong, but its not a fatal error
-       thus just stop the measurements and update the status (reason why it stopped)*/
-    if(m_pLua->ReadColours(m_cocoDevices) != 0)
-    {
-        m_pTimer->Stop();
-        if(m_buttonStart->GetLabel().IsSameAs("STOP")) m_buttonStart->SetLabel("START");
-    }
-    /* Show the error*/
-    this->UpdateData();
-}
 
 
 void ColorControlFrame::OnShowLog(wxCommandEvent& event)
