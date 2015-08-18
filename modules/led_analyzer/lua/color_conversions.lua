@@ -1,7 +1,7 @@
 require("tcs_chromaTable")
 
 local MIN_LUX   = 4.0 
-local MIN_CLEAR = 0.0008 -- Minimum Clear Level as percentage of maximum clear
+local MIN_CLEAR = 0.0006 -- Minimum Clear Level as percentage of maximum clear
 
 -- a helper to print a colortable which contains values in RGB, XYZ, HSV, Yxy and wavelength color space 
 -- parameter space determines which space should be printed out 
@@ -207,6 +207,12 @@ function aus2colorTable(clear, red, green, blue, intTimes, gain, errorcode, leng
 			local wavelength, saturation = Yxy2wavelength(x, y)
 			local wR, wG, wB = wavelength2RGB(wavelength)
 			
+			if(i == 7) then 
+				print(wavelength)
+				print(wR)
+				print(wG)
+				print(wB)
+			end 
 			
 			-- Wavelength Saturation Brightness table 
 			tWavelength[i+1] = {nm = math.floor(wavelength+0.5),
@@ -785,6 +791,9 @@ function wavelength2RGB(wavelength)
 	local b = 0 
 	
 	local factor 
+	
+	-- round wavelength 
+	wavelength = math.floor(wavelength + 0.5)
 	
 	-- 380 ... 439 
 	if ((wavelength >= 380) and (wavelength <= 439)) then 
