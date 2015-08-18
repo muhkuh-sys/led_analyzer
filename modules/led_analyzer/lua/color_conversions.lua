@@ -207,13 +207,6 @@ function aus2colorTable(clear, red, green, blue, intTimes, gain, errorcode, leng
 			local wavelength, saturation = Yxy2wavelength(x, y)
 			local wR, wG, wB = wavelength2RGB(wavelength)
 			
-			if(i == 7) then 
-				print(wavelength)
-				print(wR)
-				print(wG)
-				print(wB)
-			end 
-			
 			-- Wavelength Saturation Brightness table 
 			tWavelength[i+1] = {nm = math.floor(wavelength+0.5),
 						        sat = saturation * 100,
