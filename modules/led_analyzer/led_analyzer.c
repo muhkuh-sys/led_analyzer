@@ -389,6 +389,8 @@ LUX level in an array. This level is calculated by a formula given in AMS / TAOS
 	@param ausRed				stores 16 red colors
 	@param ausGreen				stores 16 green colors
 	@param ausBlue				stores 16 blue colors
+	@param aucIntegrationtime   stores 16 integration time values of the sensors 
+	@param aucGain				stores 16 gain values of the sensors 
 	
 	@retval 0  Succesful 
 	@retval >0 Flag in DWORD HIGH marks what kind of error occured, 16 bits in DWORD LOW mark which of the 16 sensors failed  

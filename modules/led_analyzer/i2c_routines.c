@@ -507,10 +507,11 @@ conversions have already completed.
 	@param ftdiA, ftdiB 	pointer to ftdi_context
 	@param aucSendBuffer 	pointer to the buffer which contains slave address and register to read from
 	@param ucLength		 	sizeof aucSendbuffer in bytes
+	@param aucStatusRegister stores the content of the status register read back from the slaves 
 	@param ausReadBuffer1 	stores the first 16 Bit information read back from the slaves
-	@param ausReadBuffer1 	stores the second 16 Bit information read back from the slaves
-	@param ausReadBuffer1 	stores the third 16 Bit information read back from the slaves
-	@param ausReadBuffer1 	stores the fourth 16 Bit information read back from the slaves
+	@param ausReadBuffer2 	stores the second 16 Bit information read back from the slaves
+	@param ausReadBuffer3 	stores the third 16 Bit information read back from the slaves
+	@param ausReadBuffer4 	stores the fourth 16 Bit information read back from the slaves
 	@param ucRecLength	 	number of expected bytes to read from the slaves
 	
 	@return	0 if succesful, errorcode if not 

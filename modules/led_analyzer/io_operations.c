@@ -30,7 +30,7 @@ values can be assigned to the output pins and data can be read back from the inp
 /* NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE ----------------------->
 
   For now we wait between a usb write to and read from ftdi chip command, with a Sleep(1) function. This works
-  but does not guarantee that expected data will really arrive after that one second ... this should be changed 
+  well, but cannot guarantee that expected data will really arrive after that one second ... this should be changed 
   in future code 
 
   NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE -----------------------> */
@@ -278,8 +278,6 @@ can be acknowledge bits or data send back by the device.
         - @ref READ_ERR_CH_A
         - @ref READ_ERR_CH_B
         - @ref ERR_INCORRECT_AMOUNT
-	
-					
 */
 int send_package_write8(struct ftdi_context *ftdiA, struct ftdi_context *ftdiB)
 {
