@@ -33,12 +33,10 @@ public:
 
     virtual bool Render( wxRect rect, wxDC *dc, int state )
     {
-        unsigned char r, g, b;
-        r = wxAtoi(m_value.SubString(0,2));
-        g = wxAtoi(m_value.SubString(3,5));
-        b = wxAtoi(m_value.SubString(6,8));
 
-        wxColour colour(r,g,b);
+        wxColour colour;
+        /* m_value is a long */
+        colour.SetRGB(m_value);
 
         dc->SetBrush( wxBrush(colour) );
 
@@ -54,14 +52,14 @@ public:
 
     virtual bool SetValue( const wxVariant &value )
     {
-        m_value = value.GetString();
+        m_value = (unsigned int)value.GetLong();
         return true;
     }
 
     virtual bool GetValue( wxVariant &WXUNUSED(value) ) const { return true; }
 
 private:
-    wxString m_value;
+    unsigned int m_value;
 };
 
 
