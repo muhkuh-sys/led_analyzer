@@ -23,9 +23,11 @@ CLua::CLua(const char* filename)
 }
 
 
+
 CLua::~CLua()
 {
-    if (m_pLuaState) lua_close(m_pLuaState);
+    m_luaFileLoaded = false;
+    if(m_pLuaState) lua_close(m_pLuaState);
 }
 
 void CLua::StackDump()
