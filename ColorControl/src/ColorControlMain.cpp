@@ -543,7 +543,7 @@ void ColorControlFrame::CreateRows()
             rowdata.push_back(wxVariant(""));  // wavelength
             rowdata.push_back(wxVariant(""));  // saturation
             rowdata.push_back(wxVariant(""));  // illumination
-            rowdata.push_back(wxVariant("255255255"));// m_cColor 255255255 is white
+            rowdata.push_back(wxVariant("0xffffff"));// m_cColor 255255255 is white
             rowdata.push_back(wxVariant(0));             // m_clearRatio;
             rowdata.push_back(wxVariant(m_uc2strHash_gain[m_cocoDevices.at(i)->GetGain(j)]));             // gain
             rowdata.push_back(wxVariant(m_uc2strHash_integration[m_cocoDevices.at(i)->GetIntTime(j)]));  // inttime
@@ -569,16 +569,13 @@ void ColorControlFrame::UpdateData()
     {
        for(int j = 0; j<16; j++)
        {
-            colour       = m_cocoDevices.at(i)->GetColour(j);
-            colorVariant = wxString::Format(wxT("%3i%3i%3i"), colour.Red(), colour.Green(), colour.Blue());
-
             /* First Panel = Colors */
             wxVector<wxVariant> rowdata;
             rowdata.push_back(i*16 + (j + 1)); // sensorno
             rowdata.push_back(m_cocoDevices.at(i)->GetWavelength(j));    // wavelength
             rowdata.push_back(m_cocoDevices.at(i)->GetSaturation(j));    // saturation
             rowdata.push_back(m_cocoDevices.at(i)->GetIllumination(j));  // illumination
-            rowdata.push_back(colorVariant);                             // m_cColor
+            rowdata.push_back((long)m_cocoDevices.at(i)->GetColour(j).GetRGB());                             // m_cColor
             rowdata.push_back(m_cocoDevices.at(i)->GetClearRatio(j));    // clearRatio
             rowdata.push_back(m_uc2strHash_gain[m_cocoDevices.at(i)->GetGain(j)]);                                     // gain
             rowdata.push_back(m_uc2strHash_integration[m_cocoDevices.at(i)->GetIntTime(j)]);                           // inttime
