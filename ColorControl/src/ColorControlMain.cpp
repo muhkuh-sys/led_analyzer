@@ -98,7 +98,11 @@ ColorControlFrame::~ColorControlFrame()
 {
     delete[] m_aStrSerials;
     if ( m_fileConfig ) delete m_fileConfig;
-    if ( m_pLua       ) m_pLua->CleanUp();
+    if ( m_pLua       )
+    {
+        m_pLua->CleanUp();
+        delete m_pLua;
+    }
 }
 
 void ColorControlFrame::InitHashTables()
@@ -133,12 +137,14 @@ void ColorControlFrame::InitHashTables()
 void ColorControlFrame::OnClose(wxCloseEvent &event)
 {
     if(m_pTimer->IsRunning()) m_pTimer->Stop();
+    wxMilliSleep(100);
     Destroy();
 }
 
 void ColorControlFrame::OnQuit(wxCommandEvent &event)
 {
     if(m_pTimer->IsRunning()) m_pTimer->Stop();
+    wxMilliSleep(100);
     Destroy();
 }
 
