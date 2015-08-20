@@ -19,6 +19,10 @@
 
 
 
+//#define VERSION_MAJOR 0
+//#define VERSION_MINOR 1
+//#define VERSION_PATH  0
+
 
 
 //helper functions
@@ -53,6 +57,8 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 ColorControlFrame::ColorControlFrame(wxFrame *frame)
     : GUIFrame(frame)
 {
+    /* Set the version */
+
     /* Initialize number of devices with 0 */
     m_numberOfDevices = 0;
 
@@ -68,7 +74,8 @@ ColorControlFrame::ColorControlFrame(wxFrame *frame)
 
     wxLog::SetVerbose(true);
     wxLog::SetLogLevel(wxLOG_Debug );
-    wxLogMessage(wxT("Welcome to Color Control...\n"));
+    wxLogMessage(wxString::Format(wxT("Welcome to Color Control v%d.%d.%d ...\n"),
+                                  VERSION_MAJOR, VERSION_MINOR, VERSION_PATH));
 
     /* Set the working directory to the build folder if it is not already the build folder */
     if(!wxFileName::GetCwd().EndsWith("build"))
@@ -151,7 +158,8 @@ void ColorControlFrame::OnQuit(wxCommandEvent &event)
 void ColorControlFrame::OnAbout(wxCommandEvent &event)
 {
 
-    wxString msg = "Color Control Application by\n          Subhan Waizi         \n   swaizi@hilscher.com  \n";
+    wxString msg = wxString::Format("Color Control  v%d.%d.%d by\n         Subhan Waizi         \n   swaizi@hilscher.com  \n",
+                                        VERSION_MAJOR, VERSION_MINOR, VERSION_PATH);
     wxMessageBox(msg, _("Welcome to..."));
 
 }
