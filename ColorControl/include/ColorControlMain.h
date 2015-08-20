@@ -18,6 +18,7 @@
 #include "CLua.h"
 #include "PanelSensor.h"
 #include "CTestGeneration.h"
+#include "Config.h"
 
 
 
