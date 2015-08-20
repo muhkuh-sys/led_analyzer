@@ -36,6 +36,9 @@ ENDIF(${CMAKE_BUILD_TOOL} MATCHES "(msdev|VCExpress|devenv)")
 # Include the location of the dependencies.
 INCLUDE(ivy/dependencies/ant_paths.cmake)
 
+#include the version 
+INCLUDE(cmake/versions.cmake)
+
 # Select the LUA version.
 INCLUDE(cmake/muhkuh_lua.cmake)
 
