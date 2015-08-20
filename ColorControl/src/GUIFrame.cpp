@@ -207,7 +207,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	bSizerHilscher->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_stHilscher = new wxStaticText( this, wxID_ANY, wxT("Color Control v 0.0\n ©Copyright 2015\n   Hilscher GmbH"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stHilscher = new wxStaticText( this, wxID_ANY, wxT("    Color Control\n©  Copyright 2015\n   Hilscher GmbH"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stHilscher->Wrap( -1 );
 	bSizerHilscher->Add( m_stHilscher, 1, wxALIGN_CENTER, 5 );
 
