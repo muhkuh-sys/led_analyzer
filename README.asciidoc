@@ -10,49 +10,48 @@ Build status: image:https://travis-ci.org/muhkuh-sys/led_analyzer.svg?branch=mas
 [[About, About]]
 == About   
 
-This document describes the LED Analyzer project which uses TCS3472 Color Sensors for wavelength and brightness detection of light emitting diodes. 
+This document describes the Color Controller project which uses TCS3472 Color Sensors for wavelength and brightness detection of light emitting diodes. 
 The project is intended to be used in Hilscher's internal test environment and will test LEDs on manufactured printed circuit boards.
-It provides functionality to be both used in an autonomous application and in Hilscher's muhkuh test frameworks. 
+It provides functionality to be both used in an autonomous application and in Hilscher's muhkuh test framework. 
 
 
 [[Hardware, Hardware]]
 == Hardware
 
 The hardware consists of a complete ftdi 2232h chip circuit including an eeprom for company specific descriptors. All availabe GPIO pins were used to provide 
-16 I2C-Interfaces which were connected to 16 of AMS TCS3472 Color Sensors. Hardware is designed for use with light pipes. Make sure to use an intransparent case,
-to reduce light noise produced by environmental lighting. An adequate case will also enable the sensor to distinguish between measurement of light emitting objects
-and measurement of environmental light by evaluating their LUX levels. 
+16 I2C-Interfaces which were then connected to 16 of AMS TCS3472 Color Sensors. Hardware is designed for use with light pipes. Make sure to use an intransparent case,
+to reduce light noise invoked by environmental lighting. An adequate case will also enable the sensor to distinguish between measurement of light emitting objects
+and measurement of environmental light by evaluating their illumination (Lux) levels. 
 
 
 [[Software, Software]]
 == Software 
 
 * An interface to talk to the ftdi chips is provided by libusb v1.0.19 and libftdi v1.2. These libraries were used to write software based I2C for 16 seperate I2C-busses,
-which are necessary due to the sensors' unchangable I2C-Address. These functions were made ready for use under LUA by wrapping them with swigwin v3.0.5.
+which are necessary due to the sensors' unchangable I2C-Address. The API "led_analyzer.dll" is generated alongside the build process. This API is made ready for use under LUA 
+by wrapping it with swigwin v3.0.5. 
 
 * The lua scripts handle all color related functionality, including conversions between color spaces, displaying color values in various color spaces and validation of the device under test.
-Each device under test will have its unique "test table" that contains entries for each LED on the board. This entry consists of a number which corresponds to the sensor number connected to the LED,
-the wavelength of the LED, saturation of the LED and (optionally) an illuminance value, given in LUX. A tolerance value must be provided for each of these testing values. A LED under test will be 
-marked as "OK" if the measured data of one sensor matches its "wanted data + tolerances"-entries in the "test table".
-If we have 32 Duo LEDs (RED/GREEN) for example we will have 2 test tables. The first test table will contain entries for 2 devices
-for the 32 RED LEDs and the second test table will contain entries for all GREEN LEDs.
+Each device under test will have its unique "test table" that contains set-point entries for each LED on the board. One entry consists of a number which corresponds to the sensor number connected to the LED,
+an optional name, the wavelength of the LED, saturation of the LED and (optionally) an illuminance value, given in LUX. A tolerance value must be provided for each of these testing parameters.
+A LED under test will be marked as "OK" if the measured data of one sensor falls within the set-point data +- tolerances.
 
-* The GUI Application called CoCo App will show all connected Led Analyzer Devices and their measured color data, including wavelength saturation and illuminance. Furthermore color sensor specific settings
-like integration time and gain can be set up easily. The App displays the status of the sensors, giving various information in case any problems occur.
-"Test Tables" for later use in an automated test environment (e.g. muhkuh test framwork) can be generated here. 
+* The GUI Application called ColorControl will show all connected Color Controller Devices and their measured color data, including wavelength saturation and illuminance. Furthermore color sensor specific settings
+like integration time and gain can be set up easily. The App displays the status of the sensors, giving various information in case any problems occur. It provides functionality to easily stimulate the leds on connected 
+netX Boards. A complete testscript for a device, including the initialization of the Color Controller, initialization of the test tables and the validation process, can be generated in the application. 
 
 
 [[Documentation, Documentation]]
 == Documentation
 
-A code documentation will be generated along the cmake build process, if doxygen is installed. This documentation can be found in the build folder under 'doc' and contains both
-html documentation and tex documentation files.
+An API documentation will generated along the cmake build process, in case doxygen is installed. This documentation can be found in the build folder under 'doc' and contains both
+html documentation and tex documentation files. The document folder contains three documents. The first one, CoCoAPI.pdf is generated from the tex files and describes the API. 
+Document #2, Development_HW describes the hardware development process of this project in detail. The last document, Development_SW describes the software development, including 
+API-, Lua-, and ColorControl App development. 
 
-
-
-
-
-A detailled description of drivers, lua scripts and usage of the application will follow.
+[[Installation, Installation]]
+The software has been built via cross-platform-build under Travis CI (Linux 12.0.4 LTS Server Edition) and can be downloaded here:
+link=https://dl.bintray.com/muhkuh/Muhkuh/org/muhkuh/tools/led_analyzer/
 
 
 
