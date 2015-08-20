@@ -13,6 +13,10 @@ IF( BUILD_COCO_GUI )
 
 	configure_file("src/Config.h.in" 
 				   "${PROJECT_BINARY_DIR}/include/Config.h")
+				   
+		# find the config file 
+	include_directories("${PROJECT_BINARY_DIR}/include")
+	
 	# This is the list of source files. They will be compiled.
 	SET(SRC_LIST
 		resource.rc 
@@ -38,8 +42,6 @@ IF( BUILD_COCO_GUI )
 		include/PanelTestrow.h
 		include/PanelSensor.h)
 		
-	# find the config file 
-	include_directories("${PROJECT_BINARY_DIR}")
 
 	
 	ADD_EXECUTABLE(ColorControl ${SRC_LIST})
