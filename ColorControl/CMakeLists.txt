@@ -2,12 +2,17 @@ PROJECT(ColorControlApp)
 
 cmake_minimum_required(VERSION 3.0)
 
+
+
+
 OPTION(BUILD_COCO_GUI "Build the CoCo GUI." ON)
 IF( BUILD_COCO_GUI )
 	# The GUI needs wxWidgets.
 	FIND_PACKAGE(wxWidgets REQUIRED adv propgrid net gl core base)
 	INCLUDE(${wxWidgets_USE_FILE})
 
+	configure_file("src/Config.h.in" 
+				   "${PROJECT_BINARY_DIR}/include/Config.h")
 	# This is the list of source files. They will be compiled.
 	SET(SRC_LIST
 		src/ColorControlMain.cpp
@@ -31,7 +36,11 @@ IF( BUILD_COCO_GUI )
 		include/GUIFrame.h
 		include/PanelTestrow.h
 		include/PanelSensor.h)
+		
+	# find the config file 
+	include_directories("${PROJECT_BINARY_DIR}")
 
+	
 	ADD_EXECUTABLE(ColorControl ${SRC_LIST})
 	TARGET_LINK_LIBRARIES(ColorControl ${LUA_LIBRARIES} ${wxWidgets_LIBRARIES})
 	TARGET_INCLUDE_DIRECTORIES(ColorControl PRIVATE include ${LUA_INCLUDE_DIR})
