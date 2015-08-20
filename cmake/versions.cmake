@@ -1,0 +1,6 @@
+
+
+# version
+set(COCO_VERSION_MAJOR 0)
+set(COCO_VERSION_MINOR 1)
+set(COCO_VERSION_PATH  0)
