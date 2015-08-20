@@ -15,6 +15,7 @@ IF( BUILD_COCO_GUI )
 				   "${PROJECT_BINARY_DIR}/include/Config.h")
 	# This is the list of source files. They will be compiled.
 	SET(SRC_LIST
+		resource.rc 
 		src/ColorControlMain.cpp
 		src/ColorControlApp.cpp
 		src/CDevice.cpp
