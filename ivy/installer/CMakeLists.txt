@@ -15,6 +15,9 @@ SET(INSTALL_DIR_LUA_MODULES lua_plugins)
 SET(INSTALL_DIR_LUA_SCRIPTS lua)
 
 
+#include the cmake files 
+#version 
+INCLUDE(../../cmake/versions.cmake)
 
 
 # Led_Analyzer Version number
