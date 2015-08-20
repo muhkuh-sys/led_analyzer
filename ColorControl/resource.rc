@@ -1,4 +1,8 @@
+
+/* Insert icon here with aaaa ICON "some_icon_u_like.ico" */
+
 //aaaa ICON "wx/msw/std.ico"
-//aaaa ICON "pic/coco_frame_icon.ico"
+//aaaa ICON "pic/coco_icon.ico"
+aaaa ICON  "pic/led_monkey.ico"
 
 #include "wx/msw/wx.rc"
