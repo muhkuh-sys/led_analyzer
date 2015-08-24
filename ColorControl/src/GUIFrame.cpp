@@ -689,7 +689,7 @@ DialogPropGrid::~DialogPropGrid()
 
 // Dialog to generate a testfile //
 
-MyGenerateDialog::MyGenerateDialog(  wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style, wxFileConfig* pFileConfig ) : wxDialog( parent, id, title, pos, size, style )
+MyGenerateDialog::MyGenerateDialog(  wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style, wxFileConfig* pFileConfig, unsigned char ucDefaultSelection ) : wxDialog( parent, id, title, pos, size, style )
 {
 	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
 
@@ -732,7 +732,7 @@ MyGenerateDialog::MyGenerateDialog(  wxWindow* parent, wxWindowID id, const wxSt
 	wxString m_chwaittimeChoices[] = { wxT("5"), wxT("50"), wxT("200"), wxT("300"), wxT("400"), wxT("1400") };
 	int m_chwaittimeNChoices = sizeof( m_chwaittimeChoices ) / sizeof( wxString );
 	m_chwaittime = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chwaittimeNChoices, m_chwaittimeChoices, 0 );
-	m_chwaittime->SetSelection( 0 );
+	m_chwaittime->SetSelection( ucDefaultSelection );
 	bSizerTime->Add( m_chwaittime, 0, wxALL, 5 );
 
 	m_stms = new wxStaticText( this, wxID_ANY, wxT("ms"), wxDefaultPosition, wxDefaultSize, 0 );

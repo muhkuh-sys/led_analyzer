@@ -139,6 +139,15 @@ void ColorControlFrame::InitHashTables()
     m_uc2strHash_integration[TCS3472_INTEGRATION_154ms] = wxT("TIME_154ms");
     m_uc2strHash_integration[TCS3472_INTEGRATION_200ms] = wxT("TIME_200ms");
     m_uc2strHash_integration[TCS3472_INTEGRATION_700ms] = wxT("TIME_700ms");
+
+    /* combo box selections for integration time or conversion cycle wait time
+    (in test generation dialog) */
+    m_uc2ucHash_waittimeselection[TCS3472_INTEGRATION_2_4ms] = 0;
+    m_uc2ucHash_waittimeselection[TCS3472_INTEGRATION_24ms]  = 1;
+    m_uc2ucHash_waittimeselection[TCS3472_INTEGRATION_100ms] = 2;
+    m_uc2ucHash_waittimeselection[TCS3472_INTEGRATION_154ms] = 3;
+    m_uc2ucHash_waittimeselection[TCS3472_INTEGRATION_200ms] = 4;
+    m_uc2ucHash_waittimeselection[TCS3472_INTEGRATION_700ms] = 5;
 }
 
 void ColorControlFrame::OnClose(wxCloseEvent &event)
@@ -854,6 +863,7 @@ void ColorControlFrame::OnSensorSettingsChanged(wxDataViewEvent& event )
     if(m_cGain == event.GetDataViewColumn())
     {
         tcs3472_gain_t gain = (tcs3472_gain_t)m_str2Uc_gain[m_dvlColors->GetTextValue(iIndex, 6)];
+        m_cocoDevices.at(iDeviceIndex)->SetGain(iSensorIndex, gain);
         m_pLua->SetGainX(iDeviceIndex, iSensorIndex, gain);
     }
 
@@ -861,6 +871,7 @@ void ColorControlFrame::OnSensorSettingsChanged(wxDataViewEvent& event )
     if(m_cIntegration == event.GetDataViewColumn())
     {
         tcs3472_intTime_t intTime = (tcs3472_intTime_t)m_str2Uc_integration[m_dvlColors->GetTextValue(iIndex, 7)];
+        m_cocoDevices.at(iDeviceIndex)->SetIntTime(iSensorIndex, intTime);
         m_pLua->SetIntTimeX(iDeviceIndex, iSensorIndex, intTime);
     }
 
@@ -1001,7 +1012,8 @@ void ColorControlFrame::OnGenerateTest(wxCommandEvent& event)
         wxLogMessage("Generating Testfile.. ");
 
         /* Get your output directory, and some test settings */
-        MyGenerateDialog GenDialog(this, wxID_ANY, wxT("Select your settings for the testfile"), wxDefaultPosition, wxDefaultSize,  wxCAPTION , m_fileConfig );
+        MyGenerateDialog GenDialog(this, wxID_ANY, wxT("Select your settings for the testfile"),
+                                   wxDefaultPosition, wxDefaultSize,  wxCAPTION , m_fileConfig, GetSelectionMaxIntegrationTime());
         GenDialog.ShowModal();
 
         if (GenDialog.IsCancelled())
@@ -1280,5 +1292,26 @@ void ColorControlFrame::OnUseNetX( wxCommandEvent& event )
 void ColorControlFrame::OnResize( wxSizeEvent& event )
 {
     wxLogMessage("resizing");
+}
+
+
+/* Get a selection for the combo box depending on the maximum integration time */
+/* Max inttime = 2.4ms --> selection = 0
+   Max inttime = 24 ms --> selection = 1 ... and so on */
+unsigned char ColorControlFrame::GetSelectionMaxIntegrationTime()
+{
+    unsigned char ucMaxSel = 0;
+    unsigned char temp = 0;
+
+    for(wxVector<CColorController*>::iterator it = m_cocoDevices.begin(); it != m_cocoDevices.end(); it++ )
+    {
+        for(int i = 0; i < 16; i++)
+        {
+            temp = m_uc2ucHash_waittimeselection[(*it)->GetIntTime(i)];
+            if(temp > ucMaxSel) ucMaxSel = temp;
+        }
+    }
+
+    return ucMaxSel;
 }
 

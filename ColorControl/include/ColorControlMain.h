@@ -34,7 +34,7 @@ enum e_state_t
 
 WX_DECLARE_STRING_HASH_MAP(unsigned char /*value*/, MyStr2UcHash );
 WX_DECLARE_HASH_MAP(unsigned char /* key */, wxString /* value */, wxIntegerHash, wxIntegerEqual, MyUc2StrHash );
-
+WX_DECLARE_HASH_MAP(unsigned char /* key */, unsigned char /*value*/, wxIntegerHash, wxIntegerEqual, MyUc2UcHash );
 class ColorControlFrame: public GUIFrame
 {
 
@@ -47,6 +47,7 @@ class ColorControlFrame: public GUIFrame
         MyStr2UcHash m_str2Uc_integration;
         MyUc2StrHash m_uc2strHash_gain;
         MyUc2StrHash m_uc2strHash_integration;
+        MyUc2UcHash  m_uc2ucHash_waittimeselection;
 
         enum e_TIME_TESTMODE
         {
@@ -98,6 +99,7 @@ class ColorControlFrame: public GUIFrame
         void GenerateNetXTestTable(wxTextFile* tFile);
         void InsertHeaders(wxTextFile* tFile);
         void GenerateTestStepFunctions(wxTextFile* tFile);
+        unsigned char GetSelectionMaxIntegrationTime();
 
         int  GetMaximumNumberOfTestsets();
         int  GetLastEntry();

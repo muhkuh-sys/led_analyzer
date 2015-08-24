@@ -145,7 +145,8 @@ class MyGenerateDialog : public wxDialog
 
 	public:
 
-		MyGenerateDialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE, wxFileConfig* pFileConfig = NULL );
+		MyGenerateDialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition,
+                        const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE, wxFileConfig* pFileConfig = NULL, unsigned char ucDefaultSelection = 0 );
 		void OnChooseFolder( wxCommandEvent& event );
 		void OnGenerate( wxCommandEvent& event );
 		void OnCancel( wxCommandEvent & event );
