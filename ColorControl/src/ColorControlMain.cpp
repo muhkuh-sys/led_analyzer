@@ -158,7 +158,7 @@ void ColorControlFrame::OnQuit(wxCommandEvent &event)
 void ColorControlFrame::OnAbout(wxCommandEvent &event)
 {
 
-    wxString msg = wxString::Format("Color Control  v%d.%d.%d by\n         Subhan Waizi         \n   swaizi@hilscher.com  \n",
+    wxString msg = wxString::Format("Color Control  v%d.%d.%d by\n         Subhan Waizi         \n  swaizi@hilscher.com  \n",
                                         VERSION_MAJOR, VERSION_MINOR, VERSION_PATH);
     wxMessageBox(msg, _("Welcome to..."));
 
@@ -1021,7 +1021,7 @@ void ColorControlFrame::OnGenerateTest(wxCommandEvent& event)
         tFile.Clear();
 
         LOG_ERROR(m_text);
-        if(!m_testGeneration.GenerateTest(m_vectorSensorPanels, &tFile, GenDialog.UseNetX(), GenDialog.LuxCheckEnabled()))
+        if(!m_testGeneration.GenerateTest(m_vectorSensorPanels, &tFile, GenDialog.UseNetX(), GenDialog.LuxCheckEnabled(), GenDialog.GetWaitTime()))
         {
             /* Change log colour back */
             LOG_DEFAULT(m_text);

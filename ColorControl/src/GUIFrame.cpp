@@ -725,6 +725,22 @@ MyGenerateDialog::MyGenerateDialog(  wxWindow* parent, wxWindowID id, const wxSt
 	m_chluxcheck = new wxCheckBox( this, wxID_ANY, wxT("Lux Check"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerCheck->Add( m_chluxcheck, 0, wxALL, 5 );
 
+    // begin here
+	wxBoxSizer* bSizerTime;
+	bSizerTime = new wxBoxSizer( wxHORIZONTAL );
+
+	wxString m_chwaittimeChoices[] = { wxT("5"), wxT("50"), wxT("200"), wxT("300"), wxT("400"), wxT("1400") };
+	int m_chwaittimeNChoices = sizeof( m_chwaittimeChoices ) / sizeof( wxString );
+	m_chwaittime = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chwaittimeNChoices, m_chwaittimeChoices, 0 );
+	m_chwaittime->SetSelection( 0 );
+	bSizerTime->Add( m_chwaittime, 0, wxALL, 5 );
+
+	m_stms = new wxStaticText( this, wxID_ANY, wxT("ms"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stms->Wrap( -1 );
+	bSizerTime->Add( m_stms, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+
+	bSizerCheck->Add( bSizerTime, 1, wxEXPAND, 5 );
 
 	sbSizerSettings->Add( bSizerCheck, 0, 0, 5 );
 
@@ -738,6 +754,10 @@ MyGenerateDialog::MyGenerateDialog(  wxWindow* parent, wxWindowID id, const wxSt
 	m_stluxcheck = new wxStaticText( this, wxID_ANY, wxT("- Enable test for illumination (brightness)"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stluxcheck->Wrap( -1 );
 	bSizerDesc->Add( m_stluxcheck, 0, wxALL, 5 );
+
+	m_stwaittime = new wxStaticText( this, wxID_ANY, wxT("- Apply around 2 x max integration time"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stwaittime->Wrap( -1 );
+	bSizerDesc->Add( m_stwaittime, 0, wxALL, 5 );
 
 
 	sbSizerSettings->Add( bSizerDesc, 1, wxEXPAND, 5 );
@@ -806,7 +826,7 @@ void MyGenerateDialog::OnGenerate( wxCommandEvent& event)
 
     else
     {
-        wxLogMessage("Please choose an output direction!");
+        wxLogMessage("Output directory missing!");
     }
 }
 

@@ -162,7 +162,7 @@ bool CTestGeneration::CheckTestGeneration(wxVector<PanelSensor*> vectorSensorPan
   return testEntriesOK;
 }
 
-void CTestGeneration::InsertHeaders(wxTextFile* tFile, bool useNetX, bool luxCheckEnable)
+void CTestGeneration::InsertHeaders(wxTextFile* tFile, bool useNetX, bool luxCheckEnable, unsigned int uiWaitTime)
 {
     /* Get the right requires for the test */
     tFile->AddLine("require(\"color_control\")");
@@ -180,9 +180,12 @@ void CTestGeneration::InsertHeaders(wxTextFile* tFile, bool useNetX, bool luxChe
     tFile->AddLine("local iRetval = TEST_RESULT_FAIL");
     tFile->AddLine("local strXmlResult\n");
 
+    /* Wait time between two measurements , should be around 2 x maximum integration time */
+    tFile->AddLine("-- Wait Time between two conversion cycles , should be around 2 x maximum integration time --");
+    tFile->AddLine(wxString::Format(wxT("local conversionWaitTime_ms = %d"), uiWaitTime));
+
     /* Enable lux check ? */
     tFile->AddLine("-- Test for brightness (lux) as well ? -- ");
-
     if(luxCheckEnable)
     {
         tFile->AddLine("local lux_check_enable = true");
@@ -191,6 +194,7 @@ void CTestGeneration::InsertHeaders(wxTextFile* tFile, bool useNetX, bool luxChe
     {
         tFile->AddLine("local lux_check_enable = nil");
     }
+
 }
 
 void CTestGeneration::GenerateTestStepFunctions(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX)
@@ -297,7 +301,7 @@ void CTestGeneration::GenerateTestSteps(wxVector<PanelSensor*> vectorSensorPanel
             tFile->AddLine(wxString::Format(wxT("-- INSERT CODE TO TO STIMULATE THE LEDS OF TESTSET %d --"), i));
         }
 
-        tFile->AddLine(wxT("led_analyzer.wait4Conversion(200)"));
+        tFile->AddLine(wxT("led_analyzer.wait4Conversion(conversionWaitTime_ms)"));
         tFile->AddLine(wxT("startMeasurements()"));
         tFile->AddLine(wxString::Format(wxT("iRetval, strXmlResult = validateLEDs(atTestSets[%d], lux_check_enable)\n"), i));
         tFile->AddLine(wxT("if iRetval ~= TEST_RESULT_OK then"));
@@ -348,7 +352,7 @@ void CTestGeneration::GenerateSettingsTable(wxVector<PanelSensor*> vectorSensorP
 
 }
 
-bool CTestGeneration::GenerateTest(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX, bool luxCheckEnable)
+bool CTestGeneration::GenerateTest(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX, bool luxCheckEnable, unsigned int uiWaitTime)
 {
 
     if(!this->CheckTestGeneration(vectorSensorPanel, useNetX))
@@ -360,7 +364,7 @@ bool CTestGeneration::GenerateTest(wxVector<PanelSensor*> vectorSensorPanel, wxT
 
     /* Checks */
 
-    this->InsertHeaders(tFile, useNetX, luxCheckEnable);
+    this->InsertHeaders(tFile, useNetX, luxCheckEnable, uiWaitTime);
     this->GenerateColorTestTable(vectorSensorPanel, tFile);
     this->GenerateSettingsTable(vectorSensorPanel, tFile);
     this->GenerateNetXTestTable(vectorSensorPanel, tFile, useNetX);
