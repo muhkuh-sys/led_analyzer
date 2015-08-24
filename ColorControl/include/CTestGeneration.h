@@ -25,10 +25,10 @@ class CTestGeneration
         void GenerateNetXTestTable(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX);
         void GenerateTestStepFunctions(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX);
         void GenerateInitialization(wxTextFile* tFile, bool useNetX);
-        void InsertHeaders(wxTextFile* tFile, bool useNetX, bool luxCheckEnable);
+        void InsertHeaders(wxTextFile* tFile, bool useNetX, bool luxCheckEnable, unsigned int uiWaitTime);
         void GenerateTestSteps(wxVector<PanelSensor*> panelSensor, wxTextFile* tFile, bool useNetX);
         void GenerateSettingsTable(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile);
-        bool GenerateTest(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX, bool luxCheckEnable);
+        bool GenerateTest(wxVector<PanelSensor*> vectorSensorPanel, wxTextFile* tFile, bool useNetX, bool luxCheckEnable, unsigned int uiWaitTime);
         wxString GetFunctionAutomatedNetXConnection();
         bool FileLEDStimulation(wxVector<PanelSensor*> vectorSensorPanel, wxString strPlugin);
 

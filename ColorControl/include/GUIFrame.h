@@ -134,7 +134,10 @@ class MyGenerateDialog : public wxDialog
 		wxCheckBox* m_chUsenetx;
 		wxCheckBox* m_chluxcheck;
 		wxStaticText* m_stusenetx;
+        wxChoice* m_chwaittime;
 		wxStaticText* m_stluxcheck;
+		wxStaticText* m_stwaittime;
+		wxStaticText* m_stms;
 		wxButton* m_buttonGenerate;
 		wxButton* m_buttonCancel;
 		wxFileConfig* m_fileConfig;
@@ -150,6 +153,7 @@ class MyGenerateDialog : public wxDialog
 
 		bool UseNetX() {return m_chUsenetx->GetValue();};
 		bool LuxCheckEnabled() {return m_chluxcheck->GetValue();};
+		unsigned int GetWaitTime(){return (unsigned int)wxAtoi(m_chwaittime->GetString(m_chwaittime->GetSelection()));}
 		bool IsCancelled() {return m_cancelled;};
 		wxString GetOutputDir() {return m_txtCtrl_outputdir->GetValue();};
 };
