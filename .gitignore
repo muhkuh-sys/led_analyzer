@@ -3,6 +3,7 @@
 /modules/led_analyzer/example device/
 Doxyfile
 
+/ColorControl/build/
 /build/
 /build_windows32/
 /build_windows64/
