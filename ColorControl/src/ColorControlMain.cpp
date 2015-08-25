@@ -78,11 +78,11 @@ ColorControlFrame::ColorControlFrame(wxFrame *frame)
                                   VERSION_MAJOR, VERSION_MINOR, VERSION_PATH));
 
     /* Set the working directory to the build folder if it is not already the build folder */
-    if(!wxFileName::GetCwd().EndsWith("build"))
-    {
+    //if(!wxFileName::GetCwd().EndsWith("build"))
+    //{
         /* Set the working directory */
-        wxFileName::SetCwd(wxFileName::GetCwd()+"\\build");
-    }
+        //wxFileName::SetCwd(wxFileName::GetCwd()+"\\build");
+    //}
 
 
     m_fileConfig = new wxFileConfig(wxEmptyString, wxEmptyString,
