@@ -171,6 +171,7 @@ void CTestGeneration::InsertHeaders(wxTextFile* tFile, bool useNetX, bool luxChe
     if(useNetX)
     {
         tFile->AddLine("require(\"muhkuh_cli_init\")");
+        tFile->AddLine("require(\"interface\")");
         tFile->AddLine("require(\"io_matrix\")\n\n");
         /* Dont change following line as the replace function will not work after*/
         tFile->AddLine("-- INSERT INTERFACE NUMBER as strInterface = \"COM4\" for example\n");
@@ -681,6 +682,7 @@ bool CTestGeneration::FileLEDStimulation(wxVector<PanelSensor*> vectorSensorPane
     tFile.Clear();
 
     tFile.AddLine("require(\"muhkuh_cli_init\")");
+    tFile.AddLine("require(\"interface\")");
     tFile.AddLine("require(\"io_matrix\")\n");
 
     tFile.AddLine(this->GetFunctionAutomatedNetXConnection());
