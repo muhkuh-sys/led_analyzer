@@ -38,6 +38,8 @@
 
 		<copy file="${path.org.muhkuh.tools.led_analyzer}/common/color_control_init.lua"
 		      todir="${install.base}" />
+		<copy file="${path.org.muhkuh.tools.led_analyzer}/common/detect_interfaces.lua"
+		      todir="${install.base}" />
 
 		<!-- Copy the documentation. -->
 		<!-- TODO: add the documentation to the led_analyzer package. -->

@@ -66,6 +66,7 @@ INSTALL(DIRECTORY ${LED_ANALYZER_LUA}/example_device
 )
 
 INSTALL(FILES ${LED_ANALYZER_LUA}/color_control_init.lua
+              ${LED_ANALYZER_LUA}/detect_interfaces.lua
         DESTINATION common
 )
 
