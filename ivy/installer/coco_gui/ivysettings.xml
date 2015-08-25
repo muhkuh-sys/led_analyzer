@@ -25,15 +25,6 @@
 				<artifact pattern="https://github.com/muhkuh-sys/[organisation]-[module]/releases/download/v[revision]/[artifact].[ext]" />
 			</url>
 			
-			<!-- This is the resolver for the Nexus server at Hilscher.
-			     Some artifacts can not be released with an open source license. They are stored here.
-			     NOTE: this is only the public repository. DO NOT INCLUDE THE SECRET REPOSITORY HERE.
-			-->
-			<url name="nexus" descriptor="required" m2compatible="true">
-				<ivy      pattern="http://nexus.netx01.hilscher.local/content/repositories/hilscher_muhkuh_public/[organisation]/[module]/[revision]/[module]-[revision].[ext]" />
-				<artifact pattern="http://nexus.netx01.hilscher.local/content/repositories/hilscher_muhkuh_public/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />
-			</url>
-			
 			<!-- This is the resolver for Bintray.
 			     Build results from Travis CI are stored here. They are snapshots and will be replaced with a new build.
 			-->
