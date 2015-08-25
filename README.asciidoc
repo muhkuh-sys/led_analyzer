@@ -50,6 +50,6 @@ Document #2, Development_HW describes the hardware development process of this p
 API-, Lua-, and ColorControl App development. 
 
 [[Installation, Installation]]
-Each commit initiates a cross-platform-build of the project under Travis CI (Linux 12.0.4 LTS Server Edition). The output of this 
-build process and the CoCo USB driver can be downloaded under "releases". 
+Each commit initiates a cross-platform-build of the project under Travis CI (Linux 12.0.4 LTS Server Edition). A tagged version of the output binaries of this 
+build can be downloaded under "releases". 
 
