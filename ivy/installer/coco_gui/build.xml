@@ -1,0 +1,16 @@
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="coco_gui" default="all">
+	<property name="version.required" value="1.9.1" />
+
+	<!-- The settings file is in the parent directory. -->
+	<property name="mbs.settings.path" location="." />
+	<!-- Import the common tasks. -->
+	<import file="${mbs.ivy.path}/mbs.xml" />
+
+	<target name="local" description="The local additions to the packages.">
+		<!-- Copy the EXE and the DLL to the installation base. -->
+		<copy file="${path.org.muhkuh.tools.led_analyzer}/build/ColorControl.exe"
+		      todir="${install.base}" />
+		<copy file="${path.org.muhkuh.tools.led_analyzer}/build/led_analyzer.dll"
+		      todir="${install.base}" />
+	</target>
+</project>

@@ -18,6 +18,7 @@ SET(INSTALL_DIR_LUA_SCRIPTS lua)
 #include the cmake files 
 #version 
 INCLUDE(../../cmake/versions.cmake)
+INCLUDE(../../cmake/version.cmake)
 
 
 # Led_Analyzer Version number
@@ -39,6 +40,7 @@ LIST(APPEND PACKAGE_CMAKE_ARGS "-DCPACK_PACKAGE_VERSION_MAJOR=${CPACK_PACKAGE_VE
 LIST(APPEND PACKAGE_CMAKE_ARGS "-DCPACK_PACKAGE_VERSION_MINOR=${CPACK_PACKAGE_VERSION_MINOR}")
 LIST(APPEND PACKAGE_CMAKE_ARGS "-DCPACK_PACKAGE_VERSION_PATCH=${CPACK_PACKAGE_VERSION_PATCH}")
 LIST(APPEND PACKAGE_CMAKE_ARGS "-DVERSION_FULL=${VERSION_FULL}")
+LIST(APPEND PACKAGE_CMAKE_ARGS "-DPROJECT_VERSION_VCS=${PROJECT_VERSION_VCS}")
 LIST(APPEND PACKAGE_CMAKE_ARGS "-DARTIFACT_LISTS_OUTPUT=${CMAKE_CURRENT_BINARY_DIR}/artifacts")
 
 ExternalProject_Add(TARGET_led_analyzer
@@ -48,6 +50,13 @@ ExternalProject_Add(TARGET_led_analyzer
 )
 
 
+#----------------------------------------------------------------------------
+#
+# Copy the artifacts to a filename without the version number.
+# This is needed for the part in the travis.ci script where
+# the deploy to "GitHub releases" is configured. It is only
+# possible to use fixed filenames there.
+#
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/TARGET_led_analyzer-prefix/src/TARGET_led_analyzer-build/led_analyzer-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}.zip
 	DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
 	RENAME led_analyzer.zip
@@ -55,10 +64,33 @@ INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/TARGET_led_analyzer-prefix/src/TARGET_
 
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/TARGET_led_analyzer-prefix/src/TARGET_led_analyzer-build/ivy-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}.xml
 	DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-	RENAME	    ivy.xml
+	RENAME ivy.xml
 )
 
 
 
 #----------------------------------------------------------------------------
+#
+# Copy the artifacts to a local repository. This is needed for the coco_gui
+# installer.
+#
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/TARGET_led_analyzer-prefix/src/TARGET_led_analyzer-build/led_analyzer-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}.zip
+	DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/repository/org/muhkuh/tools/led_analyzer/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}/
+)
+
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/TARGET_led_analyzer-prefix/src/TARGET_led_analyzer-build/ivy-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}.xml
+	DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/repository/org/muhkuh/tools/led_analyzer/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}/
+)
+
+
+
+#----------------------------------------------------------------------------
+#
+# Construct the installer for the GUI application.
+# This will be placed in the folder "coco_gui". Execute "ant bootstrap" and
+# "ant" there to build the package.
+#
+CONFIGURE_FILE(coco_gui/build.xml        ${CMAKE_CURRENT_BINARY_DIR}/coco_gui/build.xml        @ONLY)
+CONFIGURE_FILE(coco_gui/ivy.xml          ${CMAKE_CURRENT_BINARY_DIR}/coco_gui/ivy.xml          @ONLY)
+CONFIGURE_FILE(coco_gui/ivysettings.xml  ${CMAKE_CURRENT_BINARY_DIR}/coco_gui/ivysettings.xml  @ONLY)
 

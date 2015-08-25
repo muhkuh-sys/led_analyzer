@@ -1,0 +1,47 @@
+<ivysettings>
+	<settings defaultResolver="resolver-muhkuh-chain" />
+	<caches>
+		<cache name="no_cache" memorySize="0" defaultTTL="0s" useOrigin="true" />
+	</caches>
+	<resolvers>
+		<chain name="resolver-muhkuh-chain">
+			<!-- This is a local resolver for the build result of this project.
+			     The repository is located in the 'repository' subfolder next to this configuration file.
+			-->
+			<filesystem name="private" descriptor="required" m2compatible="true" cache="no_cache">
+				<ivy      pattern="@CMAKE_CURRENT_BINARY_DIR@/repository/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />
+				<artifact pattern="@CMAKE_CURRENT_BINARY_DIR@/repository/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />
+			</filesystem>
+			
+			<!-- The main repository for stable artifacts on sourceforge. -->
+			<url name="sourceforge" descriptor="required" m2compatible="true">
+				<ivy      pattern="http://downloads.sourceforge.net/project/muhkuh/mbs/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />
+				<artifact pattern="http://downloads.sourceforge.net/project/muhkuh/mbs/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />
+			</url>
+			
+			<!-- The main repository for stable artifacts on GitHub. -->
+			<url name="github" descriptor="required" m2compatible="false">
+				<ivy      pattern="https://github.com/muhkuh-sys/[organisation]-[module]/releases/download/v[revision]/[artifact].[ext]" />
+				<artifact pattern="https://github.com/muhkuh-sys/[organisation]-[module]/releases/download/v[revision]/[artifact].[ext]" />
+			</url>
+			
+			<!-- This is the resolver for the Nexus server at Hilscher.
+			     Some artifacts can not be released with an open source license. They are stored here.
+			     NOTE: this is only the public repository. DO NOT INCLUDE THE SECRET REPOSITORY HERE.
+			-->
+			<url name="nexus" descriptor="required" m2compatible="true">
+				<ivy      pattern="http://nexus.netx01.hilscher.local/content/repositories/hilscher_muhkuh_public/[organisation]/[module]/[revision]/[module]-[revision].[ext]" />
+				<artifact pattern="http://nexus.netx01.hilscher.local/content/repositories/hilscher_muhkuh_public/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />
+			</url>
+			
+			<!-- This is the resolver for Bintray.
+			     Build results from Travis CI are stored here. They are snapshots and will be replaced with a new build.
+			-->
+			<url name="bintray" descriptor="required" m2compatible="true">
+				<ivy      pattern="http://dl.bintray.com/muhkuh/Muhkuh/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />
+				<artifact pattern="http://dl.bintray.com/muhkuh/Muhkuh/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />
+			</url>
+		</chain>
+	</resolvers>
+</ivysettings>
+

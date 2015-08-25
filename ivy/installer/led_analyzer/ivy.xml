@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<ivy-module version="2.0">
-	<info organisation="org.muhkuh.tools" module="led_analyzer" 	revision="${VERSION_FULL}">
+<ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
+	<info organisation="org.muhkuh.tools"
+	      module="led_analyzer"
+	      revision="${VERSION_FULL}"
+	      e:vcs-id="${PROJECT_VERSION_VCS}">
 		<license name="GPL-2.0"/>
 		<ivyauthor name="Muhkuh team" url="https://github.com/muhkuh-sys" />
 		<description>
@@ -12,6 +15,6 @@ This module contains the led_analyzer project in form of a wrapped lua binding. 
 		<artifact ext="zip" type="zip" packaging="zip" />
 	</publications>
 	<dependencies>
-		<dependency org="org.mukuh.tools" name="lua" rev="5.1.4"/>
+		<dependency org="org.muhkuh.tests" name="iomatrix" rev="1.0.0"/>
 	</dependencies>
 </ivy-module>

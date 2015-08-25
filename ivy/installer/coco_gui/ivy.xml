@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
+	<info organisation="org.muhkuh.tools"
+	      module="coco_gui"
+	      revision="@VERSION_FULL@"
+	      e:vcs-id="@PROJECT_VERSION_VCS@" />
+	
+	<publications>
+		<artifact name="coco_gui_windows_x86" ext="zip" type="zip" packaging="zip" />
+		<artifact name="coco_gui_windows_amd64" ext="zip" type="zip" packaging="zip" />
+	</publications>
+	
+	<dependencies>
+		<dependency org="org.muhkuh.tools" name="bootloader_windows_driver" rev="2.0.1"/>
+		<dependency org="org.muhkuh.tools" name="led_analyzer" rev="@VERSION_FULL@"/>
+	</dependencies>
+</ivy-module>
+
