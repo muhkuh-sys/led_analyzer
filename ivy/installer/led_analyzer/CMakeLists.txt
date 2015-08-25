@@ -26,26 +26,6 @@ INSTALL(FILES ${COCO_WIN32_INSTALL}/ColorControl/ColorControl.exe
         DESTINATION windows_x86/build
 )
 
-INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51}/windows_x86/bin/liblua.dll
-        DESTINATION windows_x86/build
-)
-
-INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51}/windows_x86/bin/lua.exe
-        DESTINATION windows_x86/build
-)
-
-INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51-bit}/windows_x86/bit.dll
-        DESTINATION windows_x86/build/${INSTALL_DIR_LUA_MODULES}
-)
-
-INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51-mhash}/windows_x86/mhash.dll
-        DESTINATION windows_x86/build/${INSTALL_DIR_LUA_MODULES}
-)
-
-INSTALL(DIRECTORY ${ant_path.org.muhkuh.lua.lua51-romloader}/windows_x86/
-        DESTINATION windows_x86/build/${INSTALL_DIR_LUA_MODULES}
-)
-
 IF(DOXYGEN_FOUND)
 	INSTALL(DIRECTORY ${COCO_WIN32_INSTALL}/doc
 		DESTINATION windows_x86/build
@@ -63,26 +43,6 @@ INSTALL(FILES ${COCO_WIN64_INSTALL}/modules/led_analyzer/led_analyzer.dll
 
 INSTALL(FILES ${COCO_WIN64_INSTALL}/ColorControl/ColorControl.exe
         DESTINATION windows_amd64/build
-)
-
-INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51}/windows_amd64/bin/liblua.dll
-        DESTINATION windows_amd64/build
-)
-
-INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51}/windows_amd64/bin/lua.exe
-        DESTINATION windows_amd64/build
-)
-
-INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51-bit}/windows_amd64/bit.dll
-        DESTINATION windows_amd64/build/${INSTALL_DIR_LUA_MODULES}
-)
-
-INSTALL(FILES ${ant_path.org.muhkuh.lua.lua51-mhash}/windows_amd64/mhash.dll
-        DESTINATION windows_amd64/build/${INSTALL_DIR_LUA_MODULES}
-)
-
-INSTALL(DIRECTORY ${ant_path.org.muhkuh.lua.lua51-romloader}/windows_amd64/
-        DESTINATION windows_amd64/build/${INSTALL_DIR_LUA_MODULES}
 )
 
 IF(DOXYGEN_FOUND)
