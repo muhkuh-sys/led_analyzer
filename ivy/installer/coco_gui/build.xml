@@ -6,11 +6,40 @@
 	<!-- Import the common tasks. -->
 	<import file="${mbs.ivy.path}/mbs.xml" />
 
-	<target name="local" description="The local additions to the packages.">
+	<target name="local_windows_x86" description="The additions for windows_x86 packages." if="${install.os_arch.windows_x86}">
 		<!-- Copy the EXE and the DLL to the installation base. -->
-		<copy file="${path.org.muhkuh.tools.led_analyzer}/build/ColorControl.exe"
+		<copy file="${path.org.muhkuh.tools.led_analyzer}/windows_x86/build/ColorControl.exe"
 		      todir="${install.base}" />
-		<copy file="${path.org.muhkuh.tools.led_analyzer}/build/led_analyzer.dll"
+		<copy file="${path.org.muhkuh.tools.led_analyzer}/windows_x86/build/led_analyzer.dll"
 		      todir="${install.base}" />
+	</target>
+
+	<target name="local_windows_amd64" description="The additions for windows_x86 packages." if="${install.os_arch.windows_amd64}">
+		<!-- Copy the EXE and the DLL to the installation base. -->
+		<copy file="${path.org.muhkuh.tools.led_analyzer}/windows_amd64/build/ColorControl.exe"
+		      todir="${install.base}" />
+		<copy file="${path.org.muhkuh.tools.led_analyzer}/windows_amd64/build/led_analyzer.dll"
+		      todir="${install.base}" />
+	</target>
+
+	<target name="local" description="The local additions to the packages." depends="local_windows_x86,local_windows_amd64">
+		<!-- Copy the common files. -->
+		<copy todir="${install.base}/pic" includeEmptyDirs="true">
+			<fileset dir="${path.org.muhkuh.tools.led_analyzer}/windows_x86/build/pic" />
+		</copy>
+
+		<copy todir="${install.lua}" includeEmptyDirs="true">
+			<fileset dir="${path.org.muhkuh.tools.led_analyzer}/windows_x86/build/lua" />
+		</copy>
+
+		<copy todir="${install.base}/example_device" includeEmptyDirs="true">
+			<fileset dir="${path.org.muhkuh.tools.led_analyzer}/windows_x86/build/example_device" />
+		</copy>
+
+		<copy file="${path.org.muhkuh.tools.led_analyzer}/windows_x86/build/color_control_init.lua"
+		      todir="${install.base}" />
+
+		<!-- Copy the documentation. -->
+		<!-- TODO: add the documentation to the led_analyzer package. -->
 	</target>
 </project>
