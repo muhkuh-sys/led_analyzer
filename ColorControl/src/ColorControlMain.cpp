@@ -826,7 +826,7 @@ wxString ColorControlFrame::GetInterfaceSelection()
 
     /* run the lua file to get the available interfaces */
     wxArrayString astrInterfaces;
-    CLua hInterfaces("muhkuh_cli_init.lua");
+    CLua hInterfaces("detect_interfaces.lua");
     hInterfaces.GetInterfaces(astrInterfaces);
 
     /* check if the default interface is contained in the found interfaces, and if so set it as the initially selected one */
