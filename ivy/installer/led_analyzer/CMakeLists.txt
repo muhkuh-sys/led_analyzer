@@ -16,38 +16,35 @@ CONFIGURE_FILE(ivy.xml ivy-${VERSION_FULL}.xml)
 
 #-----------------------------------------------------------------------------
 #
-# Install the 32bit files and the documentation.
+# Install the 32bit files.
 #
 INSTALL(FILES ${COCO_WIN32_INSTALL}/modules/led_analyzer/led_analyzer.dll
-        DESTINATION windows_x86/build
+        DESTINATION windows_x86
 )
 
 INSTALL(FILES ${COCO_WIN32_INSTALL}/ColorControl/ColorControl.exe
-        DESTINATION windows_x86/build
+        DESTINATION windows_x86
 )
-
-IF(DOXYGEN_FOUND)
-	INSTALL(DIRECTORY ${COCO_WIN32_INSTALL}/doc
-		DESTINATION windows_x86/build
-	)
-ENDIF(DOXYGEN_FOUND)
 
 
 #-----------------------------------------------------------------------------
 #
-# Install the 64bit files and lua files.
+# Install the 64bit files.
 #
 INSTALL(FILES ${COCO_WIN64_INSTALL}/modules/led_analyzer/led_analyzer.dll
-        DESTINATION windows_amd64/build
+        DESTINATION windows_amd64
 )
 
 INSTALL(FILES ${COCO_WIN64_INSTALL}/ColorControl/ColorControl.exe
-        DESTINATION windows_amd64/build
+        DESTINATION windows_amd64
 )
+
+
+#-----------------------------------------------------------------------------
 
 IF(DOXYGEN_FOUND)
 	INSTALL(DIRECTORY ${COCO_WIN64_INSTALL}/doc
-		DESTINATION windows_amd64/build
+	        DESTINATION common
 	)
 ENDIF(DOXYGEN_FOUND)
 
@@ -59,44 +56,28 @@ INSTALL(FILES install.xml
 
 #-----------------------------------------------------------------------------
 
-#Install the general LUA Files
+# Install the general LUA Files.
 INSTALL(DIRECTORY ${LED_ANALYZER_LUA}/lua/
-	DESTINATION windows_x86/build/${INSTALL_DIR_LUA_SCRIPTS}
+        DESTINATION common/${INSTALL_DIR_LUA_SCRIPTS}
 )
 
 INSTALL(DIRECTORY ${LED_ANALYZER_LUA}/example_device
-	DESTINATION windows_x86/build
+        DESTINATION common
 )
 
 INSTALL(FILES ${LED_ANALYZER_LUA}/color_control_init.lua
-			  ${LED_ANALYZER_LUA}/muhkuh_cli_init.lua
-	DESTINATION windows_x86/build 
+        DESTINATION common
 )
 
-INSTALL(DIRECTORY ${LED_ANALYZER_LUA}/lua/
-	DESTINATION windows_amd64/build/${INSTALL_DIR_LUA_SCRIPTS}
-)
-
-INSTALL(DIRECTORY ${LED_ANALYZER_LUA}/example_device
-	DESTINATION windows_amd64/build
-)
-
-INSTALL(FILES ${LED_ANALYZER_LUA}/color_control_init.lua
-			  ${LED_ANALYZER_LUA}/muhkuh_cli_init.lua
-	DESTINATION windows_amd64/build 
-)
 
 #-----------------------------------------------------------------------------
 #
 # Install the folder containing the icons used for this project
 
 INSTALL(DIRECTORY ${COCO_ICONS}
-	DESTINATION windows_x86/build
+	DESTINATION common
 )
 
-INSTALL(DIRECTORY ${COCO_ICONS}
-	DESTINATION windows_amd64/build
-)
 
 #-----------------------------------------------------------------------------
 #
