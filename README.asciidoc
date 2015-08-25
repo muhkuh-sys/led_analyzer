@@ -44,9 +44,9 @@ netX Boards. A complete testscript for a device, including the initialization of
 [[Documentation, Documentation]]
 == Documentation
 
-An API documentation will be generated along the cmake build process, in case doxygen is installed. This documentation can be found in the build folder under 'doc' and contains both
+In case doxygen is installed, an API documentation will be generated alongside the build process. This documentation can be found in the build folder under 'doc' and contains both
 html documentation and tex documentation files. The document folder contains three documents. The first one, CoCoAPI.pdf is generated from the tex files and describes the API. 
-Document #2, Development_HW describes the hardware development process of this project in detail. The last document, Development_SW describes the software development, including 
+Document #2, Development_HW.pdf describes the hardware development process of this project in detail. The last document, Development_SW.pdf describes the software development, including 
 API-, Lua-, and ColorControl App development. 
 
 [[Installation, Installation]]
