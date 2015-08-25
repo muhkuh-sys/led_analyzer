@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Artifacts>
+	<Project>
+		<Server id="nexus@netx01" release="muhkuh" snapshots="muhkuh_snapshots">
+			<Target file="@CMAKE_CURRENT_BINARY_DIR@/coco_gui/targets/coco_gui_windows_amd64-@VERSION_FULL@.zip">
+				<ArtifactID>led_analyzer</ArtifactID>
+				<GroupID>tools.muhkuh.org</GroupID>
+				<Version>@VERSION_FULL@</Version>
+				<Packaging>zip</Packaging>
+			</Target>
+			<Target file="@CMAKE_CURRENT_BINARY_DIR@/coco_gui/targets/coco_gui_windows_x86-@VERSION_FULL@.zip">
+				<ArtifactID>led_analyzer</ArtifactID>
+				<GroupID>tools.muhkuh.org</GroupID>
+				<Version>@VERSION_FULL@</Version>
+				<Packaging>zip</Packaging>
+			</Target>
+		</Server>
+	</Project>
+</Artifacts>
+

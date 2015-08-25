@@ -90,7 +90,8 @@ INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/TARGET_led_analyzer-prefix/src/TARGET_
 # This will be placed in the folder "coco_gui". Execute "ant bootstrap" and
 # "ant" there to build the package.
 #
-CONFIGURE_FILE(coco_gui/build.xml        ${CMAKE_CURRENT_BINARY_DIR}/coco_gui/build.xml        @ONLY)
-CONFIGURE_FILE(coco_gui/ivy.xml          ${CMAKE_CURRENT_BINARY_DIR}/coco_gui/ivy.xml          @ONLY)
-CONFIGURE_FILE(coco_gui/ivysettings.xml  ${CMAKE_CURRENT_BINARY_DIR}/coco_gui/ivysettings.xml  @ONLY)
+CONFIGURE_FILE(coco_gui/artifacts_coco_gui.xml  ${CMAKE_CURRENT_BINARY_DIR}/artifacts/artifacts_coco_gui.xml  @ONLY)
+CONFIGURE_FILE(coco_gui/build.xml               ${CMAKE_CURRENT_BINARY_DIR}/coco_gui/build.xml                @ONLY)
+CONFIGURE_FILE(coco_gui/ivy.xml                 ${CMAKE_CURRENT_BINARY_DIR}/coco_gui/ivy.xml                  @ONLY)
+CONFIGURE_FILE(coco_gui/ivysettings.xml         ${CMAKE_CURRENT_BINARY_DIR}/coco_gui/ivysettings.xml          @ONLY)
 

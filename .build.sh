@@ -42,3 +42,9 @@ cmake ../ivy/installer
 make
 make install
 popd
+
+
+MBS_IVY=${PWD}/mbs_ivy
+pushd build/coco_gui
+ant -Dmbs.ivy.path=${MBS_IVY} bootstrap
+ant -Dmbs.ivy.path=${MBS_IVY}
