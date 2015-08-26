@@ -19,12 +19,6 @@
 
 
 
-//#define VERSION_MAJOR 0
-//#define VERSION_MINOR 1
-//#define VERSION_PATCH 0
-
-
-
 //helper functions
 enum wxbuildinfoformat {
     short_f, long_f };
@@ -105,11 +99,6 @@ ColorControlFrame::~ColorControlFrame()
 {
     delete[] m_aStrSerials;
     if ( m_fileConfig ) delete m_fileConfig;
-    if ( m_pLua       )
-    {
-        m_pLua->CleanUp();
-        delete m_pLua;
-    }
 }
 
 void ColorControlFrame::InitHashTables()
