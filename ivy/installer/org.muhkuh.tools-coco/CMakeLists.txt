@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 SET(CPACK_INCLUDE_TOPLEVEL_DIRECTORY FALSE)
-SET(CPACK_PACKAGE_FILE_NAME led_analyzer-${VERSION_FULL})
+SET(CPACK_PACKAGE_FILE_NAME coco-${VERSION_FULL})
 
 SET(CPACK_GENERATOR "ZIP")
 INCLUDE(CPack)
@@ -84,7 +84,7 @@ INSTALL(DIRECTORY ${COCO_ICONS}
 #
 # Filter the pom.xml file.
 #
-SET(POM_ARTIFACT_ID  "led_analyzer")
+SET(POM_ARTIFACT_ID  "coco")
 SET(POM_GROUP_ID     "tools.muhkuh.org")
 SET(POM_VERSION      "${VERSION_FULL}")
 SET(POM_PACKAGING    "zip")
@@ -96,8 +96,8 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../pom.xml pom.xml)
 # Filter the artifacts.xml file.
 #
 SET(ARTIFACT_DIRECTORY    "${CMAKE_CURRENT_BINARY_DIR}")
-SET(ARTIFACT_ARTIFACT_ID  "led_analyzer")
+SET(ARTIFACT_ARTIFACT_ID  "coco")
 SET(ARTIFACT_GROUP_ID     "tools.muhkuh.org")
 SET(ARTIFACT_VERSION      "${VERSION_FULL}")
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../artifacts.xml ${ARTIFACT_LISTS_OUTPUT}/artifacts_led_analyzer.xml)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../artifacts.xml ${ARTIFACT_LISTS_OUTPUT}/artifacts_coco.xml)
 

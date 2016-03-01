@@ -26,8 +26,8 @@ application.
 	</publications>
 	
 	<dependencies>
-		<dependency org="org.muhkuh.tools" name="bootloader_windows_driver" rev="2.1.0"/>
-		<dependency org="org.muhkuh.tools" name="led_analyzer" rev="@VERSION_FULL@"/>
+		<dependency org="org.muhkuh.tools" name="bootloader_windows_driver" rev="2.2.0"/>
+		<dependency org="org.muhkuh.tools" name="coco" rev="@VERSION_FULL@"/>
 	</dependencies>
 </ivy-module>
 

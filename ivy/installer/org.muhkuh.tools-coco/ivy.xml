@@ -2,7 +2,7 @@
 
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
 	<info organisation="org.muhkuh.tools"
-	      module="led_analyzer"
+	      module="coco"
 	      revision="${VERSION_FULL}"
 	      e:vcs-id="${PROJECT_VERSION_VCS}">
 		<license name="GPL-2.0"/>
