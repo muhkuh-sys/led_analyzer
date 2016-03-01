@@ -4,7 +4,21 @@
 	<info organisation="org.muhkuh.tools"
 	      module="coco_gui"
 	      revision="@VERSION_FULL@"
-	      e:vcs-id="@PROJECT_VERSION_VCS@" />
+	      e:vcs-id="@PROJECT_VERSION_VCS@">
+		<license name="GPL-2.0"/>
+		<ivyauthor name="Muhkuh team" url="https://github.com/muhkuh-sys" />
+		<description>
+The ColorControl GUI shows all connected Color Controller Devices and their
+measured color data, including wavelength saturation and illuminance.
+Furthermore color sensor specific settings like integration time and gain can
+be set up easily. The Application displays the status of the sensors, giving
+various information in case any problems occur. It provides functionality to
+easily stimulate the leds on connected netX Boards. A complete testscript for
+a device, including the initialization of the Color Controller, initialization
+of the test tables and the validation process, can be generated in the
+application.
+		</description>
+	</info>
 	
 	<publications>
 		<artifact name="coco_gui_windows_x86" ext="zip" type="zip" packaging="zip" />
