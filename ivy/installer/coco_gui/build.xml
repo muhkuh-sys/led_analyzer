@@ -8,37 +8,37 @@
 
 	<target name="local_windows_x86" description="The additions for windows_x86 packages." if="${install.os_arch.windows_x86}">
 		<!-- Copy the EXE and the DLL to the installation base. -->
-		<copy file="${path.org.muhkuh.tools.led_analyzer}/windows_x86/ColorControl.exe"
+		<copy file="${path.org.muhkuh.tools.coco}/windows_x86/ColorControl.exe"
 		      todir="${install.base}" />
-		<copy file="${path.org.muhkuh.tools.led_analyzer}/windows_x86/led_analyzer.dll"
+		<copy file="${path.org.muhkuh.tools.coco}/windows_x86/led_analyzer.dll"
 		      todir="${install.base}" />
 	</target>
 
 	<target name="local_windows_amd64" description="The additions for windows_x86 packages." if="${install.os_arch.windows_amd64}">
 		<!-- Copy the EXE and the DLL to the installation base. -->
-		<copy file="${path.org.muhkuh.tools.led_analyzer}/windows_amd64/ColorControl.exe"
+		<copy file="${path.org.muhkuh.tools.coco}/windows_amd64/ColorControl.exe"
 		      todir="${install.base}" />
-		<copy file="${path.org.muhkuh.tools.led_analyzer}/windows_amd64/led_analyzer.dll"
+		<copy file="${path.org.muhkuh.tools.coco}/windows_amd64/led_analyzer.dll"
 		      todir="${install.base}" />
 	</target>
 
 	<target name="local" description="The local additions to the packages." depends="local_windows_x86,local_windows_amd64">
 		<!-- Copy the common files. -->
 		<copy todir="${install.base}/pic" includeEmptyDirs="true">
-			<fileset dir="${path.org.muhkuh.tools.led_analyzer}/common/pic" />
+			<fileset dir="${path.org.muhkuh.tools.coco}/common/pic" />
 		</copy>
 
 		<copy todir="${install.lua}" includeEmptyDirs="true">
-			<fileset dir="${path.org.muhkuh.tools.led_analyzer}/common/lua" />
+			<fileset dir="${path.org.muhkuh.tools.coco}/common/lua" />
 		</copy>
 
 		<copy todir="${install.base}/example_device" includeEmptyDirs="true">
-			<fileset dir="${path.org.muhkuh.tools.led_analyzer}/common/example_device" />
+			<fileset dir="${path.org.muhkuh.tools.coco}/common/example_device" />
 		</copy>
 
-		<copy file="${path.org.muhkuh.tools.led_analyzer}/common/color_control_init.lua"
+		<copy file="${path.org.muhkuh.tools.coco}/common/color_control_init.lua"
 		      todir="${install.base}" />
-		<copy file="${path.org.muhkuh.tools.led_analyzer}/common/detect_interfaces.lua"
+		<copy file="${path.org.muhkuh.tools.coco}/common/detect_interfaces.lua"
 		      todir="${install.base}" />
 
 		<!-- Copy the documentation. -->
