@@ -27,8 +27,10 @@ checkout:
 
 general:
   artifacts:
-    - "build/ivy.xml"
-    - "build/lua51-romloader.zip"
+    - build/ivy.xml
+    - build/coco.zip
+    - build/coco_gui/targets/coco_gui_windows_amd64.zip
+    - build/coco_gui/targets/coco_gui_windows_x86.zip
 
 
 test:
