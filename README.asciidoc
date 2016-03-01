@@ -4,9 +4,6 @@ Project LED Analyzer
 Subhan Waizi + 
 <swaizi@hilscher.com> + 
 
-Build status: image:https://travis-ci.org/muhkuh-sys/led_analyzer.svg?branch=master["Build Status", link="https://travis-ci.org/muhkuh-sys/led_analyzer"]
-
-
 == Status
 
 TravisCI: image:https://travis-ci.org/muhkuh-sys/org.muhkuh.tools-coco.svg?branch=master["TravisCI build status", link="https://travis-ci.org/muhkuh-sys/org.muhkuh.tools-coco"]
