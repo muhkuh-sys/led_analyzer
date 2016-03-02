@@ -124,7 +124,7 @@ PanelSensor::PanelSensor( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizerPintype;
 	bSizerPintype = new wxBoxSizer( wxVERTICAL );
 
-	wxString m_chCurPintypeChoices[] = { wxT("MMIO"), wxT("XMIO"), wxT("GPIO"), wxT("PIO") };
+	wxString m_chCurPintypeChoices[] = { wxT("GPIO"), wxT("HIFPIO"), wxT("MMIO"), wxT("PIO"), wxT("RDYRUN"), wxT("RSTOUT"), wxT("XMIO") };
 	int m_chCurPintypeNChoices = sizeof( m_chCurPintypeChoices ) / sizeof( wxString );
 	m_chCurPintype = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chCurPintypeNChoices, m_chCurPintypeChoices, 0 );
 	m_chCurPintype->SetSelection( 0 );

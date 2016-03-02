@@ -121,7 +121,7 @@ PanelTestrow::PanelTestrow( wxWindow* parent, wxWindowID id, const wxPoint& pos,
 	wxBoxSizer* bSizerPintype;
 	bSizerPintype = new wxBoxSizer( wxVERTICAL );
 
-	wxString m_chSpPintype1Choices[] = { wxT("MMIO"), wxT("XMIO"), wxT("GPIO"), wxT("PIO") };
+	wxString m_chSpPintype1Choices[] = { wxT("GPIO"), wxT("HIFPIO"), wxT("MMIO"), wxT("PIO"), wxT("RDYRUN"), wxT("RSTOUT"), wxT("XMIO") };
 	int m_chSpPintype1NChoices = sizeof( m_chSpPintype1Choices ) / sizeof( wxString );
 	m_chSpPintype = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_chSpPintype1NChoices, m_chSpPintype1Choices, 0 );
 	m_chSpPintype->SetSelection( 0 );
