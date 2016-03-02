@@ -15,6 +15,6 @@ This module contains the led_analyzer project in form of a wrapped lua binding. 
 		<artifact ext="zip" type="zip" packaging="zip" />
 	</publications>
 	<dependencies>
-		<dependency org="org.muhkuh.tests" name="iomatrix" rev="1.0.0"/>
+		<dependency org="org.muhkuh.tests" name="iomatrix" rev="1.1.0"/>
 	</dependencies>
 </ivy-module>
