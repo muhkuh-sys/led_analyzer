@@ -1,0 +1,19 @@
+ACTION!="add|change", GOTO="hilscher_coco_rules_end"
+
+#-----------------------------------------------------------------------------
+#
+# USB rules
+#
+SUBSYSTEM!="usb", GOTO="hilscher_coco_usb_rules_end"
+ENV{DEVTYPE}!="usb_device", GOTO="hilscher_coco_usb_rules_end"
+
+# Hilscher Color Controller
+ATTRS{idVendor}=="1939", ATTRS{idProduct}=="0024", MODE="664", GROUP="plugdev"
+
+LABEL="hilscher_coco_usb_rules_end"
+
+
+#-----------------------------------------------------------------------------
+
+LABEL="hilscher_coco_rules_end"
+
