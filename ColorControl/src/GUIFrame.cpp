@@ -68,8 +68,8 @@ private:
 GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
 {
 	this->SetSizeHints( wxSize( -1,-1 ), wxDefaultSize );
-	this->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INFOTEXT ) );
-	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
+//	this->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INFOTEXT ) );
+//	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
 
 
 	menuBarMain = new wxMenuBar( 0 );
@@ -691,12 +691,9 @@ DialogPropGrid::~DialogPropGrid()
 
 MyGenerateDialog::MyGenerateDialog(  wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style, wxFileConfig* pFileConfig, unsigned char ucDefaultSelection ) : wxDialog( parent, id, title, pos, size, style )
 {
-	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTION ) );
-
-
-    m_cancelled = false;
-    /* Get the pointer to the config */
-    m_fileConfig = pFileConfig;
+	m_cancelled = false;
+	/* Get the pointer to the config */
+	m_fileConfig = pFileConfig;
 
 	wxBoxSizer* bSizerTestgenSettings;
 	bSizerTestgenSettings = new wxBoxSizer( wxVERTICAL );
@@ -711,7 +708,7 @@ MyGenerateDialog::MyGenerateDialog(  wxWindow* parent, wxWindowID id, const wxSt
 	sbSizerOutputDir->Add( m_bmDir, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
 
-	bSizerTestgenSettings->Add( sbSizerOutputDir, 1, wxEXPAND, 5 );
+	bSizerTestgenSettings->Add( sbSizerOutputDir, 0, wxEXPAND, 5 );
 
 	wxStaticBoxSizer* sbSizerSettings;
 	sbSizerSettings = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Testsettings") ), wxHORIZONTAL );
@@ -725,7 +722,7 @@ MyGenerateDialog::MyGenerateDialog(  wxWindow* parent, wxWindowID id, const wxSt
 	m_chluxcheck = new wxCheckBox( this, wxID_ANY, wxT("Lux Check"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerCheck->Add( m_chluxcheck, 0, wxALL, 5 );
 
-    // begin here
+	// begin here
 	wxBoxSizer* bSizerTime;
 	bSizerTime = new wxBoxSizer( wxHORIZONTAL );
 
@@ -763,7 +760,7 @@ MyGenerateDialog::MyGenerateDialog(  wxWindow* parent, wxWindowID id, const wxSt
 	sbSizerSettings->Add( bSizerDesc, 1, wxEXPAND, 5 );
 
 
-	bSizerTestgenSettings->Add( sbSizerSettings, 1, wxEXPAND, 5 );
+	bSizerTestgenSettings->Add( sbSizerSettings, 0, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer61;
 	bSizer61 = new wxBoxSizer( wxHORIZONTAL );
@@ -775,15 +772,13 @@ MyGenerateDialog::MyGenerateDialog(  wxWindow* parent, wxWindowID id, const wxSt
 	bSizer61->Add( m_buttonCancel, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 
-	bSizerTestgenSettings->Add( bSizer61, 1, wxEXPAND, 5 );
+	bSizerTestgenSettings->Add( bSizer61, 0, wxEXPAND, 5 );
 
-    m_buttonGenerate->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MyGenerateDialog::OnGenerate ), NULL, this );
-    m_buttonCancel->Connect  ( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MyGenerateDialog::OnCancel ), NULL, this );
-    m_bmDir->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MyGenerateDialog::OnChooseFolder ), NULL, this );
+	m_buttonGenerate->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MyGenerateDialog::OnGenerate ), NULL, this );
+	m_buttonCancel->Connect  ( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MyGenerateDialog::OnCancel ), NULL, this );
+	m_bmDir->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MyGenerateDialog::OnChooseFolder ), NULL, this );
 
-
-	this->SetSizer( bSizerTestgenSettings );
-	this->Layout();
+	this->SetSizerAndFit( bSizerTestgenSettings );
 }
 
 void MyGenerateDialog::OnChooseFolder( wxCommandEvent& event)
