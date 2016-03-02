@@ -990,55 +990,98 @@ void ColorControlFrame::OnSystemSettings(wxCommandEvent& event)
 
 void ColorControlFrame::OnGenerateTest(wxCommandEvent& event)
 {
-    switch(m_eState)
-    {
-    case IS_INITIAL:
-    case IS_SCANNED:
-            wxLogMessage("Please connect first.");
-            break;
-    case IS_CONNECTED:
+	bool bResult;
 
-        wxLogMessage("Generating Testfile.. ");
 
-        /* Get your output directory, and some test settings */
-        MyGenerateDialog GenDialog(this, wxID_ANY, wxT("Select your settings for the testfile"),
-                                   wxDefaultPosition, wxDefaultSize,  wxCAPTION , m_fileConfig, GetSelectionMaxIntegrationTime());
-        GenDialog.ShowModal();
+	switch(m_eState)
+	{
+	case IS_INITIAL:
+	case IS_SCANNED:
+		wxLogMessage("Please connect first.");
+		break;
 
-        if (GenDialog.IsCancelled())
-        {
-            wxLogMessage("Abort.");
-            return;
-        }
-        /* the file either exists or must be created */
-        wxTextFile tFile(GenDialog.GetOutputDir());
+	case IS_CONNECTED:
+		wxLogMessage("Generating Testfile.. ");
 
-        /* Create the file if it doesn't exist yet */
-        if(!tFile.Exists()) tFile.Create();
+		/* Get your output directory, and some test settings */
+		MyGenerateDialog GenDialog(this, wxID_ANY, wxT("Select your settings for the testfile"),
+		                           wxDefaultPosition, wxDefaultSize, wxCAPTION, m_fileConfig, GetSelectionMaxIntegrationTime());
+		GenDialog.ShowModal();
 
-        if(!tFile.Open()) wxLogMessage("Couldn't open test file.");
+		if (GenDialog.IsCancelled())
+		{
+			wxLogMessage("Abort.");
+		}
+		else
+		{
+			/* the file either exists or must be created */
+			wxTextFile tFile(GenDialog.GetOutputDir());
 
-        /* Empty the file */
-        tFile.Clear();
+			/* Create the file if it doesn't exist yet */
+			if( tFile.Exists() )
+			{
+				bResult = true;
+			}
+			else
+			{
+				bResult = tFile.Create();
+				if( !bResult )
+				{
+					LOG_ERROR(m_text);
+					wxLogMessage("Couldn't create test file.");
+					LOG_DEFAULT(m_text);
+				}
+			}
 
-        LOG_ERROR(m_text);
-        if(!m_testGeneration.GenerateTest(m_vectorSensorPanels, &tFile, GenDialog.UseNetX(), GenDialog.LuxCheckEnabled(), GenDialog.GetWaitTime()))
-        {
-            /* Change log colour back */
-            LOG_DEFAULT(m_text);
-            return;
-        }
-        /* Write the testfile */
-        tFile.Write();
+			if( bResult )
+			{
+				bResult = tFile.Open();
+				if( !bResult )
+				{
+					LOG_ERROR(m_text);
+					wxLogMessage("Couldn't open test file.");
+					LOG_DEFAULT(m_text);
+				}
+				else
+				{
+					/* Empty the file */
+					tFile.Clear();
 
-        if(!tFile.Close()) wxLogMessage("Couldn't close test file.");
-        LOG_SUCCESSFUL(m_text);
-        wxLogMessage("Generated %s.", GenDialog.GetOutputDir());
-        LOG_DEFAULT(m_text);
+					LOG_ERROR(m_text);
+					bResult = m_testGeneration.GenerateTest(m_vectorSensorPanels, &tFile, GenDialog.UseNetX(), GenDialog.LuxCheckEnabled(), GenDialog.GetWaitTime());
+					/* Change log colour back */
+					LOG_DEFAULT(m_text);
+					if( bResult )
+					{
+						/* Write the testfile */
+						bResult = tFile.Write();
+						if( !bResult )
+						{
+							LOG_ERROR(m_text);
+							wxLogMessage("Couldn't write test file.");
+							LOG_DEFAULT(m_text);
+						}
+					}
 
-        break;
-    }
+					if(!tFile.Close())
+					{
+						LOG_ERROR(m_text);
+						wxLogMessage("Couldn't close test file.");
+						LOG_DEFAULT(m_text);
+						bResult = false;
+					}
 
+					if( bResult )
+					{
+						LOG_SUCCESSFUL(m_text);
+						wxLogMessage("Generated %s.", GenDialog.GetOutputDir());
+						LOG_DEFAULT(m_text);
+					}
+				}
+			}
+		}
+		break;
+	}
 }
 
 
