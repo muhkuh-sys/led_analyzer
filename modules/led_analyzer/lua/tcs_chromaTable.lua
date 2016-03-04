@@ -1,6 +1,6 @@
 --/***************************************************************************
- --*   Copyright (C) 2015 by Subhan Waizi                           		   *
- --*                                     									   *
+ --*   Copyright (C) 2015 by Subhan Waizi                                    *
+ --*                                                                         *
  --*                                                                         *
  --*   This program is free software; you can redistribute it and/or modify  *
  --*   it under the terms of the GNU General Public License as published by  *
@@ -504,7 +504,7 @@ tTCS_Chromaticity = {
      [   473] = { nm =  552.5000 , x =    0.299780724033603 , y = 0.578032277078495 },
      [   474] = { nm =  552.8125 , x =    0.299920818309712 , y = 0.578148711775114 },
      [   475] = { nm =  553.1250 , x =    0.300046423502016 , y = 0.578274442014737 },
-	 [   476] = { nm =  553.4375 , x =    0.300170801128428 , y = 0.578395537266238 },
+     [   476] = { nm =  553.4375 , x =    0.300170801128428 , y = 0.578395537266238 },
      [   477] = { nm =  553.7500 , x =    0.300307212706863 , y = 0.578498066998494 },
      [   478] = { nm =  554.0625 , x =    0.300468919755234 , y = 0.578568100680379 },
      [   479] = { nm =  554.3750 , x =    0.300669183791455 , y = 0.578591707780767 },
@@ -846,9 +846,9 @@ tTCS_Chromaticity = {
      [   815] = { nm =  659.3750 , x =    0.600822241370600 , y = 0.315091392826000 },
      [   816] = { nm =  659.6875 , x =    0.600701340276200 , y = 0.315025661732000 },
      [   817] = { nm =  660.0000 , x =    0.600655727694500 , y = 0.314987573185900 }
-	 
+
 }
-     
+
 
 -- tTCS_dirVector contains the direction vector formed by the x/y sets given in tTCS_Chromaticity
 -- The direction vector starts in the reference White Point (here refWhitex = 0.312727 refWhitey = 0.329023)
