@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2015 by Subhan Waizi                           		   *
- *                                     									   *
+ *   Copyright (C) 2015 by Subhan Waizi                                    *
+ *                                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -19,16 +19,16 @@
  ***************************************************************************/
 /**  \file i2c_routines.c
 
-	 \brief Software I2C Functions for the FTDI 2232H Chip
-	 
+     \brief Software I2C Functions for the FTDI 2232H Chip
+
 i2c_routines is a simple library which provides basic i2c-functionality. Functions include sending 1 or more bytes, and reading 1 Byte / 2 Bytes.
 The structure of the buffers which will be sent consists of [address - register - data]. This i2c-library can be used
 for simple i2c-slaves which do not have the ability of clock stretching.
 
 \warning clock stretching and multi-master-mode is not supported
- 
- */
- 
+
+*/
+
 #include "i2c_routines.h"
 
 
@@ -36,17 +36,14 @@ for simple i2c-slaves which do not have the ability of clock stretching.
 */
 void i2c_startCond()
 {
-    
 	/* Set clocklines low, datalines high */
-    process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, (!SCL) | SDA_0_OUTPUT | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT);
-    /* Set clocklines high, datalines high */
+	process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, (!SCL) | SDA_0_OUTPUT | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT);
+	/* Set clocklines high, datalines high */
 	process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SCL | SDA_0_OUTPUT | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT);
-    /* Set clocklines high, datalines low */
+	/* Set clocklines high, datalines low */
 	process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SCL | !SDA_0_OUTPUT | !SDA_1_OUTPUT | !SDA_2_OUTPUT | !SDA_3_OUTPUT);
-    /* Set clocklines low, datalines low */
+	/* Set clocklines low, datalines low */
 	process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, (!SCL) | !SDA_0_OUTPUT | !SDA_1_OUTPUT | !SDA_2_OUTPUT | !SDA_3_OUTPUT);
-
-    
 }
 
 
@@ -54,14 +51,12 @@ void i2c_startCond()
 */
 void i2c_stopCond()
 {
-    
-    /* Set all lines low */
-    process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, 0);
-    /* Set clocklines high, datalines low */
+	/* Set all lines low */
+	process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, 0);
+	/* Set clocklines high, datalines low */
 	process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SCL | !SDA_0_OUTPUT | !SDA_1_OUTPUT | !SDA_2_OUTPUT | !SDA_3_OUTPUT);
-    /* Set clocklines high, datalines high */
+	/* Set clocklines high, datalines high */
 	process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL);
-
 }
 
 
@@ -70,12 +65,12 @@ void i2c_stopCond()
 ftdiA and ftdiB represent Channel A and Channel B of a ftdi device and each of these channels has 8 i2c-busses. This function
 can send one byte to a 8 Bit Register of a i2c-slave. Though the name is i2c_write8, the function can send out as many bytes as wanted.
 The number of bytes to be sent can be passed in the parameter ucLength.
-	@param ftdiA, ftdiB  pointer to ftdi_context
-	@param aucSendBuffer pointer to the buffer which contains address, register and data
-	@param ucLength		 sizeof aucSendbuffer in bytes
-	
-	@return	0 if succesful, errorcode if not 
-		- @ref WRITE_ERR_CH_A
+    @param ftdiA, ftdiB  pointer to ftdi_context
+    @param aucSendBuffer pointer to the buffer which contains address, register and data
+    @param ucLength      sizeof aucSendbuffer in bytes
+
+    @return    0 if succesful, errorcode if not 
+        - @ref WRITE_ERR_CH_A
         - @ref WRITE_ERR_CH_B
         - @ref READ_ERR_CH_A
         - @ref READ_ERR_CH_B
@@ -84,67 +79,68 @@ The number of bytes to be sent can be passed in the parameter ucLength.
 
 int i2c_write8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength)
 {
-    unsigned int uiBufferIndex = 0;
-    unsigned char ucMask = 0x80;
-    unsigned char ucBitnumber = 7;
-    unsigned long ucDataToSend = 0;
-    unsigned long ulDataToSend = 0;
-
-    i2c_startCond(ftdiA, ftdiB);
-
-        /* Send Adress leave Bit0 for WR Bit */
-        while(ucMask!=1)
-        {
-			/* Begin with MSB and iterate through all elements until LSB is reached */
-            ucDataToSend = ((aucSendBuffer[uiBufferIndex] & ucMask)>>ucBitnumber);
-            ulDataToSend = ucDataToSend << 0 | ucDataToSend << 2 | ucDataToSend << 4 | ucDataToSend << 6
-                         | ucDataToSend << 8 | ucDataToSend << 10| ucDataToSend << 12| ucDataToSend <<14
-                         | ucDataToSend <<16 | ucDataToSend << 18| ucDataToSend << 20| ucDataToSend <<22
-                         | ucDataToSend <<24 | ucDataToSend << 26| ucDataToSend << 28| ucDataToSend <<30;
-
-            process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
-            i2c_clock(ulDataToSend);
-
-            ucMask>>=1;
-            ucBitnumber--;
-        }
+	unsigned int uiBufferIndex = 0;
+	unsigned char ucMask = 0x80;
+	unsigned char ucBitnumber = 7;
+	unsigned long ucDataToSend = 0;
+	unsigned long ulDataToSend = 0;
 
 
-    /* 0 write 1 read */
-    process_pins( SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_WRITE);
-    i2c_clock(SDA_WRITE);
-    i2c_getAck(ftdiA, ftdiB);
-    uiBufferIndex++;
-    ucMask = 128;
-    ucBitnumber = 7;
+	i2c_startCond(ftdiA, ftdiB);
 
-    /* Iterate to all elements of aucBuffer, Index 1 will be the register written to / read from, index 2+ will be data */
-    while(ucLength > 1)
-    {
-       /* Process the byte with indexnumber uiBufferIndex - apply masks and put the byte into the buffer beginning with msb */
-        while(ucMask)
-        {
-            ucDataToSend = ((aucSendBuffer[uiBufferIndex] & ucMask)>>ucBitnumber);
-            ulDataToSend = ucDataToSend << 0 | ucDataToSend << 2 | ucDataToSend << 4 | ucDataToSend << 6  // DA0-3
-                         | ucDataToSend << 8 | ucDataToSend << 10| ucDataToSend << 12| ucDataToSend <<14  // DA4-7
-                         | ucDataToSend <<16 | ucDataToSend << 18| ucDataToSend << 20| ucDataToSend <<22  // DA8-11
-                         | ucDataToSend <<24 | ucDataToSend << 26| ucDataToSend << 28| ucDataToSend <<30; // DA12-15
+	/* Send Adress leave Bit0 for WR Bit */
+	while(ucMask!=1)
+	{
+		/* Begin with MSB and iterate through all elements until LSB is reached */
+		ucDataToSend = ((aucSendBuffer[uiBufferIndex] & ucMask)>>ucBitnumber);
+		ulDataToSend = ucDataToSend << 0U | ucDataToSend <<  2U| ucDataToSend <<  4U| ucDataToSend << 6U |
+		               ucDataToSend << 8U | ucDataToSend << 10U| ucDataToSend << 12U| ucDataToSend <<14U |
+		               ucDataToSend <<16U | ucDataToSend << 18U| ucDataToSend << 20U| ucDataToSend <<22U |
+		               ucDataToSend <<24U | ucDataToSend << 26U| ucDataToSend << 28U| ucDataToSend <<30U;
 
-            process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
-            i2c_clock(ulDataToSend);
+		process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
+		i2c_clock(ulDataToSend);
 
-            ucMask>>=1;
-            ucBitnumber--;
-        }
+		ucMask >>= 1U;
+		ucBitnumber--;
+	}
 
-        i2c_getAck(ftdiA, ftdiB);
-        ucMask = 128;
-        ucBitnumber = 7;
-        ucLength--;
-        uiBufferIndex++;
-    }
 
-    i2c_stopCond(ftdiA, ftdiB);
+	/* 0 write 1 read */
+	process_pins( SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, SDA_WRITE);
+	i2c_clock(SDA_WRITE);
+	i2c_getAck(ftdiA, ftdiB);
+	uiBufferIndex++;
+	ucMask = 128;
+	ucBitnumber = 7;
+
+	/* Iterate to all elements of aucBuffer, Index 1 will be the register written to / read from, index 2+ will be data */
+	while( ucLength>1 )
+	{
+		/* Process the byte with indexnumber uiBufferIndex - apply masks and put the byte into the buffer beginning with msb */
+		while(ucMask)
+		{
+			ucDataToSend = ((aucSendBuffer[uiBufferIndex] & ucMask)>>ucBitnumber);
+			ulDataToSend = ucDataToSend << 0U | ucDataToSend <<  2U| ucDataToSend <<  4U| ucDataToSend << 6U | // DA0-3
+			               ucDataToSend << 8U | ucDataToSend << 10U| ucDataToSend << 12U| ucDataToSend <<14U | // DA4-7
+			               ucDataToSend <<16U | ucDataToSend << 18U| ucDataToSend << 20U| ucDataToSend <<22U | // DA8-11
+			               ucDataToSend <<24U | ucDataToSend << 26U| ucDataToSend << 28U| ucDataToSend <<30U;  // DA12-15
+
+			process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
+			i2c_clock(ulDataToSend);
+
+			ucMask >>= 1;
+			ucBitnumber--;
+		}
+
+		i2c_getAck(ftdiA, ftdiB);
+		ucMask = 128;
+		ucBitnumber = 7;
+		ucLength--;
+		uiBufferIndex++;
+	}
+
+	i2c_stopCond(ftdiA, ftdiB);
 
 	return send_package_write8(ftdiA, ftdiB);
  
@@ -156,13 +152,13 @@ int i2c_write8(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned 
 Sends the amount of bytes specified in ucLength over one of the 16 i2c-busses.
 The number of the i2c-bus which shall send the data will be given in uiX,
 which ranges from 0 ... 15.
-	@param ftdiA, ftdiB  pointer to ftdi_context
-	@param aucSendBuffer pointer to the buffer which contains address, register and data
-	@param ucLength		 sizeof aucSendbuffer in bytes
-	@param uiX			 number of i2c-bus which should send the data (0 ... 15)
-	
-	@return	0 if succesful, errorcode if not 
-		- @ref WRITE_ERR_CH_A
+    @param ftdiA, ftdiB  pointer to ftdi_context
+    @param aucSendBuffer pointer to the buffer which contains address, register and data
+    @param ucLength      sizeof aucSendbuffer in bytes
+    @param uiX           number of i2c-bus which should send the data (0 ... 15)
+
+    @return    0 if succesful, errorcode if not 
+        - @ref WRITE_ERR_CH_A
         - @ref WRITE_ERR_CH_B
         - @ref READ_ERR_CH_A
         - @ref READ_ERR_CH_B
@@ -170,30 +166,30 @@ which ranges from 0 ... 15.
 */
 int i2c_write8_x(struct ftdi_context* ftdiA, struct ftdi_context* ftdiB, unsigned char* aucSendBuffer, unsigned char ucLength, unsigned int uiX)
 {
-    unsigned int uiBufferIndex = 0;
-    unsigned char ucMask       = 0x80;
-    unsigned char ucBitnumber  = 7;
-    unsigned long ucDataToSend = 0;
-    unsigned long ulDataToSend = 0;
-	int sensorToDataline 	   = (int)(uiX*2);
+	unsigned int uiBufferIndex = 0;
+	unsigned char ucMask       = 0x80;
+	unsigned char ucBitnumber  = 7;
+	unsigned long ucDataToSend = 0;
+	unsigned long ulDataToSend = 0;
+	int sensorToDataline       = (int)(uiX*2);
 
 
-    i2c_startCond(ftdiA, ftdiB);
+	i2c_startCond(ftdiA, ftdiB);
 
-        /* Send Adress leave Bit0 for WR Bit */
-        while(ucMask!=1)
-        {
-            ucDataToSend = ((aucSendBuffer[uiBufferIndex] & ucMask)>>ucBitnumber);
-            
-			/* Write to a single dataline */			
-			ulDataToSend = ucDataToSend << (sensorToDataline);
+	/* Send Adress leave Bit0 for WR Bit */
+	while(ucMask!=1)
+	{
+		ucDataToSend = ((aucSendBuffer[uiBufferIndex] & ucMask)>>ucBitnumber);
 
-            process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
-            i2c_clock(ulDataToSend);
+		/* Write to a single dataline */
+		ulDataToSend = ucDataToSend << (sensorToDataline);
 
-            ucMask>>=1;
-            ucBitnumber--;
-        }
+		process_pins(SDA_0_OUTPUT  | SDA_1_OUTPUT | SDA_2_OUTPUT | SDA_3_OUTPUT | SCL, ulDataToSend);
+		i2c_clock(ulDataToSend);
+
+		ucMask >>= 1;
+		ucBitnumber--;
+	}
 
 
     /* 8th bit of the first byte --> 0 write 1 read */
