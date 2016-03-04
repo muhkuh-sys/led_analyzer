@@ -180,11 +180,11 @@ function validateLEDs(tDUT, lux_check_enable)
 	
 	
 	while(devIndex < numberOfDevices) do 
-		tTestSummary[devIndex] = getDeviceSummary(tDUT[devIndex], tColorTable[devIndex][ENTRY_WAVELENGTH], lux_check_enable)
+		tTestSummary[devIndex] = color_validation.getDeviceSummary(tDUT[devIndex], tColorTable[devIndex][ENTRY_WAVELENGTH], lux_check_enable)
 		devIndex = devIndex + 1 
 	end 
 	
-	ret = validateTestSummary(numberOfDevices, tTestSummary)
+	ret = color_validation.validateTestSummary(numberOfDevices, tTestSummary)
 	strXml = generate_xml.generate_xml(tTestSummary)
 	
 	return ret, strXml 

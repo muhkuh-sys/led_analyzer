@@ -157,7 +157,7 @@ function generate_xml(tTestSummary)
 
 
 	-- check if errors occured --
-	local error_occured, strErrored = errorsOccured(tTestSummary)
+	local error_occured, strErrored = color_validation.errorsOccured(tTestSummary)
 	-- iDevIndex = nil if no errors occured 
 	if error_occured == false then
 		retStr = retStr .. gen_result("pass", "All readings ok!")
