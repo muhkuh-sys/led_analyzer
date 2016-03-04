@@ -77,7 +77,7 @@ function scanDevices()
 	numberOfDevices = led_analyzer.scan_devices(asSerials, MAXSERIALS)
 	tStrSerials = astring2table(asSerials, numberOfDevices)
 	
-	return numberOfDevices, generate_xml_exception(numberOfDevices), tStrSerials
+	return numberOfDevices, generate_xml.generate_xml_exception(numberOfDevices), tStrSerials
 end 
 
 -- connects to color controller devices with serial numbers given in table tStrSerials
@@ -91,7 +91,7 @@ function connectDevices(tOptionalSerials)
 		numberOfDevices = led_analyzer.connect_to_devices(apHandles, MAXHANDLES, table2astring(tOptionalSerials, asSerials))
 	end 
 	
-	return numberOfDevices, generate_xml_exception(numberOfDevices)
+	return numberOfDevices, generate_xml.generate_xml_exception(numberOfDevices)
 end 
 
 
@@ -185,7 +185,7 @@ function validateLEDs(tDUT, lux_check_enable)
 	end 
 	
 	ret = validateTestSummary(numberOfDevices, tTestSummary)
-	strXml = generate_xml(tTestSummary)
+	strXml = generate_xml.generate_xml(tTestSummary)
 	
 	return ret, strXml 
 end
