@@ -1,0 +1,35 @@
+<TestDescription name="CoCo Demo" version="1">
+	<Code>
+		require("serialnr")
+		require("tester")
+
+		if serialnr.run(20000, 10)==false then
+			-- cancel
+			muhkuh.TestHasFinished()
+		end
+		tester.run()
+	</Code>
+	<Test name="CoCo LED test" version="1">
+		<Code>
+			-- This is the filename of the generated CoCo test.
+			local strCocoTestFilename = "This_is_the_file_generated_by_the_CoCo_GUI.lua"
+			-- Load the CoCo test.
+			strCocoTest = muhkuh.load(strCocoTestFilename)
+			-- Run the test.
+			tStatus,tResult,strXmlReport = pcall(loadstring(strCocoTest, strCocoTestFilename))
+			if tStatus==true then
+				if type(tResult)=="number" and tResult==0 then
+					return __MUHKUH_TEST_RESULT_OK
+				else
+					print(string.format("The CoCo test failed with error 0x%08x:", tResult))
+					print(strXmlReport)
+					return __MUHKUH_TEST_RESULT_FAIL
+				end
+			else
+				print("The CoCo test crashed with a fatal error:")
+				print(tResult)
+				return __MUHKUH_TEST_RESULT_FATALERROR
+			end
+		</Code>
+ 	</Test>
+</TestDescription>
