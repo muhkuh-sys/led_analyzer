@@ -164,14 +164,25 @@ bool CTestGeneration::CheckTestGeneration(wxVector<PanelSensor*> vectorSensorPan
 
 void CTestGeneration::InsertHeaders(wxTextFile* tFile, bool useNetX, bool luxCheckEnable, unsigned int uiWaitTime)
 {
+    /* Detect */
+    tFile->AddLine("-- Is this script running standalone or in a muhkuh test?");
+    tFile->AddLine("local fRunningAsStandalone = true");
+    tFile->AddLine("if type(muhkuh)==\"table\" then");
+    tFile->AddLine("\tfRunningAsStandalone = false");
+    tFile->AddLine("end");
+    tFile->AddLine("");
+    tFile->AddLine("");
+
     /* Get the right requires for the test */
     tFile->AddLine("require(\"color_control\")");
 
     /* do we have a netX connected --> LED Stimulation ? */
     if(useNetX)
     {
-        tFile->AddLine("require(\"muhkuh_cli_init\")");
-        tFile->AddLine("require(\"interface\")");
+        tFile->AddLine("if fRunningAsStandalone==true then");
+        tFile->AddLine("\trequire(\"muhkuh_cli_init\")");
+        tFile->AddLine("\trequire(\"interface\")");
+        tFile->AddLine("end");
         tFile->AddLine("require(\"io_matrix\")\n\n");
         /* Dont change following line as the replace function will not work after*/
         tFile->AddLine("-- INSERT INTERFACE NUMBER as strInterface = \"COM4\" for example\n");
@@ -236,7 +247,9 @@ void CTestGeneration::GenerateInitialization(wxTextFile* tFile, bool useNetX)
         tFile->AddLine("\n");
         tFile->AddLine(wxT("-- Device connection ----------------------"));
         tFile->AddLine(wxT("-- netX"));
-        tFile->AddLine(wxT("open_netx_connection(strInterface)"));
+        tFile->AddLine("if fRunningAsStandalone==true then");
+        tFile->AddLine("\topen_netx_connection(strInterface)");
+        tFile->AddLine("end");
         tFile->AddLine(wxT("tPlugin = tester.getCommonPlugin()"));
         tFile->AddLine(wxT("if tPlugin==nil then"));
         tFile->AddLine(wxT("    error(\"No plugin selected, nothing to do!\")"));
@@ -246,15 +259,25 @@ void CTestGeneration::GenerateInitialization(wxTextFile* tFile, bool useNetX)
     tFile->AddLine(wxT("-- Color Controller --> Scan"));
     tFile->AddLine(wxT("numberOfDevices, strXmlResult = scanDevices()"));
     tFile->AddLine(wxT("if numberOfDevices <= 0 then"));
-    tFile->AddLine(wxT("    free()"));
-    if(useNetX) tFile->AddLine(wxT("    tPlugin:Disconnect()"));
+    tFile->AddLine(wxT("\tfree()"));
+    if( useNetX )
+    {
+        tFile->AddLine("\tif fRunningAsStandalone==true then");
+        tFile->AddLine("\t\ttPlugin:Disconnect()");
+        tFile->AddLine("\tend");
+    }
     tFile->AddLine(wxT("    return TEST_RESULT_DEVICE_ERROR, strXmlResult"));
     tFile->AddLine(wxT("end\n"));
     tFile->AddLine(wxT("-- Color Controller --> Connect"));
     tFile->AddLine(wxT("numberOfDevices, strXmlResult = connectDevices()"));
     tFile->AddLine(wxT("if numberOfDevices <= 0 then"));
     tFile->AddLine(wxT("    free()"));
-    if(useNetX) tFile->AddLine(wxT("    tPlugin:Disconnect()"));
+    if( useNetX )
+    {
+        tFile->AddLine("\tif fRunningAsStandalone==true then");
+        tFile->AddLine("\t\ttPlugin:Disconnect()");
+        tFile->AddLine("\tend");
+    }
     tFile->AddLine(wxT("    return TEST_RESULT_DEVICE_ERROR, strXmlResult"));
     tFile->AddLine(wxT("end\n"));
 
@@ -306,18 +329,25 @@ void CTestGeneration::GenerateTestSteps(wxVector<PanelSensor*> vectorSensorPanel
         tFile->AddLine(wxT("startMeasurements()"));
         tFile->AddLine(wxString::Format(wxT("iRetval, strXmlResult = validateLEDs(atTestSets[%d], lux_check_enable)\n"), i));
         tFile->AddLine(wxT("if iRetval ~= TEST_RESULT_OK then"));
-        tFile->AddLine(wxT("    free()"));
+        tFile->AddLine("\tfree()");
         if(useNetX)
         {
-            tFile->AddLine("    ---- APPLY DEFAULT PINSTATES ---- ");
-            tFile->AddLine("    tPlugin:Disconnect()");
+            tFile->AddLine("\t---- APPLY DEFAULT PINSTATES ---- ");
+            tFile->AddLine("\tif fRunningAsStandalone==true then");
+            tFile->AddLine("\t\ttPlugin:Disconnect()");
+            tFile->AddLine("\tend");
         }
         tFile->AddLine(wxT("    return  TEST_RESULT_FAIL, strXmlResult"));
         tFile->AddLine(wxT("end\n"));
     }
 
     tFile->AddLine(wxT("free()"));
-    if(useNetX) tFile->AddLine(wxT("tPlugin:Disconnect()"));
+    if( useNetX )
+    {
+        tFile->AddLine("if fRunningAsStandalone==true then");
+        tFile->AddLine("\ttPlugin:Disconnect()");
+        tFile->AddLine("end");
+    }
     tFile->AddLine(wxT("return iRetval, strXmlResult"));
 }
 
@@ -755,7 +785,7 @@ bool CTestGeneration::FileLEDStimulation(wxVector<PanelSensor*> vectorSensorPane
     tFile.AddLine(wxT("    uiCounter = uiCounter + 1"));
     tFile.AddLine(wxT("end\n\n"));
 
-    tFile.AddLine(wxT("tPlugin:Disconnect()"));
+    tFile.AddLine("tPlugin:Disconnect()");
 
     tFile.Write();
 
