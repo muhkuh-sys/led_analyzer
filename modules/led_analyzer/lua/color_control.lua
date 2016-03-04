@@ -1,8 +1,8 @@
 ---- importing ----
 
-require("led_analyzer")		 -- api for color controller device 
-require("color_conversions") -- handles conversion between color spaces and array to table (or vice versa) handling
-require("color_validation")	 -- Validate your colors, contains helper to print your colors and store your colors in adequate arrays
+require("led_analyzer")       -- api for color controller device 
+require("color_conversions")  -- handles conversion between color spaces and array to table (or vice versa) handling
+require("color_validation")   -- Validate your colors, contains helper to print your colors and store your colors in adequate arrays
 require("generate_xml")
 
 
@@ -75,7 +75,7 @@ local tTestSummary
 function scanDevices() 
 
 	numberOfDevices = led_analyzer.scan_devices(asSerials, MAXSERIALS)
-	tStrSerials = astring2table(asSerials, numberOfDevices)
+	tStrSerials = color_conversions.astring2table(asSerials, numberOfDevices)
 	
 	return numberOfDevices, generate_xml.generate_xml_exception(numberOfDevices), tStrSerials
 end 
@@ -86,9 +86,9 @@ end
 function connectDevices(tOptionalSerials)
 	
 	if(tOptionalSerials == nil) then 
-		numberOfDevices = led_analyzer.connect_to_devices(apHandles, MAXHANDLES, table2astring(tStrSerials, asSerials))
+		numberOfDevices = led_analyzer.connect_to_devices(apHandles, MAXHANDLES, color_conversions.table2astring(tStrSerials, asSerials))
 	else 
-		numberOfDevices = led_analyzer.connect_to_devices(apHandles, MAXHANDLES, table2astring(tOptionalSerials, asSerials))
+		numberOfDevices = led_analyzer.connect_to_devices(apHandles, MAXHANDLES, color_conversions.table2astring(tOptionalSerials, asSerials))
 	end 
 	
 	return numberOfDevices, generate_xml.generate_xml_exception(numberOfDevices)
@@ -123,7 +123,7 @@ function initDevices(atSettings)
 		
 		tColorTable[devIndex] = {}
 		tColorTable[devIndex][ENTRY_ERRORCODE] = ret
-		tColorTable[devIndex][ENTRY_SETTINGS]  = auc2settingsTable(aucIntTimes, aucGains, MAXSENSORS)
+		tColorTable[devIndex][ENTRY_SETTINGS]  = color_conversions.auc2settingsTable(aucIntTimes, aucGains, MAXSENSORS)
 		
 		devIndex = devIndex + 1 
 	end 
@@ -153,7 +153,7 @@ function startMeasurements()
 			end 
 		end 
 				
-		tColorTable[devIndex] = aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, aucIntTimes, aucGains, ret, MAXSENSORS)
+		tColorTable[devIndex] = color_conversions.aus2colorTable(ausClear, ausRed, ausGreen, ausBlue, aucIntTimes, aucGains, ret, MAXSENSORS)
 		devIndex = devIndex + 1 
 	end 
 	
@@ -193,13 +193,13 @@ end
 
 function swapUp(sCurSerial)
 	led_analyzer.swap_up(asSerials, sCurSerial)
-	tStrSerials = astring2table(asSerials, numberOfDevices)
+	tStrSerials = color_conversions.astring2table(asSerials, numberOfDevices)
 	return tStrSerials
 end 
 
 function swapDown(sCurSerial)
 	led_analyzer.swap_down(asSerials, sCurSerial)
-	tStrSerials = astring2table(asSerials, numberOfDevices)
+	tStrSerials = color_conversions.astring2table(asSerials, numberOfDevices)
 	return tStrSerials
 end 
 
