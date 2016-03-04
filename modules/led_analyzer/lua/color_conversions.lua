@@ -678,7 +678,7 @@ function Yxy2wavelength(x,y)
 	local min_index = 0 		-- Set the initial index to an invalid value 
 	
 	for i=1,817 do
-		cur_angle = math.abs(get_angle(t_curDirVector, tTCS_dirVector[i]))
+		cur_angle = math.abs(get_angle(t_curDirVector, tcs_chromaTable.tTCS_dirVector[i]))
 		if cur_angle < min_angle then
 			min_index = i 
 			min_angle = cur_angle
@@ -686,13 +686,13 @@ function Yxy2wavelength(x,y)
 	end 		
 	
 	
-	local saturation = get_length(t_curDirVector) / get_length(tTCS_dirVector[min_index])	
+	local saturation = get_length(t_curDirVector) / get_length(tcs_chromaTable.tTCS_dirVector[min_index])
 	-- As 100 % should be the max saturation possible, cap your saturation in case it gets over 1.0 ( == 100 % )
 	if saturation >= 1.0 then 
 		saturation = 1.0 
 	end 
 		
-	return  tTCS_Chromaticity[min_index].nm, saturation 
+	return  tcs_chromaTable.tTCS_Chromaticity[min_index].nm, saturation
 	
 end
 

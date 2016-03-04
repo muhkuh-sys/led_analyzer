@@ -18,6 +18,7 @@
  --*   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  --***************************************************************************/
 
+module("tcs_chromaTable", package.seeall)
 
 -- Spectral sensitivity data of TCS3472 was requested by AMS/TAOS
 -- Original Data was given in 5 nanometer steps in RGB(C) color space 
