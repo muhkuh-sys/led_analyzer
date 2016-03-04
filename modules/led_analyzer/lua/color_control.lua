@@ -47,32 +47,66 @@ ENTRY_SETTINGS   = 6
 ENTRY_ERRORCODE  = 7
 
 
+local fArraysCreated    = false
+
 -- Color and light related data from the TCS3472 will be stored in following arrays --
-local ausClear          = led_analyzer.new_ushort(MAXSENSORS)
-local ausRed            = led_analyzer.new_ushort(MAXSENSORS)
-local ausGreen          = led_analyzer.new_ushort(MAXSENSORS)
-local ausBlue           = led_analyzer.new_ushort(MAXSENSORS)
-local ausCCT            = led_analyzer.new_ushort(MAXSENSORS)
-local afLUX             = led_analyzer.new_afloat(MAXSENSORS)
+local ausClear          = nil
+local ausRed            = nil
+local ausGreen          = nil
+local ausBlue           = nil
+local ausCCT            = nil
+local afLUX             = nil
 -- system settings from tcs3472 will be stored in following arrays --
-local aucGains          = led_analyzer.new_puchar(MAXSENSORS)
-local aucIntTimes       = led_analyzer.new_puchar(MAXSENSORS)
+local aucGains          = nil
+local aucIntTimes       = nil
 -- serial numbers of connected color controller(s) will be stored in asSerials --
-local asSerials         = led_analyzer.new_astring(MAXSERIALS)
+local asSerials         = nil
 local tStrSerials       = {}
 -- handle to all connected color controller(s) will be stored in apHandles (note 2 handles per device)
-local apHandles         = led_analyzer.new_apvoid(MAXHANDLES)
--- global table contains all color and light related data / global for easy access by C 
-tColorTable = {}
+local apHandles         = nil
+-- global table contains all color and light related data / global for easy access by C
+tColorTable             = {}
 -- number of 1 scanned / 2 connected devices
 local numberOfDevices   = 0
 -- table that contains a test summary for each device --
-local tTestSummary
+local tTestSummary      = nil
 
+
+
+
+local function create_arrays()
+	if fArraysCreated~=true then
+		-- Color and light related data from the TCS3472 will be stored in following arrays --
+		ausClear          = led_analyzer.new_ushort(MAXSENSORS)
+		ausRed            = led_analyzer.new_ushort(MAXSENSORS)
+		ausGreen          = led_analyzer.new_ushort(MAXSENSORS)
+		ausBlue           = led_analyzer.new_ushort(MAXSENSORS)
+		ausCCT            = led_analyzer.new_ushort(MAXSENSORS)
+		afLUX             = led_analyzer.new_afloat(MAXSENSORS)
+		-- system settings from tcs3472 will be stored in following arrays --
+		aucGains          = led_analyzer.new_puchar(MAXSENSORS)
+		aucIntTimes       = led_analyzer.new_puchar(MAXSENSORS)
+		-- serial numbers of connected color controller(s) will be stored in asSerials --
+		asSerials         = led_analyzer.new_astring(MAXSERIALS)
+		tStrSerials       = {}
+		-- handle to all connected color controller(s) will be stored in apHandles (note 2 handles per device)
+		apHandles         = led_analyzer.new_apvoid(MAXHANDLES)
+		-- global table contains all color and light related data / global for easy access by C
+		tColorTable       = {}
+		-- number of 1 scanned / 2 connected devices
+		numberOfDevices   = 0
+		-- table that contains a test summary for each device --
+		tTestSummary      = nil
+
+		fArraysCreated = true
+	end
+end
 
 
 
 function scanDevices()
+	create_arrays()
+
 	numberOfDevices = led_analyzer.scan_devices(asSerials, MAXSERIALS)
 	tStrSerials = color_conversions.astring2table(asSerials, numberOfDevices)
 
@@ -242,17 +276,42 @@ end
 
 -- don't forget to clean up after every test --
 function free()
-	-- CLEAN UP --
-	led_analyzer.free_devices(apHandles)
-	led_analyzer.delete_ushort(ausClear)
-	led_analyzer.delete_ushort(ausRed)
-	led_analyzer.delete_ushort(ausGreen)
-	led_analyzer.delete_ushort(ausBlue)
-	led_analyzer.delete_ushort(ausCCT)
-	led_analyzer.delete_afloat(afLUX)
-	led_analyzer.delete_puchar(aucGains)
-	led_analyzer.delete_puchar(aucIntTimes)
-	led_analyzer.delete_apvoid(apHandles)
-	led_analyzer.delete_astring(asSerials)
+	if fArraysCreated==true then
+		-- CLEAN UP --
+		led_analyzer.free_devices(apHandles)
+		led_analyzer.delete_ushort(ausClear)
+		led_analyzer.delete_ushort(ausRed)
+		led_analyzer.delete_ushort(ausGreen)
+		led_analyzer.delete_ushort(ausBlue)
+		led_analyzer.delete_ushort(ausCCT)
+		led_analyzer.delete_afloat(afLUX)
+		led_analyzer.delete_puchar(aucGains)
+		led_analyzer.delete_puchar(aucIntTimes)
+		led_analyzer.delete_apvoid(apHandles)
+		led_analyzer.delete_astring(asSerials)
+
+		ausClear          = nil
+		ausRed            = nil
+		ausGreen          = nil
+		ausBlue           = nil
+		ausCCT            = nil
+		afLUX             = nil
+		-- system settings from tcs3472 will be stored in following arrays --
+		aucGains          = nil
+		aucIntTimes       = nil
+		-- serial numbers of connected color controller(s) will be stored in asSerials --
+		asSerials         = nil
+		tStrSerials       = {}
+		-- handle to all connected color controller(s) will be stored in apHandles (note 2 handles per device)
+		apHandles         = nil
+		-- global table contains all color and light related data / global for easy access by C
+		tColorTable             = {}
+		-- number of 1 scanned / 2 connected devices
+		numberOfDevices   = 0
+		-- table that contains a test summary for each device --
+		tTestSummary      = nil
+
+		fArraysCreated = false
+	end
 end
 
