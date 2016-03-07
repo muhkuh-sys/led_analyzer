@@ -7,6 +7,7 @@ env:
     - secure: "cYO+77K4FIp5TXbGSn2QkVBnf+usTo4vtnkZ+Cqx/y2HadI/gzfIDq1JIX0Za9Ov7X7QIUYpelWFt1DkYGgjg0xzIChBDp7F3/6mRXUlnPIu3LcNVrY4toIkFy6LdygwanMpPMVloe+DNOTvAcq6pqiJnEFPDm/0QXq4Hq1EVKo="
     - PATH=/usr/mingw-w64-i686/bin:/usr/mingw-w64-x86_64/bin:/tmp/apache-ant-1.9.6/bin:${PATH}
 
+
 before_install:
   - sudo dpkg --purge cmake cmake-doc cmake-data
   - curl -sL http://download.opensuse.org/repositories/home:/doc_bacardi/xUbuntu_12.04/Release.key | sudo apt-key add -
@@ -29,3 +30,17 @@ script:
 after_success:
   - python ivy/installer/deploy.py build/artifacts/artifacts_coco.xml build/artifacts/artifacts_coco_gui.xml
 
+
+deploy:
+  provider: releases
+  api_key:
+    secure: GqpOuS+ZM0xgk6rUJ8FyNqDVh7ODKTnJCzX4hePE6vIj3Xc1jDzDa7nIIWYd8AGKFx0o3lRIKTav9eXRYTjstWOXm8h3KWCwmPtRzVGVbpsg1+m0tiJvKEX9Sxxm3vgzndOJx7EYzEAkaCI03e+G1+I/8me4dYVfgTc5S7/6O34=
+  file:
+    - build/coco.zip
+    - build/ivy.xml
+    - build/coco_gui/targets/coco_gui_windows_amd64.zip
+    - build/coco_gui/targets/coco_gui_windows_x86.zip
+  skip_cleanup: true
+  on:
+    repo: muhkuh-sys/org.muhkuh.tools-coco
+    tags: true
